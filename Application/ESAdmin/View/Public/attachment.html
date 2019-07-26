@@ -200,7 +200,7 @@
             <ul v-if="isSysMsg" class="records" onscroll="SysToMoreData(this)">
                 <li v-for="(item, idx) in historys">
                     <!-- 时间 -->
-                    <div style="color:#666;text-align: center;">{{formatDateTime(item.send_time)}}</div>
+                    <div class="time">{{formatDateTime(item.send_time)}}</div>
                     <!-- 聊天对象 -->
                     <template>
                         <div class="item-contents" style="border-bottom: none;">
@@ -220,7 +220,7 @@
             <ul v-else class="records" onscroll="ToMoreData(this)">
                 <li v-for="(item, idx) in historys">
                     <!-- 时间 -->
-                    <div style="color:#666;text-align: center;">{{formatDateTime(item.create_time)}}</div>
+                    <div class="time">{{formatDateTime(item.create_time)}}</div>
                     <!-- 文本消息 -->
                     <template v-if="item.type == 10">
                         <!-- 自己 -->

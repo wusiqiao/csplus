@@ -993,14 +993,11 @@
 							type:type
 						}
 						wechatData = JSON.stringify(wechatData);
-						$.post("/MsgGroupMember/sendWechatMsg",wechatData,(result)=>{
-							if(result.code == 0){
-								// console.log(result)
-								// $.dialog.tips("");
-							}else{
-								// $.dialog.alert("");
-							}
-						})
+						wechatData.groupId =  wechatData.msg_group_id;
+						wechatData.type =  wechatData.contents_type;
+						wechatData.branchId =  wechatData.branch_id;
+						wechatData.wait =  wechatData.branch_id;
+						$.post("/MsgGroupMember/sendWechatMsg",wechatData)
 					}
 				}
 			}

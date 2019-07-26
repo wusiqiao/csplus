@@ -207,83 +207,212 @@
     background: #b8b4b4;
     border-radius: 2px;
   }
-  .actions{ 
+
+  .actions {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     padding-right: 30px;
     position: relative;
     z-index: 8;
-}
-.activity-picture-title{
-  width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin: 10px 0;
-}
+  }
+
+  .activity-picture-title {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 10px 0;
+  }
+
+  .attachments {
+    overflow-x: auto;
+  }
+
+  .attachments li {
+    float: left;
+    margin: 5px;
+  }
+
+  .attachments li .img-wrap {
+    border: 1px solid #ccc;
+    padding: 5px;
+    position: relative
+  }
+
+  .attachments img {
+    height: 32px;
+    width: 32px;
+    text-align: center;
+  }
+
+  .attachments .btn-add-image {
+    background-repeat: no-repeat;
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addnew.png");
+    background-size: 32px;
+  }
+
+  .attachment-icon {
+    background-repeat: no-repeat;
+    background-size: 32px;
+    width: 32px;
+    height: 32px;
+    background-position: center;
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-unknown.png");
+  }
+
+  .attachment-icon-word {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-word.png");
+  }
+
+  .attachment-icon-doc {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-word.png");
+  }
+
+  .attachment-icon-docx {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-word.png");
+  }
+
+  .attachment-icon-excel {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-excel.png");
+  }
+
+  .attachment-icon-xls {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-excel.png");
+  }
+
+  .attachment-icon-xlsx {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-excel.png");
+  }
+
+  .attachment-icon-txt {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-txt.png");
+  }
+
+  .attachment-icon-unknown {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-unknown.png");
+  }
+
+  .attachments li .img-wrap .btn-item-remove {
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-repeat: no-repeat;
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-remove.png");
+    background-size: 12px;
+    cursor: pointer;
+  }
+
+  .item-contents {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .item-contents>img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 0 10px;
+  }
+
+  .contents-name {
+    margin: 0;
+    padding: 0;
+    color: #666;
+  }
+
+  .contents-direction {
+    padding: 8px 16px;
+    background-color: #fff;
+    text-align: left;
+    border: 1px solid #d3d3d3;
+    word-break: break-all;
+  }
+
+  ul.records {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  ul.records::-webkit-scrollbar {
+    width: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+  }
+
+  ul.records::-webkit-scrollbar-thumb {
+    background: #b8b4b4;
+    border-radius: 4px;
+  }
+
+  .records .time {
+    text-align: center;
+    display: inline-block;
+    margin: 5px auto;
+    padding: 5px 10px;
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, .2);
+    color: #fff;
+  }
 </style>
 <div id="yhDetail">
-  <div class="btn-speed menu_item" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index')">返回</div>
+  <div class="btn-speed menu_item" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index')" style="margin: 11px 18px;">返回</div>
   <div id="yhDetail-content">
     <!-- title -->
     <div id="yhDetail-title">
       <div class="yhDetail-title-left">
-        <img style="width: 100%;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png" alt="">
-        <div class="yhDetail-title-info">{$model.num}人参与</div>
+        <img style="width: 100%;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png"
+          alt="">
+        <div class="yhDetail-title-info">10人参与</div>
       </div>
       <div class="yhDetail-title-right">
         <div style="display: flex;align-items: center;">
-          <h2 style="font-size: 28px;padding: 0 20px;">{$model.title}</h2>
-          <div class="yhDetail-state">
-              <if condition="$model.status eq 1">
-                  待报名
-                  <elseif condition="$model.status eq 2" />
-                  报名中
-                  <elseif condition="$model.status eq 3" />
-                  待进行
-                  <elseif condition="$model.status eq 4" />
-                  进行中
-                  <elseif condition="$model.status eq 5" />
-                  已结束
-                  <elseif condition="$model.status eq 6" />
-                  已关闭
-                  <else/>
-                  已归档
-              </if>
-          </div>
+          <h2 style="font-size: 28px;padding: 0 20px;">走入基层，关安会员身心健康</h2>
+          <div class="yhDetail-state">进行中</div>
         </div>
         <div class="info-line">
           <div class="title">活动时间：</div>
-          <div class="">{$model.start_time|date="Y-m-d H:i",###}--{$model.end_time|date="Y-m-d H:i",###}</div>
+          <div class="">2019年7月10日--2019年7月11日</div>
         </div>
         <div class="info-line">
           <div class="title">活动地点：</div>
-          <div class="">{$model.address}</div>
+          <div class="">厦门湖里大道天桥底下18号</div>
         </div>
         <div class="info-line">
           <div class="title">活动类型：</div>
-          <div class="">{$model.type_name}</div>
+          <div class="">会议沙龙</div>
         </div>
-        <notempty name="model.userList">
         <div class="info-memberlist">
           <div style="width: 100px;text-align: right;">参会人员：</div>
           <div style="display: flex;align-items: center;">
-              <foreach name="model.userList" item="val">
-              <div class="btn-label" style="width: 70px;height: 28px;line-height: 28px;">{$val['user_name']}</div>
-              </foreach>
+            <div class="btn-label" style="width: 70px;height: 28px;line-height: 28px;">黄大成</div>
+            <div class="btn-label" style="width: 70px;height: 28px;line-height: 28px;">黄大成</div>
+            <div class="btn-label" style="width: 70px;height: 28px;line-height: 28px;">黄大成</div>
+            <div class="btn-label" style="width: 70px;height: 28px;line-height: 28px;">黄大成</div>
+            <div class="btn-label" style="width: 70px;height: 28px;line-height: 28px;">黄大成</div>
           </div>
-          <div class="btn-speed" onclick="toggleType('YhMeeting/applyList/id/{$model.id}')">查看全部 ></div>
+          <div class="btn-speed">查看全部 ></div>
         </div>
-        </notempty>
       </div>
     </div>
     <!-- introduce -->
     <div id="yhDetail-introduce">
       <div style="width: 100px;text-align: right;">活动简介：</div>
       <div style="flex: 1;padding: 5px;height: 300px;border: 1px solid #d3d3d3;">
-        　{$model.content}
+        　在8日举办的“每注善举温暖如光”发布活动上，国家体育总局体彩管理中心携手青年潮流设计师，联袂推出3款“国潮”风T恤，引领公益新思潮。中国扶贫基金会新长城项目副主任金疏雨等现场介绍了体彩特别限量版T恤设计理念，对“新公益观”进行全面解析：让公益与时尚契合而温暖。
+        　据介绍，在以往的观念中，“公益”更多强调组织或个人积累财富后，通过捐赠完成善举；而年轻一代参与公益活动，不仅注重利他，也强调自我；既有社会责任感，也注重个人价值实现。在这样的时代背景下，公益事业需要与时俱进，不断焕新，将每一个微小善举汇聚成为推动社会前进的力量。
+        　发布会还推出新公益线上游戏玩法，公布“潮公益”代言人招募活动，携手支付宝平台，推出以产品为核心的互动AR游戏，参与者可以体验概率型游戏“超级大乐透”和即开型游戏“顶呱刮”两款产品。与此同时，参与者还可以分享身边公益点滴，上传照片参与7月15日上线的“潮公益
+        在8日举办的“每注善举温暖如光”发布活动上，国家体育总局体彩管理中心携手青年潮流设计师，联袂推出3款“国潮”风T恤，引领公益新思潮。中国扶贫基金会新长城项目副主任金疏雨等现场介绍了体彩特别限量版T恤设计理念，对“新公益观”进行全面解析：让公益与时尚契合而温暖。
+        　据介绍，在以往的观念中，“公益”更多强调组织或个人积累财富后，通过捐赠完成善举；而年轻一代参与公益活动，不仅注重利他，也强调自我；既有社会责任感，也注重个人价值实现。在这样的时代背景下，公益事业需要与时俱进，不断焕新，将每一个微小善举汇聚成为推动社会前进的力量。
+        　发布会还推出新公益线上游戏玩法，公布“潮公益”代言人招募活动，携手支付宝平台，推出以产品为核心的互动AR游戏，参与者可以体验概率型游戏“超级大乐透”和即开型游戏“顶呱刮”两款产品。与此同时，参与者还可以分享身边公益点滴，上传照片参与7月15日上线的“潮公益在益起”线上活动，有机会获得上述3款“国潮”风T恤。
       </div>
     </div>
     <!-- live -->
     <div id="yhDetail-live">
-      <div style="width: 100px;text-align: right;">活动现场：</div>
+      <div style="width: 100px;text-align: right;">活动简介：</div>
       <div style="flex: 1;">
         <div class="c-header" style="position:relative;">
           <div class="tab-span tab-span-on" data-index="0">活动直播</div>
@@ -291,21 +420,57 @@
         </div>
         <!-- 活动直播 -->
         <div id="activity-live">
-          <div style="width: 100%;height: 435px;background-color: #f5f5f5">
+          <div style="height: 435px;background-color: #f5f5f5">
+            <div id="history" v-if="(historys != null) && (historys.length > 0)" style="height: 100%;">
+              <ul class="records" style="height: 100%;padding: 0px 20px;">
+                <li v-for="(item, iid) in historys" style="margin: 10px;text-align: center;">
+                  <div class="time">2019/05/13 15:09:54</div>
+                  <div class="item-contents" style="justify-content: flex-end;border-bottom: none;">
+                    <div class="contents-box">
+                      <p class="contents-name" style="text-align:right;">{{item.staff_name}}</p>
+                      <div class="contents-direction">
+                        <span v-html="item.content"></span>
+                        <!-- <ul class="attachments">
+                          <li v-for="(item,index) in JSON.parse(item.images)" :title="item.name"
+                            style="margin:5px 15px 5px 0;">
+                            <div v-if="item.type=='image'" class="img-wrap">
+                              <img :src="item.url" alt="" />
+                            </div>
+                            <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type"></div>
+                            <div style="white-space: nowrap;">
+                              <span v-if="item.type=='image'" style="margin-right:11px;color:#368BFE;cursor: pointer;"
+                                @click="previewFun(item.url)">预览</span>
+                              <span style="color:#368BFE;cursor: pointer;"
+                                @click="downloadFile(item.url,item.name)">下载</span>
+                            </div>
+                          </li>
+                        </ul> -->
+                      </div>
+                    </div>
+                    <!-- 头像 -->
+                    <img :src="item.user_head_pic" alt="" />
+                  </div>
 
+                </li>
+              </ul>
+            </div>
+            <div id="history" v-else class="empty-proxy">
+              <span>记录为空</span>
+            </div>
           </div>
-
 
           <div class="input-header" style="width: 100%;height: 155px;background-color: #fff;">
             <!-- 聊天工具栏 -->
             <div style="padding: 5px 0px 5px 30px;border-bottom: 1px solid #d3d3d3;overflow: hidden;margin-bottom:5px;">
               <!-- 图片上传 -->
               <div class="btn-attachment-add icon-updata-img">
-                <input onchange="" id="" type="file" accept="image/*,application/msword,application/vnd.ms-powerpoint" multiple="multiple">
+                <input onchange="img_attach_updata(this)" id="" type="file"
+                  accept="image/*,application/msword,application/vnd.ms-powerpoint" multiple="multiple">
               </div>
               <!-- 文档上传 -->
               <div class="btn-attachment-add icon-updata-file">
-                <input onchange="" id="" type="file" accept="image/*,application/msword,application/vnd.ms-powerpoint" multiple="multiple">
+                <input onchange="file_attach_updata(this)" id="" type="file"
+                  accept="image/*,application/msword,application/vnd.ms-powerpoint" multiple="multiple">
               </div>
             </div>
             <!-- 聊天输入框 -->
@@ -313,14 +478,31 @@
               <div id="txt-content" onkeyup="contentFun(this)" onpaste="pasteFun()" contentEditable="true"></div>
             </div>
             <div class="actions">
-                <div id="btn-send-msg" class="btn-speed" style="margin: 0;" @click="postAttachmentData()">发送</div>
+              <div id="btn-send-msg" class="btn-speed" style="margin: 0;" @click="postAttachmentData()">发送</div>
             </div>
+            <!-- 附件上传展示列表 -->
+            <ul class="attachments" style="position: absolute;bottom: 0;left: 0;z-index: 9;">
+              <li v-for="(item,index) in attachments" :title="item.file_name">
+                <div v-if="item.type=='image'" class="img-wrap">
+                  <span @click="removeFile(index)" class="btn-item-remove"></span>
+                  <img :src="item.src" alt="" />
+                </div>
+                <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type">
+                  <span @click="removeFile(index)" class="btn-item-remove"></span>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
         <!-- 活动照片 -->
         <div id="activity-picture">
-          <div style="display: flex;align-items: center;justify-content: space-between;border-bottom: 1px solid #d3d3d3;">
+          <div
+            style="display: flex;align-items: center;justify-content: space-between;border-bottom: 1px solid #d3d3d3;">
             <div class="btn-speed">上传照片</div>
+            <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+              <input type="text" placeholder="请输入照片名称搜索" style="width:300px;" class="filter-field"><img
+                src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="">
+            </div>
           </div>
           <!-- 照片 -->
           <div id="activity-picture-list">
@@ -427,49 +609,235 @@
 </div>
 
 <script>
-    liveVue = new Vue({
-        el:"#activity-live",
-        data:{
+  var hy_detail = new Vue({
+    el: "#yhDetail",
+    data: {
+      attachments: [],
+      historys: [{
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }, {
+        content: "的说法水电费是的方法的",
+        create_time: "1564111006",
+        create_time_fmt: "2019-07-26 11:16",
+        creater_id: "50",
+        files: "[]",
+        staff_name: "晓",
+        user_head_pic: "http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132",
+        user_name: "晓",
+      }]
+    },
+    methods: {
+      removeFile(index) {
+        this.attachments.splice(index, 1);
+      }
+    },
 
-        }
+  })
+
+  function toggleType(url) {
+    $.get(url, function (result) {
+      $("#module-content .content").html("").append(result);
+      $.parser.parse("#module-content .content");
     });
-
-
-
-
-    function contentFun(that){
-        // 键盘按键
-        if (13 == event.keyCode && event.ctrlKey) {
-
-        }
-        if (13 == event.keyCode) {
-        }
+  }
+  $('.c-header .tab-span').click(function () {
+    $(this).addClass('tab-span-on').siblings().removeClass('tab-span-on');
+    // console.log($(this).attr("data-index"))
+    if ($(this).attr("data-index") == 0) {
+      $("#activity-live").show();
+      $("#activity-picture").hide();
+    } else if ($(this).attr("data-index") == 1) {
+      $("#activity-live").hide();
+      $("#activity-picture").show();
     }
+  });
+  function queryIcon_bule() {
+    $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+  }
 
-    function toggleType(url) {
-      $.get(url, function (result) {
-          $("#module-content .content").html("").append(result);
-          $.parser.parse("#module-content .content");
-      });
+  function queryIcon_gray() {
+    $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+  }
+  // 监听绑定输入框的内容
+  function contentFun(that) {
+    hy_detail.contents = $(that).text();
+    // 键盘按键
+    if (13 == event.keyCode && event.ctrlKey) {
+
     }
-
-    $('.c-header .tab-span').click(function () {
-      $(this).addClass('tab-span-on').siblings().removeClass('tab-span-on');
-      // console.log($(this).attr("data-index"))
-      if ($(this).attr("data-index") == 0) {
-          $("#activity-live").show();
-          $("#activity-picture").hide();
-      } else if ($(this).attr("data-index") == 1) {
-          $("#activity-live").hide();
-          $("#activity-picture").show();
+    if (13 == event.keyCode) {
+      hy_detail.postAttachmentData();
+    }
+  }
+  // 图片上传
+  function img_attach_updata(that) {
+    var oFiles = $(that).get(0).files;
+    $(oFiles).each(function () {
+      var _file = this;
+      //var rFilter = /^(image\/jpeg|image\/png)$/i;
+      if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+        var reader = new FileReader();
+        reader.readAsDataURL(this);
+        reader.onload = function () {
+          hy_detail.attachments.push({ type: "image", src: reader.result, file: _file, file_name: _file.name })
+        }
+      } else {
+        return false;
+      }
+    })
+  }
+  // 文件上传
+  function file_attach_updata(that) {
+    var oFiles = $(that).get(0).files;
+    $(oFiles).each(function () {
+      var _file = this;
+      //var rFilter = /^(image\/jpeg|image\/png)$/i;
+      if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+        var reader = new FileReader();
+        reader.readAsDataURL(this);
+        reader.onload = function () {
+          hy_detail.attachments.push({ type: "image", src: reader.result, file: _file, file_name: _file.name })
+        }
+      } else {
+        var type = "unknown";
+        if (/(\.xls|\.xlsx)$/i.test(this.name)) {
+          type = "excel";
+        } else {
+          if (/(\.doc|.\.docx)$/i.test(this.name)) {
+            type = "word";
+          } else {
+            if (/(\.txt)$/i.test(this.name)) {
+              type = "txt";
+            }
+          }
+        }
+        hy_detail.attachments.push({ type: type, src: "", file: _file, file_name: _file.name });
       }
     });
+  }
 
-    function queryIcon_bule() {
-      $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
-    }
-
-    function queryIcon_gray() {
-      $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
-    }
 </script>

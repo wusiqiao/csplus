@@ -175,13 +175,16 @@ class Ws{
         }
 
         $acceptIds = array_filter($acceptIds);
+        if(empty($acceptIds)){
+            return true;
+        }
+
         $curlData['type'] = $data['contents_type'];
         $curlData['groupId'] = $data['msg_group_id'];
         $curlData['branchId'] = $data['branch_id'];
-        $curlData['wait'] = array_filter($acceptIds);
+        $curlData['wait'] = $acceptIds;
         $curlData['contents'] = $data['contents'];
-        $result = $this->curl($curlData);
-        return true;
+        return $this->curl($curlData);
     }
 
     private function curl($data){

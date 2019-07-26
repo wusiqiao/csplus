@@ -824,8 +824,9 @@ class MsgBaseController extends Controller {
      * @param $contents string 消息内容!
      */
     public function sendWechatMsgAction(){
-        $data = I('post.');
-        if(empty($data)){
+        if(IS_AJAX){
+            $data = I('post.');
+        }else{
             $data =  file_get_contents('php://input');
             $data = json_decode($data, true);
         }
