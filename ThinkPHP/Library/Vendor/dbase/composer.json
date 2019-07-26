@@ -1,0 +1,55 @@
+{
+    "name": "org.majkel/dbase",
+    "description": "Library to access dbase / xbase / dbf database files",
+    "type": "library",
+    "keywords": ["dbase", "xbase", "dbf"],
+    "homepage": "https://github.com/majkel89",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "majkel",
+            "email": "maf.michal@gmail.com",
+            "homepage": "https://github.com/majkel89",
+            "role": "Developer"
+        },
+        {
+            "name": "Tomáš Prokop",
+            "homepage": "https://github.com/naril",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "archive": {
+        "exclude": ["vendor/", "tests/", "style/", "dumpContent.php",
+            "bootstrap.php", "DEVELOP.md", "phpunit.xml", ".*", "build",
+            "*.zip", "*.tar", "phpunit.xml", "benchmarks/"]
+    },
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "org\\majkel\\dbase\\": "src/",
+            "org\\majkel\\dbase\\tests\\": "tests/",
+            "org\\majkel\\dbase\\benchmarks\\": "benchmarks/"
+        }
+    },
+    "require-dev": {
+        "ext-iconv": "*",
+        "phpunit/phpunit": "4.*",
+        "ptrofimov/xpmock": "1.*",
+        "squizlabs/php_codesniffer": "2.*",
+        "symfony/yaml": "~2.1",
+        "athletic/athletic": "^0.1.8"
+    },
+    "suggest": {
+        "ext-iconv": "CharsetFilter will not work without it"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "test-travis-ci": "./vendor/bin/phpunit --configuration ./build/travis.phpunit.xml",
+        "benchmark": "bash build/run_benchmarks.sh",
+        "phpcs": "./vendor/bin/phpcs --standard=style/ruleset.xml  src/ tests/utils/ tests/unit/ tests/integration/"
+    }
+}
