@@ -1,0 +1,16 @@
+html {
+	width: 100%;
+	height: 100%;
+	font-size: calc(266.67% + 57.3333 * (100vw - 320px) / 430);
+	/*以750屏宽下使用的对应是100px=1rem的基准实现布局*/
+    /*所以后续测量出多高，直接除以100。即可获得到rem值*/
+}
+
+/*头部*/
+.mui-bar .mui-icon {
+    font-size: 0.24rem;
+}
+
+.mui-bar-nav.mui-bar .mui-icon {
+	margin:0; 
+}

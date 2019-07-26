@@ -1,0 +1,181 @@
+/* 基础样式 */
+html,body,input {
+    font-family: "微软雅黑";
+    font-size: 14px;
+    color:#404040;
+    background-color:#fff;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+a {
+    color: Black;
+    text-decoration: none;
+}
+
+/* 登录框样式 */
+.login{
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    margin: -135px auto auto -200px;
+    width: 410px;
+    overflow: hidden;
+    box-shadow: 0 0 40px #000;
+    -moz-box-shadow: 0 0 40px #000;
+    -webkit-box-shadow: 0 0 40px #000;
+}
+.login-form-header{
+    background-color: #1aaef3;
+    border-color: #6E8290 #6E8290 #586873;
+    border-image: none;
+    border-radius: 4px 4px 0 0;
+    border-style: solid;
+    border-width: 1px;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 10px 20px;
+    position: relative;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+    display: none;
+}
+.login-form-header h1 {
+    font-size: 16px;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding: 0;
+}
+.login-form-body{
+    border-width: 0px;
+    font-size: 14px;
+    padding: 20px 20px 0px;
+    background: #FFF !important;
+    border-radius: 5px; 
+   height: 260px;
+}
+.login-form-body table{
+width:100%;
+}
+.login-form-body table td{
+    position: relative;
+}
+.login-form-body table td i{
+  position: absolute;
+    left: 10px;
+    top: 18px;
+    color:#B5B5B5;
+}
+.login-form-body input{
+    width: 100%;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    border: 1px solid #CCC;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075) inset;
+    min-height: 24px;
+    outline: medium none;
+    padding/*\**/: 6px 8px 4px 26px;
+    padding: 8px 8px 8px 26px;
+    -webkit-border-radius: 3px;
+       -moz-border-radius: 3px;
+            border-radius: 3px;
+    -webkit-transition: background-color .5s ease-in;
+       -moz-transition: background-color .5s ease-in;
+        -ms-transition: background-color .5s ease-in;
+         -o-transition: background-color .5s ease-in;
+            transition: all 0.15s ease-in;
+    -moz-box-sizing: border-box;
+         box-sizing: border-box;
+}
+.login-form-body input:focus{
+    border-color: #51A7E8;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075) inset, 0 0 5px rgba(81, 167, 232, 0.5);
+}
+.login-form-body .btn{
+    background-color: #1aaef3;
+    border-color: #DDD #DDD #C5C5C5;
+    border-image: none;
+    -webkit-border-radius: 3px;
+       -moz-border-radius: 3px;
+            border-radius: 3px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    color: #333;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 7px 15px;
+    position: relative;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: 60%;
+        color: #fff;
+}
+.login-form-body .btn:hover{
+
+border-bottom: 1px solid #167cac;
+border-top: 1px solid #2094ca;
+background-color: #0993d3;
+background: -webkit-gradient(linear, left top, left bottom, from(#1aaef3), to(#0993d3));
+background: -webkit-linear-gradient(top, #1aaef3, #0993d3);
+background: -moz-linear-gradient(top, #1aaef3, #0993d3);
+background: -ms-linear-gradient(top, #1aaef3, #0993d3);
+background: -o-linear-gradient(top, #1aaef3, #0993d3);
+background: linear-gradient(top, #1aaef3, #0993d3);
+    background-repeat: repeat-x;
+    border-color: #CCC #CCC #B5B5B5;
+    text-decoration: none;
+}
+.login-form-body span{
+    display: inline-block;
+    font-size: 13px;
+    color: red;
+    width: 100%;
+    text-align: center;
+}
+.login-form-body .verify{
+    width: 60%;
+}
+.login-form-body .verify-image{
+    width: 35%;
+    height:34px;
+    position:absolute;
+    right: 0px;
+    top:4px;
+    border: 1px #ccc solid;
+    cursor: pointer;
+}
+
+.login-footer{
+    position: absolute;
+    bottom: 0px;
+    text-align: center;
+    color: #9d9d9d;
+    width: 100%;
+    height:30px;
+   background:#000;
+   line-height: 30px;
+/*    filter:alpha(Opacity=60);
+    -moz-opacity:0.6;
+    opacity: 0.6;*/
+/*    box-shadow: 0 1px 3px rgba(0,0,0,.3);
+    background:rgba(0, 0, 0, 0.6)!important;*/
+ -webkit-opacity: 0.6;  
+    /* Netscape and Older than Firefox 0.9 */  
+    -moz-opacity: 0.6;  
+    /* Safari 1.x (pre WebKit!) 老式khtml内核的Safari浏览器*/  
+    -khtml-opacity: 0.6;  
+    /* IE9 + etc...modern browsers */  
+    opacity: .6;  
+    /* IE 4-9 */  
+    filter:alpha(opacity=60);  
+    /*This works in IE 8 & 9 too*/  
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";  
+    /*IE4-IE9*/  
+    filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=60);  
+}
+
+.login-footer a{
+   color: #ffffff;
+}

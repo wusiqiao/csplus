@@ -1,0 +1,46 @@
+.kui-img-list{margin-top: 0px; padding: 0px;position: relative}
+.kui-img-list .kui-img-item{position: relative;float:left; display: block;border: 0px #9f9f9f solid; border-radius: 2px;padding-left: 20px;}
+.kui-img-list .kui-img-item img{width: 48px !important; height:48px  !important;border-width:0px;}
+.kui-img-list input[type="file"]{position: absolute;opacity: 0;z-index: 100;width:48px;height:48px}     
+.preview-image {
+    width:100%;
+    height:100%;
+    background-color:#000;
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:2;
+    opacity:1;
+    /*兼容IE8及以下版本浏览器*/
+    filter: alpha(opacity=100);
+    text-align: center;
+    display:none;
+}
+@media screen and (max-device-width: 400px) {
+.preview-image img{
+    width:100%;opacity:1;margin: 44px 0;
+}
+
+.preview-image .btn-item-remove{
+    color: red; 
+    position: absolute; 
+    left: 48%;
+    bottom:52px
+}
+.preview-image .btn-item-remove span{font-size: 2.5rem}
+}
+
+@media screen and (min-device-width: 640px) {
+.preview-image img{
+    height:100%;opacity:1;margin: 0px 0;
+}
+.preview-image .btn-item-remove{
+    background-image: url('remove.png');
+    position: absolute; 
+    left: 48%;
+    bottom:10px;
+    width: 42px;
+    height: 42px;
+}
+.preview-image .btn-item-remove span{font-size: 2.5rem}
+}

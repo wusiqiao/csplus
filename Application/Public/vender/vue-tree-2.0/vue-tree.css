@@ -1,0 +1,29 @@
+.bold {font-weight: bold;}
+.vue-tree{padding-left: 1em;line-height: 1.5em; list-style-type: none;background: #fff}
+.vue-tree.first{padding:0px}
+.vue-tree li{padding: 5px 0px 0px}
+.vue-tree li .tree-node{
+    width:30px;
+    height: 30px;
+    line-height: 30px;
+    background-repeat: no-repeat;
+    background-size: 24px;
+    display: inline-block;
+    background-position: center;
+}
+.vue-tree .tree-folder{position: relative; background: none}
+.vue-tree li .tree-node-open{background-image: url(./images/icon-node-open.png); position: absolute; top:0px; left:5px;}
+.vue-tree li .tree-node-close{background-image: url(./images/icon-node-close.png); position: absolute; top:0px; left:5px;}
+.vue-tree li .tree-node-child{background-image: url(./images/icon-file.png); position: absolute; top:0px; left:5px;background-size: 16px}
+.vue-tree li .tree-node-title{
+    padding-left: 30px;
+    height: 30px;
+    line-height: 30px;
+    display: inline-block;
+}
+.vue-tree li .tree-node-add{background-image: url(./images/icon-add.png); background-size: 16px;}
+.vue-tree li .tree-node-remove{background-image: url(./images/icon-remove.png); background-size: 16px;}
+.vue-tree li .item.active{color: #368bfe}
+.vue-tree .tree-node-edit{position: absolute; right:5px; top:0px;font-size: 12px;color:dodgerblue}
+.vue-tree .bottom-line{position: absolute; border-bottom: 1px #ccc solid;height: 1px;width:100%;left:0px}
+.vue-tree:first-child{padding-left: 0px;}

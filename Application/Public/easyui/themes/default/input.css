@@ -1,0 +1,69 @@
+BODY {
+    FONT-SIZE: 62.5%
+}
+FIELDSET {
+    BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 3em; PADDING-LEFT: 15px; PADDING-RIGHT: 15px; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px
+}
+LEGEND {
+    PADDING-BOTTOM: 0.2em; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; FONT-SIZE: 1.4em; FONT-WEIGHT: bold; PADDING-TOP: 0.2em
+}
+.custom-checkbox {
+    POSITION: relative
+}
+.custom-radio {
+    POSITION: relative
+}
+.custom-checkbox INPUT {
+    Z-INDEX: 0; POSITION: absolute; MARGIN: 0px; TOP: 3px; LEFT: 2px
+}
+.custom-radio INPUT {
+    Z-INDEX: 0; POSITION: absolute; MARGIN: 0px; TOP: 3px; LEFT: 2px
+}
+.custom-checkbox LABEL {
+    Z-INDEX: 1; POSITION: relative; PADDING-BOTTOM: 0.5em; LINE-HEIGHT: 1; MARGIN: 0px 0px 0.3em; PADDING-LEFT: 30px; PADDING-RIGHT: 0px; DISPLAY: block; FONT-SIZE: 1.3em; CURSOR: pointer; PADDING-TOP: 0.5em
+}
+.custom-radio LABEL {
+    Z-INDEX: 1; POSITION: relative; PADDING-BOTTOM: 0.5em; LINE-HEIGHT: 1; MARGIN: 0px 0px 0.3em; PADDING-LEFT: 30px; PADDING-RIGHT: 0px; DISPLAY: block; FONT-SIZE: 1.3em; CURSOR: pointer; PADDING-TOP: 0.5em
+}
+.custom-checkbox LABEL {
+    BACKGROUND: url(checkbox.gif) no-repeat
+}
+.custom-radio LABEL {
+    BACKGROUND: url(radiobutton.gif) no-repeat
+}
+.custom-checkbox LABEL {
+    BACKGROUND-POSITION: -10px -14px
+}
+.custom-radio LABEL {
+    BACKGROUND-POSITION: -10px -14px
+}
+.custom-checkbox LABEL.hover {
+    BACKGROUND-POSITION: -10px -114px
+}
+.custom-checkbox LABEL.focus {
+    BACKGROUND-POSITION: -10px -114px
+}
+.custom-radio LABEL.hover {
+    BACKGROUND-POSITION: -10px -114px
+}
+.custom-radio LABEL.focus {
+    BACKGROUND-POSITION: -10px -114px
+}
+.custom-checkbox LABEL.checked {
+    BACKGROUND-POSITION: -10px -214px
+}
+.custom-radio LABEL.checked {
+    BACKGROUND-POSITION: -10px -214px
+}
+.custom-checkbox LABEL.checkedHover {
+    BACKGROUND-POSITION: -10px -314px
+}
+.custom-checkbox LABEL.checkedFocus {
+    BACKGROUND-POSITION: -10px -314px
+}
+.custom-checkbox LABEL.focus {
+    OUTLINE-STYLE: dotted; OUTLINE-COLOR: #ccc; OUTLINE-WIDTH: 1px
+}
+.custom-radio LABEL.focus {
+    OUTLINE-STYLE: dotted; OUTLINE-COLOR: #ccc; OUTLINE-WIDTH: 1px
+}

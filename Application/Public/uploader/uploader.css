@@ -1,0 +1,66 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2017-8-17, 21:42:30
+    Author     : akunzeng
+*/
+.kui-img-list,.kui-img-list-nav{margin-top: 10px; padding: 0px;position: relative;}
+.kui-img-item{position: relative;float:left; display: block;border: 0px #9f9f9f solid; border-radius: 2px;padding: 10px; height:64px; cursor: pointer}
+.kui-img-item img{width: 64px !important; height:64px  !important;border-width:0px; border-radius: 5px; border: 1px #CCC solid}
+.file-input-container{width: 86px; height:86px;float:left}
+.kui-img-list input[type="file"]{position: absolute;opacity: 0;z-index: 100;width:64px;height:64px}
+.kui-img-item .active{border-color:#E64340;}
+.preview-image,.preview-image-nav {
+    z-index:2;
+    opacity:1;
+    /*兼容IE8及以下版本浏览器*/
+    filter: alpha(opacity=100);
+    text-align: center;
+    display:none;
+    position: relative;
+    width:90%;
+    padding:0px;
+    overflow: auto;
+    margin:5px auto
+}
+.preview-image img,.preview-image-nav img{
+    width:100%;
+    opacity:1;
+}
+.preview-image .btn-item-remove{
+    position: absolute; 
+    right: 0;
+    top: 0;
+    width: 24px;
+    height:24px;
+    color: #ccc;
+    padding:5px;
+}
+.preview-image .btn-nav-right{
+    right: -10px;
+}
+.preview-image .btn-nav-left{
+    left: -10px;
+}
+
+.preview-image .btn-nav{
+    position: absolute;
+    top: 250px;
+    width: 48px;
+    height:48px;
+    color: #5f5f5f;
+    padding:5px;
+    cursor: pointer;
+}
+
+.preview-image .btn-item-remove:hover{
+    color:red;  
+    border-radius: 5px;    
+}
+.preview-image .btn-item-remove span{font-size: 2.5rem}
+.kui-img-list .kui-img-item .uploaded{border: 2px solid #0a7e07}
+
+.kui-img-item .icon-uploaded{position: absolute; bottom:0; right:0;color:deepskyblue}
