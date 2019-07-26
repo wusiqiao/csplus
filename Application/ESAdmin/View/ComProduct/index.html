@@ -1,0 +1,257 @@
+<style>
+    .toggle-span{
+        padding: 5px 25px;
+        color: #368BFE;
+        /*border-radius:8px 8px 8px 8px;*/
+    }
+    .toggle-span{
+        float: left;
+        padding: 5px 25px;
+        border:1px solid #ccc;
+        color: #666;
+    }
+    .toggle-span + span{
+        border-left:none;
+    }
+    .toggle-span.checked{
+        padding: 5px 25px;
+        background-color: #0b95ff;
+        color: white;
+    }
+    .tip-div{
+        position: absolute;
+        top: 0;
+        right: 20px;
+        height: 45px;
+        line-height: 45px;
+    }
+    .tip-div .tip-msg{
+        width: 390px;
+        height: 45px;
+        font-family: MicrosoftYaHei;
+        font-size: 14px;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 45px;
+        letter-spacing: 0px;
+        color: red;
+        display: -webkit-box;
+        float: right;
+    }
+    .maincontainer{
+        height: 100%;
+    }
+</style>
+<script type="text/javascript">
+    function format_pro_state(value, row){
+        var scale_text = ["已下架","已上架"];
+        //return scale_text[parseInt(value)];
+        if(value == 1){
+            return '<span style="color: green;">'+scale_text[parseInt(value)]+'</span>';
+        }else{
+            return '<span style="color: red;">'+scale_text[parseInt(value)]+'</span>';
+        }
+    }
+    function format_time(value){
+        return timestampToTime(value,'Y年m月d日 H:i');
+    }
+    function timestampToTime(timestamp,str) {
+        var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        Y = date.getFullYear();
+        m = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1);
+        d = date.getDate();
+        H = date.getHours();
+        i = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes());
+        return str.replace('Y',Y).replace('m',m).replace('d',d).replace('H',H).replace('i',i);
+    }
+    function shelf(value, row,index){
+        if (row.state == 1) {
+            return '<a onclick="shelfForm('+index+','+row.id+',0)">下架</a>';
+        } else {
+            return '<a onclick="shelfForm('+index+','+row.id+',1)">上架</a>';
+        }
+    }
+    function updown(value, row, index){
+        if (row.state == 1) {
+            return formatUpDown('ComProduct','#ComProduct-datagrid',row);
+        }
+    }
+</script>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table">
+        <tr>
+            <th>服务状态：</th>
+            <td>
+                <div class="btn-screening btn-screening-on">全部</div>
+                <div class="btn-screening" data-state="1">已上架</div>
+                <div class="btn-screening" data-state="0">已下架</div>
+            </td>
+        </tr>     
+    </table>
+    <table class="search-table">
+        <tr>
+            <th>服务类别：</th>
+            <td style="width:270px;">
+                <select  style="width:270px;" name="q-category_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComCategory/keyNameList/'">
+                </select>
+            </td>
+            <if condition="($permissions.copyto eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+            <th>公司名称：</th>
+            <td style="width:270px;">
+                <select name="q-branch_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'SysBranch/keyNameList/'">
+                </select>
+            </td>
+            </if>
+            <!--<th>服务状态：</th>
+            <td>
+                <select name="q-state" class="chosen-select filter-field" style="width:200px" >
+                    <option value="">&nbsp;</option>
+                    <option value="1">已上架</option>
+                    <option value="0">已下架</option>
+                </select>
+            </td>-->
+        </tr>
+    </table>
+    <table class="search-table">
+        <tr id="state-input" style="display: none">
+        </tr>
+    </table>
+</div>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <div href="javascript:void(0)" class="tip-div">
+        <span class="tip-msg">注：通过操作上下箭头可以调整页面数据在移动端的显示顺序.</span>
+    </div>
+    <include file="./Application/Common/Layout/Default/list_header_auto.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th data-options="field:'id',checkbox:true">id</th>
+        <th data-options="field:'created_at',width:200,formatter:format_time" sortable="true">{$Think.lang.PRO_CREATE_TIME}</th>
+        <th data-options="field:'product_title',width:200,align:'left'">{$Think.lang.PRO_NAME}</th>
+        <th data-options="field:'category',width:120,align:'left'">{$Think.lang.PRO_CATEGORY}</th>
+        <!--<th data-options="field:'view_price',width:120,align:'left'">{$Think.lang.PRO_CASH}</th>-->
+        <th data-options="field:'product_desc',width:120,align:'left'">{$Think.lang.PRO_DESC}</th>
+        <th data-options="field:'order_count',width:80,align:'center'" sortable="true" order="desc">{$Think.lang.PRO_COUNT}</th>
+        <!--<th data-options="field:'assembly',width:120,align:'left'">{$Think.lang.PRO_ASSEMBLY}</th>-->
+        <th data-options="field:'state',width:80,align:'left',formatter:format_pro_state">{$Think.lang.PRO_STATE}</th>
+        <if condition="($permissions.copyto eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+        <th data-options="field:'company_name',width:120,align:'left'">公司名称</th>
+        </if>
+        <th data-options="field:'shelf',width:80,align:'center',formatter:shelf">上下架</th>
+        <th data-options="field:'updown',width:60,align:'center',formatter:updown">排序</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+
+</div>
+<if condition="($permissions.copyto eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+<div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+    <a href="javascript:void(0)" class="common-blue-btn" style="width:auto" plain="true" onclick="action_show_copydlg('{$Think.const.CONTROLLER_NAME}')">复制到...</a>
+</div>
+</if>
+
+
+<script>
+    (function(){
+        $("#ComProduct-toolbar .actions")
+                .append('<a href="javascript:void(0)" class="btn-speed detail-delete" plain="true" onclick="batch(\'lower\')">批量下架</a>')
+                .append('<a href="javascript:void(0)" class="btn-speed detail-delete" plain="true" onclick="batch(\'shelf\')">批量上架</a>');
+    })()
+
+    function batch(action){
+        var list = $("#ComProduct-datagrid").datagrid('getSelections');
+        if(list.length == 0){
+            $.dialog.alert('请选择');
+            return false;
+        }
+
+        $.dialog.confirm('确定操作?', function(){
+            var ids = [];
+            for(var index in list){
+                var item = list[index];
+                if(item.state == 1 && action == 'lower'){
+                    ids.push(item.id);
+                }
+
+                if(item.state != 1 && action == 'shelf'){
+                    ids.push(item.id);
+                }
+            }
+
+            if(ids.length == 0){
+                $.dialog.alert('已全部 ' + (action == 'lower' ? '下架' : '上架'))
+                return false;
+            }
+            $.post('/ComProduct/batch', {ids : ids.join(','),action :action },function(res){
+                if(res.code == 0){
+                    $.dialog.alert('操作成功!');
+                    doSearchQuery('ComProduct');
+                }else{
+                    $.dialog.alert(res.message);
+                }
+            }, 'json')
+        })
+    }
+    function _detail(frameId, title, options) {
+        var rows = getGridSelections(frameId);
+        if (rows.length !== 1) {
+            $.dialog.tips('请选择一条记录');
+            return false;
+        }
+        if (rows[0].state == 1) {
+            $.dialog.tips('请下架后再进行修改');
+            return false;
+        }
+        try{
+            //if(typeof(beforeDetail) == 'function')
+            //beforeDetail(rows,"edit");
+            getDataGrid(frameId).trigger("beforeDetail", [rows,"edit"]);
+        }catch(e){
+            $.dialog.alert(e);
+            return false;
+        }
+        showDetailForm(frameId, rows[0].id, title, options);
+    }
+    function shelfForm(row_index, id, type){
+        var title = type == 0 ? "是否下架该服务？" : "是否上架该服务";
+        var message_success = type == 0 ? "服务下架成功!" : "服务上架成功!";
+        var message_error = type == 0 ? "服务下架失败!" : "服务上架失败!";
+        $.dialog.confirm(title, function () {
+            $.post("/{$Think.const.CONTROLLER_NAME}/shelfHandle", {id: id,type:type}, function(result){
+                if (result.code == 0){
+                    var _grid = getDataGrid("{$Think.const.CONTROLLER_NAME}");
+                    _grid.datagrid("updateRow", {index: row_index, row:result.message});
+                    $.dialog.tips(message_success);
+                }else{
+                    $.dialog.tips(message_error);
+                }
+                doSearchQuery('ComProduct');
+            },"json");
+        });
+    }
+</script>
+<script>
+    $('.btn-screening').on('click', function() {
+        $(this).siblings().removeClass("btn-screening-on");
+        $(this).addClass("btn-screening-on");
+        var state = $(this).data('state');
+        var html = '';
+        if(state != undefined){
+            html += '<input name="q-state" class="easyui-validatebox filter-field" value="' + state + '">';
+        }
+        $('#state-input').html(html);
+        doSearchQuery('ComProduct');
+        if(state==0){
+            $('td[field="updown"]').css("display","none");
+        }else{
+            $('td[field="updown"]').css("display","");
+        }
+    });
+
+    $("#ComProduct-datagrid").datagrid({
+        onDblClickRow:function(index,row){
+            if(row.state == 1){
+                $.dialog.tips("请下架后再进行修改！");
+            }else{
+                createDialog("ComProduct/detail/id/"+row.id,"商城管理 >服务管理_查看","ComProduct")
+            }
+        }
+    })
+</script>

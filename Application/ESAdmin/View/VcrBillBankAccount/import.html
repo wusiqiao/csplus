@@ -1,0 +1,38 @@
+<div class="detailcontainer" id="import-detailcontainer" style="width:450px; height:160px;margin-top: 20px">
+    <form  action="{$Think.const.CONTROLLER_NAME}/import"  id="import-form" method="post" enctype="multipart/form-data">
+        <div class="title required">银行账户</div>
+        <div class="input">
+            <select name="bank_subject"  style="width:100%" class="chosen-select" data-options="all:true,textField:'name',idField:'id',search_key_url:'VcrSubject/getBankSubject/'">
+            </select>
+        </div>
+        <div class="title required">银行对账单</div>
+        <div class="input"   style="position: relative;">
+        <input type="file" id="bank-file" name="bank_file" accept="*.xls,*.xlsx" class="easyui-file"/>
+        </div>
+        <!--<div class="title required">会计期间</div>-->
+        <!--<div class="input">-->
+            <!--&lt;!&ndash;<input type="text" name="source_date" style="width:100%"  class="easyui-datebox easyui-validatebox" data-options="formatter:formatDate" value="{$model.source_date}">&ndash;&gt;-->
+            <!--<select class="chosen-select" style="width:100%;" name="accounting_section" data-value="{$model.accounting_section}"></select>-->
+        <!--</div>-->
+
+    </form>
+    <div class="form-actions" style="margin-top: 10px">     
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="action_bank_import()">导入</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">取消</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    // $(function () {
+    //     create_ccounting_section($("select[name=accounting_section]"));
+    // });
+    function action_bank_import() {
+        var customer = $("#customer-info").text();
+        if (customer != "") {
+            action_import("bank-file", "VcrBillBankAccount/import", "确定导入客户【" + customer + "】的银行对账资料？", function () {
+                setTimeout('getDataGrid("VcrBill").datagrid("reload")', 2000);
+            })
+        }
+    }
+</script>

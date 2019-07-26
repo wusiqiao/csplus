@@ -1,0 +1,15 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox"  value="{$model.name}" /></div>
+                <div class="caption"><span>{$Think.lang.FLD_SORT}：</span></div>
+                <div class="inputbox"><input name="sort" class="easyui-validatebox" data-options="validType:'number'" value="{$model.sort}" /></div>
+            </div>
+
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="SysPosition" />
+</div>

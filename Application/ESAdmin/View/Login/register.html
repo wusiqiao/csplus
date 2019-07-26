@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>服务商注册</title>
+        <script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.js"></script>
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/css/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/css/login.css" rel="stylesheet" />
+        <script type="text/javascript">
+            $(function () {
+                $("#verify_image").click(function () {
+                    $(this).attr("src", "/Login/verify");
+                    $("#message").html("");
+                });
+            });
+            function register() {
+                var name = $("input[name=name]").val();
+                var password = $("input[name=password]").val();
+                var repassword = $("input[name=repassword]").val();
+                var verify_code = $("input[name=verify_code]").val();
+                if (password.length < 4) {
+                    $("#message").html("密码不符合规范");
+                    return;
+                }
+                if (repassword != password) {
+                    $("#message").html("两次密码输入不一致");
+                    return;
+                }
+                if (name.length < 6) {
+                    $("#message").html("公司名称不符合规范");
+                    return;
+                }
+                $.post("/Login/register", {name: name, user_password: password, verify_code: verify_code},
+                        function (ret) {
+                            if (ret.code === 1) {
+                                $("#message").html(ret.message);
+                            } else {
+                                window.location.href = "/Login/index/account/"+ encodeURIComponent(name);
+                            }
+                        },
+                        "json"
+                        ).error(function (xhr, errorText, errorType) {
+                    $("#message").html(xhr.responseText)
+                });
+            }
+        </script>
+    </head>
+    <body style="background: #449fe1">
+        <div class="login">
+            <form method="post" action="Login/register" id="register-form">
+                <div class="login-form-header">
+                    <h1>用户注册</h1>
+                </div>
+                <div class="login-form-body" style="height: auto; padding-bottom: 20px">
+                    <table>
+                        <tr>
+                            <td>公司名称</td>
+                            <td>
+                                <input type="text" tabindex="1" name="name" id="name" value="" />
+                                <i class="fa fa-user"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>密码</td>
+                            <td>
+                                <!--                                <input style="display:none">-->
+                                <input type="password" tabindex="2" name="password" id="password" />
+                                <i class="fa fa-key"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>重新输入</td>
+                            <td>
+                                <!--                                <input style="display:none">-->
+                                <input type="password" tabindex="2" name="repassword" id="repassword" />
+                                <i class="fa fa-key"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>校验码</td>
+                            <td>
+                                <div style="width:100%; position: relative">
+                                    <input type="text" tabindex="2" name="verify_code" id="verify_code" class="verify" />
+                                    <i class="fa fa-random"></i>
+                                    <img class="verify-image" src="{:U('Login/verify')}" alt="点击刷新" id="verify_image" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div style="width:100%; text-align: center;">
+                                    <a href="javascript:void(0)" tabindex="3" class="btn" onclick="register()">注册</a>
+                                </div>
+                            </td>
+                        </tr>                        
+                    </table>
+                    <span id="message"></span>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

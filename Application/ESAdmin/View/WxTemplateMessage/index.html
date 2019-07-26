@@ -1,0 +1,21 @@
+<script type="text/javascript">
+    function format_tpl_example(value){
+        return "<div style='padding:5px 0px'>"+value.replace(/\r\n/g,"<br>")+"<div>";
+    }
+</script>
+<div class="maincontainer" id="WxTemplateMessage-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="WxTemplateMessage" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'standard_id',width:'5%',align:'center'">模板编号</th>
+        <th data-options="field:'title',width:'10%',align:'left'">{$Think.lang.FLD_TITLE}</th>
+        <th data-options="field:'example',width:'70%',align:'left',formatter:format_tpl_example">{$Think.lang.FLD_EXAMPLE}</th>
+        <th data-options="field:'is_valid',width:'10%',align:'left',formatter:format_valid_field">{$Think.lang.FLD_IS_VALID}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="WxTemplateMessage" />
+</div>
+<div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+    <if condition="($permissions.import eq 1) ">
+    <a href="javascript:void(0)" class="common-blue-btn" plain="true" onclick="createDialog('{$Think.const.CONTROLLER_NAME}/showImportView','消息模板列表','tpl_import')">导入</a>
+    </if>
+</div>

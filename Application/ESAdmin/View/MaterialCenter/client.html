@@ -1,0 +1,353 @@
+<script>
+    function formatterStatus(val) {
+        switch (parseInt(val)) {
+            case 20:
+                return '已发布';
+                break;
+            default :
+                return '<span style="color: red">未发布</span>';
+        }
+    }
+
+    function formatterTime(val, obj) {
+        if (obj.shelf_status != 20) {
+            return formatterStatus();
+        }
+
+        return new Date(parseInt(val) * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ');
+    }
+
+    function formatterTitle(val, obj){
+        return `<span title="${obj.digest}">${val}</span>`;
+    }
+</script>
+<style>
+    .btn-screening-label {
+        float: left;
+        width: 90px;
+        height: 54px;
+        line-height: 54px;
+        text-align: right;
+    }
+
+    .search_ipt {
+        float: right;
+    }
+    .ui_loading {
+        display: none !important;
+    }
+    .search-panel{
+        padding: 0;
+        overflow: hidden;
+    }
+    .common-blue-btn {
+        display: none;
+    }
+</style>
+<div class="c-header" style="position:relative;">
+    <div class="tab-span tab-span-on data-source" data-source="10">财穗+图文</div>
+    <!--<div class="tab-span data-source" data-index="0" data-source="20">图文</div>-->
+</div>
+
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none;">
+    <div class="search-table" style="max-width:100%;">
+        <div style="margin: 11px 8px;">
+            <div style="margin:0 10px;" class="btn-speed" onclick="updateStatus(this)" id="statusSignature" style="display: none">开启图文签名</div>
+            <div style="margin:0 10px;" class="btn-speed" onclick="editSignature()">图文签名</div>
+            <div style="margin:0 10px;" class="btn-speed" onclick="action_add_edit('已选择的数据对象')">生成图文</div>
+        </div>
+        <div style="height:54px;line-height: 54px;position: relative;">
+            <div class="btn-screening-label">发布时间：</div>
+            <div class="btn-screening btn-screening-on" data-shelf_time="0">全部</div>
+            <div class="btn-screening" data-shelf_time="1">近24小时</div>
+            <div class="btn-screening  data-status" data-shelf_time="3">近3天</div>
+            <div class="btn-screening  data-status" data-shelf_time="7">近7天</div>
+            <div class="btn-screening  data-status" data-shelf_time="30">近一个月</div>
+            <input type="hidden" name="shelf_time" class="filter-field" id="shelf_time" value="0"/>
+            <input type="hidden" name="q-source" class="filter-field" id="source" value="10"/>
+            <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                <input type="text" placeholder="请输入标题" style="width:300px;" class="filter-field" name="ql-title"
+                    onkeydown="search.search()"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+    <tr>
+        <th data-options="field:'isUsed',width:200,align:'center', checkbox:true">操作</th>
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'title',width:400,align:'center', formatter:formatterTitle">{$Think.lang.TITLE}</th>
+        <th data-options="field:'shelf_time',width:200,align:'center', formatter:formatterTime">
+            {$Think.lang.SHELF_TIME}
+        </th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+</div>
+
+<script>
+    let editData = [];
+    (function () {
+        //隐藏 操作按钮
+        $("#MaterialCenter-toolbar > .action-panel").remove();
+        const MAX = 8;  //允许编辑几条
+        //重构 双击事件
+        $("#MaterialCenter-datagrid").datagrid({
+            onDblClickRow: function () {
+
+            },
+            onCheck:seleteRows,
+            onClickRow :seleteRows,
+            onUncheck: function (index, data) {
+                var newData = [];
+                for(var index in editData){
+                    if(editData[index].id != data.id){
+                        newData.push(editData[index]);
+                    }
+                }
+
+                editData = newData;
+            },
+        });
+
+        function seleteRows(index){
+            var ids = $("#MaterialCenter-datagrid").datagrid('getSelections');
+            if(ids.length > MAX){
+                $("#MaterialCenter-datagrid").datagrid('uncheckRow', index);
+                $.dialog.alert('最多编辑'  + MAX + '条');
+                return false;
+            }
+
+            editData = ids;
+        }
+        //是否点击已有的选择
+        function isClickAlready(id){
+            for(var index in editData){
+                if(editData[index].id == id){
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    })(window);
+    var searchForm = function () {
+        $btnScreening = $(".btn-screening");
+        $statusInput = $("#shelf_time");
+        $tabSpan = $(".c-header > .data-source");
+        $sourceInput = $("#source");
+        var source = 10;
+        var onClickShelfTime = function () {
+            var newStatus = $(this).data('shelf_time');
+            var oldStatus = $statusInput.val();
+            $statusInput.val(newStatus);
+            selectedShelfTime(this);
+            search();
+        }
+
+        var selectedShelfTime = function (obj) {
+            $btnScreening.removeClass('btn-screening-on');
+            $(obj).addClass('btn-screening-on');
+        }
+
+        var onClickSource = function () {
+            var newSource = $(this).data('source');
+            if(source == newSource){
+               return true;
+            }
+
+            editData = [];
+            source = newSource;
+            $sourceInput.val(newSource);
+            selectedSource(this);
+            search();
+        }
+
+        var selectedSource = function (obj) {
+            $tabSpan.removeClass('tab-span-on');
+            $(obj).addClass('tab-span-on');
+        }
+
+        var search = function () {
+            doSearchQuery('MaterialCenter');
+        }
+
+        var init = function () {
+            $btnScreening.click(onClickShelfTime);
+            $tabSpan.click(onClickSource)
+        }
+
+        init();
+
+        return {
+            search: search,
+            source:source,
+        };
+    }
+    var search = searchForm();
+    // 搜索框悬停效果
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+
+    // 文章生成编辑
+    function action_add_edit(){
+        var dlg = $.dialog({
+            title: "文章生成",
+            autoSize: true,
+            content: "url:MaterialCenter/creat",
+            lock: true,
+            max: true,
+            min: false,
+            zIndex:111,
+            cancel:false,
+            button:[
+                {
+                name: '保存',
+                callback: function () {
+                    var data = dlg.content.GraphicCenter.previewList;
+                    var error = '';
+
+                    if(error = validateData(data, dlg.content.GraphicCenter)){
+                        $.dialog.alert(error);
+                        return false;
+                    }
+
+                    return saveData(data);
+                }
+            },{
+                name: '关闭',
+                callback: function () {
+                    if (confirm("确定放弃编辑？")){
+                        return true;
+                    }else{
+                        return false
+                    }
+                }
+            }],
+            init:function(){
+                this.content.GraphicCenter.initData(editData);
+                self.getMaterial = function(data){
+                    dlg.content.GraphicCenter.setImg(data);
+                }
+            }
+        });
+        dlg.max();
+    };
+    //图文添加
+    function saveData(data){
+        var error = false;
+        $.ajax({
+            url: "ComMaterialLibrary/addNews",
+            async: false,
+            type: 'post',
+            data : {data : data, source : search.source},
+            dataType : 'json',
+            success: function(res){
+                $.dialog.alert(res.message);
+                if(res.code == 0){
+                    editData = [];
+                    $("#MaterialCenter-datagrid").datagrid('clearSelections');
+                    error = true;
+                }
+            }
+        });
+
+        return error;
+    }
+
+    function validateData(data, vue){
+        var len = data.length;
+        if(len == 0){
+            return  '请添加文章';
+        }
+        var validate = function(item, i){
+            if(!item.title){
+                return  '第' + i + '篇' + '请输入图文标题';
+            }
+            if(item.title.length > 64){
+                return  '第' + i + '篇' + '标题不能大于64个字';
+            }
+            if(item.digest && item.digest.length > 120){
+                return  '第' + i + '篇' + '摘要不能大于120个字';
+            }
+            if(!item.content){
+                return  '第' + i + '篇' + '请输入图文内容';
+            }
+
+            if(!item.thumb_media_id || !item.thumb_url || !item.local_thumb_url){
+                return  '第' + i + '篇' + '请选择封面素材';
+            }
+        }
+
+        var error = false;
+        for(var i = 0; i < len; i++){
+            if(error = validate(data[i], i+1)){
+                vue.previewListItem_active(i);
+                return error;
+            }
+        }
+    }
+
+    //图文签名
+    function editSignature(){
+        $.post('MaterialCenterSignature/detail',{}, function(data){
+            if(data.code == 0){
+                var signature = data.data;
+                openEditor('图文签名', signature.content, function(content){
+                    var Url = 'MaterialCenterSignature/update/id/' + signature.id;
+                    signature.content = content;
+                    $.post(Url, signature, function(res){
+                        if(res.code == 0){
+                            $.dialog.alert('修改成功!');
+                        }else{
+                            $.dialog.alert('修改失败!');
+                        }
+                    }, 'json')
+                });
+            }else{
+                $.dialog.alert(signature.message);
+            }
+        },'json');
+    }
+    (function(){
+        $.post('MaterialCenterSignature/detail', {}, function(data){
+            if(data.data){
+                setSignature(data.data);
+            }
+        }, 'json');
+    })(window);
+    function setSignature(data){
+        if(data){
+            var text = '开启图文签名';
+            if(data.is_enable == 20){
+                text = '关闭图文签名';
+            }
+
+            $("#statusSignature").show().text(text).data('data', data);
+        }
+    }
+    function updateStatus(obj){
+        var text = $(obj).text();
+        var data = $(obj).data('data');
+        if(data.is_enable == 10){
+            is_enable = 20;
+        }else{
+            is_enable = 10;
+        }
+
+        $.dialog.confirm('确定' + text, function(){
+            $.post('MaterialCenterSignature/update', {id:data.id, is_enable : is_enable}, function(data){
+                if(data.code == 0){
+                    $.dialog.alert('操作成功!')
+                }
+                setSignature(data.message);
+            },'json');
+        })
+    }
+    $("input[type='checkbox']").hide();
+
+</script>

@@ -1,0 +1,146 @@
+<style>
+    .tableForm{
+        width: 800px;
+        margin: 0px auto;
+    }
+    .tableForm .row .caption{
+        width: 35%;
+        display: inline-block;
+        margin-left:0px;
+        vertical-align:middle;
+        text-align: right;
+        color: #666666;
+    }
+    .tableForm .row .inputbox_x2{
+        width: 60%;
+        display: inline-block;
+    }
+    .small-header{
+        border-bottom: 1px dashed #eeeeee;
+        padding: 19px;
+        color:#525252;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="margin: 10px;background: #fff;width: calc(100% - 20px);padding-bottom: 50px">
+    <form action="{$Think.const.CONTROLLER_NAME}/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" enctype="multipart/form-data" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-section">
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>资金管理参数</span></div>
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption"><span>客户端,充值成功通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="recharge_complete_notice" placeholder="您好，您的充值金额已入账，请查看确认" class="easyui-validatebox"  value="{$model.recharge_complete_notice}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>商户端,充值成功通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="branch_recharge_complete_notice" placeholder="客户充值成功通知" class="easyui-validatebox"  value="{$model.branch_recharge_complete_notice}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>客户端,充值失败通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="recharge_refuse_notice" placeholder="您好，您的充值操作失败，请确认付款是否成功。" class="easyui-validatebox"  value="{$model.recharge_refuse_notice}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>商户端,充值失败通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="branch_recharge_refuse_notice" placeholder="客户充值失败通知" class="easyui-validatebox"  value="{$model.branch_recharge_refuse_notice}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>客户端,提现成功通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="withdrawal_complete_notice" placeholder="您好，您的提现已转入你的银行卡，请查收" class="easyui-validatebox"  value="{$model.withdrawal_complete_notice}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>商户端,提现成功通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="branch_withdrawal_complete_notice" placeholder="客户提现成功通知" class="easyui-validatebox"  value="{$model.branch_withdrawal_complete_notice}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>客户端,提现失败通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="withdrawal_refuse_notice" placeholder="您好，您的提现失败，具体原因请联系王小姐-13888888888" class="easyui-validatebox"  value="{$model.withdrawal_refuse_notice}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>商户端,提现失败通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="branch_withdrawal_refuse_notice" placeholder="客户提现失败通知" class="easyui-validatebox"  value="{$model.branch_withdrawal_refuse_notice}" /></div>
+                    </div>
+                    <div class="small-header"><span style="color:red">以下为自动通知,商户端无须通知</span></div>
+                    <div class="row">
+                        <div class="caption"><span>客户端,用户转账成功（出）通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="user_transfer_complete_notice" placeholder="您好，您有一笔转账支出，操作已成功，请查看确认。" class="easyui-validatebox"  value="{$model.user_transfer_complete_notice}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>客户端,公司转帐成功（入）通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="company_income_complete_notice" placeholder="您好，您有一笔转账收入，请查看确认。" class="easyui-validatebox"  value="{$model.company_income_complete_notice}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>客户端,佣金入账通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="distribution_complete_notice" placeholder="您好，您有一笔佣金收入已入账，请查看确认。" class="easyui-validatebox"  value="{$model.distribution_complete_notice}" /></div>
+                    </div>
+                    <div class="small-header"><span style="color:red">资金充值,提现负责人设置</span></div>
+                    <div class="row">
+                        <div class="caption"><span>充值商户负责人：</span></div>
+                        <div class="inputbox_x2">
+                            <if condition="$is_leader eq 1">
+                                <input type="text" name="recharge_leader" placeholder="请输入档案负责人姓名" required class="easyui-validatebox" value="{$model.recharge_leader}">
+                                <else/>
+                                <input type="text" name="" class="easyui-validatebox" value="{$model.recharge_leader}" readonly>
+                            </if>
+                            <input type="hidden" name="recharge_leader_id" value="{$model.recharge_leader_id}">                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>提现商户负责人：</span></div>
+                        <div class="inputbox_x2">
+                            <if condition="$is_leader eq 1">
+                                <input type="text" name="withdrawal_leader" placeholder="请输入档案负责人姓名" required class="easyui-validatebox" value="{$model.withdrawal_leader}">
+                                <else/>
+                                <input type="text" name="" class="easyui-validatebox" value="{$model.withdrawal_leader}" readonly>
+                            </if>
+                            <input type="hidden" name="withdrawal_leader_id" value="{$model.withdrawal_leader_id}">                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+        <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="saveComStoreForm()">保存</a>
+
+            <!--<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog('[controller]')">关闭</a>-->
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    autocompleteAjax($("input[name='recharge_leader']"),"WrkAgreement/service_manList",function(result){})
+    autocompleteAjax($("input[name='withdrawal_leader']"),"WrkAgreement/service_manList",function(result){})
+    $("input[name='recharge_leader']").on('change',function(){
+        if($('input[name="recharge_leader"]').length > 0 && $("input[name='recharge_leader']").val() == ""){
+            $("input[name='recharge_leader_id']").val("");
+        }
+    });
+    $("input[name='withdrawal_leader']").on('change',function(){
+        if($('input[name="withdrawal_leader"]').length > 0 && $("input[name='withdrawal_leader']").val() == ""){
+            $("input[name='withdrawal_leader_id']").val("");
+        }
+    });
+    function saveComStoreForm(){
+        showMaskLayer();
+        var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+        dataForm.trigger("Update");//触发子表grid获取数据，如果没有子表，不需要触发。
+        dataForm.form('submit', {
+            url: dataForm.attr("action"),
+            onSubmit:function(){
+                var validate = $(this).form('validate');
+                if (!validate){
+                    hideMaskLayer();
+                }
+                return validate;
+            },
+            success: function (ret) {
+                var result = $.parseJSON(removeJsonQuote(ret));
+                if (result.code === 0) {
+                    $.dialog.tips("保存成功！");
+                } else {
+                    $.dialog.tips(result.message);
+                }
+                hideMaskLayer();
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,1085 @@
+<style>
+    .icon-close {
+        height: 12px;
+        width: 12px;
+        float: right;
+        position: relative;
+        top: 20px;
+        right: 25px;
+    }
+
+    #app {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .publicMenu-header {
+        width: 100%;
+        height: 150px;
+        background-color: #f4f5f9;
+    }
+
+    .publicMenu-content {
+        width: 100%;
+        min-height: 660px;
+        background-color: #ffffff;
+    }
+
+    .publicMenu-content-view,
+    .publicMenu-content-operation {
+        float: left;
+        height: 582px;
+    }
+
+    .publicMenu-content-view {
+        width: 428px;
+    }
+
+    .publicMenu-content-operation {
+        width: calc(100% - 428px);
+        position: relative;
+    }
+
+    #view {
+        width: 300px;
+        height: 582px;
+        border: solid 1px #e7e7eb;
+        margin: 34px 64px;
+        box-sizing: border-box;
+    }
+
+    #view-header {
+        width: 100%;
+        height: 61px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/view-phone-header.jpg");
+        background-size: 100% 100%;
+    }
+
+    #view-content {
+        width: 100%;
+        height: 468px;
+        position: relative;
+    }
+
+    .sub-menu-box {
+        position: absolute;
+        bottom: 16px;
+    }
+
+    #sub-menu0 {
+        left: 56px;
+        width: 124px;
+    }
+
+    #sub-menu1 {
+        left: 136px;
+        width: 80px;
+    }
+
+    #sub-menu2 {
+        left: 216px;
+        width: 82px;
+    }
+
+    .submenu-icon-btn {
+        width: 100%;
+        height: 52px;
+        line-height: 52px;
+        border: 1px solid #e7e7eb;
+        box-sizing: border-box;
+        text-align: center;
+        cursor: pointer;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .submenu-text {
+        font-size: 14px;
+        color: #7f8389;
+    }
+
+    .submenu-icondown {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        bottom: -13px;
+        left: calc(50% - 8px);
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-triangle.png");
+        background-size: 100% 100%;
+    }
+
+    #view-footer {
+        width: 100%;
+        height: 52px;
+    }
+
+    .view-footer-left,
+    .view-footer-right,
+    .addmenu-icon-btn {
+        float: left;
+        height: 52px;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .view-footer-left {
+        width: 55px;
+        background-color: #fafafa;
+        border-top: solid 1px #e7e7eb;
+        border-bottom: solid 1px #e7e7eb;
+    }
+
+    .view-footer-left-icon {
+        width: 26px;
+        height: 25px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-key.png");
+        background-size: 100% 100%;
+        position: absolute;
+        top: calc(50% - 12.5px);
+        left: calc(50% - 13px);
+    }
+
+    .addmenu-box {
+        height: 14px;
+        width: 80px;
+        position: absolute;
+        top: calc(50% - 7px);
+        left: calc(50% - 38px);
+    }
+
+    .addmenu-icon {
+        float: left;
+        width: 14px;
+        height: 14px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu.png");
+        background-size: 100% 100%;
+        margin-right: 2px;
+    }
+
+    .addmenu-text {
+        float: left;
+        margin-left: 2px;
+        line-height: 14px;
+        font-size: 14px;
+        color: #368bfe;
+    }
+
+    .addmenu-icon-btn {
+        width: 115px;
+        border: 1px solid #e7e7eb;
+        text-align: center;
+        line-height: 52px;
+        cursor: pointer;
+    }
+
+    .addmenu-icon-gray {
+        position: absolute;
+        bottom: 19px;
+        left: calc(50% - 7px);
+        width: 14px;
+        height: 14px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray.png");
+        background-size: 100% 100%;
+    }
+
+    .addmenu-icon-gray:hover {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png");
+    }
+
+    #operation-init {
+        position: absolute;
+        top: calc(50% - 7px);
+        left: calc(50% - 98px);
+        line-height: 14px;
+        font-size: 14px;
+        color: #666666;
+    }
+
+    #operation-content {
+        width: calc(100% - 72px);
+        height: 582px;
+        margin: 34px 72px 34px 0px;
+        background-color: #ffffff;
+    }
+
+    .operation-content-body {
+        width: 100%;
+        height: 582px;
+        position: relative;
+        background-color: #f4f5f9;
+        border: solid 1px #e7e7eb;
+    }
+
+    .publicMenu-footer {
+        width: 100%;
+        height: 88px;
+        background-color: #ffffff;
+        text-align: center;
+    }
+
+    .operation-save,
+    .operation-synchronous {
+        display: inline-block;
+        width: 113px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        color: #fbfbfc;
+        font-size: 14px;
+        background-color: #368bfe;
+        margin: 0 11px 25px 11px;
+        cursor: pointer;
+    }
+
+    .publicMenu-header-title {
+        padding-left: 22px;
+        height: 50px;
+    }
+
+    .publicMenu-header-icon {
+        float: left;
+        width: 20px;
+        height: 20px;
+        margin: 15px 13px 15px 0;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-prompt.png");
+        background-size: 100% 100%;
+    }
+
+    .publicMenu-header-text {
+        float: left;
+        line-height: 20px;
+        font-size: 16px;
+        margin: 15px 0;
+        color: #353535;
+    }
+
+    .publicMenu-header-contentext {
+        font-size: 14px;
+        color: #666;
+        margin: 6px 0;
+        padding: 0;
+    }
+
+    #operation-remove {
+        position: absolute;
+        top: 16px;
+        right: 24px;
+        line-height: 14px;
+        font-size: 14px;
+        color: #666666;
+        cursor: pointer;
+    }
+
+    .no-submenu-prompt {
+        height: 15px;
+        margin: 17px 0;
+        padding: 0 30px;
+        color: #e91836;
+        font-size: 14px;
+    }
+
+    .mainMenuName-change {
+        width: 550px;
+        height: 32px;
+        line-height: 32px;
+        margin: 23px 0 23px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #mainMenuName-change-input {
+        width: 268px;
+        height: 30px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        font-size: 14px;
+        padding-left: 13px;
+        outline: none;
+    }
+
+    .action-select {
+        width: 350px;
+        height: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 39px 0 19px 32px;
+    }
+
+    .send-msg-operation {
+        margin: 0 17px;
+        width: calc(100% - 34px);
+        height: 230px;
+        background-color: #ffffff;
+    }
+
+    .send-msg-operation-tab {
+        width: 100%;
+        height: 45px;
+        background-color: #f6f8f9;
+    }
+
+    .send-msg-operation-item {
+        float: left;
+        height: 45px;
+        line-height: 45px;
+        margin: 0 21px;
+        cursor: pointer;
+    }
+
+    .jump-page-operation {
+        margin: 0 17px;
+        width: calc(100% - 34px);
+        height: 230px;
+    }
+
+    .allText-icon,
+    .picText-icon,
+    .allPic-icon {
+        float: left;
+        width: 14px;
+        height: 14px;
+        margin: 15.5px 10px 15.5px 0;
+        background-size: 100% 100%;
+    }
+
+    .allText-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText.png");
+    }
+
+    .allText-icon-on {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText-on.png");
+    }
+
+    .picText-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText.png");
+    }
+
+    .picText-icon-on {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText-on.png");
+    }
+
+    .allPic-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic.png");
+    }
+
+    .allPic-icon-on {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic-on.png");
+    }
+
+    #show-allText,
+    #show-picText,
+    #show-allPic {
+        width: 100%;
+        height: 253px;
+        background-color: #ffffff;
+    }
+
+    #show-picText,
+    #show-allPic {
+        position: relative;
+    }
+
+    #textarea-allText {
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        border: none;
+        resize: none;
+        outline: none;
+        text-indent: 18px;
+        font-size: 14px;
+        color: #666666;
+        padding: 5px;
+    }
+
+    .add-picText,
+    .add-allPic {
+        width: 325px;
+        height: 186px;
+        border: 1px solid #e7e7eb;
+        cursor: pointer;
+        position: absolute;
+        top: calc(50% - 93px);
+        left: calc(50% - 167.5px);
+    }
+
+    .img-add {
+        width: 32px;
+        height: 32px;
+        margin: 0 auto;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png");
+        background-size: 100% 100%;
+    }
+
+    #mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 88;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+
+    .tuwenselect-edit-hd,
+    .tupianselect-edit-hd,
+    .MallLinkselect-edit-hd {
+        width: 100%;
+        height: 50px;
+        background-color: #f9fafb;
+        color: #35323b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: move;
+    }
+
+    /* 确认、取消 */
+    .btn-sure,
+    .btn-cancel {
+        display: inline-block;
+        width: 88px;
+        height: 32px;
+        line-height: 32px;
+        margin: 20px 10px;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        box-sizing: border-box;
+        border: solid 1px #368bfe;
+        color: #368bfe;
+    }
+
+    .jump-page-select {
+        width: 270px;
+        height: 32px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        color: #666666;
+        font-size: 14px;
+        text-indent: 10px;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+    .custom-link, .applets {
+        width: 495px;
+        height: 32px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        outline: none;
+        text-indent: 10px;
+        box-sizing: border-box;
+    }
+
+    #mall-link {
+        font-size: 14px;
+        line-height: 28px;
+        color: #2c68bf;
+        margin-top: 10px;
+        margin-left: 70px;
+        cursor: pointer;
+    }
+
+    #NotSaved-edit,
+    #add-Submenu-edit,
+    #removeMenu-edit {
+        width: 552px;
+        height: 300px;
+        background-color: #ffffff;
+        position: fixed;
+        top: calc(50% - 150px);
+        left: calc(50% - 276px);
+        z-index: 99;
+    }
+
+    .royalblue {
+        color: rgb(54, 139, 254);
+    }
+
+    .tuwenbox-item, .tupianbox-item {
+        float: left;
+        position: relative;
+        width: 300px;
+        height: 224px;
+        margin: 0 10px;
+        box-sizing: border-box;
+        border: 1px solid #d3d3d3;
+        background-color: #ffffff;
+        cursor: pointer;
+    }
+
+    .tuwen-img, .tupian-img {
+        width: calc(100% - 20px);
+        background-color: rgb(241, 230, 215);
+        overflow: hidden;
+        margin: 0px 10px 5px;
+    }
+
+    .tupian-name {
+        font-size: 16px;
+        color: #35323b;
+        padding: 0px 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .mainMenu-active {
+        border: 1px solid #529bfd !important;
+    }
+</style>
+
+<!-- publicMenu -->
+<div id="app" style="position:relative;">
+    <!-- 头部说明 -->
+    <div class="publicMenu-header">
+        <div class="publicMenu-header-title">
+            <span class="publicMenu-header-icon"></span>
+            <span class="publicMenu-header-text">操作说明:</span>
+            <img class="icon-close" src="/Application/ESAdmin/Public/images/icon/icon-close.png"
+                 onclick="$('.publicMenu-header').hide();">
+        </div>
+        <div style="padding-left:55px;">
+            <p class="publicMenu-header-contentext">1、一级菜单最多创建3个,二级菜单最多创建5个。</p>
+            <p class="publicMenu-header-contentext">2、创建/编辑菜单或子菜单后,需点击保存,否则系统将不会保存您修改的内容。</p>
+            <p class="publicMenu-header-contentext">3、菜单全部设置完毕后，点击立即同步才会更新到公众号中，编辑过程不会被用户看到，请放心操作。</p>
+        </div>
+    </div>
+    <!-- 主体内容 -->
+    <div class="publicMenu-content" id="vue">
+        <!-- 左侧菜单预览 -->
+        <div class="publicMenu-content-view">
+            <div id="view">
+                <div id="view-header"></div>
+                <div id="view-content">
+                    <!-- 子菜单容器一 -->
+                    <div id="sub-menu0" class="sub-menu-box" v-show="childViewShow == 0">
+                        <div class="submenu-box">
+                            <submenu v-for="child,index in childrens" v-key="child.id" v-bind:item="child"
+                                     v-bind:index="index"></submenu>
+                        </div>
+                        <submenu-add v-show="!(childrens.length >= 5)"></submenu-add>
+                        <div class="submenu-icondown"></div>
+                    </div>
+
+                    <!-- 子菜单容器二 -->
+                    <div id="sub-menu1" class="sub-menu-box" v-show="childViewShow == 1">
+                        <div class="submenu-box">
+                            <submenu v-for="child,index in childrens" v-key="child.id" v-bind:item="child"
+                                     v-bind:index="index"></submenu>
+                        </div>
+                        <submenu-add v-show="!(childrens.length >= 5)"></submenu-add>
+                        <div class="submenu-icondown"></div>
+                    </div>
+                    <!-- 子菜单容器三 -->
+                    <div id="sub-menu2" class="sub-menu-box" v-show="childViewShow == 2">
+                        <div class="submenu-box">
+                            <submenu v-for="child,index in childrens" v-key="child.id" v-bind:item="child"
+                                     v-bind:index="index"></submenu>
+                        </div>
+                        <submenu-add v-show="!(childrens.length >= 5)"></submenu-add>
+                        <div class="submenu-icondown"></div>
+                    </div>
+                </div>
+                <!-- 底部 -->
+                <div id="view-footer">
+                    <!-- 键盘图标 -->
+                    <div class="view-footer-left">
+                        <div class="view-footer-left-icon"></div>
+                    </div>
+                    <!-- 主菜单栏 -->
+                    <main-menu v-for="item, index in menus" v-key="item.id" v-bind:item="item" v-bind:index="index"
+                               v-bind:x="x" v-bind:y="y"></main-menu>
+                    <main-menu-add v-show="!(menus.length == 3)"></main-menu-add>
+                </div>
+            </div>
+        </div>
+        <!-- 右侧操作区域 -->
+        <div class="publicMenu-content-operation">
+            <!-- 文字提示 -->
+            <div id="operation-init">点击左侧添加菜单进行编辑操作</div>
+            <!-- 操作区域主体内容 -->
+            <div id="operation-content" style="display:block;">
+                <div class="operation-content-body">
+                    <!-- 删除按钮 -->
+                    <span id="operation-remove">删除菜单</span>
+                    <p class="no-submenu-prompt">*当前菜单存在子菜单,只能进行修改菜单名称操作。</p>
+                    <hr style="margin:0 17px;width: calc(100% - 34px);height:1px;border:none;border-top:1px solid #e7e7eb;"/>
+                    <!-- 修改菜单名称 -->
+                    <div class="mainMenuName-change">
+                        <span style="width: 56px;height: 32px;color: #666;">菜单名称</span>
+                        <input name="menu_name" type="text" placeholder="菜单名称" id="mainMenuName-change-input"
+                               v-model="input.name">
+                        <span id="validate_menu" style="width: 185px;height: 32px;color: #666;">字数不超过4个汉字或8个字母</span>
+                    </div>
+                    <!-- 选择动作 -->
+                    <div class="action-select" v-show="isShow">
+                        <span style="line-height: 14px;font-size: 14px;color: #666666;">选择动作</span>
+                        <div style="width: 91px;cursor: pointer;">
+                            <label>
+                                <input type="radio" value="media_id" v-model="input.type"
+                                       v-if="isTypeMediaId">
+                                <input type="radio" value="view_limited" v-model="input.type"
+                                       v-else-if="isTypeViewLimited">
+                                <input type="radio" value="click" v-model="input.type" v-else="1">
+                                <span style="line-height: 14px;font-size: 14px;"
+                                      v-bind:class="{'royalblue':isMsgAction}">发送消息</span>
+                            </label>
+                        </div>
+                        <div style="width: 91px;cursor: pointer;">
+                            <label>
+                                <input type="radio" value="view" v-model="input.type">
+                                <span style="line-height: 16px;font-size: 14px; "
+                                      v-bind:class="{'royalblue':isView}">跳转页面</span>
+                            </label>
+                        </div>
+                        <div style="width: 75px;cursor: pointer;">
+                            <label>
+                                <input type="radio" value="miniprogram" v-model="input.type">
+                                <span style="line-height: 16px;font-size: 14px;"
+                                      v-bind:class="{'royalblue':isMiniprogram}">小程序</span>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- 发送消息 -->
+                    <div class="send-msg-operation"
+                         v-show="isMsgAction">
+                        <!-- tab切换 -->
+                        <div class="send-msg-operation-tab">
+                            <div class="send-msg-operation-item" v-on:click="setType('click')">
+                                <span class="allText-icon"
+                                      v-bind:class="{'allText-icon-on':isTypeClick}"></span>
+                                <span style="font-size:14px;"
+                                      v-bind:class="{'royalblue':isTypeClick}">纯文本</span>
+                            </div>
+                            <div class="send-msg-operation-item" v-on:click="setType('view_limited')">
+                                <span class="picText-icon"
+                                      v-bind:class="{'picText-icon-on':(isTypeViewLimited)}"></span>
+                                <span style="color: #8d8d8d;font-size:14px;"
+                                      v-bind:class="{'royalblue':(isTypeViewLimited)}">图文信息</span>
+                            </div>
+                            <div class="send-msg-operation-item" v-on:click="setType('media_id')">
+                                <span class="allPic-icon"
+                                      v-bind:class="{'allPic-icon-on':(isTypeMediaId)}"></span>
+                                <span style="color: #8d8d8d;font-size:14px;"
+                                      v-bind:class="{'royalblue':(isTypeMediaId)}">图片</span>
+                            </div>
+                        </div>
+                        <!-- 内容区域 -->
+                        <!-- 纯文本 -->
+                        <div v-show="isTypeClick">
+                            <textarea name="value" id="textarea-allText" placeholder="请在此输入文字内容"
+                                      v-model="input.value"></textarea>
+                        </div>
+                        <!-- 图文 -->
+                        <div id="show-picText" v-show="isTypeViewLimited">
+                            <div class="add-picText" v-show="isSelectViewLimited">
+                                <div>
+                                    <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                                        从素材库中选择新闻
+                                    </div>
+                                    <div class="img-add">
+                                    </div>
+                                </div>
+                            </div>
+                            <news v-show="!isSelectViewLimited"
+                                  v-bind:title="mediaId.title" v-bind:src="mediaId.url"></news>
+                        </div>
+                        <!-- 图片 -->
+                        <div id="show-allPic" v-show="isTypeMediaId">
+                            <div class="add-allPic" v-show="isSelectMediaId">
+                                <div>
+                                    <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                                        从素材库中选择图片
+                                    </div>
+                                    <div class="img-add">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <images v-show="!isSelectMediaId" v-bind:title="mediaId.title"
+                                    v-bind:src="mediaId.url" v-bind:date="mediaId.date"></images>
+                        </div>
+                    </div>
+                    <!-- 小程序 -->
+                    <div class="applets-operation" v-show="isMiniprogram">
+                        <div style="padding:17px 15px;">
+                            <span style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">小程序Appid</span>
+                            <input class="applets" placeholder="请输入小程序APPID" type="text" id="applets-appid"
+                                   value="{$appletsAppid}">
+                        </div>
+                        <div style="padding:17px 15px;">
+                            <span style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">链接&nbsp;&nbsp;地&nbsp;址&nbsp;&nbsp;</span>
+                            <input class="applets" placeholder="请输入自定义链接" type="text" id="applets-page"
+                                   value="{$appletsUrl}">
+                        </div>
+                    </div>
+                    <!-- 跳转页面 -->
+                    <div class="jump-page-operation" v-show="isView">
+                        <div style="padding:17px 15px;">
+                            <span style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">跳转方式</span>
+                            <select class="jump-page-select" v-model="urlType">
+                                <option value="customize">自定义链接</option>
+                                <option value="mall">商城</option>
+                            </select>
+                        </div>
+                        <div id="link-value-div" style="padding:17px 15px;" v-show="urlType == 'mall'">
+                            <span style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">链接名称</span>
+                            <span id="link-value-text"
+                                  style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">{{input.view_title}}</span>
+                        </div>
+                        <div style="padding:17px 15px;">
+                            <span id="link-text"
+                                  style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">链接地址</span>
+
+                            <input  class="custom-link" placeholder="请输入自定义链接"  type="text" v-bind:disabled="isShopUrl" v-model="input.value" value="{{input.value}}">
+                            <div v-show="isShopUrl">点击选择商城链接</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 底部保存、同步 -->
+    <div class="publicMenu-footer" style="display:block;">
+        <span class="operation-save" onclick="saveOperation()">保存</span>
+        <span class="operation-synchronous" onclick="action_syncMenu()">立即同步</span>
+    </div>
+    <!-- 遮罩层 -->
+    <div id="mask" style="display:none;"></div>
+    <!-- 未保存提示弹窗 -->
+    <div id="NotSaved-edit" style="display:none;">
+        <div class="tuwenselect-edit-hd">
+            <span style="font-size:16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+            <span style="line-height: 16px;font-size:16px;cursor: pointer;margin: 0 16px;"
+                  v-on:click="operationWarning()">X</span>
+        </div>
+        <div style="width: 200px;height: 93px;margin: 45px auto;">
+            <div style="font-size:16px;color: #666666;line-height: 16px;margin-bottom:30px; ">当前内容未保存,确定离开?</div>
+            <div style="font-size:14px;color: #666666;line-height: 14px;">如需保存,请点击前往保存。</div>
+            <div style="font-size:14px;color: #666666;line-height: 14px;">如需要,请点击直接离开。</div>
+        </div>
+        <div style="width: 212px;margin: 0 17px 0 auto;">
+            <span class="btn-confirm" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #ffffff;background-color: #368bfe;margin: 0px 8px;cursor: pointer;"
+                  v-on:click="operationWarning()">前往保存</span>
+            <span class="btn-cancel" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #368bfe;background-color: #f6f9fe;border: 1px solid #368bfe;box-sizing: border-box;margin: 0px 8px;
+            cursor: pointer;" v-on:click="notSave()">直接离开</span>
+        </div>
+    </div>
+    <!-- 添加子菜单提示弹窗 -->
+    <div id="add-Submenu-edit" style="display:none;">
+        <div class="tuwenselect-edit-hd">
+            <span style="font-size: 16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+            <span style="line-height: 16px;font-size: 16px;cursor: pointer;margin: 0 16px;"
+                  v-on:click="operationWarning()">X</span>
+        </div>
+        <div style="width: 410px;height: 40px;margin: 55px auto 90px;font-size: 14px;color: #666666;">
+            当前主菜单已设置动作，若继续添加子菜单则清除主菜单动作内容,是否继续?
+        </div>
+        <div style="width: 212px;margin: 0 17px 0 auto;">
+            <span class="btn-confirm" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #ffffff;background-color: #368bfe;margin: 0px 8px;cursor: pointer;"
+                  v-on:click="operationWarning()">确定</span>
+            <span class="btn-cancel" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #368bfe;background-color: #f6f9fe;border: 1px solid #368bfe;box-sizing: border-box;margin: 0px 8px;
+            cursor: pointer;" v-on:click="operationWarning()">取消</span>
+        </div>
+    </div>
+    <!-- 删除菜单提示弹窗 -->
+    <div id="removeMenu-edit" style="display:none;">
+        <div class="tuwenselect-edit-hd">
+            <span style="font-size:16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+            <span style="line-height: 16px;font-size:16px;cursor: pointer;margin: 0 16px;"
+                  v-on:click="operationWarning()">X</span>
+        </div>
+        <div style="width: 327px;height: 40px;margin: 55px auto 90px;font-size: 14px;color: #666666;">
+            <span>点击确定，“</span><span id="menu_name">菜单名称</span><span>”菜单下的内容将一起被删除。</span>
+
+        </div>
+        <div style="width: 212px;margin: 0 17px 0 auto;">
+            <span class="btn-confirm" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #ffffff;background-color: #368bfe;margin: 0px 8px;cursor: pointer;"
+                  v-on:click="removeMenu()">确定</span>
+            <span class="btn-cancel" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #368bfe;background-color: #f6f9fe;border: 1px solid #368bfe;box-sizing: border-box;margin: 0px 8px;
+            cursor: pointer;" v-on:click="operationWarning()">取消</span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    //二级菜单组件
+    Vue.component('submenu', {
+        computed: {
+            isSelectedMenu: function () {
+                return this.x == -1 && this.y == this.index;
+            }
+        },
+        props: ['index', 'item'],
+        template: `<div class="submenu-icon-btn" v-bind:class="{'mainMenu-active':app.isCheckedMenu(-1,index)}" v-on:click="app.selectMenu(-1, index, item)"><span class="submenu-text">{{item.name}}</span></div>`
+    });
+    //二级菜单添加组件
+    Vue.component('submenu-add', {
+//        props: ['name'],
+        template: ' <div  v-on:click="app.onAddMenu(1)" class="submenu-icon-btn"><span class="addmenu-icon-gray"></span></div>'
+    });
+    //一级菜单添加组件
+    Vue.component('main-menu-add', {
+        template: '<div class="addmenu-icon-btn" v-on:click="app.onAddMenu(0)" style="width: 81px"> <div class="addmenu-box"> <span class="addmenu-icon"></span> <span class="addmenu-text">添加菜单</span> </div> </div>'
+    });
+    //一级菜单组件
+    Vue.component('main-menu', {
+        computed: {
+            isCheckedMenu: function () {
+                return this.y == -1 && this.x == this.index;
+            }
+        },
+        props: ['item', 'index', 'x', 'y'],
+        template: `<div  class="addmenu-icon-btn " v-bind:class="{'mainMenu-active':isCheckedMenu}" style="width: 81px;" v-on:click="app.selectMenu(index,-1,item)"> <span class="submenu-text">{{item.name}}</span> </div>`
+    });
+    //图文显示组件
+    Vue.component('news', {
+        props: ['title', 'src', 'date'],
+        template: `<div class="tuwenbox-item" style="margin: 15px auto 15px 30px;"><p class="tuwen-title" title="">{{title}}</p><div class="tuwen-img" style="height: 145px;"><img style="width: 100%;height: 100%;" src="{{src}}" alt=""></div><div class="tuwen-tool"><span class="tuwen-lastupdata">{{date}}</span></div></div>`
+    });
+    //图片显示组件
+    Vue.component('images', {
+        props: ['title', 'src'],
+        template: `<div class="tupianbox-item" style="margin: 15px auto 15px 30px;"><p class="tupian-name"  v-bind:title="title">{{title}}</p><div class="tupian-img" style="height: 155px;"><img src="" v-bind:src="src"></div></div>`
+    });
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            menus: {$menu_json},
+            childrens: [],//子菜单数据渲染
+            childViewShow: 9999,//父菜单 key
+            x: -1,
+            y: -1,
+            input: {}, //等待修改的数据
+            failedChoice: {}, //菜单切换失败的数据
+            isShow: true, //控制是否只显示菜单名称修改
+            urlType: null, //URL类型
+            link_name: '',
+            mediaId: {}, //图片 文字选择后数据容器
+            isAdd: false,  //菜单增加或修改
+            isWrite: false, //数据写入状态
+            isManualClose: false,
+            oldName : '菜单名称',
+        },
+        computed: {
+            //是否是跳转地址
+            isView: function () {
+                var bool = this.input.type == 'view';
+                if(bool && !this.urlType){
+                    this.urlType = this.input.view_title ? 'mall' : 'customize';
+                }
+
+                return bool
+            },
+            //是否是商城链接
+            isShopUrl : function(){
+                return this.urlType == 'mall';
+            },
+            //是否是小程序
+            isMiniprogram: function () {
+                return this.input.type == 'miniprogram';
+            },
+            //是否是消息类型
+            isMsgAction: function () {
+                return (this.isTypeViewLimited || this.isTypeMediaId || this.isTypeClick);
+            },
+            //是否是图文类型
+            isTypeViewLimited: function () {
+                return this.input.type == 'view_limited';
+            },
+            //是否是图片类型
+            isTypeMediaId: function () {
+                return this.input.type == 'media_id';
+            },
+            isTypeClick: function () {
+                return this.input.type == 'click';
+            },
+            //图片显示控制 是否显示图片或者选择图片框
+            isSelectMediaId: function () {
+                return (this.mediaId.url == undefined || this.mediaId.type != 'media_id')
+            },
+            //图文显示控制 是否显示图文或者选择图文框
+            isSelectViewLimited: function () {
+                return (this.mediaId.url == undefined || this.mediaId.type != 'view_limited')
+            },
+
+            isShopLink : function(){
+                return (input.view_title == undefined || input.view_title == '' || input.view_title == null);
+            }
+        },
+        beforeUpdate : function(){
+            var str = this.input.name;
+            if (!str || !str.match(/^[\u4e00-\u9fa5a-zA-Z0-9]{0,8}$|^[\a-zA-Z0-9]{0,16}$/)) {
+                str ? $.dialog.alert("只能输入0-8个汉字或者0-16个字母、数字") : null;
+                this.input.name = this.oldName;
+                return false;
+            }
+
+            this.oldName = this.input.name;
+        },
+        methods: {
+            //错误提示控制
+            operationWarning: function (isOpen, type) {
+                if (isOpen) {
+                    $("#mask").show();
+                    $("#" + type).show();
+                } else {
+                    $("#mask").hide()
+                    $("#NotSaved-edit").hide()
+                    $("#add-Submenu-edit").hide()
+                    $("#removeMenu-edit").hide()
+                }
+            },
+            //放弃保存
+            notSave : function(){
+                this.notWrite();
+                this.closeAdd();
+                this.selectMenu(null, null, null, true);
+                this.operationWarning();
+            },
+            //开启Add操作
+            openAdd: function () {
+                this.isAdd = true;
+            },
+            notWrite: function(){
+                this.isWrite = false;
+            },
+            //关闭Add操作
+            closeAdd : function(){
+                if(this.isAdd){
+                    if(this.x < 0){
+                        var index = this.childViewShow;
+                        this.menus[index].childrens.pop();
+                    }else{
+                        this.menus.pop();
+                        this.childViewShow = this.childViewShow == 0 ? 9999 : this.childViewShow;
+                    }
+                }
+                this.isAdd = false;
+            },
+            //是否允许选择菜单 写入状态 新增菜单 错误提示
+            isSaveMenu: function (x, y) {
+                if (this.isCheckedMenu(x, y) || (this.isAdd == false && this.isWrite == false)) {
+                    return true;
+                }
+
+                this.operationWarning(true, 'NotSaved-edit');
+                return false;
+            },
+            //菜单添加 0 一级菜单 1 二级菜单
+            onAddMenu: function (index) {
+                if (false == this.isSaveMenu()) {
+                    return false;
+                }
+
+                var item = {name: '菜单名称', type: 'click'};
+                var x = -1, y = -1;
+                if (index == 0) {
+                    item.childrens = [];
+                    this.menus.push(item);
+                    x = this.menus.length - 1;
+                } else {
+                    var index = this.childViewShow;
+                    this.menus[index].childrens.push(item);
+                    y = this.menus[index].childrens.length - 1;
+                }
+
+                this.setArea(x, y);
+                this.selectMenu(x, y, item);
+                this.openAdd();
+            },
+            //菜单选择  x 代表 主菜单 key y 代表 子菜单 key item 代表数据 , noValidate 是否验证
+            selectMenu: function (x, y, item, noValidate) {
+                console.log(item);
+                if (noValidate) {
+                    x = this.failedChoice.x;
+                    y = this.failedChoice.y;
+                    item = this.failedChoice.item
+                } else if (false == this.isSaveMenu(x, y)) {
+                    this.failedChoice = {x: x, y: y, item: item}
+                    return false;
+                }
+
+                if(item == undefined){
+                    return;
+                };
+
+                this.setArea(x, y);
+                this.childViewShow = (x == -1) ? this.childViewShow : this.setChildrens(x);
+                this.input = item;
+                this.oldName = this.input.name;
+                this.updateMediaId();
+                return true;
+            },
+            removeMenu: function () {
+
+            },
+            //设置当前二级菜单应该选择的数据 key 当前下标
+            setChildrens: function (key) {
+                if(key == undefined){
+                    return null;
+                }
+
+                this.childrens = this.menus[key].childrens;
+                return key;
+            },
+            //是否选中菜单
+            isCheckedMenu: function (x, y) {
+                return (this.x == x && this.y == y);
+            },
+            setArea: function (x, y) {
+                this.x = x;
+                this.y = y;
+            },
+            setType: function (type) {
+                this.input.type = type;
+            },
+            updateMediaId: function () {
+                var that = this;
+                if (false == (that.input.type == 'media_id' || that.input.type == '')) {
+                    that.mediaId = {}
+                    return;
+                }
+                var menu = that.input;
+                var where = {
+                    material: (menu.type == 'media_id' ? 'image' : 'news'),
+                    media_id: menu.media_id
+                };
+
+                $.post("/ComMaterialLibrary/materialSingleData", where, function (res) {
+                    var data = res.data;
+                    console.log(data);
+                    console.log(menu.type);
+                    if (menu.type == 'media_id') {
+                        that.mediaId = {
+                            type: menu.type,
+                            title: data.name,
+                            url: data.local_thumb_url
+                        };
+                    } else {
+                        that.mediaId = {
+                            type: menu.type,
+                            title: data.childrens[0].title,
+                            url: data.childrens[0].local_thumb_url,
+                            date: data.updated_at,
+                        };
+                    }
+                })
+            },
+        }
+    });
+</script>

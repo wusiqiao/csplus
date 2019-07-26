@@ -1,0 +1,50 @@
+<style>
+    .form-actions{
+        position: absolute;
+        bottom: 0;
+        padding: 30px 0;
+        width: 97%;
+    }   
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="width: 50vw;height: 40vh;">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post"
+          name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm" style="width:100%;">
+            <input name="id" type="hidden" value="{$model.id}">
+            <input name="operation_name" type="hidden">
+            <input name="operation_action" type="hidden">
+            <div class="row" style="margin:22px 0;">
+                <div class="caption"><span>{$Think.lang.FLD_PARENT_ID}：</span></div>
+                <div class="inputbox">
+                    <select name="parent_id" class="chosen-select"
+                            data-options="all:true,value:'{$model.parent_id}',search_key_url:'SysGuide/keyNameList/'">
+                        <option value="0">--选择所属模块--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="margin:22px 0;">
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox" data-options="required:true"
+                                             value="{$model.name}"/></div>
+
+                <div class="caption"><span>{$Think.lang.FLD_IS_SHOW}：</span></div>
+                <div class="inputbox"><input type="hidden" name="is_show" value="20"/>
+                    <input name="is_show" class="easyui-validatebox" type="checkbox" value="10" data-value="{$model.is_show}"/>
+                </div>
+            </div>
+
+            <div class="row" style="margin:22px 0;">
+                <div class="caption"><span>{$Think.lang.FLD_URL}：</span></div>
+                <div class="inputbox">
+                    <input name="url" class="easyui-validatebox"  value="{$model.url}"/>
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_SORT}：</span></div>
+                <div class="inputbox">
+                    <input name="sort" class="easyui-numberbox easyui-validatebox" value="{$model.sort}"/>
+                </div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html" controller="SysGuide"/>
+</div>
+<script src="https://cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>

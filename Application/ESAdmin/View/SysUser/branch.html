@@ -1,0 +1,18 @@
+<div title="所属部门" style="padding:10px">
+    <input type="hidden" name="user_branch_changed" value="0" />
+    <div class="easyui-layout" data-options="fit:true,border: true" >
+        <div data-options="region:'west',split:true,border:false" style="width: 55%; height: 100%" >
+            <ul style="border: 1px #F2F2F2 solid;height: 99%" id="tree_user_branch" class="easyui_tree" data-options="url:'SysUser/branch/userId/{$model.id}/',method:'get',animate:true,checkbox:true,cascadeCheck:false"></ul>
+        </div>
+        <div data-options="region:'center',border:false" style="width: 45%; height: 100%">
+            <ul style="border: 1px #F2F2F2 solid; height: 99%" id="user_branch_list">
+                <volist name="userBranch.branch" id="vo">
+                <li id="user_branch_li_{$vo.branch_id}" ondblclick="$(this).remove();data_changed('user_branch_changed')">
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:100%" icon="fa-sitemap fa-lg" plain="true" onclick="">{$vo.branch_name}</a>
+                    <input type="hidden" name="user_branch_inputs[]" value="{$vo.branch_id}" />
+                </li>
+                </volist>
+            </ul>
+        </div>
+    </div> 
+</div>

@@ -1,0 +1,521 @@
+<script>
+    function formatterTime(val, obj) {
+        if (obj.shelf_status != 20) {
+            return formatterStatus();
+        }
+        return new Date(parseInt(val) * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ');
+    }
+
+    function formatterTitle(val, obj) {
+        var digest = obj.digest ? obj.digest : '';
+        return `<span title="${digest}">${val}</span>`;
+    }
+</script>
+<style>
+    .btn-screening-label {
+        float: left;
+        width: 90px;
+        height: 54px;
+        line-height: 54px;
+        text-align: right;
+    }
+
+    .search_ipt {
+        float: right;
+    }
+
+    .ui_loading {
+        display: none !important;
+    }
+
+    .search-panel {
+        padding: 0;
+        overflow: hidden;
+        display: block;
+    }
+    .txt-item {
+        float: left;
+        position: relative;
+        margin: 5px 10px;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    iframe {
+        width: 100% !important;
+    }
+    .txt-checked-flag{
+        width: 80px;
+        height: 80px;
+        position: absolute;
+        top:-40px;
+        right: -40px;
+        transform: rotate(45deg)
+    }
+    .txt-checked-flag-notstart{
+        background-color: #ccc;
+    }
+    .txt-checked-flag-start{
+        background-color: #00ca4e;
+    }
+    .txt-checked-flag-end{
+        background-color: red;
+    }
+    #user-defined-time {
+        height: 54px;
+        line-height: 54px;
+        min-width: 270px;
+        position: absolute;
+        right: 0px;
+    }
+    /* 操作按钮图标 */
+    .tool-icon{
+        width: 22px;
+        height: 22px;
+        background-size: 130% 130%;
+        background-position: center center;
+        margin: 0 6px;
+    }
+    .tool-icon-code{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/hy-code.png");
+    }
+    .tool-icon-close{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/hy-close.png");
+    }
+    .tool-icon-file{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/hy-file.png");
+    }
+    .tool-icon-member{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/hy-member.png");
+    }
+    .tool-icon-suspend{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/hy-suspend.png");
+    }
+    .tool-icon-end{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/hy-end.png");
+    }
+    .tool-icon-reset{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/hy-reset.png");
+    }
+    .tool-icon-remove{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/hy-remove.png");
+    }
+    .tool-icon-details{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/hy-details.png");
+    }
+    .tool-icon-edit{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/hy-edit.png");
+    }
+    
+
+</style>
+<div style="width: 100%;height: 100%;background-color: #fff;">
+    <div id="{$Think.const.CONTROLLER_NAME}-toolbar">
+        <div class="search-panel" id="MaterialCenter-search-panel">
+            <div class="search-table" style="max-width:100%;">
+                <div style="height:54px;line-height: 54px;position: relative;width: 880px;">
+                    <div class="btn-screening-label meeting_times">发布时间：</div>
+                    <div class="btn-screening btn-screening-on" onclick="searchTimesForm(0, this);">全部</div>
+                    <div class="btn-screening" data-shelf_time="1" onclick="searchTimesForm(1, this);">今日</div>
+                    <div class="btn-screening" data-shelf_time="2" onclick="searchTimesForm(2, this);">近3天</div>
+                    <div class="btn-screening" data-shelf_time="3" onclick="searchTimesForm(3, this);">近一个月</div>
+                    <!-- <div class="btn-screening  data-status" data-shelf_time="4" onclick="searchTimesForm(4, this);">自定义</div> -->
+                    <span id="user-defined" class="btn-screening" onclick="searchTimesForm(4, this);">自定义</span>
+                    <div id="user-defined-time" style="display: none;">
+                        <input name="qdr-start_time" id="start_time" class="easyui-datebox filter-field" value="" data-options="onSelect:startTime,prompt:'选择时间',editable:false" onkeydown="this.value='' " />－
+                        <input name="qdr-start_time" id="end_time" class="easyui-datebox filter-field" value="" data-options="onSelect:endTime,prompt:'选择时间',editable:false" />
+                    </div>
+                    <input type="hidden" name="times" class="filter-field" id="_times" value=""/>
+                </div>
+                <div style="height:54px;line-height: 54px;position: relative;">
+                    <div class="btn-screening-label meeting_status">活动状态：</div>
+                    <div class="btn-screening btn-screening-on" onclick="searchStatusForm(0, this);">全部</div>
+                    <div class="btn-screening" data-shelf_time="1" onclick="searchStatusForm(1, this);">待报名</div>
+                    <div class="btn-screening" data-shelf_time="2" onclick="searchStatusForm(2, this);">报名中</div>
+                    <div class="btn-screening" data-shelf_time="3" onclick="searchStatusForm(3, this);">待进行</div>
+                    <div class="btn-screening  data-status" data-shelf_time="4" onclick="searchStatusForm(4, this);">进行中</div>
+                    <div class="btn-screening  data-status" data-shelf_time="5" onclick="searchStatusForm(5, this);">已结束</div>
+                    <div class="btn-screening  data-status" data-shelf_time="6" onclick="searchStatusForm(6, this);">已关闭</div>
+                    <div class="btn-screening  data-status" data-shelf_time="7" onclick="searchStatusForm(7, this);">已归档</div>
+                    <input type="hidden" name="status" class="filter-field" id="_status" value=""/>
+                </div>
+                <notempty name="typeList">
+                <div style="height:54px;line-height: 54px;position: relative;">
+                    <div class="btn-screening-label meeting_type">活动类型：</div>
+                    <select name="type_id" onchange="searchTypeForm(this);" style="display: inline-block;width: 270px;height: 32px;line-height: 32px;margin: 11px 8px;text-indent: 6px;">
+                        <option value="0">全部</option>
+                        <foreach name="typeList" item="type">
+                            <option value="{$type.id}">{$type.name}</option>
+                        </foreach>
+                    </select>
+                    <!-- <div class="btn-screening btn-screening-on" onclick="searchTypeForm(0, this);">全部</div>
+                    <foreach name="typeList" item="type">
+                    <div class="btn-screening" onclick="searchTypeForm({$type.id}, this);">{$type.name}</div>
+                    </foreach> -->
+                    <input type="hidden" name="type" class="filter-field" id="_type" value=""/>
+                </div>
+                </notempty>
+            </div>
+        </div>
+    </div>
+    <div style="padding: 0 18px;overflow: hidden;">
+        <div class="btn-speed menu_item" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/add')">创建活动</div>
+        <div class="btn-speed menu_item" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/drafts')">草稿箱</div>
+        <div style="float: right;" class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+            <input type="text" placeholder="请输入标题" style="width:300px;" class="filter-field" name="ql-name" value="" oninput="searchByKey(event)">
+            <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="">
+        </div>
+    </div>
+    <div id="txtSeenList" class="maincontainer" style="padding-left: 8px;padding-bottom: 35px;height: auto;background-color: #fff;position: relative;overflow-x: hidden;overflow-y: auto;">
+        <div v-for="(item,index) in votes.slice(0 + (txt_seen_page - 1)*6 ,6 + (txt_seen_page - 1)*6 )" :id="`txt-item-${item.id}`" class="txt-item">
+            <div style="width:325px;position: relative;">
+                <p style="padding: 11px 13px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 0;font-size: 16px;" :title="item.title">{{item.title}}</p>
+                <p style="padding: 5px 13px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 0;font-size: 16px;" :title="item.title">发布时间 : {{item.create_time}}</p>
+                <div style="padding: 0 13px;position: relative;overflow: hidden;">
+                    <div style="border: 1px solid #d3d3d3;height: 160px;">
+                        <div style="width: 100%;height:30px;display: flex;align-items: center;position: absolute;left: 0;bottom: 0;background-color: rgba(0, 0, 0, 0.3);color: #fff;">
+                            <span style="white-space: nowrap;margin:0 5px;">已有{{item.count}}人报名。</span>
+                        </div>
+                        <img style="width: 100%;" :src="item.image" alt="">
+                    </div>
+                </div>
+                <span style="white-space: nowrap;margin:0 5px;">报名时间：{{item.apply_start_time}}--{{item.apply_end_time}}</span>
+                <span style="white-space: nowrap;margin:0 5px;">活动时间：{{item.start_time}}--{{item.end_time}}</span>
+                <span style="white-space: nowrap;margin:0 5px;">活动地点：{{item.address}}</span>
+
+                <template v-if="item.status == 1">
+                    <div style="padding: 8px 5px;display: flex;align-items: center;justify-content: flex-end;">
+                        <a class="tool-icon tool-icon-edit" :href="'javascript:void(0)'" @click="update(item.id)" title="编辑"></a>
+                        <a class="tool-icon tool-icon-code" :href="'javascript:void(0)'" @click="toQRcode(item.id)" title="二维码"></a>
+                        <a class="tool-icon tool-icon-details" :href="'javascript:void(0)'" @click="toDetail(item.id, item.title)" title="详情"></a>
+                        <a class="tool-icon tool-icon-remove" :href="'javascript:void(0)'" @click="toDelete(item.id,index)" title="删除"></a>
+                    </div>
+                    <div class="txt-checked-flag txt-checked-flag-notstart">
+                        <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">待报名</p>
+                    </div>
+                </template>
+                <template v-if="item.status == 2">
+                    <div style="padding: 8px 5px;display: flex;align-items: center;justify-content: flex-end;">
+                        <a class="tool-icon tool-icon-edit" :href="'javascript:void(0)'" @click="update(item.id)" title="编辑"></a>
+                        <a class="tool-icon tool-icon-suspend" :href="'javascript:void(0)'" @click="toCloseActivity(item.id)" title="关闭活动"></a>
+                        <a :class="item.is_close_apply == 0 ? 'tool-icon tool-icon-close' : 'tool-icon tool-icon-reset'" :href="'javascript:void(0)'" @click="toCloseOpen(item.id,item.is_close_apply,index)" :title="item.is_close_apply == 0 ? '关闭报名' : '开启报名'"></a>
+                        <a class="tool-icon tool-icon-member" :href="'javascript:void(0)'" @click="toRoster(item.id, item.title)" title="名单"></a>
+                        <a class="tool-icon tool-icon-code" :href="'javascript:void(0)'" @click="toQRcode(item.id)" title="二维码"></a>
+                        <a class="tool-icon tool-icon-details" :href="'javascript:void(0)'" @click="toDetail(item.id, item.title)" title="详情"></a>
+                    </div>
+                    <div class="txt-checked-flag txt-checked-flag-start">
+                        <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">报名中</p>
+                    </div>
+                </template>
+                <template v-if="item.status == 3">
+                    <div style="padding: 8px 5px;display: flex;align-items: center;justify-content: flex-end;">
+                        <a class="tool-icon tool-icon-suspend" :href="'javascript:void(0)'" @click="toCloseActivity(item.id)" title="关闭活动"></a>
+                        <a class="tool-icon tool-icon-code" :href="'javascript:void(0)'" @click="toQRcode(item.id)" title="二维码"></a>
+                        <a class="tool-icon tool-icon-details" :href="'javascript:void(0)'" @click="toDetail(item.id, item.title)" title="详情"></a>
+                    </div>
+                    <div class="txt-checked-flag txt-checked-flag-notstart">
+                        <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">待进行</p>
+                    </div>
+                </template>
+                <template v-if="item.status == 4">
+                    <div style="padding: 8px 5px;display: flex;align-items: center;justify-content: flex-end;">
+                        <a class="tool-icon tool-icon-end" :href="'javascript:void(0)'" @click="toEndActivity(item.id,index)" title="结束活动"></a>
+                        <a class="tool-icon tool-icon-member" :href="'javascript:void(0)'" @click="toRoster(item.id, item.title)" title="名单"></a>
+                        <a class="tool-icon tool-icon-code" :href="'javascript:void(0)'" @click="toQRcode(item.id)" title="二维码"></a>
+                        <a class="tool-icon tool-icon-details" :href="'javascript:void(0)'" @click="toDetail(item.id, item.title)" title="详情"></a>
+                    </div>
+                    <div class="txt-checked-flag txt-checked-flag-end">
+                        <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">进行中</p>
+                    </div>
+                </template>
+                <template v-if="item.status == 5">
+                    <div style="padding: 8px 5px;display: flex;align-items: center;justify-content: flex-end;">
+                        <a class="tool-icon tool-icon-file" :href="'javascript:void(0)'" @click="toArchiving(item.id,index)" title="归档"></a>
+                        <a class="tool-icon tool-icon-member" :href="'javascript:void(0)'" @click="toRoster(item.id, item.title)" title="名单"></a>
+                        <a class="tool-icon tool-icon-code" :href="'javascript:void(0)'" @click="toQRcode(item.id)" title="二维码"></a>
+                        <a class="tool-icon tool-icon-details" :href="'javascript:void(0)'" @click="toDetail(item.id, item.title)" title="详情"></a>
+                    </div>
+                    <div class="txt-checked-flag txt-checked-flag-notstart">
+                        <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">已结束</p>
+                    </div>
+                </template>
+                <template v-if="item.status == 6">
+                    <div style="padding: 8px 5px;display: flex;align-items: center;justify-content: flex-end;">
+                        <a class="tool-icon tool-icon-file" :href="'javascript:void(0)'" @click="toArchiving(item.id,index)" title="归档"></a>
+                        <a class="tool-icon tool-icon-member" :href="'javascript:void(0)'" @click="toRoster(item.id, item.title)" title="名单"></a>
+                        <a class="tool-icon tool-icon-code" :href="'javascript:void(0)'" @click="toQRcode(item.id)" title="二维码"></a>
+                        <a class="tool-icon tool-icon-details" :href="'javascript:void(0)'" @click="toDetail(item.id, item.title)" title="详情"></a>
+                    </div>
+                    <div class="txt-checked-flag txt-checked-flag-notstart">
+                        <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">已关闭</p>
+                    </div>
+                </template>
+                <template v-if="item.status == 7">
+                    <div style="padding: 8px 5px;display: flex;align-items: center;justify-content: flex-end;">
+                        <a class="tool-icon tool-icon-remove" :href="'javascript:void(0)'" @click="toDelete(item.id,index)" title="删除"></a>
+                        <a class="tool-icon tool-icon-file" :href="'javascript:void(0)'" @click="toDisArchiving(item.id,index)" title="反归档"></a>
+                    </div>
+                    <div class="txt-checked-flag txt-checked-flag-notstart">
+                        <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">已归档</p>
+                    </div>
+                </template>
+            </div>
+        </div>
+        <!-- 换页 -->
+        <div style="display: flex;justify-content: space-between;align-items: center;position: fixed;bottom: 3px;right: 3px;background-color: #fff;">
+            <div style="width: 32px;height: 32px;cursor: pointer;border: 1px solid #d3d3d3;border-right: none;" @click="toFirstPage">
+                <img style="width:12px;height:12px;margin: 10px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/intelligent/pagination-first.png" alt="">
+            </div>
+            <div style="width: 32px;height: 32px;cursor: pointer;border: 1px solid #d3d3d3;" @click="toPrevPage">
+                <img style="width:12px;height:12px;margin: 10px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/intelligent/pagination-prev.png" alt="">
+            </div>
+            <div style="width: 120px;height: 32px;display: flex;justify-content: space-between;align-items: center;">
+                <span style="padding-left:6px;">第</span>
+                <input class="pagination-num" id="pagination-num" v-model="txt_seen_page" type="text" :value="txt_seen_page" size="2">
+                <span style="padding-right:6px;" id="pagination-count">共{{txt_page}}页</span>
+            </div>
+            <div style="width: 32px;height: 32px;cursor: pointer;border: 1px solid #d3d3d3;" @click="toNextPage">
+                <img style="width:12px;height:12px;margin: 10px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/intelligent/pagination-next.png" alt="">
+            </div>
+            <div style="width: 32px;height: 32px;cursor: pointer;border: 1px solid #d3d3d3;border-left: none;" @click="toLastPage">
+                <img style="width:12px;height:12px;margin: 10px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/intelligent/pagination-last.png" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var yhMeeting = new Vue({
+        el: "#txtSeenList",
+        data: {
+            now_time:"",
+            txt_page: "",
+            txt_seen_page: 1,
+            votes : [],
+            search : {
+                status : 0,
+                name : '',
+                times:0,
+                type_id:0,
+                is_drafts : 0,
+                startTime:'',
+                endTime:'',
+            }
+        },
+        methods: {
+            toFirstPage : function(){
+                this.txt_seen_page = 1;
+            },
+            toPrevPage : function(){
+                if(this.txt_seen_page > 1){
+                    this.txt_seen_page = this.txt_seen_page - 1;
+                }
+            },
+            toNextPage : function(){
+                if(this.txt_seen_page < this.txt_page){
+                    this.txt_seen_page += 1;
+                }
+            },
+            toLastPage : function(){
+                this.txt_seen_page = this.txt_page;
+            },
+            update : function(id){
+                toggleType("YhMeeting/edit/id/" + id);
+            },
+            toDelete : function(id,index){
+                $.dialog.confirm("是否确认删除？",function () {
+                    var votes = yhMeeting.votes;
+                    $.post('YhMeeting/delete', {id:id}, function(data){
+                        if(data.code == 0){
+                            votes.splice(index,1);
+                            yhMeeting.votes = votes;
+                            $.dialog.alert('删除成功!');
+                        }else{
+                            $.dialog.alert(data.message);
+                        }
+                    }, 'json');
+                })
+            },
+            searchForm : function(status,name,times,type_id,startTime,endTime){
+                this.search.status = status === null ?  this.search.status : status;
+                this.search.name   = name === null   ?  this.search.name   : name;
+                this.search.times = times === null ?  this.search.times : times;
+                this.search.type_id = type_id === null ?  this.search.type_id : type_id;
+                this.search.startTime = startTime === null ?  this.search.startTime : startTime;
+                this.search.endTime = endTime === null ?  this.search.endTime : endTime;
+                this.refreshVotes();
+            },
+            refreshVotes : function(){
+                getVoteActivityLsit(this.search);
+            },
+            // 二维码
+            toQRcode(id){
+                createDialog(`YhMeeting/QRcode/id/${id}`,"协会活动>活动_二维码","QRcode");
+            },
+            // 名单
+            toRoster(id, name){
+                // createDialog(`YhMeeting/applyList/id/${id}`,`协会活动>活动_${name}_报名名单`,"yhapplyList");
+                toggleType(`YhMeeting/applyList/id/${id}`);
+            },
+            toDetail(id,title){
+                toggleType(`YhMeeting/detail/id/${id}`);
+            },
+            // 关闭
+            toCloseActivity(id){
+                createDialog(`YhMeeting/closeMeeting/id/${id}`,"协会活动>活动_关闭","closeMeeting");
+            },
+            toCloseOpen(id,is_close_apply,index){
+                var votes = this.votes;
+                if (is_close_apply == 0){
+                    $.post('YhMeeting/doCloseApply', {id:id}, function(data){
+                        if(data.code == 0){
+                            votes[index].is_close_apply = 1;
+                            this.votes = votes;
+                            $.dialog.alert('关闭成功!');
+                        }else{
+                            $.dialog.alert(data.message);
+                        }
+                    }, 'json');
+                } else {
+                    $.post('YhMeeting/doOpenApply', {id:id}, function(data){
+                        if(data.code == 0){
+                            votes[index].is_close_apply = 0;
+                            this.votes = votes;
+                            $.dialog.alert('开启成功!');
+                        }else{
+                            $.dialog.alert(data.message);
+                        }
+                    }, 'json');
+                }
+            },
+            toEndActivity(id,index){
+                var votes = this.votes;
+                $.post('YhMeeting/doEndMeeting', {id:id}, function(data){
+                    if(data.code == 0){
+                        votes[index].status = 5;
+                        this.votes = votes;
+                        $.dialog.alert('结束成功!');
+                    }else{
+                        $.dialog.alert(data.message);
+                    }
+                }, 'json');
+            },
+            toArchiving(id,index){
+                var votes = this.votes;
+                $.post('YhMeeting/doArchiving', {id:id}, function(data){
+                    if(data.code == 0){
+                        votes[index].status = 7;
+                        this.votes = votes;
+                        $.dialog.alert('归档成功!');
+                    }else{
+                        $.dialog.alert(data.message);
+                    }
+                }, 'json');
+            },
+            toDisArchiving(id,index){
+                var votes = this.votes;
+                $.post('YhMeeting/doDisArchiving', {id:id}, function(data){
+                    if(data.code == 0){
+                        votes[index].status = data.message.status;
+                        this.votes = votes;
+                        $.dialog.alert('反归档成功!');
+                    }else{
+                        $.dialog.alert(data.message);
+                    }
+                }, 'json');
+            },
+        }
+    })
+
+    // 输入框搜索功能
+    function searchByKey(e){
+        var keyword = e.target.value;
+        yhMeeting.searchForm(null,keyword,null,null,null,null);
+    }
+
+    function searchStatusForm(status, obj){
+        $(obj).siblings('.btn-screening').removeClass('btn-screening-on');
+        $(obj).addClass('btn-screening-on');
+        yhMeeting.searchForm(status,null,null,null,null,null);
+    }
+    function searchTimesForm(times, obj){
+        // 时间筛选按钮交互效果
+        if(times == 4){
+            $("#user-defined-time").css("display", "inline-block");
+        }else{
+            $("#user-defined-time").css("display", "none");
+        }
+        $(obj).siblings('.btn-screening').removeClass('btn-screening-on');
+        $(obj).addClass('btn-screening-on');
+        yhMeeting.searchForm(null,null,times,null,null,null);
+    }
+    // 日期选择控件监听
+    function startTime() {
+        var startTime = $("#start_time").datebox("getValue");
+        yhMeeting.searchForm(null,null,null,null,startTime,null);
+    }
+    function endTime() {
+        var endTime = $("#end_time").datebox("getValue");
+        yhMeeting.searchForm(null,null,null,null,null,endTime);
+    }
+
+    function searchTypeForm(obj) {
+        var type_id = $(obj).val();
+        yhMeeting.searchForm(null,null,null,type_id,null,null);
+    }
+
+    // 搜索框悬停效果
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+
+    // 编辑
+    function modifyAc(id){
+        $.get("YhMeeting/edit/id/" + id,function (data, status) {
+            if (typeof(data) === "object"){
+                $.dialog.alert(data.message);
+            }else{
+                var dlg = $.dialog({
+                    title: '会议活动>活动_修改',
+                    autoSize: true,
+                    content: data,
+                    lock: false,
+                    max: false,
+                    min: false,
+                    parent: this
+                });
+                formCache[`frameId`] = {data:null, action:"edit"};
+            }
+        });
+    }
+    function getVoteActivityLsit(searchForm){
+        searchForm = searchForm ? searchForm : yhMeeting.search;
+        $.ajax({
+            url: "YhMeeting/list",
+            async: true,
+            type: 'post',
+            data: searchForm,
+            dataType: 'json',
+            success: function (res) {
+                // console.log(res)
+                yhMeeting.votes =  res.rows;
+                yhMeeting.txt_page = Math.ceil(res.total / 6) > 1 ? Math.ceil(res.total / 6) : 1;
+            },
+            error : function(){
+            }
+        });
+    }
+    getVoteActivityLsit();
+
+    function toggleType(url) {
+        $.get(url, function (result) {
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+   
+</script>

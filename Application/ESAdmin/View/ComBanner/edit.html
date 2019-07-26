@@ -1,0 +1,288 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+
+    <link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}/Public/css/step.css">
+    <style>
+        #edui_fixedlayer{
+            z-index: 2333 !important;
+        }
+        #upload_ue{
+            display: none;
+        }
+    </style>
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-tabs" style="width:700px;background: #ccc;height:480px">
+            <div title="轮播管理" style="padding:10px" >
+                <div class="tableForm">
+                    <input name="id"  type="hidden"  value="{$model.id}">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.BANNER_TITLE}：</span></div>
+                        <div class="inputbox"><input name="title" class="easyui-validatebox" data-options="required:true" value="{$model.title}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>注意事项：</span></div>
+                        <div class="inputbox" style="color: #c87f0a">图片规格:1200*360</div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.BANNER_PIC}：</span></div>
+                        <div class="inputbox">
+                            <input type="text" class="easyui-validatebox" data-options="required:true" id="pic" name="pic"  value="{$model.pic}"/>
+                        </div>
+                        <a href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="upImage();">上传图片</a>
+                        <a href="{$model.pic}"
+                           class="easyui-linkbutton fontawesome-icon-button"
+                           plain="true"
+                           target="_blank"
+                        <empty name="model.pic">
+                            style="display: none"
+                        </empty>
+                        id="show_pic">查看图片</a>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.BANNER_URL_SWITCH}：</span></div>
+                        <div class="inputbox">
+                            <input name="url_switch" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.url_switch}"  default="true"/>
+                        </div>
+                    </div>
+
+                    <div class="row"  bind-checkbox='url_switch' <eq name="model.url_switch" value="0">style="display:none"</eq>>
+                        <div class="caption"><span>{$Think.lang.BANNER_URL_TYPE}：</span></div>
+                        <div class="inputbox" style="width: 70%;">
+                            <input name="url_type" type="radio" value="0"  data-value="{$model.url_type}" default="true"/>链接
+                            <input name="url_type" type="radio" value="1" data-value="{$model.url_type}"/>自定义
+                        </div>
+                    </div>
+                    <div class="row"  bind-checkbox='url_switch' <eq name="model.url_switch" value="0">style="display:none"</eq>>
+                        <div class="caption"><span>{$Think.lang.BANNER_URL}：</span></div>
+                        <div class="inputbox" style="width: 70%;">
+                            <input name="url" style='width: 50%;<eq name="model.url_type" value="1">display:none</eq>' v-bind="url_type_0" class="easyui-validatebox"   value="{$model.url}" />
+                            <input name="content"  type="hidden" value="{$model.content}" />
+                            <a v-bind="url_type_1"  href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button editor-edit-botton" plain="true" icon="fa-edit fa-lg" <neq name="model.url_type" value="1">style="display:none"</neq> >编辑</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.BANNER_ORDER}：</span></div>
+                        <div class="inputbox">
+                                <input name="orders" class="easyui-numberbox easyui-validatebox"  value="{$model.orders}"  data-options="min:0,required:true" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.BANNER_SWITCH}：</span></div>
+                        <div class="inputbox">
+                            <input name="switch" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.switch}"  default="true"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.BANNER_VIEW_SHOW}：</span></div>
+                        <div class="inputbox">
+                            <div class="inputbox">
+                                <select name="view" class="chosen-select" data-value="{$model.view}">
+                                    <volist name="banner_type" id="vo">
+                                        <option value="{$vo.key}">{$vo.name}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                    </div>
+                        <!--<div id="test">测试</div>-->
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script src="{$Think.const.JS_URL}ajaxfileupload.js" type="text/javascript"></script>
+<!--添加上传图片 start-->
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editorUploadImages/js/ueditor.config.js"></script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editorUploadImages/js/ueditor.all.js"></script>
+<script type="text/plain" id="upload_ue"></script>
+<!--添加上传图片 end-->
+<!--上传图片模块-->
+<script type="text/javascript">
+    var _editor;
+    $(function() {
+        //重新实例化一个编辑器，防止在上面的editor编辑器中显示上传的图片或者文件
+        _editor = UE.getEditor('upload_ue',
+            {
+                upload_model: "banner",
+                UEDITOR_HOME_URL:'__ROOT__Application/ESAdmin/Public/editorUploadImages/js/',
+            });
+        _editor.ready(function () {
+            //隐藏编辑器，因为不会用到这个编辑器实例，所以要隐藏
+            // _editor.hide();
+            //侦听图片上传
+            _editor.addListener('beforeInsertImage', function (t, arg) {
+                //将地址赋值给相应的input,只去第一张图片的路径
+                $("#pic").attr("value", arg[0].src);
+                //图片预览
+                $("#show_pic").attr("href", arg[0].src);
+                $("#show_pic").show();
+            })
+        });
+    });
+    //弹出图片上传的对话框
+    function upImage() {
+        var myImage = _editor.getDialog("insertimage");
+        myImage.open();
+    }
+</script>
+<!--上传图片模块-->
+<script type="text/javascript">
+    //提交前检查
+    function beforeInspect(){
+        var picVal = $('input[name=pic]').val();
+        var urlType= $('input[name=url_type]:checked').val();
+        var urlSwitch = $('input[name=url_switch]:checked').val();
+        var content = $('input[name=content]').val();
+        var url = $('input[name=url]').val();
+        var orders = $('input[name=orders]').val();
+        if(picVal == '' && !picVal){
+            throw '请上传图片';
+        }
+        if(urlType == 0 && urlSwitch == 1 && $.trim(url) == '' ){
+            throw '请填写轮播链接';
+        }
+        if(urlType == 1 && urlSwitch == 1 && $.trim(content) == '' ){
+            throw '请自定义链接内容';
+        }
+        if($.trim(orders)  == ''){
+            throw '请填写轮播排序';
+        }
+    }
+    $('#pic_button').filebox({
+        onChange : function(e) {
+            var file = $(this).next().find('input[id^="filebox_file_id_"]');
+            var fileId = file.attr('id');
+            handleUploadFile(file,fileId,'pic');
+        }
+    });
+    function handleUploadFile(obj,fileId,pushId){
+        console.log(pushId);
+        var files = $(obj).get(0).files[0];//获取图片信息
+        var push  = $('#'+pushId);
+        var index = $(obj);
+        var maxfilesize = 1024 * 1024 * 5;//最大文件大小设置为2M
+        if (files.size > maxfilesize) {
+            $.dialog.tips("文件大小最多只能5M,请重新上传");
+            return false;
+        }
+        if (files.type != 'image/jpeg' && files.type != 'image/jpg' && files.type != 'image/gif' && files.type != 'image/png') {
+            $.dialog.tips("文件类型只能是jpeg/jpg/gif/png类型");
+            return false;
+        }
+        $.ajaxFileUpload({
+            url: '__MODULE__/Upload/Index/t/2.html',
+            secureuri: false,
+            fileElementId: fileId, //上传控件ID
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 1) {
+                    $.dialog.tips(data.message);
+                } else {
+                    // $('#'+fileId).prev().attr('',data.pic)
+                    $('#show_'+pushId).attr('href',data.pic);
+                    $('#show_'+pushId).show();
+                    push.attr('value',data.pic);
+                    $.dialog.tips(data.message);
+
+                }
+            }
+        });
+
+    }
+    $(function() {
+
+        ini_url_type();
+        var $dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+        $dataForm.bind("beforeUpdate", function () {
+            beforeInspect();
+        });
+        $dataForm.find(".editor-edit-botton").click(function(){
+            var source = $('input[name=content]').val();
+            openEditor("详情编辑",source, function(content){
+                // $("#product-content").html(content);
+                $dataForm.find("input[name=content]").val(content);
+            });
+        });
+        $dataForm.find("#test").click(function(){
+            openUploadImages("详情编辑", function(content){
+                $dataForm.find("input[name=content]").val(content);
+            });
+        });
+        function openUploadImages(title, content, callback){
+            var dlg = $.dialog({
+                title: title,
+                autoSize: true,
+                content: "url:Index/uploadImages",
+                lock: false,
+                max: true,
+                min: false,
+                cancel:true,
+                init:function(){
+                    // this.content.document.getElementById("source-content").innerHTML = content;
+                },
+                ok: function(){
+                    // var ret = dlg.content.document.getElementById("previews").innerHTML;
+                    if (callback != undefined){
+                        callback.call(this, ret);
+                    }
+                    return true;
+                },
+                cancelVal: '关闭'
+            });
+            dlg.max();
+        }
+        $("input[name=url_switch]").change(function () {
+            var CashValue = $('input[name=url_switch]:checked').val();
+            var CashName = 'url_switch';
+            var CashNegotiable = 1;//面议
+            if (CashValue == CashNegotiable) {
+                $("div[bind-checkbox=" + CashName + "]").show();
+                $("div[bind-checkbox=" + CashName + "]").find('input').each(function () {
+                    $(this).validatebox('reduce');
+                });
+            } else {
+                $("div[bind-checkbox=" + CashName + "]").hide();
+                $("div[bind-checkbox=" + CashName + "]").find('input').each(function () {
+                    $(this).validatebox('remove');
+                });
+            }
+        });
+        $("input[name=url_type]").change(function(){
+            console.log(1);
+            var CashValue = $(this).val();
+            var CashName  = 'url_type';
+            var CashNegotiable = 1;//面议
+            if(CashValue == CashNegotiable){
+                $("input[v-bind="+CashName+"_0]").hide();
+                $("a[v-bind="+CashName+"_1]").show();
+                $('input[name=content]').validatebox('reduce');
+                $('input[name=url]').validatebox('remove');
+            }else{
+                $("input[v-bind="+CashName+"_0]").show();
+                $("a[v-bind="+CashName+"_1]").hide();
+                $('input[name=content]').validatebox('remove');
+                $('input[name=url]').validatebox('reduce');
+            }
+        });
+
+    })
+    function ini_url_type(){
+        var action    = '{$Think.__FORM_ACTION__}';
+        if(action == 'add'){
+            return false;
+        }
+        var CashValue = '{$model.url_type}';
+        var CashName  = 'url_type';
+        var CashNegotiable = 1;//面议
+        if(CashValue == CashNegotiable){
+            $("input[v-bind="+CashName+"_0]").hide();
+            $("a[v-bind="+CashName+"_1]").show();
+            $('input[name=content]').validatebox('reduce');
+            $('input[name=url]').validatebox('remove');
+        }else{
+            $("input[v-bind="+CashName+"_0]").show();
+            $("a[v-bind="+CashName+"_1]").hide();
+            $('input[name=content]').validatebox('remove');
+            $('input[name=url]').validatebox('reduce');
+        }
+    }
+        
+</script>

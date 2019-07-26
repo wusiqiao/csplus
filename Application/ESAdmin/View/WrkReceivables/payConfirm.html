@@ -1,0 +1,110 @@
+<div class="detailcontainer" style="width:500px;height:450px">
+    <form id="pay-form">
+	<div class="row">
+		<input type="hidden" name="id" value="{$model.id}">
+        <input type="hidden" name="notice_id" value="{$model.notice_id}">
+        <input type="hidden" name="company_id" value="{$model.company_id}">
+        <input type="hidden" name="attach_group" value="{$model.attach_group}">
+	    <p><div align="right" style="float:left;width:150px">资金账户：</div><input type="text" class="easyui-validatebox" readonly="true" name="" value="{$model.company_name}"></p>
+        <p><div align="right" style="float:left;width:150px">付款日期：</div><input type="text" class="easyui-datebox" name="pay_date" value="{date('Y-m-d')}"></p>
+        <notempty name="model.notice_id">
+            <p>
+                <div align="right" style="float:left;width:150px">收款金额：</div>
+                <input type="text" class="easyui-validatebox" name="pay_amount" value="{$model.pay_amount}" readonly="true">
+            </p>
+            <p>
+                <div align="right" style="float:left;width:150px">使用余额：</div>
+                <input type="text" class="easyui-validatebox" readonly="true" name="" value="{$model.balance_amount}">
+            </p>
+        <else/>
+            <p>
+                <div align="right" style="float:left;width:150px">收款金额：</div>
+                <input type="text" class="easyui-validatebox" name="pay_amount" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" value="{$model.pay_amount}">
+            </p>
+        </notempty>
+	    <p><div align="right" style="float:left;width:150px">收款账户：</div><select name="account_id" class="chosen-select" data-options="all:true,search_key_url:'WrkReceivables/accountList'" style="width:180px">
+                    </select></p>
+        <p><div align="right" style="float:left;width:150px">收款手续费：</div><input type="text" class="easyui-validatebox" name="poundage" value="{$model.poundage}"  onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')"  value=""></p>
+        <p><div align="right" style="float:left;width:150px">收款实收金额：</div><input type="text" readonly="true" class="easyui-validatebox" name="net_amount" value="{$model.net_amount}"   onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')"  value=""></p>
+        <p><div align="right" style="float:left;width:150px">期数：</div><input type="text" class="easyui-validatebox" name="period_number" value="{$model.period_number}" readonly="true"></p>
+        <p><div align="right" style="float:left;width:150px">备注附件：</div><a class="common-blue-btn" onclick="showAttachment()">查看</a></p>
+    </div>
+    </form>
+	<div align="center">
+		<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="payConfirmSave()">确认</a>
+        <notempty name="model.notice_id">
+            <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="rejectSave()">驳回</a>
+        </notempty>
+		<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>	
+	</div>
+</div>
+<script>
+    function payConfirmSave() {
+        var data = $('#pay-form').serialize();
+        if (recharge_change()) {
+            showMaskLayer();
+            $.post("/WrkReceivables/payConfirm/id/{$model.id}",data,function(result) {
+                hideMaskLayer();
+                $.dialog.tips(result.message);
+                if (result.code == 0) {
+                    $("#WrkReceivablesNotice-datagrid").datagrid("reload");
+                    queryAdvance();
+                    queryData3();
+                    statistics();
+                    queryData5();
+                    queryReceivables();
+                	closeDialog("dlg-payConfirm");
+                }
+            }, "json");
+        }
+    }
+
+    function rejectSave() {
+        var data = $('#pay-form').serialize();
+        if (recharge_change()) {
+            showMaskLayer();
+            $.post("/WrkReceivables/reject/id/{$model.id}/notice_id/{$model.notice_id}",function(result) {
+                hideMaskLayer();
+                $.dialog.tips(result.message);
+                if (result.code == 0) {
+                    $("#WrkReceivablesNotice-datagrid").datagrid("reload");
+                    closeDialog("dlg-payConfirm");
+                }
+            }, "json");
+        }
+    }
+    $("input[name=net_amount],input[name=poundage],input[name=pay_amount]").change(function(){
+        recharge_change()
+    })
+    function recharge_change() {
+        // var net_amount = $('input[name=net_amount]').val();
+        var poundage = $("input[name=poundage]").val();
+        var pay_amount = $("input[name=pay_amount]").val();
+        if (pay_amount == '' || pay_amount == NaN) {
+            pay_amount = 0;
+        };
+        if (poundage == '' || poundage == NaN) {
+            poundage = 0;
+        };
+        pay_amount 	=	parseFloat(pay_amount);
+        poundage = parseFloat(poundage);
+        var remain = pay_amount - poundage;
+        if (pay_amount > '{$model.unpaid_amount}') {
+            $.dialog.alert('收款金额不能大于未付的合同金额,请先修改合同金额才能进行收款');
+            return false; 
+        }
+
+        if (remain > 0) {
+            $('input[name=net_amount]').val(remain.toFixed(2));
+        } else {
+            $('input[name=net_amount]').val(pay_amount.toFixed(2));
+            $("input[name=poundage]").val('0');
+            $.dialog.alert('收款手续费不能大于收款金额');
+            return false; 
+        }
+        return true; 
+    }
+    function showAttachment(){
+        openAttachmentForm('到款确认附件', [{text:'到款确认附件',attach_group:'{$model.attach_group}'}]);
+    }
+</script>

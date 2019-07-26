@@ -1,0 +1,108 @@
+<link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}Public/css/timeline.css">
+<div class="detailcontainer" id="ComSundry-detailcontainer">
+    <form action="ComSundry/record" id="ComSundry-dataform" method="post" name="ComSundry-dataform">
+        <div class="tableForm">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.SUNDRY_NAME}：</span></div>
+                <div class="inputbox">
+                    <input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" />
+                </div>
+                <div class="caption"><span>{$Think.lang.SUNDRY_NO}：</span></div>
+                <div class="inputbox">
+                    <input name="no" class="easyui-validatebox" data-options="required:true" value="{$model.no}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.SUNDRY_POSITION}：</span></div>
+                <div class="inputbox">
+                    <input name="position" class="easyui-validatebox" data-options="required:true" value="{$model.position}" />
+                </div>
+                <div class="caption"><span>{$Think.lang.SUNDRY_STATUS}：</span></div>
+                <div class="inputbox">
+                    <select name="status" class="chosen-select" data-value="{$model.status}" disabled>
+                        <option value=""> </option>
+                        <option value="0">借出中</option>
+                        <option value="1">已归还</option>
+                        <option value="2" selected>未借出</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row time-line-wrap">
+                <!--<div class="timeline">
+                    <foreach name="model.records" item="v">
+                        <if condition="$v.type eq 0">
+                            <div class="timeline-item left">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">{$v.type}</div>
+                                    <div class="timeline-body">
+                                        <span>借用时间：{$v.date}</span>
+                                        <br>
+                                        <span>出借人：{$v.user_name}</span>
+                                    </div>
+                                    <div class="timeline-footer">{$v.created_at}</div>
+                                </div>
+                            </div>
+                            <else/>
+                            <div class="timeline-item right" style="width:45%">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">
+                                        <h4>{$v.type}</h4>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <span>归还时间：{$v.date}</span>
+                                        <br>
+                                        <span>归还人：{$v.user_name}</span>
+                                    </div>
+                                    <div class="timeline-footer">
+                                        <p class="text-right">{$v.created_at}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </if>
+                    </foreach>
+                </div>-->
+                <div class="timeline">
+                    <div class="timeline-item left active">
+                        <div class="timeline-point timeline-point-success">
+                        </div>
+                        <div class="timeline-event">
+                            <div class="timeline-heading">归还申请</div>
+                            <div class="timeline-body">
+                                <span>借用时间：2018/09/05</span>
+                                <br>
+                                <span>出借人：苏州德仁企业管理有限公司</span>
+                            </div>
+                            <div class="timeline-footer">2018/09/05 17:56:23</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item right">
+                        <div class="timeline-point timeline-point-success">
+                        </div>
+                        <div class="timeline-event">
+                            <div class="timeline-heading">借用申请</div>
+                            <div class="timeline-body">
+                                <span>借用时间：2018/09/05</span>
+                                <br>
+                                <span>出借人：神州易桥~周</span>
+                            </div>
+                            <div class="timeline-footer">2018/09/05 17:07:41</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='[controller]-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+</script>

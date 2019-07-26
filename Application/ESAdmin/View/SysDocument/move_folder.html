@@ -1,0 +1,147 @@
+<style>
+    .navigation-bar{
+        height: 9%
+    }
+    .navigation-bar div{
+        display: -webkit-inline-flex;
+    }
+    .navigation-bar div span{
+
+    }
+    .navigation-bar div span.checked{
+        color: #2174FF;
+    }
+    .data-lists  .tree-file {
+        background: url('__ROOT__/{$Think.APP_PATH}/Public/easyui/themes/default/images/tree_icons.png') no-repeat -240px 0px;
+    }
+</style>
+<div id="appMove" style="height: 450px;width: 250px;position: relative">
+    <div class="navigation-bar">
+        <div  v-for="(NavigationBar,index) in NavigationBars" >
+            <span  style="margin: 0 6px;font-weight: 400;color: #c0c4cc;">›</span>
+            <span  @click="leapOfFreedom(NavigationBar.parent)" v-if="NavigationBar.checked" class="checked">{{NavigationBar.text}}</span>
+            <span  v-if="!NavigationBar.checked">{{NavigationBar.text}}</span>
+        </div>
+    </div>
+    <div style="width: 100%;height: 380px;overflow-y: scroll">
+        <table >
+            <tr>
+                <colgroup>
+                    <col style="width: 100%"></col>
+                </colgroup>
+            </tr>
+            <tr  v-for="(document,index) in documents" >
+                <td @click="intoSubsidiary(index)">
+                    <span class="tree-icon tree-folder"></span>
+                    <span>{{document.name}}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="form-actions" style="position: absolute;bottom: 0;text-align: center;width: 100%;">
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save"  @click="moveAction()">移动</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-reply" @click="closeDialog('dlg-move-select')">关闭</a>
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var appMove = new Vue({
+        el:'#appMove',
+        data:{
+            documents:{$lists},
+            reveals:{$lists},
+            model:{$model},
+            parentId:[],
+            file_location:'首页',
+            target_branch:'{$target_branch}'
+        },
+        computed:{
+            NavigationBars(){
+                var bars = this.file_location.split('/');
+                var navigationBars = [];
+                navigationBars[0] = {'text':bars[0],'parent':0,'checked':true};
+                if (bars.length > 1) {
+                    for (var i = 0; i < this.parentId.length ; i++) {
+                        navigationBars[i+1] = {'text':bars[i+1],'parent':this.parentId[i],'checked':true};
+                    }
+                }
+                navigationBars[navigationBars.length - 1]['checked'] = false;
+                // navigationBars[0]['checked'] = true;
+                return navigationBars;
+            }
+        },
+        methods:{
+            intoSubsidiary(index){
+                if (this.parentId.length > 0) {
+                    var template = {};
+                    for (var i = 0; i < this.parentId.length ; i++) {
+                        template = i > 0 ? template[this.parentId[i]]['children'] : this.reveals[this.parentId[i]].children;
+                    }
+                    this.file_location = template[index].current;
+                    this.documents = template[index].children;
+                    this.parentId.push(index);
+                } else {
+                    this.file_location = this.reveals[index].current;
+                    console.log(this.reveals[index]);
+                    this.documents = this.reveals[index].children;
+                    this.parentId.push(index);
+                }
+            },
+            leapOfFreedom(parent){
+                if (parent < 1) {
+                    this.documents = this.reveals;
+                    this.parentId = [];
+                } else {
+                    var template = {};
+                    var newParentId = [];
+                    var idLength = this.parentId.length - 1;
+                    for (var i = 0; i < idLength; i++) {
+                        newParentId.push(this.parentId[i]);
+                        if (i > 0) {
+                            template = (this.parentId[i] == parent) ? template[this.parentId[i]]: template[this.parentId[i]].children
+                        } else {
+                            template = (this.parentId[i] == parent)  ? this.reveals[this.parentId[i]] : this.reveals[this.parentId[i]].children;
+                        }
+                        if (this.parentId[i] == parent) {
+                            break;
+                        }
+                    }
+                    this.file_location = template.current;
+                    this.documents = template.children;
+                    this.parentId = newParentId;
+                }
+            },
+            moveAction(){
+                var checkedId;
+                if (this.parentId.length == 0) {
+                    checkedId = 0;
+                } else {
+                    checkedId = this.parentId[this.parentId.length - 1];
+                }
+                if (checkedId == this.model['parent_id']) {
+                    $.dialog.alert('该文件原本就在该文件夹中,无须移动,请重新选择!!');
+                    return false;
+                }
+                showMaskLayer();
+                var old_parent = this.model['parent_id'];
+                $.post('{$Think.const.CONTROLLER_NAME}/moveFolder',{id:this.model['id'],target_branch:this.target_branch,pid:checkedId},function(response){
+                    hideMaskLayer();
+                    if (response.code == 0) {
+                        $.dialog.alert('文件已成功的移动到指定文件夹');
+                        closeDialog('dlg-move-select')
+                        saveRefreshDocuments(old_parent);
+                    } else {
+                        $.dialog.alert(response.message);
+                        return false;
+                    }
+                },'JSON')
+            }
+        },
+
+    })
+
+</script>
+<script type="text/javascript">
+
+</script>

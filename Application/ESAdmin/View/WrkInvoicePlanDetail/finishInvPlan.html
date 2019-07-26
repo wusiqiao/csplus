@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div class="details-wrap invoice-main" id="add-invoice" style="overflow-y: scroll;height: 400px;padding-right: 10px">
+			<p style="text-align: center;color: #e91835;">客户合同将结束开票，开票计划及开票提醒将取消，已开票数据将在系统中保留：</p>
+			<form method="post" id="WrkInvoiceRecord-dataform">
+				<div class="details-section">
+					<table class="c-table  fl" border="1" bordercolor="#ccc" border-collaspe="collaspe" id="finish-invoice">
+						<thead>
+						<tr>
+							<th>开票日期</th>
+							<th>发票编号</th>
+							<th>发票金额</th>
+							<th>发票类型</th>
+						</thead>
+						<tbody id="record_table">
+						<tr v-for="item in invoice_record">
+							<td>{{item.invoice_day}}</td>
+							<td>{{item.invoice_id}}</td>
+							<td>{{item.invoice_sum}}</td>
+							<td>{{item.invoice_type}}</td>
+						</tr>
+						</tbody>
+					</table>
+					<div>&nbsp;</div>
+				</div>
+			</form>
+		</div>
+		<div class="details-section" style="height: 80px;">
+			<div class="form-actions" id="WrkInvoiceRecord-form-actions">
+				<div class="express-box clearFix">
+					<div style="text-align:center;margin:10px;" >
+						<span class="line-state-finish"></span>
+					</div>
+				</div>
+				<div class="actions-sysdefault">
+					<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="finishInvPlan()">发送</a>
+					<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">取消</a>
+				</div>
+			</div>
+		</div>
+		<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+		<script>
+			var finishVue = new Vue({
+            	el:"#finish-invoice",
+            	data:{
+                    invoice_record:planDetailvue.invoice_record
+            	}
+            });
+
+			$(function(){
+                $.post("WrkInvoicePlanDetail/getInvoiceState",{plan_id:$("input[name='plan_id']").val()},function(result){
+                    var html = "合同金额："+result.agreement_money+"; 已开总额：" + result.amount_paid ;
+                    var balance = result.agreement_money - result.amount_paid;
+                    html += "; 未开金额：" + (balance > 0 ? balance:0);
+                    $(".line-state-finish").html(html);
+                },'json')
+			});
+
+			function finishInvPlan(){
+			    showMaskLayer();
+                $.post("WrkInvoicePlanDetail/finishInvPlan",{id:$("input[name='id']").val()},function(result){
+                    hideMaskLayer();
+                    if(result.error == 0){
+                        $.dialog.focus.close();
+                        getInvoiceState();
+                        getInvoicePlan();
+                        refreshDatagrid(getDataGrid("WrkInvoicePlanDetail"));
+                        $(".notshow").hide();
+                        $("#cancel_invoice").hide();
+                    }
+                    $.dialog.tips(result.message);
+                },'json')
+			}
+
+		</script>
+	</body>
+</html>

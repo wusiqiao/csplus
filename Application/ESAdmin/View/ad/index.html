@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/reset.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/ad.css" rel="stylesheet" />
+		<title>活动进行中</title>
+	</head>
+	<body>
+		<div class="activity-wrap">
+			<div class="top-Theme">
+				<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/ad/top3.png">
+			</div>
+			<div class="step">
+				<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/ad/koi.png">
+				<a class="to-try" href="http://158.zbj99.cn/Home-List-Trys.html">
+					<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/ad/btn-try.png" alt="" />
+				</a>
+				<div class="code-img">
+					<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/ad/caisui+.jpg" alt="" />
+					<span>微信扫一扫添加好友</span>
+				</div>
+				<a class="to-link" href="">了解产品功能》</a>
+			</div>
+			<div class="step">
+				<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/ad/onebyone.png">
+				<a class="to-buy" href="https://w3tshop26.caisuikx.com/Product/productDetail/id/295">
+					<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/ad/btn-buy.png" alt="" />
+				</a>
+				<a class="to-link" href="">了解产品功能》</a>
+			</div>
+			<div class="step">
+				<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/ad/cut1000.png">
+				<a class="to-link" href="">了解产品功能》</a>
+			</div>
+			<div class="icon-float">
+				<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/ad/icon-float.png">
+			</div>
+		</div>
+		<script>
+	        window.addEventListener('scroll',function(){
+	            var scrollT = document.documentElement.scrollTop || document.body.scrollTop;
+	            var ThemeH = document.getElementsByTagName('img')[0].offsetHeight;
+
+	            if(scrollT > (ThemeH * 0.5)){
+	                document.getElementsByClassName('icon-float')[0].classList.add('heart');
+	
+	            } else {
+	            	document.getElementsByClassName('icon-float')[0].classList.remove('heart');
+	            }
+	        })
+		</script>
+
+	</body>
+</html>

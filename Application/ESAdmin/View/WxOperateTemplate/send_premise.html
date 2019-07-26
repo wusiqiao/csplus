@@ -1,0 +1,303 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/flatfoot.css?version={$version}" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .maincontainer::-webkit-scrollbar{
+        display: none;
+    }
+    .whole-viewshow{
+        padding: 25px 125px;
+        font-family: MicrosoftYaHei;
+        font-size: 16px;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 20px;
+        letter-spacing: 0px;
+        color: #666666;
+    }
+    .whole-viewshow div{
+        margin: 1px 0;
+        width: 450px;
+    }
+    .whole-small-div {
+        height: 40px;
+        padding: 10px 15px;
+        margin: initial;
+        float: left;
+    }
+    .datagrid-view{
+        width: 80%;
+    }
+    .datagrid-cell-check input[type='checkbox']:disabled{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-disablecheck.png')  !important;
+    }
+</style>
+<script>
+    function fixWidth(percent)
+    {
+        return document.body.clientWidth * percent ; //这里你可以自己做调整
+    }
+    var IsCheckFlag = true;
+    setMainContainerConfig("{$Think.const.CONTROLLER_NAME}", {
+        onDblClickRow: function(){
+            return false;
+        }
+    })
+</script>
+<body>
+
+<div style="height: 100%;background-color: #fff">
+    <div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="height: 92%;">
+        <table class="datagrid" style="margin: 0 50px;" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+               data-options="
+           url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/planCompanyList/id/{$id}',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:false,
+           border:true,
+           onClickRow: function (rowIndex, rowData) {
+                if(rowData['has_send'] =='已发送') {
+                    $(this).datagrid('unselectRow', rowIndex);
+                }
+           },
+           onCheck: function (rowIndex, rowData) {
+               if(rowData['has_send'] =='已发送') {
+                    $(this).datagrid('unselectRow', rowIndex);
+                }
+           },
+           onSelectAll: function (rows) {
+              var obj = $(this);
+              for(var i = 0; i < rows.length ;i++ ) {
+                    if(rows[i]['has_send'] =='已发送') {
+                        obj.datagrid('uncheckRow', i);
+                    }
+              }
+
+           },
+
+           ">
+            <thead>
+            <tr>
+            <th field="ck" checkbox="true"></th>
+            <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+            <th data-options="field:'company_name',width:fixWidth(0.16),align:'left'">{$Think.lang.POT_COMPANY_NAME}</th>
+            <th data-options="field:'leader_name',width:fixWidth(0.16),align:'left'">{$Think.lang.POT_COMPANY_LEADER}</th>
+            <th data-options="field:'leader_mobile',width:fixWidth(0.16),align:'left'">{$Think.lang.POT_MOBILE}</th>
+            <th data-options="field:'bind_state',width:fixWidth(0.18),align:'left'">{$Think.lang.POT_BIND_STATE}</th>
+            <th data-options="field:'has_send',width:fixWidth(0.16),align:'left'">{$Think.lang.POT_SEND_STATE}</th>
+        </tr>
+        <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    </div>
+    <div id="actions-{$Think.const.CONTROLLER_NAME}">
+        <div class="extend-nav-menu" style="margin: 10px;">
+            <div class="content-wrap">
+                <div class="c-select" >
+                    <div class="whole-title">
+                        <div class="title-tip bgb"></div>
+                        <div class="title-message">
+                            <span>发送计划</span>
+                        </div>
+                    </div>
+                    <div class="whole-div"  style="margin: 25px 25px 0 0;border: 1px solid #e3e3e3;">
+                        <div class="whole-substance">
+                            <div class="whole-viewshow" id="edit" style="padding: 0px 10px;">
+                                <div style="font-weight: 600;margin: 0 0 5px 0;">{$model.name}</div>
+                                <div style="margin: 0 0 5px 0;color:#b6b6b6">{$created_time}</div>
+                                <div>
+                                    <div  v-for="(content , keys) in contents">
+                                        <span v-if="content.key">{{ content.key }}：</span>
+                                        <span >{{ content.value }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="whole-small-div" >
+            <div class="add-button" style="display: none;margin-left: 15px;">
+                <input name="add_company" style="width: 70%;" class="easyui-validatebox" value="" placeholder="请输入公司名称" />
+                <a href="javascript:;" style="padding: 6px 10px;
+                                              background-color: #fff;
+                                              color: #368bfe;
+                                              border: 1px solid #368bfe;
+                                              margin: 0;
+                    "
+                   onclick="submitAppoint()" class="whole-button"> 添加 </a>
+            </div>
+            <a href="javascript:;" style="margin: 0 15px;" onclick="addAppoint(this)" class="btn_bg_blue">添加</a>
+        </div>
+    </div>
+    <div style="height: 5%" class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+        <div class="whole-small-div" style="width: 25%">
+            <input name="is_valid" type="checkbox"  value="1" />显示已发送公司
+            <eq name="has_current" value="1">
+                <a href="javascript:;"  onclick="deletePlan('{$Think.const.CONTROLLER_NAME}')" class="btn_bg_blue bgr">删除</a>
+            </eq>
+        </div>
+        <div class="whole-small-div" style="text-align: center;width: 50%">
+            <a href="javascript:;"  onclick="toggleType('{$Think.const.CONTROLLER_NAME}/plan')" class="btn_bg_blue">返回上级</a>
+            <eq name="has_current" value="1">
+                <a href="javascript:;"  onclick="editPlan()" class="btn_bg_blue">修改计划</a>
+                <!--<a href="javascript:;" style="padding: 7px 30px" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/appoint_plan')" class="whole-button">短信发送</a>-->
+                <a href="javascript:;"  onclick="sendWxTemplate('{$Think.const.CONTROLLER_NAME}')" class="btn_bg_blue">微信模板发送</a>
+            </eq>
+        </div>
+        <div class="whole-small-div" style="width: 25%">
+
+        </div>
+    </div>
+</div>
+</body>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    autocompleteAjax($("input[name='add_company']"),"{$Think.const.CONTROLLER_NAME}/company_additive/id/{$id}", function(item) {
+
+    });
+    $("input[name='add_company']").on('change', function() {
+        if ($('input[name="add_company"]').length > 0 && $("input[name='add_company']").val()=="") {
+            $('input[name="add_company_id"]').val("");
+        }
+    });
+    $('#{$Think.const.CONTROLLER_NAME}-datagrid').datagrid({
+        onLoadSuccess: function(data){
+            if (data.rows.length > 0) {
+                for (var i = 0; i < data.rows.length; i++) {
+                    if (data.rows[i].has_send == '已发送') {
+                        $("input[type='checkbox']")[i + 1].disabled = true;
+                    }
+                }
+            }
+        }
+    });
+    // 初始化
+    parseForm($("#{$Think.const.CONTROLLER_NAME}-detailcontainer"));
+    var vue = new Vue({
+        el: '#edit',
+        data:{
+            contents:{$content},
+        }
+    });
+    $('input[name=is_valid]').change(function(){
+        $('input[name=is_valid]').val($('input[name=is_valid]').val() == 0 ? 1 : 0);
+        doSearchQuery1("{$Think.const.CONTROLLER_NAME}",{type:$('input[name=is_valid]').val()})
+    })
+    function addAppoint(obj)
+    {
+        $('.add-button').show();
+        $(obj).hide();
+    }
+    function submitAppoint()
+    {
+        var company_id = $('input[name=add_company_id]').val();
+        if (company_id > 0) {
+            $.post('/{$Think.const.CONTROLLER_NAME}/addAppoint',{company_id:company_id,id:'{$id}'},function(result){
+                $.dialog.tips(result.message);
+                if (result.code == 0) {
+                    $('input[name="add_company_id"]').val("");
+                    $('input[name="add_company"]').val("");
+                    doSearchQuery1("{$Think.const.CONTROLLER_NAME}",{type:$('input[name=is_valid]').val()})
+                }
+            },'json')
+        } else {
+            $.dialog.alert('请先选择所要添加的公司!')
+        }
+    }
+    function doSearchQuery1(frameId,data) {
+        var target = getGridToolbar(frameId).find(".filter-field");
+        var queryParams = data;
+        var _grid = getDataGrid(frameId);
+        if (_grid.hasClass("datagrid")){
+            _grid.datagrid("load", queryParams);
+        }else{
+            _grid.treegrid("load", queryParams);
+        }
+        getSearchPanel(frameId).data("query", queryParams);//保存查询条件，导出时使用
+    }
+    function editPlan()
+    {
+        toggleType('{$Think.const.CONTROLLER_NAME}/appoint_plan/id/{$id}')
+    }
+
+    function sendWxTemplate(frameId)
+    {
+        var list = new Array();
+        var rows = getGridSelections(frameId);
+        if (rows.length === 0) {
+            $.dialog.tips('请选择要发送的公司!');
+            return false;
+        } else {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                list.push(row.id);
+            }
+        }
+        showMaskLayer();
+        $.post('/{$Think.const.CONTROLLER_NAME}/sendWxTemplate',{companys:list,id:'{$id}',template_id:'{$model.template_id}'},function(result){
+            if (result.error == 0) {
+                hasSendIng(list);
+            } else {
+                $.dialog.tips(result.message);
+                hideMaskLayer();
+            }
+        },'json')
+    }
+    function hasSendIng(list)
+    {
+        $.post('/{$Think.const.CONTROLLER_NAME}/hasSendIng',{companys:list,id:'{$id}'},function(result){
+            if (result.error == 0) {
+                $.dialog.tips('发送成功');
+                hideMaskLayer();
+                doSearchQuery1("{$Think.const.CONTROLLER_NAME}",{type:$('input[name=is_valid]').val()})
+            } else {
+                setTimeout(function(){
+                    hasSendIng(list)
+                },500)
+            }
+        },'json')
+
+    }
+    function deletePlan(frameId)
+    {
+        var list = new Array();
+        var rows = getGridSelections(frameId);
+        if (rows.length === 0) {
+            $.dialog.tips('请选择删除项!');
+        } else {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                list.push(row.id);
+            }
+        }
+        if (list.length > 0) {
+            tips = '确定要删除所选公司？';
+            var datagrid  = getDataGrid(frameId);
+            $.dialog.confirm(tips, function () {
+                    var controller = getController(frameId);
+                    $.post(controller + '/deleteCompany',
+                        {companys: list, id: '{$id}'},
+                        function (result) {
+                            if (result.code === 0) {
+                                datagrid.trigger("afterDelete", list);
+                                refreshGrid(frameId, list, "delete");
+                                $.dialog.tips("删除成功！");
+                            } else {
+                                $.dialog.alert(result.message);
+                            }
+                        },
+                        "json"
+                    )
+                    .error(
+                        function(XMLHttpRequest, textStatus, errorThrown){
+                            $.dialog.alert("删除错误！");
+                        }
+                    );
+                }
+            );
+        }
+    }
+</script>

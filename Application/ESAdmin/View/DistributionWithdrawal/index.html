@@ -1,0 +1,31 @@
+<div class="maincontainer" id="DistributionWithdrawal-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="DistributionWithdrawal" />
+    <tr>
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'create_time',width:160,align:'left',formatter:formatDateTime">申请时间</th>
+        <th data-options="field:'user_name',width:100,align:'left'">姓名</th>
+        <th data-options="field:'user_mobile',width:100,align:'left'">手机号码</th>
+        <th data-options="field:'money',width:100,align:'left'">提现金额</th>
+        <th data-options="field:'review_time',width:160,align:'left',formatter:formatDateTime">审核时间</th>
+        <th data-options="field:'status',width:100,align:'left',formatter:formatWithdrawalStatus">审核状态</th>
+        <th data-options="field:'operate',width:100,align:'center',formatter:formatWithdrawalOperate">操作</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer_nobar.html"  controller="DistributionWithdrawal" />
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table">
+        <tr>
+            <th>用户名称：</th>
+            <td>
+                <input name="inviter_name"  class="easyui-validatebox filter-field" value="" />
+            </td>
+            <th>申请时间：</th>
+            <td>
+            <td>
+                <input name="qdr-create_time" id="day_start" class="easyui-datebox filter-field" value="" />－
+                <input name="qdr-create_time" id="day_end" class="easyui-datebox filter-field" value=""  />
+            </td>
+            </td>
+        </tr>
+    </table>
+</div>

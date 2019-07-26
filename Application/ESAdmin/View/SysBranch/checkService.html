@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            width: 650px;
+        }
+        .orange{
+            color:#ff9a29;
+        }
+        .orange .icon{
+            margin-right: 5px;
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            text-align: center;
+            line-height: 14px;
+            border: 1px solid #ff9a29;
+            border-radius: 50%;
+        }
+        .green{
+            color:#009688;
+        }
+        .purple{
+            color:#3f51b5;
+            cursor: pointer;
+        }
+        .star::before{
+            display: inline-block;
+            content: '*';
+            color: red;
+        }
+        li{
+            margin: auto;
+            width: 460px;
+            height: 40px;
+        }
+        li .attr{
+            display: inline-block;
+            width: 110px;
+            text-align: right;
+        }
+        .val{
+            margin: 0 15px 0 0;
+        }
+        .textbox{
+            width: 115px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h3>服务信息</h3>
+        <ul>
+            <li>
+                <span class="attr">合同编号：</span>
+                <span class="val">20181219</span>
+                <span class="orange">
+                    <span class="icon">i</span>
+                    合同编号自动创建，默认为日期+序号
+                </span>
+            </li>
+            <li>
+                <span class="attr star">服务类型：</span>
+                <span class="val">公众号</span>
+                <span class="spanBtn">修改服务类型</span>
+            </li>
+            <li>
+                <span class="attr star">服务期限：</span>
+                <span class="val">1年</span>
+            </li>
+            <li>
+                <span class="attr star">服务价格：</span>
+                <span class="val">2800元</span>
+            </li>
+            <li>
+                <span class="attr star">服务起止日期：</span>
+                <input name="qdr-finish_time" class="easyui-datebox filter-field" value="" />－
+                <input name="qdr-finish_time" class="easyui-datebox filter-field" value=""  />
+            </li>
+            <li>
+                <span class="attr star">服务状态：</span>
+                <span class="val green">正常</span>
+                <span class="spanBtn">暂停</span>
+            </li>
+            <li>
+                <span class="attr">其他备注：</span>
+                <input type="text">
+            </li>
+            <li>联系人信息</li>
+            <li>
+                <span class="attr star">公司名称：</span>
+                <span class="val">
+                    <input type="text">
+                </span>
+            </li>
+            <li>
+                <span class="attr star">联系人：</span>
+                <span class="val">
+                    <input type="text">
+                </span>
+            </li>
+            <li>
+                <span class="attr star">手机号：</span>
+                <span class="val">
+                    <input type="text">
+                </span>
+            </li>
+            <li>
+                <span class="icon">i</span>手机号将作为超级管理员的登录账号，且作为找回密码的凭证
+            </li>
+            <li>
+                <span class="attr">微信号：</span>
+                <span class="val">暂未绑定</span>
+                <span class="purple">立即绑定</span>
+            </li>
+        </ul>
+        <h3>客户跟踪记录</h3>
+        <div>
+            <p class="tabL">
+                <span class="tabSpan on">沟通记录</span>
+                <span class="tabSpan">操作日志</span>
+            </p>
+            <p></p>
+        </div>
+        <div class="tabBox">
+            <table>
+                <thead>
+                    <tr>
+                        <td>序号</td>
+                        <td>时间</td>
+                        <td>记录内容</td>
+                        <td>记录人</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>
+                            <span class="date">2018/12/19</span>
+                            <span class="time">15:02</span>
+                        </td>
+                        <td>客户说明天付款，让我们先开通权限，付款后底单会传过来</td>
+                        <td>
+                            <span class="department">运营部</span>
+                            <span class="recorder">小刘</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>
+                            <span class="date">2018/12/19</span>
+                            <span class="time">16:02</span>
+                        </td>
+                        <td>现在忙没时间</td>
+                        <td>
+                            <span class="department">运营部</span>
+                            <span class="recorder">小刘</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

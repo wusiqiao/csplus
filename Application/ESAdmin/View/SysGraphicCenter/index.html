@@ -1,0 +1,511 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/ueditor.css">
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/bootstrap.min.css">
+<style>
+    #GraphicCenter {
+        width: 100%;
+        height: 100%;
+        display: flex;
+    }
+
+    #Graphic-info {
+        flex: 1;
+        margin: 0 18px;
+        box-sizing: border-box;
+        border: 1px solid #d3d3d3;
+        background-color: #ffffff;
+        height: 100%;
+    }
+
+    /* 编辑器 */
+    #full-page {
+        flex: 1;
+        margin: 0 18px;
+    }
+
+    .full-page-content {
+        width: 600px;
+        position: relative;
+    }
+
+    .menu {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        z-index: 66;
+    }
+
+    .menu-item {
+        width: 84px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        background-color: #000;
+        color: #fff;
+        opacity: 0.7;
+        margin: 11px 0;
+        cursor: pointer;
+    }
+
+    /* 表单 */
+    .Graphic-info-form {
+        width: 400px;
+        margin: 22px auto;
+        height: calc(100% - 44px);
+    }
+
+    .info-line {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin: 11px 0;
+    }
+
+    .info-label {
+        width: 60px;
+        height: 32px;
+        line-height: 32px;
+        text-align: right;
+        color: #666666;
+        margin-right: 18px;
+    }
+
+    .info-content {
+        width: calc(100% - 78px);
+    }
+
+    .info-content>textarea {
+        width: 100%;
+        height: 100px;
+        overflow-y: auto;
+        resize: none;
+    }
+
+    .info-content>input {
+        width: 100%;
+        outline: none;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        height: 32px;
+        text-indent: 13px;
+    }
+
+    .Graphic-cover {
+        width: 100%;
+        height: 140px;
+        background-color: #666666;
+    }
+</style>
+</head>
+<body>
+<div id="GraphicCenter">
+    <!-- 图文信息 -->
+    <div id="Graphic-info">
+        <form class="Graphic-info-form" action="">
+            <div class="info-line">
+                <div class="info-label">标题</div>
+                <div class="info-content">
+                    <textarea name="" id="" v-model="title"></textarea>
+                </div>
+            </div>
+            <div class="info-line">
+                <div class="info-label">摘要</div>
+                <div class="info-content">
+                    <textarea name="" id="" v-model="abstract"></textarea>
+                </div>
+            </div>
+            <div class="info-line">
+                <div class="info-label">封面</div>
+                <div class="info-content" style="position:relative;">
+                    <div class="Graphic-cover">封面</div>
+                    <input type="file"
+                        style="position:absolute;top:0;width:100%;height:100%;opacity: 0;z-index:88;">
+                </div>
+            </div>
+            <div class="info-line">
+                <div class="info-label">
+
+                </div>
+                <div class="info-content"
+                    style=" display: flex;justify-content: space-between;align-items: flex-start;">
+                    <div class="info-tip"><input type="checkbox"> 封面展示在正文顶部</div>
+                    <div class="btn-speed">选择封面</div>
+                </div>
+            </div>
+            <div class="info-line">
+                <div class="info-label">作者</div>
+                <div class="info-content">
+                    <input type="text" placeholder="请输入作者">
+                </div>
+            </div>
+            <div class="info-line">
+                <div class="info-label">原文链接</div>
+                <div class="info-content">
+                    <input type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- 编辑器 -->
+    <div id="full-page">
+        <div class="full-page-content">
+            <div id="editor" class="edui-default" style="width:498px;height:500px;"></div>
+            <div class="menu">
+                <div id="clear-editor" class="menu-item" title="清空编辑器内容" onclick="clearEditor()">清空</div>
+                <div id="html-see" class="menu-item" data-toggle="modal" data-target="#myModalsee" title="模拟预览">预览</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="bccg" class="modal fade" tabindex="9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">保存草稿</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form-save" method="post" >                            
+                    <div class="form-group">
+                        <input type="hidden" value="" name="id">
+                        <label for="message-text" class="control-label">内容:</label>
+                        <div style="border:1px solid #ccc;padding:20px;">
+                            <div id="tbcov" style="height:320px;overflow-y:scroll;"></div>
+                            <textarea  id="savecontent1" name="content1" style="display:none"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="savewx" >保存</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!--预览框  -->  
+<!-- Modal -->
+<!-- sample modal content -->
+<div id="myModal" class="modal fade" tabindex="9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">保存编辑内容</h4>
+                <div>
+                    <em style="color:#8c8c8c;font-style:normal;font-size:12px;">2015-08-10</em>
+                    <a style="font-size:12px;color:#607fa6" href="javascript:void(0);" id="post-user"></a> 
+                </div>
+            </div>                   
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<div class="modal fade" id="paragraph-setting" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width:600px;margin-top:20px;">
+        <div class="modal-content">
+            <div class="modal-header" style="border:0 none">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">关闭</span>
+                </button>
+                <h4 class="modal-title">段落设置</h4>
+            </div>
+            <div class="modal-body" style="overflow: hidden;padding: 0;margin: 10px;">
+                <form class="form-horizontal">
+                    <div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">行高</label>
+                                <div class="col-sm-7 controls">
+                                    <input class="form-control" value="1.5em" id="paragraph-lineHeight" type="text">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">字体</label>
+                                <div class="col-sm-7 controls">
+                                    <select class="form-control" id="paragraph-fontFamily">
+                                        <option value="微软雅黑">微软雅黑</option>
+                                        <option value="宋体">宋体</option>
+                                        <option value="楷体">楷体</option>
+                                        <option value="黑体">黑体</option>
+                                        <option value="隶书,SimLi">隶书</option>
+                                        <option value="arial">arial</option>
+                                        <option value="sans-serif">sans-serif</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">字号</label>
+                                <div class="col-sm-7 controls">
+                                    <input class="form-control" placeholder="字号" value="14px" id="paragraph-fontSize" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">首行缩进</label>
+                                <div class="col-sm-7 controls">
+                                    <input class="form-control" id="paragraph-textIndent" value="2em" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">段前距</label>
+                                <div class="col-sm-7 controls">
+                                    <input class="form-control" id="paragraph-paddingTop" value="5px" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">段后距</label>
+                                <div class="col-sm-7 controls">
+                                    <input class="form-control" id="paragraph-paddingBottom" value="5px" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer text-right">
+                <button type="button" onclick="applyParagraph('active');" class="btn btn-primary" data-dismiss="modal">应用本样式</button>
+                <button type="button" onclick="applyParagraph('all');" class="btn btn-warning" data-dismiss="modal">应用全文</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- sample modal content -->
+<div id="myModalsee" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">预览（提示：如文章太长，请按下鼠标滚轮，上下拉动预览）</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div style="border:0px solid #ccc;padding:20px;">
+                        <div id="previews">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!--adend-->
+<!--//存储源编辑内容-->
+<div id="source-content" style="display: none"></div> 
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery-1.10.2.min.js"></script>
+<script src="__ROOT__/{$Think.APP_PATH}/Public/lhgdialog/dialog.min.js?skin=idialog"></script>
+<script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/bootstrap.min.js" type="text/javascript" charset="utf-8" ></script>
+<script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/codemirror.js" type="text/javascript" defer="defer"></script>
+<script>
+    var BASEURL = "";
+    var current_editor;
+    var current_active_v3item = null;
+    var isout = "false";
+    var isnew = "";
+</script>
+ <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/ueditor.config.js"></script>
+ <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/ueditor.all.js"></script>
+ <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/gjs02.js" type="text/javascript"></script>
+ <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery.jcrop.js"></script>
+ <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/gjs01.js" type="text/javascript"></script>
+ <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/less-1.7.0.min.js"></script>
+ <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/clipboard.min.js"></script>
+
+ <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/instoo.js"></script>
+ <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery.range.js"></script>
+ <script type="text/javascript"  src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/su.js"></script>
+
+<script type="text/javascript" src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/lang/zh-cn/zh-cn.js"></script>
+<!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+<!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+
+<script type="text/javascript">
+    //实例化编辑器
+    //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+    // var ue = UE.getEditor('editor');
+    var current_editor = UE.getEditor('editor');
+    var BASEURL = "";
+    var current_active_v3item = null;
+    var isout = "false";
+    var isnew = "";
+    // 清空操作
+    function setEditorHtml(newHtml){ 
+        current_editor.undoManger.save(); 
+        current_editor.setContent(newHtml); 
+        current_editor.undoManger.save(); 
+    }
+    function clearEditor() {
+        setEditorHtml("");
+    }
+    // 预览
+    $('#html-see').click(function () {
+        $('#saveModal').modal('show')
+    });
+    
+    current_editor.ready(function () {
+        setTimeout("initialEditor()", 500);
+    });
+    function initialEditor(){
+        var source_content = $("#source-content").html();
+        current_editor.setContent(source_content);
+        current_editor.addListener('contentChange', function () {
+            $("#previews").html(current_editor.getContent());
+            $("#tbcov").html(current_editor.getContent());
+        });
+        $("#previews").html(current_editor.getContent());
+        $("#tbcov").html(current_editor.getContent());
+    }
+    // 
+    function getPercent(){
+        if(current_active_v3item){
+            var oWidth = current_active_v3item.width();
+        }else {
+            alert('请选择图片');
+        }
+        
+        var per = (oWidth / 460).toFixed(2);
+        if(per === 1){
+            $('.pointer-label').css('left',130 + 'px');
+            $('.pointer-label').html(100);
+            $('.pointer').css('left',144 + 'px');
+        } else {
+            $('.pointer-label').css('left',144 * per + 'px');
+            $('.pointer-label').html(100 * per);
+            $('.pointer').css('left',144 * per);
+        }
+        $('.single-slider').val(per);
+    }
+    
+    function setImgWidth(e){
+        var oWidtWrap = $('#set-imgwidth');
+        var a = 1;
+        var imgWidth = 460;
+        getPercent();
+        $('#set-imgwidth').toggle();
+        $(document).on('click',function(e){
+            if(a){
+                oWidtWrap.offset({ top: e.pageY + 20 , left: e.pageX - 250 });
+                a = 0;
+            } 
+        });
+    }
+    
+    $(function() {
+        $('.single-slider').jRange({
+            from: 0,
+            to: 100,
+            step: 1,
+            scale: [0, 25, 50, 75, 100],
+            format: '%s',
+            width: 150,
+            showLabels: true,
+            showScale: false
+        });
+    });
+</script>
+<script type="text/plain" id="upload_ue"></script>
+<script>
+    $(function() {
+        $.extend($.fn.validatebox.defaults.rules, {
+            max:{
+                validator: function (value,param) {
+                    handlerDescribeFonts(value);
+                    return value.length <= param[0];
+                },
+                message: '不能超过{0}个字数'
+            }
+        });
+        var $dataform = getDataForm("{$Think.const.CONTROLLER_NAME}");
+        $dataform.find(".editor-edit-botton").click(function () {
+            var source = $("#store-content").html();
+            openEditor("文章编辑", source, function (content) {
+                $("#store-content").html(content);
+                $dataform.find("input[name=body]").val(content);
+            });
+        });
+        // $('.tweets-textarea').textbox({
+        //     onChange(value) {
+        //         handlerDescribeFonts(value)
+        //     },
+        // });
+        // $('.tweets-textarea').textbox({
+        //     onChange(value) {
+        //         handlerDescribeFonts(value)
+        //     },
+        //     onBlur(value){
+        //         console.log(2123);
+        //         handlerDescribeFonts(value)
+        //     }
+        // });
+    })
+    function handlerDescribeFonts(value){
+        var count = $.trim(value) == '' ? 0 : value.length;
+        $('#describe_fonts').text(count);
+    }
+</script>
+<!--上传图片模块-->
+<script type="text/javascript">
+    var _editor;
+    $(function() {
+        //重新实例化一个编辑器，防止在上面的editor编辑器中显示上传的图片或者文件
+        _editor = UE.getEditor('upload_ue',
+            {
+                upload_model: "tweets",
+                UEDITOR_HOME_URL:'__ROOT__Application/ESAdmin/Public/editorUploadImages/js/',
+            });
+        _editor.ready(function () {
+            //隐藏编辑器，因为不会用到这个编辑器实例，所以要隐藏
+            _editor.hide();
+            //侦听图片上传
+            _editor.addListener('beforeInsertImage', function (t, arg) {
+                //将地址赋值给相应的input,只去第一张图片的路径
+                $("#pic").attr("value", arg[0].src);
+                //图片预览
+                $("#show_pic").attr("href", arg[0].src);
+                $("#show_pic").show();
+            })
+        });
+    });
+    //弹出图片上传的对话框
+    function upImage() {
+        var myImage = _editor.getDialog("insertimage");
+        myImage.open();
+    }
+</script>
+
+<script>
+    var GraphicCenter = new Vue({
+        el: '#GraphicCenter',
+        data: {
+            title:"标题",
+            abstract:"摘要",
+            coverUrl:"",
+
+        },
+        methods: {
+            
+        },
+    })
+</script>
+</body>
+</html>

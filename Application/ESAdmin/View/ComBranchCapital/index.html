@@ -1,0 +1,288 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<script>
+
+    function formatCompanyName(value){
+        if(value == null || value == "") {
+            value = "-";
+        }
+        var html = `<span title="${value}">${value}</span>`;
+        return html;
+    }
+
+    function formatBranchMoneyShow(value, row, index)
+    {
+        if (value === 'hide') {
+            return '';
+        } else if(isNaN(value)){
+            return value;
+        } else{
+            return value != '' ? "¥"+value:'-';
+        }
+    }
+
+</script>
+<style>
+    .operation-btn{
+        padding: 5px 13.5px;
+        background-color: #368BFE;
+        color: #fff ;
+        border-radius: 4px;
+        border: 0;
+        margin: 0 2px;
+    }
+    .recharge-btn{
+        padding: 8px 13.5px;
+        background-color: #368BFE;
+        color: #fff ;
+        border-radius: 4px;
+        border: 0;
+        margin: 0 2px;
+    }
+    .search-action-panel{
+        display: none;
+    }
+    input[readonly],input:disabled,select:disabled,.chosen-disabled .chosen-choices{
+        background: initial !important;
+        background-color: #f7f5f5 !important;
+        border: 1px solid #d3d3d3;
+        -webkit-transition:initial;
+        box-shadow:initial;
+        -webkit-box-shadow:initial;
+    }
+    .datebox input[readonly] {
+        background: initial !important;
+        background-color: initial !important;
+        border: initial;
+        -webkit-transition:initial;
+        box-shadow:initial;
+        -webkit-box-shadow:initial;
+    }
+    th{
+        text-align: right;
+    }
+    .search-table{
+        width: 900px;
+    }
+    .chosen-disabled{
+        opacity: initial !important;
+    }
+    .chosen-container-multi .chosen-choices {
+        width: 270px !important;
+        height: 30px !important;
+    }
+    .maincontainer {
+        height: 100%;
+    }
+
+    .grey{
+        background: grey;
+    }
+    .indexes-btn{
+        float: left;
+        padding: 4px 20px;
+        margin: 0 2px;
+        background-color: #fff;
+        border-radius: 4px;
+        color: #555555;
+        border: 1px solid #e1e1e1;
+    }
+    .indexes-btn.checked{
+        color: #368bfe;
+        border: 1px solid #368bfe;
+    }
+    .search-panel{
+        display: block !important;
+    }
+    .datagrid-body::-webkit-scrollbar {
+        display: none;
+    }
+    .button-btn{
+        padding: 8px 40px;
+        background-color: #368BFE;
+        color: #fff ;
+        border-radius: 4px;
+        border: 0;
+        margin: 0 2px;
+    }
+    input[readonly],select:disabled,.chosen-disabled .chosen-choices{
+        background: initial !important;
+        background-color: #EEEEEE !important;
+    }
+    .chosen-disabled{
+        opacity: initial !important;
+    }
+  /*  th{
+        text-align: right;
+        width: 50px;
+    }*/
+    .search_th{
+        text-align: right;
+        width: 50px;
+    }
+    #ComBranchCapital-search-panel{
+        padding: 0;
+    }
+</style>
+
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none;">
+    <table class="search-table">
+        <tbody>
+        <tr>
+            <th class="search_th">查看期间：</th>
+            <td>
+                <div class="indexes-start-up indexes" data-toggle="time">
+                    <div class="indexes-btn checked"  data-time="0">全部</div>
+                    <div class="indexes-btn" data-time="3">本月</div>
+                    <div class="indexes-btn" >自定义</div>
+                    <div id="user-defined-time" style="display: none;">
+                        <input name="fina_time_start" id="fina_time_start" class="easyui-datebox filter-field" value=""
+                               data-options="prompt:'选择时间',editable:false" />－
+                        <input name="fina_time_end" id="fina_time_end" class="easyui-datebox filter-field" value=""
+                               data-options="prompt:'选择时间',editable:false" />
+                    </div>
+                    <input type="hidden" name="time" value="0" class="filter-field">
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="search-table">
+        <tbody>
+        <tr>
+            <th class="search_th">明细类型：</th>
+            <td>
+                <div class="indexes-start-up indexes" data-toggle="mold">
+                    <div class="indexes-btn checked"  data-status="0">全部</div>
+                    <div class="indexes-btn" data-status="1">收款</div>
+                    <div class="indexes-btn" data-status="2">退款</div>
+                    <input type="hidden" name="mold" value="0" class="filter-field">
+                </div>
+                <div style="position: absolute;right:30px">
+                    公司：
+                    <input type="text" name="company" class="easyui-validatebox filter-field" placeholder="请输入公司名称">
+                    <input type="hidden" name="company_id" class="easyui-validatebox filter-field">
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" >
+    <table class="easyui-datagrid datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+           data-options="
+                       url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/list/',
+                       pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+                       pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+                       toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+                       pageNumber:1,
+                       checkOnSelect:true,
+                       singleSelect:false,
+                       border:true,
+                       showFooter: true,
+                       onRowContextMenu: function (e, rowIndex, rowData) {
+                         $(this).datagrid('clearSelections');
+                         $(this).datagrid('selectRow', rowIndex);
+                         e.preventDefault();
+                       }">
+        <thead>    <tr>
+            <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+            <th data-options="field:'created_time',width:180,align:'center'">发生日期</th>
+            <th data-options="field:'company_name',width:200,align:'left',formatter:formatCompanyName">公司</th>
+            <th data-options="field:'detail_type',width:130,align:'center'">类型</th>
+            <th data-options="field:'income_money',width:130,align:'center',formatter:formatBranchMoneyShow">收入金额</th>
+            <th data-options="field:'pay_money',width:130,align:'center',formatter:formatBranchMoneyShow">支出金额</th>
+            <th data-options="field:'actual_money',width:150,align:'center',formatter:formatBranchMoneyShow">账户余额</th>
+            <!--<th data-options="field:'income_type',width:150,align:'left'">收入类型</th>
+            <th data-options="field:'pay_type',width:150,align:'left'">支出类型</th>
+            <th data-options="field:'state_view',width:130,align:'left'">状态</th>-->
+            <!--<th data-options="field:'operation',width:200,align:'left',formatter:formatCapitalOperation">操作</th>-->
+            <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+
+    </table>
+</div>
+<div id="actions-{$Think.const.CONTROLLER_NAME}" style="display: none">
+    <div class="extend-nav-menu">
+
+    </div>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+
+<script>
+    $('div.indexes-start-up > .indexes-btn').on('click','',function(){
+        if (!$(this).hasClass('checked')) {
+            var toggle = $(this).parent('div').data('toggle');
+            var status = $(this).data('status');
+            if(toggle != 'mold' && toggle != "time"){
+                var mold_status = $(".indexes[data-toggle=mold]").find(".checked").data("status");
+                if(mold_status == 0){
+                    return false;
+                }
+            }
+            if (toggle == 'mold'){
+                if (status == 2) {
+                    $('.indexes[data-toggle=income]').removeClass('indexes-start-up').find('div').removeClass('checked');
+                    $('.indexes[data-toggle=pay]').addClass('indexes-start-up').find('div:first').addClass('checked');
+                    $('input[name=income]').val('');
+                    $('input[name=pay]').val('0');
+                } else if(status == 1) {
+                    $('.indexes[data-toggle=pay]').removeClass('indexes-start-up').find('div').removeClass('checked');
+                    $('.indexes[data-toggle=income]').addClass('indexes-start-up').find('div:first').addClass('checked');
+                    $('input[name=pay]').val('');
+                    $('input[name=income]').val('0');
+                }else{
+                    $('.indexes[data-toggle=pay]').removeClass('indexes-start-up').find('div').removeClass('checked');
+                    $('.indexes[data-toggle=income]').removeClass('indexes-start-up').find('div').removeClass('checked');
+                    $('input[name=pay]').val('');
+                    $('input[name=income]').val('');
+                }
+            }
+            if ($(this).parent('div').hasClass('indexes-start-up')) {
+                $(this).addClass('checked').siblings('.indexes-btn').removeClass('checked');
+                $(this).siblings('input').val(status);
+                if(toggle == "time"){
+                    var time = $(this).data("time");
+                    if(time != undefined){
+                        $("input[name='time']").val(time);
+                        $("#user-defined-time").hide();
+                        $("#fina_time_start").datebox("setValue",'');
+                        $("#fina_time_end").datebox("setValue",'');
+                    }else{
+                        $("#user-defined-time").show();
+                        return false;
+                    }
+                }
+                doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+            }
+        }
+    })
+
+    $("#fina_time_start").datebox({
+        onSelect:function(){
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+        }
+    });
+    $("#fina_time_end").datebox({
+        onSelect:function(){
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+        }
+    })
+
+    $("#ComBranchCapital-datagrid").datagrid({
+        onDblClickRow:function(){
+            return false;
+        }
+    })
+
+    autocompleteAjax($("input[name='company']"), "WrkAgreement/companyList", function (item) {
+        $("input[name='company_id']").val(item.id);
+        doSearchQuery("ComBranchCapital");
+    });
+
+    $("input[name='company']").on("change",function(){
+        if($("input[name='company']").length > 0 && $("input[name='company']").val() == ""){
+            $("input[name='company_id']").val("");
+            doSearchQuery("ComBranchCapital");
+        }
+    })
+
+</script>

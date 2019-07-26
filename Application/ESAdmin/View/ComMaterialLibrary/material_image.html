@@ -1,0 +1,539 @@
+<html>
+
+</html>
+<style>
+    #material_img {
+        width: 100%;
+        height: calc(100% - 13px);
+        background-color: #fff;
+    }
+
+    .show_box {
+        float: left;
+        position: relative;
+        width: 325px;
+        height: 270px;
+        margin: 10px;
+        background-color: #fff;
+        border: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+    .tupian-name {
+        padding: 17px 13px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin: 0;
+        font-size: 16px;
+    }
+    .tupian-img {
+        height: 170px;
+        width: calc(100% - 26px);
+        margin: 0px 13px;
+        overflow: hidden;
+    }
+    .tupian-tool {
+        height: 32px;
+        padding: 5px 10px;
+        text-align: right;
+    }
+    .icon-img-down {
+        display: inline-block;
+        width: 14px;
+        height: 20px;
+        margin: 5px 5px 5px 0;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-img-down.png");
+        background-size: 100% 100%;
+        text-align: center;
+        cursor: pointer;
+    }
+    .icon-img-down:hover {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-img-down-hover.png");
+    }
+    .icon-img-remove {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin: 5px 5px 5px 0;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-remove.png");
+        background-size: 100% 100%;
+        cursor: pointer;
+    }
+    .icon-img-remove:hover{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-remove-hover.png");
+    }
+    .icon-img-preview {
+        display: inline-block;
+        width: 27px;
+        height: 20px;
+        margin: 5px 5px 5px 0;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-focus.png");
+        background-size: 100% 100%;
+        cursor: pointer;
+    }
+    .icon-img-preview:hover{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-preview.png");
+    }
+    .icon-img-synchronous{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin: 5px 5px 5px 0;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-distoggle.png");
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        cursor: pointer;
+    }
+    .icon-img-synchronous:hover{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-toggle.png");
+    }
+    #mask{
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 88;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+    #synchronous-edit,#remove-edit {
+        position: fixed;
+        z-index: 99;
+        top: calc(50% - 150px);
+        left: calc(50% - 276px);
+        width: 552px;
+        height: 300px;
+        background-color: #ffffff;
+    }
+    .synchronous-edit-header,.remove-edit-header{
+        height: 30px;
+        padding: 10px 10px;
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f9fafb;
+        font-size: 16px;
+        color: #35323b;
+        cursor: move;
+    }
+    .synchronous-edit-content{
+        width:100%;
+        text-align:center;
+        font-size: 14px;
+        padding-top:55px;
+        color: #666666;
+        font-size: 16px;
+    }
+    .remove-edit-content{
+        padding-left: 67px;
+        font-weight:400;
+        font-size: 16px;
+        color: #666666;
+    }
+    .remove-edit-confirm{
+        float: left;
+        width: 88px;
+        height: 32px;
+        line-height: 32px;
+        background-color: #368bfe;
+        text-align:center;
+        margin: 0 7.5px;
+        cursor: pointer;
+        color: #f8fafb;
+    }
+    .remove-edit-cancel{
+        float: left;
+        width: 88px;
+        height: 32px;
+        line-height: 32px;
+        text-align:center;
+        margin: 0 7.5px;
+        cursor: pointer;
+        color: #368bfe;
+        border: solid 1px #368bfe;
+        box-sizing: border-box;
+    }
+    #img-edit{
+        width: 680px;
+        height: 620px;
+        position: fixed;
+        z-index: 99;
+        top: calc(50% - 340px);
+        left: calc(50% - 340px);
+    }
+    .img-edit-show {
+        width: 660px;
+        margin: 10px;
+        max-height: 600px;
+        overflow-y: auto;
+        border: 1px solid #666;
+        background-color: #ffffff;
+    }
+    .img-edit-show::-webkit-scrollbar {/*滚动条整体样式*/
+        width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+    }
+   .img-edit-show::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 5px;
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #d3d3d3;
+    }
+    .img-edit-show::-webkit-scrollbar-track {/*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        border-radius: 5px;
+        background: #ededed;
+    }
+    .img-edit-close{
+        position: absolute;
+        top: -22px;
+        right: -24px;
+        height:32px;
+        width:32px;
+        border-radius: 50%;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/img-edit-close.png");
+        background-size: 100% 100%;
+        cursor: pointer;
+    }
+    .img-edit-close:hover{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/img-edit-close-hover.png");
+    }
+    .certificationed{
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50px;
+        height: 50px;
+        background-size: 100% 100%;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-certified.png");
+    }
+    .uncertificationed{
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50px;
+        height: 50px;
+        background-size: 100% 100%;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-unauthorized.png");
+    }
+    /* 媒体查询 */
+    /* 大屏 */
+    /* @media screen and (min-width:1366px) and (max-width:1920px){
+        .show_box {
+            width: 250px;
+        }
+        .tuwen-item-more{
+            width: 250px;
+        }
+    } */
+    /* 中屏 */
+    /* @media screen and (min-width:1024px) and (max-width:1366px){
+        .show_box {
+            width: 180px;
+        }
+        .tuwen-item-more{
+            width: 180px;
+        }
+    } */
+
+</style>
+<div id="material_img" style="position:relative;">
+    <!-- tab切换 -->
+    <div class="c-header" style="position:relative;">
+        <div class="tab-span data-source" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index')" data-source="10">公共文章库</div>
+        <div class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index/material/news')">我的文章</div>
+        <div class="tab-span tab-span-on" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index/material/image')">我的图片</div>
+        <div class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index/material/voice')">我的语音</div>
+    </div>
+    <div style="padding:0px 10px;width:calc(100% - 20px);height:calc(100% - 20px);overflow: hidden;">
+        <!-- 同步按钮、搜索框 -->
+        <div style="padding:10px 0;display: flex;justify-content: space-between;border-bottom: 1px solid #d3d3d3">
+            <div>
+                <span id="synchronous" class="btn_bg_blue">同步素材</span>
+                <div class="btn_bg_blue" style="position:relative;" onclick="createDialog('ComMaterialLibrary/upset_local','本地上传','upset-local');">本地上传</div>
+            </div>
+            <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                <input id="search" style="width:300px;" type="text" placeholder="请输入图片标题进行查询" class="filter-field"
+                       name="">
+                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+            </div>
+        </div>
+        <!-- 图片 -->
+        <div id="show-index" style="padding:10px 0px;width: 100%;height: calc(100% - 135px);">
+            <div id="material-list" style="width:100%;height: 100%;overflow-y: scroll;">
+
+            </div>
+            <div class="datagrid-pager pagination">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                    <tr>
+                        <td><select class="pagination-page-list"><option>8</option></select></td>
+                        <td><div class="pagination-btn-separator"></div></td>
+                        <td>
+                            <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain l-btn-disabled l-btn-plain-disabled" group="" id="">
+                                    <span class="l-btn-left l-btn-icon-left">
+                                        <span class="l-btn-text l-btn-empty">&nbsp;</span>
+                                        <span class="l-btn-icon pagination-first">&nbsp;</span>
+                                    </span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain l-btn-disabled l-btn-plain-disabled" group="" id="">
+                                    <span class="l-btn-left l-btn-icon-left">
+                                        <span class="l-btn-text l-btn-empty">&nbsp;</span>
+                                        <span class="l-btn-icon pagination-prev">&nbsp;</span>
+                                    </span>
+                            </a>
+                        </td>
+                        <td><div class="pagination-btn-separator"></div></td>
+                        <td><span style="padding-left:6px;">第</span></td>
+                        <td><input class="pagination-num" id="pagination-num" type="text" value="1" size="2"></td>
+                        <td><span style="padding-right:6px;" id="pagination-count">共30页</span></td>
+                        <td><div class="pagination-btn-separator"></div></td>
+                        <td>
+                            <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text l-btn-empty">&nbsp;</span><span class="l-btn-icon pagination-next">&nbsp;</span></span></a></td>
+                        <td><a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text l-btn-empty">&nbsp;</span><span class="l-btn-icon pagination-last">&nbsp;</span></span></a></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="pagination-info" id="material-count">显示1到50,共1493记录</div><div style="clear:both;"></div>
+            </div>
+        </div>
+    </div>
+    <!-- 遮罩层 -->
+    <div id="mask" style="display:none;"></div>
+    <!-- 同步弹出信息提示框 -->
+    <div id="synchronous-edit" style="display:none;">
+        <p class="synchronous-edit-header">
+            <span>温馨提示</span>
+            <span onclick="Close()" style="cursor: pointer;">X</span>
+        </p>
+        <div class="synchronous-edit-content">图片素材共0个，已更新0个</div>
+        <p style="text-align:center;color: #929292;font-size: 16px;">(3秒后自动关闭...)</p>
+    </div>
+    <!-- 删除按钮提示弹出框 -->
+    <div id="remove-edit" style="display:none;">
+        <p class="remove-edit-header">
+            <span>温馨提示</span>
+            <span style="cursor: pointer;" onclick="$(`#remove-edit`).hide();$(`#mask`).hide();">X</span>
+        </p>
+        <p class="remove-edit-content" style="padding-top:45px;">确认删除此素材？</p>
+        <p class="remove-edit-content">(若删除同步的素材，可以重新点击“同步素材”找回删除的素材)</p>
+        <div style="width:206px;height: 32px;margin: 60px auto 0 323px;">
+            <span onclick="isRemoveMaterial()" class="remove-edit-confirm">确认</span>
+            <span onclick="$(`#remove-edit`).hide();$(`#mask`).hide();" class="remove-edit-cancel">取消</span>
+        </div>
+    </div>
+    <!-- 查看大图弹出框 -->
+    <div id="img-edit" style="display:none;">
+        <div class="img-edit-close" onclick="$(`#img-edit`).hide();$(`#mask`).hide();"></div>
+        <div class="img-edit-show">
+            <img style="width:100%;" src="" alt="">
+            <!-- <p style="text-align: center;position: absolute;bottom: 0px;width: 100%;height: 55px;background-color: #000000;opacity: 0.5;padding: 0px;margin: 0px;">
+                <span style="display: inline-block;width:110px;height:55px;text-align:center;line-height:55px;cursor: pointer;">关闭</span>
+            </p> -->
+        </div>
+    </div>
+    
+</div>
+<script type="text/javascript" src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    //同步按钮弹出自动关闭
+    var autoClose;
+    var result;
+    var synchronou_toggle = true;
+    var material = '{$material}';
+    var total_page = 0;
+    var single_count = 8;
+    var material_img = new Vue({
+        el: '#material_img',
+        data: {
+            imgSrc:"",
+            attachments:[]
+        }
+    })
+    $("#synchronous").on("click", function () {
+        if (synchronou_toggle) {
+            showMaskLayer();
+            synchronou_toggle = false;//关闭同步按钮
+            //开始同步
+            $.post('/{$Think.const.CONTROLLER_NAME}/synchronization',{material:material},function(response){
+                hideMaskLayer();
+                if (response.code == 0) {
+                    $('.synchronous-edit-content').text('图片素材共'+response.data.total_count+'个，已更新'+response.data.total_count+'个');
+                    synchronous();
+                    loadingMaterial(1);
+                } else {
+                    $.dialog.alert(response.message)
+                }
+                synchronou_toggle = true;
+            },'json')
+        }
+    })
+    $(".search_ipt input").keyup(function(){
+        loadingMaterial(1);
+    });
+    loadingMaterial(1);
+    //加载函数
+    function pagination(response,page){
+        var count = response.rows.length;
+        if ((single_count * (page - 1) + count ) < response.total) {
+            $('.pagination-next,.pagination-last').parents('a').removeClass('l-btn-disabled l-btn-plain-disabled');
+        } else {
+            $('.pagination-next,.pagination-last').parents('a').addClass('l-btn-disabled l-btn-plain-disabled');
+        }
+        if (page > 1) {
+            $('.pagination-first,.pagination-prev').parents('a').removeClass('l-btn-disabled l-btn-plain-disabled');
+        } else {
+            $('.pagination-first,.pagination-prev').parents('a').addClass('l-btn-disabled l-btn-plain-disabled');
+        }
+        total_page = (Math.ceil(response.total/single_count));
+        $('#pagination-count').text('共'+total_page+'页');
+        $('#pagination-num').val(page);
+        if (page > total_page) {
+            $('#material-count').text('显示'+(single_count * (page - 1) + 1 )+'到'+(single_count * page)+',共'+response.total+'记录')
+        } else {
+            $('#material-count').text('显示'+(single_count * (page - 1) + 1 )+'到'+(single_count * (page - 1) + count )+',共'+response.total+'记录')
+        }
+    }
+    $('.pagination-first,.pagination-prev,.pagination-next,.pagination-last').on('click',function(){
+        if(!$(this).parents('a').hasClass('l-btn-disabled')){
+            if ($(this).hasClass('pagination-first')){
+                loadingMaterial(1);
+            } else if ($(this).hasClass('pagination-prev')) {
+                loadingMaterial(parseInt($('#pagination-num').val()) - 1);
+            } else if ($(this).hasClass('pagination-next')) {
+                loadingMaterial(parseInt($('#pagination-num').val()) + 1);
+            } else if ($(this).hasClass('pagination-last')) {
+                loadingMaterial(total_page);
+            }
+        }
+    })
+    $("#pagination-num").keyup(function(){
+        loadingMaterial($('#pagination-num').val() > 0 ? $('#pagination-num').val() : 1);
+    });
+    function toggleType(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+    //加载函数
+    function loadingMaterial(page)
+    {
+        var keyword = $('#search').val();
+        $('#material-list').empty();
+        $.post('{$Think.const.CONTROLLER_NAME}/list/material/'+material,{page: page,qlname:keyword,rows: single_count},function(response){
+                pagination(response,page);
+                if (response.rows.length > 0) {
+                    for(let i = 0;i < response.rows.length ; i++) {
+                        var certificationStr;
+                        if(response.rows[i].syn_status == "10"){
+                            certificationStr = `<div class="certificationed"></div>`
+                        }else{
+                            certificationStr = `<div class="uncertificationed"></div>`
+                        }
+                        var button = getButton(response.rows[i]);
+                        var html =  `<div class="show_box" data-id="${response.rows[i].id}">${certificationStr}<p class="tupian-name" title="${response.rows[i].name}">${response.rows[i].name}</p>
+                                <div class="tupian-img">
+                                    <img style="width: 100%;"  onclick="showBigimg('${response.rows[i].local_thumb_url}')"
+                                         src="${response.rows[i].local_thumb_url}" alt="">
+                                </div>
+                                <div class="tupian-tool">
+                                    <a class="icon-img-down" title="下载" href="${response.rows[i].local_thumb_url}" download="${response.rows[i].name}"></a>
+                                    <span  class="icon-img-remove" title="删除" onclick="result = removeMaterial(${response.rows[i].id})"></span>
+                                    ${button}
+                                </div>
+                            </div>`;
+                        $('#material-list').append(html)
+                    }
+                } else {
+                    var html = `<div id="empty-notice" style="color: rgb(180, 180, 180);width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 140px;font-size: 20px">暂无数据</div>`;
+                    $('#material-list').append(html)
+                }
+        },'json')
+
+    }
+    //新增 功能按钮
+    function getButton(item){
+        var Html = '';
+        switch(parseInt(item.syn_status)){
+            case 10 :
+                Html = `<span  class="icon-img-preview" title="预览" onclick="snedMessage(${item.id})"></span>`;
+                break;
+            case 30 :
+                    Html = `<span  class="icon-img-synchronous" title="同步" onclick="synImg(${item.id}, this)"></span>`;
+                break;
+        }
+
+        return Html;
+    }
+    function synchronous(){
+        $("#mask").show();
+        $(`#synchronous-edit`).show();
+        autoClose = setTimeout(function () {
+            $("#mask").hide();
+            $(`#synchronous-edit`).hide();
+        }, 3000);
+    }
+    function Close() {
+        $("#mask").hide();
+        $(`#synchronous-edit`).hide();
+        clearTimeout(autoClose);
+    }
+    // 素材删除功能
+    function removeMaterial(id) {
+        $("#mask").show();
+        $("#remove-edit").data('id',id).show();
+    }
+    //确认删除
+    function isRemoveMaterial() {
+        var id = $("#remove-edit").data('id');
+        $.post('{$Think.const.CONTROLLER_NAME}' + '/delete',{id: id},
+            function (result) {
+                if (result.code === 0) {
+                    $('.show_box[data-id='+id+']').remove();
+                    $.dialog.tips("删除成功！");
+                } else {
+                    $.dialog.alert(result.message);
+                }
+                $("#mask").hide();
+                $(`#remove-edit`).hide();
+            },"json")
+    }
+    // 查看大图功能
+    function showBigimg(url) {
+        $("#mask").show();
+        $(`#img-edit`).show();
+        $(`#img-edit`).find("img").attr("src", url);
+    }
+    //图片上传微信
+    function synImg(id, obj){
+        $.dialog.confirm('确定同步的微信素材库', function(){
+            $.post('ComWechat/materialImg', {id:id}, function(res){
+                $.dialog.alert(res.message);
+                if(res.code == 0){
+                    $(obj).remove();
+                }
+            }, 'json')
+        })
+    }
+    //图片预览
+    function snedMessage(id){
+        createDialog("ComWechat/query", "预览", 'WxReply');
+        self.getWechatData = function(data){
+            $.post('ComWechat/sendImg', {openid : data.openid, id:id}, function(res){
+                $.dialog.alert(res.message);
+            }, 'json')
+        }
+    }
+</script>

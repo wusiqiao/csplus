@@ -1,0 +1,188 @@
+<script type="text/javascript">
+    function format_tpl_example(value) {
+        return "<div style='padding:5px 0px'>" + value.replace(/\r\n/g, "<br>") + "<div>";
+    }
+    function format_head_pic(value, row) {
+        if(value){
+            return `<img src="${value}" style="width:40px;height:40px;border-radius: 50%;">`;
+        }else{
+            return '<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg" style="width:40px;height:40px;border-radius: 50%;">';
+        }
+    }
+    function format_user_name(value){
+        return `<div style="width:100px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function format_user_RENAME(value){
+        if(value == null || value == ""){
+            return `<div style="width:80px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="暂无备注">-</div>`
+        }else{
+            return `<div style="width:80px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${value}">${value}</div>`
+        }
+    }
+    function format_user_MOBILE(value){
+        if(value == null || value == ""){
+            return `<div style="width:100px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="未填写手机号">-</div>`
+        }else{
+            return `<div style="width:100px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${value}">${value}</div>`
+        }
+    }
+    function format_user_TAG(value){
+        if(value == null || value == ""){
+            return `<div style="width:110px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="暂无标签">-</div>`
+        }else{
+            return `<div style="width:110px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${value}">${value}</div>`
+        }
+    }
+    function format_SEND_TEMPLATE(value){
+        return `<div style="width:130px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function format_SEND_TIME(value){
+        return `<div style="width:180px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function format_operation(value, row, index) {
+        var html = '';
+        html += "<a style='color: #368BFE' onclick=\"desc(" + row.id + ")\">查看详情</a>";
+        return html;
+    }
+    setMainContainerConfig("{$Think.const.CONTROLLER_NAME}", {
+        onDblClickRow: function () {
+            return false;
+        }
+    })
+</script>
+<style>
+    .datagrid-cell {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    .tip-div {
+        position: absolute;
+        top: 0;
+        right: 50px;
+        height: 45px;
+        line-height: 45px;
+    }
+    .tip-div .tip-msg {
+        width: 28px;
+        height: 45px;
+        font-family: MicrosoftYaHei;
+        font-size: 14px;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 45px;
+        letter-spacing: 0px;
+        color: #676767;
+        display: -webkit-box;
+        float: right;
+    }
+
+    .tip-div .tip-icon {
+        font-size: 26px;
+        color: #e91835;
+        line-height: 45px;
+        display: inline-block;
+        width: 25px;
+        height: 45px;
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/img/tip-help.png') no-repeat;
+        background-size: 20px;
+        background-position-y: 13px;
+    }
+    .maincontainer{
+        height: 100% !important;
+    }
+</style>
+<div class="maincontainer" id="WxBranchTemplate-maincontainer">
+    <div href="javascript:void(0)" class="tip-div" onclick="showTip()">
+        <span class="tip-icon"></span>
+        <span class="tip-msg">帮助</span>
+    </div>
+    <div id="{$Think.const.CONTROLLER_NAME}-toolbar">
+        <div class="extend-nav-menu c-header">
+            <div class="tab-span menu_item tab-span-on" data-options="text:'客户发送详情', url:'{$Think.const.CONTROLLER_NAME}/userSendStatistics',params:''">客户发送详情</div>
+            <div class="tab-span menu_item" data-options="text:'草稿箱', url:'{$Think.const.CONTROLLER_NAME}/templateDraft',params:''">草稿箱</div>
+            <div class="tab-span menu_item" data-options="text:'历史数据', url:'{$Think.const.CONTROLLER_NAME}/templateHistory',params:''">历史数据</div>
+            <div class="tab-span menu_item" data-options="text:'模板导入', url:'{$Think.const.CONTROLLER_NAME}',params:''">模板导入</div>
+        </div>
+        <div style="padding:0 10px;">
+            <div class="btn-speed" onclick="templateAppend()">发送通知</div>
+            <div style="float:right;" class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                <input name="keyword" style="width: 300px" placeholder="编号/分组/标签/模板标题/昵称" class="easyui-validatebox filter-field" value="" onkeyup="doSearchQuery('{$Think.const.CONTROLLER_NAME}');"/>
+                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+            </div>
+        </div>
+    </div>
+    <table class="datagrid" fitColumns="true" id="{$Think.const.CONTROLLER_NAME}-datagrid" data-options="
+           url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/statistics_list',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+           pageNumber:1,
+           checkOnSelect:false,
+           singleSelect:false,
+           border:true,
+           onRowContextMenu: function (e, rowIndex, rowData) {
+             $(this).datagrid('clearSelections');
+             $(this).datagrid('selectRow', rowIndex);
+           e.preventDefault();
+            $('#box_{$Think.const.CONTROLLER_NAME}').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+             });
+            }">
+        <thead>
+            <tr>
+                <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+                <th data-options="field:'head_pic',width:'60',align:'left',formatter:format_head_pic">
+                    {$Think.lang.USER_HEADER}</th>
+                <th data-options="field:'name',width:'120',align:'left',formatter:format_user_name">{$Think.lang.USER_LINKNAME}</th>
+                <th data-options="field:'comments',width:'80',align:'left',formatter:format_user_RENAME">{$Think.lang.USER_RENAME}</th>
+                <th data-options="field:'mobile',width:'100',align:'left',formatter:format_user_MOBILE">{$Think.lang.USER_MOBILE}</th>
+                <!--<th data-options="field:'group_name',width:'120',align:'left'">{$Think.lang.USER_GROUP}</th>-->
+                <th data-options="field:'tag_name',width:'120',align:'left',formatter:format_user_TAG">{$Think.lang.USER_TAG}</th>
+                <th data-options="field:'last_template_title',width:'120',align:'left',formatter:format_SEND_TEMPLATE">
+                    {$Think.lang.USER_LAST_SEND_TEMPLATE}</th>
+                <th data-options="field:'last_send_time',width:'180',align:'left',formatter:format_SEND_TIME">{$Think.lang.USER_LAST_SEND_TIME}
+                </th>
+                <th data-options="field:'month_send_count',width:'80',align:'center'">
+                    {$Think.lang.USER_MONTH_SEND_COUNT}</th>
+                <th data-options="field:'week_send_count',width:'120',align:'center'">{$Think.lang.USER_WEEK_SEND_COUNT}
+                </th>
+                <th data-options="field:'operation',width:120,align:'center',formatter:format_operation">
+                    {$Think.lang.USER_OPERATION}</th>
+            </tr>
+            <include file="./Application/Common/Layout/Default/list_footer.html"
+                controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script>
+    $(".extend-nav-menu div.menu_item").click(function () {
+        var node = $.parser.parseOptions(this);
+        var url = app_config.module + "/" + node.url;
+        if (node.params) {
+            url = url + node.params;
+        }
+        $(this).siblings().removeClass('active');
+        $(this).addClass("active");
+        var title = $('.side-bar li.active').text() + ">" + $(this).text();
+        $("#module-content .head").text(title);
+        $.get(url, function (result) {
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    });
+    function desc(id) {
+        createDialog("{$Think.const.CONTROLLER_NAME}/userSendDesc/id/" + id, '查看详情', 'dlg-desc-select');
+    }
+    function templateAppend() {
+        createDialog('{$Think.const.CONTROLLER_NAME}/templateAppend', '查看详情', 'dlg-notice-select');
+    }
+    function showTip() {
+        createDialog('{$Think.const.CONTROLLER_NAME}/showTip', '提示', 'dlg-tip-select');
+    }
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+</script>

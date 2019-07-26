@@ -1,0 +1,93 @@
+<style>
+    .tableForm{width:98%}
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="margin: 10px;background: #fff;width:70vw;border:1px solid #ccc;">
+    <form action="{$Think.const.CONTROLLER_NAME}/update" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-section">
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>第三方平台设置</span></div>
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption required"><span>平台名称：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="id"  type="hidden" class="easyui-validatebox "  value="{$model.id}" />
+                            <input name="name"  placeholder="平台名称" class="easyui-validatebox " required value="{$model.name}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption required"><span>appId：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="appid" placeholder="平台appid" class="easyui-validatebox" required value="{$model.appid}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption required"><span>secret：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="secret" placeholder="平台secret" class="easyui-validatebox" required value="{$model.secret}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>消息校验Token：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="token" placeholder="Token" class="easyui-validatebox" value="{$model.token}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>消息加解密Key：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="key" placeholder="Key固定43位" class="easyui-validatebox" value="{$model.key}" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="caption"><span>用户授权地址：</span></div>
+                        <div class="inputbox_x2" id="qrcode">
+                            <span class="easyui-validatebox" style="padding: 10px 0;padding-right: 5px;margin: 5px 0;overflow: unset;white-space: unset;height: auto !important;line-height: unset; word-break: break-all;"> {$url}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+            <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg" onclick="saveComStoreForm()">保存</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="__ROOT__/{$Think.MODULE_PATH}Public/js/QRCode.js"></script>
+<script>
+    new QRCode(document.getElementById("qrcode"), "{$url}");  // 设置要生成二维码的链接
+</script>
+<script>
+    function saveComStoreForm() {
+        showMaskLayer();
+        var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+        dataForm.trigger("Update"); //触发子表grid获取数据，如果没有子表，不需要触发。
+        dataForm.form('submit', {
+            url: dataForm.attr("action"),
+            onSubmit: function() {
+                var validate = $(this).form('validate');
+                if (!validate) {
+                    hideMaskLayer();
+                    //$.dialog.alert("请输入必填项！");
+                }
+                return validate;
+            },
+            success: function(ret) {
+                var result = $.parseJSON(removeJsonQuote(ret));
+                if (result.code === 0) {
+                    $.dialog.tips("保存成功！");
+                    //刷新窗体
+                    dataForm.find("input[name=id]").val(result.message.id);
+                    dataForm.attr("action", "WxConfig/update");
+                } else {
+                    $.dialog.tips(result.message);
+                };
+                hideMaskLayer();
+            }
+        });
+    }
+</script>

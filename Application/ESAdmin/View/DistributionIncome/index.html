@@ -1,0 +1,189 @@
+<style>
+    .btn-bg-blue{
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        padding: 0px 2px;
+        margin: 5px 0 5px 5px;
+        color: #529bfd;
+        cursor: pointer;
+    }
+    .btn-bg-blue:hover{
+        color: #6eacfe;
+    }
+    .btn-bg-blue-on{
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        background-color: #529bfd;
+        color: #fff;
+        padding: 0px 2px;
+        margin: 5px 0 5px 5px;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-bg-blue-on:hover{
+        border: none;
+        color: #fff;
+        background-color: #6eacfe;
+    }
+    .maincontainer{
+        height:calc(100% - 40px);
+    }
+</style>
+<script>
+    function formatNull(value){
+        if(value == "" || value == null){
+            value = "-";
+        }
+        return value;
+    }
+
+    function formatUnfrozenTime(value){
+        if(value == "" || value == null){
+            var time = "-";
+        }else{
+            var time = formatDateTime(value);
+        }
+        return time;
+    }
+
+</script>
+<div class="c-header">
+    <div class="tab-span" onclick="toggleIndex('DistributionUser')">分销用户</div>
+    <div class="tab-span" onclick="toggleIndex('ComBusinessCard')">推广二维码</div>
+    <div class="tab-span tab-span-on" onclick="toggleIndex('DistributionIncome')">佣金明细</div>
+    <div class="tab-span" onclick="toggleIndex('DistributionSetting')">佣金设置</div>
+</div>
+<div class="maincontainer" id="DistributionIncome-maincontainer">
+    <table class="datagrid easyui-datagrid" id="DistributionIncome-datagrid"
+           data-options="
+           url:'__MODULE__/DistributionIncome/list',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#DistributionIncome-toolbar',
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:false,
+           border:true,
+           onLoadSuccess:function(data){
+               if(data.total == 0){$('#empty-notice').show()}else{$('#empty-notice').hide()}
+           }
+        ">
+        <thead>
+            <tr>
+                <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+                <th data-options="field:'update_time',width:160,align:'left',formatter:formatDateTime">获取时间</th>
+                <th data-options="field:'inviter_name',width:100,align:'left'">姓名</th>
+                <th data-options="field:'mobile',width:100,align:'center',formatter:formatNull">手机号码</th>
+                <th data-options="field:'commision',width:100,align:'center'">金额</th>
+                <th data-options="field:'source_type_view',width:100,align:'left'">奖金类型</th>
+                <th data-options="field:'member_name',width:100,align:'left'">贡献人</th>
+                <th data-options="field:'member_mobile',width:100,align:'center',formatter:formatNull">贡献人手机</th>
+                <th data-options="field:'unfrozen_time',width:160,align:'center',formatter:formatUnfrozenTime">解冻时间</th>
+                <th data-options="field:'status_view',width:100,align:'left'">解冻状态</th>
+                <th data-options="field:'memo',width:100,align:'left'">来源</th>
+                <th data-options="field:'operate',width:100,align:'center',formatter:formatIncomeOperate">操作</th>
+            </tr>
+        </thead>
+    </table>
+    <div id="empty-notice" style="color: rgb(180, 180, 180);display:none;width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 40px;font-size: 20px">暂无数据</div>
+</div>
+<div id="{$Think.const.CONTROLLER_NAME}-toolbar">
+    <div class="action-panel">
+        <tr>
+            <th>解冻状态：</th>
+            <td>
+                <span class="btn-bg-blue btn-bg-blue-on" data-state="">全部</span>
+                <span class="btn-bg-blue" data-state="0">未解冻</span>
+                <span class="btn-bg-blue" data-state="1">已解冻</span>
+                <span class="btn-bg-blue" data-state="2">无效</span>
+                <input type="hidden" name="q-status" value="" class="filter-field">
+            </td>
+        </tr>
+        <tr>
+            <th>用户名称：</th>
+            <td>
+                <input name="inviter_name"  class="easyui-validatebox filter-field" value="{$name}"/>
+            </td>
+            <th>获取时间：</th>
+            <td>
+            <td>
+                <input name="qdr-update_time" id="day_start" class="easyui-datebox filter-field" value="" />－
+                <input name="qdr-update_time" id="day_end" class="easyui-datebox filter-field" value=""  />
+            </td>
+            </td>
+        </tr>
+    </div>
+</div>
+<script>
+    function toggleIndex(url){
+        if(url != ""){
+            $.get(url, function(result){
+                $("#module-content .content").html("").append(result);
+                $.parser.parse("#module-content .content");
+            });
+        }
+    }
+
+    $("input[name='inviter_name']").on("input",function(){
+        if($("input[name='inviter_name']").data("id") == 1){
+            $("input[name='inviter_name']").data("id",2);
+            changeUrl();
+        }
+        doSearchQuery("DistributionIncome")
+    });
+
+    $(function(){
+        $(".search-action-panel").hide();
+    });
+
+    $(function () {
+        changeUrl();
+        if("{$id}" != ""){
+            $("input[name='inviter_name']").data("id",1);
+        }
+    });
+
+    function changeUrl(){
+        if($("input[name='inviter_name']").val() != "{$name}" || "{$id}" == ""){
+            $("#DistributionIncome-datagrid").datagrid({
+                url:"DistributionIncome/list"
+            })
+        }else{
+            $("#DistributionIncome-datagrid").datagrid({
+                url:"DistributionIncome/list/id/{$id}"
+            })
+        }
+    }
+
+    $("#day_start").datebox({
+        onSelect:function(){
+            doSearchQuery("DistributionIncome");
+        }
+    });
+    $("#day_end").datebox({
+        onSelect:function(){
+            doSearchQuery("DistributionIncome");
+        }
+    });
+
+    $(function(){
+        var H1 = $("#DistributionIncome-toolbar").height();
+        var H2 = $(".c-header").height();
+        $("#empty-notice").css("top",H1+H2+100);
+    });
+
+    $(".btn-bg-blue").on("click",function(){
+        $(this).addClass("btn-bg-blue-on").siblings().removeClass("btn-bg-blue-on");
+        $("input[name='q-status']").val($(this).data("state"));
+        doSearchQuery("DistributionIncome");
+    })
+
+
+</script>

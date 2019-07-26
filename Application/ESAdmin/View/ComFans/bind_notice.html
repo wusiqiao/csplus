@@ -1,0 +1,96 @@
+<style>
+	#editUserType-detailcontainer .datagrid .datagrid-pager {
+		display: none;
+	}
+</style>
+<script>
+
+    function formatValidGroup(value) {
+        return value ? value : '未分组';
+    }
+</script>
+<div class="detailcontainer" id="editUserType-detailcontainer" style="position: relative">
+    <form id="editUserType-form">
+        <div class="tableForm" style="width:880px;min-height: 400px;">
+            <table id="user-checked-datagrid" class="easyui-datagrid datagrid">
+                <thead>
+                    <tr>
+                        <th field="ck" checkbox="true"></th>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'head_pic',width:60">头像</th>
+                        <th data-options="field:'name',width:100">昵称</th>
+                        <th data-options="field:'comments',width:100">备注</th>
+                        <th data-options="field:'groups_value',width:100,formatter:formatValidGroup">分组</th>
+                        <th data-options="field:'tags_value',width:200">标签</th>
+                        <th data-options="field:'user_type',width:60">用户类型</th>
+                        <th data-options="field:'service_man_value',width:80">业务负责人</th>
+                        <th data-options="field:'company_names',width:300">公司</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </form>
+    <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="common-blue-btn btn-update" plain="true" icon="fa-save fa-lg"  onclick="bindNotice('{$Think.const.CONTROLLER_NAME}');">发送</a>
+            <a href="javascript:void(0)" class="common-red-btn" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var data = new Array;
+    setTimeout(function() {
+        data = getData();
+        var html = '';
+        var input = '';
+        var arr = [];
+        for (var i in data.data) {
+            // var checked = '<input name="id[]" type="checkbox" value="' + data.data[i].id + '" checked />';
+            var namestr = $.trim(data.data[i].name) != '' ? data.data[i].name : '未命名用户' + data.data[i].id;
+            var img = '<img src="' + data.data[i].head_pic + '" width="40px" height="40px">';
+            arr.push({
+                // checked:checked,
+                head_pic: img,
+                name: namestr,
+                id: data.data[i].id,
+                comments: data.data[i].comments,
+                mobile: data.data[i].mobile,
+                groups_value: data.data[i].groups_value,
+                tags_value: data.data[i].tags_value,
+                user_type: data.data[i].user_type_value,
+                service_man_value: data.data[i].service_man_value,
+                company_names: data.data[i].company_names
+            });
+        }
+        $('#user-checked-datagrid').datagrid('loadData', arr);
+        $('#user-checked-datagrid').datagrid('selectAll');
+    }, 200)
+    function getData() {
+        return $.dialog.list["dlg-company-select"].data;
+    }
+function bindNotice(frameId) {
+    showMaskLayer();
+    if ($('#{$Think.const.CONTROLLER_NAME}-dataform').form('validate')) {
+        var user = getGridSelections("user-checked");
+        var user_ids = [];
+        for (var i in user)
+        {
+            user_ids.push(user[i].id);
+        }
+        // var data = $('#{$Think.const.CONTROLLER_NAME}-dataform').serialize();
+        $.post('/' + frameId + '/bindNotice',{id:user_ids}, function(result) {
+            hideMaskLayer();
+            if (result.code == 0) {
+                closeDialog();
+                getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                $.dialog.tips(result.message);
+            } else {
+                $.dialog.tips(result.message);
+                return false;
+            }
+        }, 'json')
+    }
+}
+</script>

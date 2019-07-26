@@ -1,0 +1,188 @@
+<style>
+    .selected-table{
+        width:100%;
+        border-collapse:collapse;
+        text-align: center;
+        line-height: 50px;
+    }
+    .selected-table thead tr{
+        background: #e3efff;
+    }
+    .selected-table tbody tr:nth-child(even){
+        background: #fbfbfb;
+    }
+    .datagrid-header-rownumber,.datagrid-cell-rownumber{
+        width:40px;
+    }
+    .datagrid .datagrid-pager{
+        padding-right: 1px;
+    }
+    .datagrid-header-check input[type=checkbox]{
+        display: none;
+    }
+    #show-select-box::-webkit-scrollbar {
+        width: 8px;
+        background-color: #eee;
+        border-radius: 4px;
+    }
+    #show-select-box::-webkit-scrollbar-thumb {
+        background: #b8b4b4;
+        border-radius: 4px;
+    }
+</style>
+<script>
+    function formatRadio(value,row){
+        var html = `<input type='radio' name='bind_select' class='css-checkbox' id='c-${row.id}'>
+        <label for='c-${row.id}' class='css-label'></label>`;
+        return html;
+    }
+
+    function formatName(value,row){
+        if(row.head_pic){
+            return `<div style="width:90%;height:35px;display:flex;">
+                <img src="`+row.head_pic+`" style="max-width:30px;max-height:30px;border-radius:3px;margin-right:5px;" onerror="this.onerror=null;this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                <div style="align-self:center;flex:1;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">`+value+`</div>
+                </div>`;
+        }else{
+            return `<div style="width:90%;height:35px;display:flex;">
+                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg" style="max-width:30px;max-height:30px;border-radius:3px;margin-right:5px;">
+                <div style="align-self:center;flex:1;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">`+value+`</div>
+                </div>`;
+        }
+    }
+</script>
+
+<div style="background-color: #ffffff;">
+    <div style="width:100%;height: 530px;display: flex;">
+        <!-- 左侧 -->
+        <div style="flex:1;padding:10px 35px;">
+            <div style="margin: 0 auto;width: 300px;" class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                <input type="text" placeholder="客户昵称/备注" style="width:270px;" class="filter-field" name="SerachComPotential"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="queryComPotential()">
+            </div>
+            <div style="width:360px;height:460px;margin-top:10px;overflow-y:auto;overflow-x:hidden;" id="table-area">
+                <table id="ComPotential-datagrid" class="" data-options="url:'/MsgGroupMember/searchMember/groupId/{$group_id}',pageSize:<empty name='pagesize'>50<else/>{$pagesize}</empty>" fitColumns="true">
+                    <thead>
+                    <tr>
+                        <th data-options="field:'ck',checkbox:true"></th>
+                        <th data-options="field:'name',width:50,align:'left',formatter:formatName">客户昵称</th>
+                        <th data-options="field:'id',hidden:true"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 右侧 -->
+        <div style="flex:1;padding:10px 35px;">
+            <div id="show-select-box" style="width:360px;height:460px;margin-top:42px;overflow-y:auto;overflow-x:hidden;">
+                <table class="selected-table " style="width: 95%;margin-bottom: 10px;">
+                    <thead>
+                        <td width="150" style="color: #676767;font-weight: bold;">客户昵称</td>
+                    </thead>
+                    <tbody id="selected">
+
+                    </tbody>
+                </table>
+                <input type="hidden" name="selected" value="0">
+            </div>
+        </div>
+    </div>
+    <div style="padding: 10px 35px;">
+        <div style="width: 100px;margin: 0 0 0 auto;display: flex;align-items: center;">
+            <span class="btn-confirm" onclick="creat_group()">确认</span>
+            <!-- <span class="btn-confirm" onclick="closeEdit()">关闭</span> -->
+        </div>
+    </div>
+</div>
+<script>
+    var searchTime = "";
+    $("input[name='SerachComPotential']").bind("input propotychange",function(){
+        clearTimeout(searchTime);
+        searchTime = setTimeout(function(){
+            $("#ComPotential-datagrid").datagrid("reload",{
+                name:$("input[name='SerachComPotential']").val()
+            })
+        },'1500')
+    });
+
+    var addMemberAry = []
+    $("#ComPotential-datagrid").datagrid({
+        onSelect:function(){
+            showRightList()
+        },
+        onUnselect:function(){
+            showRightList()
+        },
+        onClickRow:function(rowIndex, rowData){
+            $(this).datagrid('unselectRow', rowIndex);
+        },
+        onLoadSuccess:function(){
+            
+        }
+    });
+
+    function showRightList(){
+        var html = "";
+        addMemberAry = $("#ComPotential-datagrid").datagrid("getSelections");
+        for(var k in addMemberAry){
+            var picName = `<div style="width:90%;height:50px;display:flex;align-items: center;margin: 0 0 0 auto;">
+                <img src="${addMemberAry[k].head_pic}" style="width:30px;height:30px;border-radius:3px;margin-right:5px;" onerror="this.onerror=null;this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                <div style="text-align: left;align-self:center;flex:1;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${addMemberAry[k].name}">${addMemberAry[k].name}</div>
+                </div>`;
+            html += "<tr><td class='picName'>" + picName + "</td></tr>";
+        }
+        $("#selected").html(html);
+    }
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+        
+    function creat_group(){
+        var userIds = [];
+        for(var k in addMemberAry){
+            userIds.push(addMemberAry[k].id)
+        }
+        var data = new FormData();
+        data.append("groupId",'{$group_id}');
+        data.append("userIds",userIds.join(','));
+        // console.log(data)
+        $.ajax({
+            url: "/MsgGroupMember/addMember",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            beforeSend: function () {
+                showMaskLayer();
+            },
+            success: (response) => {
+                if (response.code == 0) {
+                    $.dialog.tips("添加成功");
+                    $("#ComPotential-datagrid").datagrid("reload")
+                    $("#selected").html("");
+                    addMemberAry = [];
+                    closeEdit()
+                } else {
+                    $.dialog.alert("添加失败");
+                }
+                hideMaskLayer();
+            },
+            error: function () {
+                hideMaskLayer();
+            }
+        });
+    }   
+    function closeEdit(){
+        showMaskLayer();
+        attachmentVue.getGroupMemberList();
+        hideMaskLayer();
+        closeDialog('attach_editgroup');
+    }
+    
+</script>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            width:800px;
+        }
+        .wrap .row .inputbox{
+            display: flex;
+            justify-content: space-between;
+        }
+        .tag-check input[type=checkbox] {
+            content: '';
+            width: 22px;
+            height: 22px;
+            background-image: url(/{$Think.MODULE_PATH}Public/images/icon/icon-uncheck.png);
+            background-repeat: no-repeat;
+            background-size: 22px;
+            background-position: center;
+            outline: none;
+            background-color: transparent;
+            -webkit-appearance: none;
+        }
+        .tag-check input[type=checkbox]:checked {
+            content: '';
+            width: 22px;
+            height: 22px;
+            background-image: url(/{$Think.MODULE_PATH}Public/images/icon/icon-checked.png);
+            background-repeat: no-repeat;
+            background-size: 22px;
+            background-position: center;
+        }
+        /* 保存按钮 */
+        .btn_save_blue{
+            display: inline-block;
+            width: 84px;
+            height:34px;
+            line-height: 34px;
+            text-align: center;
+            background-color: #529bfd;
+            color: #fff;
+            padding: 0px 10px;
+            margin: 5px 10px;
+            cursor: pointer;
+        }
+        .btn_save_blue:hover{
+            background-color: #6eacfe;
+        }
+        /* 关闭按钮 */
+        .btn_close_gray{
+            display: inline-block;
+            width: 84px;
+            height:34px;
+            line-height: 34px;
+            text-align: center;
+            padding: 0px 10px;
+            margin: 5px 10px;
+            border:1px solid #d3d3d3;
+            cursor: pointer;
+        }
+        .btn_close_gray:hover{
+            border:1px solid #6eacfe;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <form id="tagForm">
+            <div class="inputbox tag-check" id="tagList" style="word-wrap:break-word">
+                <div v-for="(item,index) in tagList" v-if="item.id != 'other' && item.id != 'all'" style="float:left;width:200px;margin-bottom:10px;display:flex;">
+                    <input name="tag_ids" type="checkbox"  :value="item.id">
+                    <div style="align-self:center;">{{item.name}}</div>
+                </div>
+            </div>
+        </form>
+        <div class="form-actions" style="height:auto;">
+            <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="saveTag()">保存</a>
+                <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()">关闭</a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    var checkLabel = new Vue({
+        el:"#tagList",
+        data:{
+            tagList:[]
+        },
+        methods:{
+        }
+    });
+    function getTagList() {
+        $.post("/ComPotential/tagList",function(result) {
+            checkLabel.tagList = result[0]['children'];
+        }, "json");
+    }
+    getTagList();
+    var data = new Array;
+    setTimeout(function() {
+        data = getData();
+    }, 200)
+    function saveTag() {
+        // showMaskLayer();
+        var tag_ids = [];
+        $('input[name="tag_ids"]:checked').each(function(){
+            tag_ids.push($(this).val());
+        });
+        var user_ids = [];
+        user_ids = data.ids;
+        $.post('/ComPotential/targetUpdates',{users:user_ids,tag_ids:tag_ids}, function(result) {
+            hideMaskLayer();
+            $.dialog.tips(result.message,3.5);
+            if (result.code == 0) {
+                queryTagList();
+                closeDialog("dlg-checkLabel");
+                getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+            }
+        }, 'json')
+    }
+    function getData() {
+        return $.dialog.list["dlg-checkLabel"].data;
+    }
+    </script>
+</body>
+</html>

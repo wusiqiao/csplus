@@ -1,0 +1,41 @@
+<script type="text/javascript">
+    function formatcategorycolumn(value, row, index){
+        if (row.parent_id == 0 || row.parent_id == null) {
+            return formatUpDown('ComCategory','#ComCategory-datagrid', row);
+        }
+        return '';
+    }
+</script>
+<style>
+    .maincontainer {
+        height: 100%;
+    }
+</style>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/tree_header_auto.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'name',width:180,align:'left'">{$Think.lang.FLD_NAME}</th>
+        <th data-options="field:'parent_name',width:150,align:'left'">上级类别</th>
+        <th data-options="field:'is_valid',width:60,align:'left',formatter:formatValidState">{$Think.lang.FLD_IS_VALID}</th>
+        <th data-options="field:'is_hot',width:80,align:'center',formatter:formatTF">首页展示</th>
+        <th data-options="field:'updown',width:60,align:'center',formatter:formatcategorycolumn">移动</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+
+    <div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+        <a href="javascript:void(0)" class="common-blue-btn detail-edit" style="width:auto" plain="true" onclick="action_show_sortForm()">首页展示排序</a>
+        <div class="right-menu" onclick="action_show_sortForm()">首页展示排序</div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            re_bind_action_add("{$Think.const.CONTROLLER_NAME}", function () {
+                action_tree_add("{$Think.const.CONTROLLER_NAME}");
+            });
+        });
+        function action_show_sortForm(){
+            createDialog("__CONTROLLER__/showSortForm","首页展示排序");
+        }
+    </script>
+</div>

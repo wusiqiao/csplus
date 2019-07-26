@@ -1,0 +1,735 @@
+<script>
+    function formatMatchType(value) {
+        var content = '未知';
+        switch (parseInt(value)) {
+            case 20 :
+                content = '完全匹配';
+                break;
+            case 30 :
+                content = '模糊匹配';
+                break;
+        }
+        return content;
+        //return `<div style="" title="${content}">${content}</div>`
+    }
+    function formatReplyType(value) {
+        var content = '未知';
+        switch (parseInt(value)) {
+            case 10 :
+                content = '文本';
+                break
+            case 20 :
+                content = '图文';
+                break;
+            case 30 :
+                content = '图片';
+                break;
+        }
+        return content;
+//        return `<div style="" title="${content}">${content}</div>`
+    }
+    function formatContent(value, that) {
+        var content = '';
+        switch (parseInt(that.reply_type)) {
+            case 10 :
+                content = value;
+//                return `<div style="width: 180px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${value}">${value}</div>`;
+                break
+            case 20 :
+                content = that.child_title;
+//                return showPicText(null, that.child_title, that.child_local_thumb_url, that.father_update_time);
+                break;
+            case 30 :
+                    console.log(that);
+                content = that.father_name ? that.father_name :that.child_title;
+//                return showImageAll(null, that.father_name, that.father_local_thumb_url)
+                break;
+        }
+
+        return content;
+//        return `<div style="width: 180px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${content}">${content}</div>`;
+    }
+</script>
+<style>
+    .prompt {
+        margin: 22px 0 22px 18px;
+        line-height: 14px;
+    }
+
+    .img-add {
+        width: 32px;
+        height: 32px;
+        margin: 0 auto;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png");
+        background-size: 100% 100%;
+    }
+
+    .attention-reply-operation,
+    .default-reply-operation {
+        margin: 0 18px;
+        width: calc(100% - 36px);
+        background-color: #ffffff;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+    }
+
+    #key-reply {
+        width: 100%;
+        height: calc(100% - 34px);
+    }
+
+    .key-reply-operation {
+        width: 100%;
+        height: 100%;
+    }
+
+    .attention-reply-operation-tab,
+    .default-reply-operation-tab {
+        width: 100%;
+        height: 45px;
+        background-color: #f6f8f9;
+    }
+
+    .attention-reply-operation-item,
+    .default-reply-operation-item {
+        float: left;
+        height: 45px;
+        line-height: 45px;
+        margin: 0 21px;
+        cursor: pointer;
+    }
+
+    #attention-reply-allText,
+    #attention-reply-picText,
+    #attention-reply-allPic,
+    #default-reply-allText,
+    #default-reply-picText,
+    #default-reply-allPic {
+        width: 100%;
+        height: 253px;
+        background-color: #ffffff;
+    }
+
+    #attention-reply-picText,
+    #attention-reply-allPic,
+    #default-reply-picText,
+    #default-reply-allPic {
+        position: relative;
+    }
+
+    #textarea-allText {
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        border: none;
+        resize: none;
+        outline: none;
+        text-indent: 18px;
+        font-size: 14px;
+        color: #666666;
+        padding: 5px;
+    }
+
+    .add-picText,
+    .add-allPic {
+        width: 325px;
+        height: 186px;
+        border: 1px solid #e7e7eb;
+        cursor: pointer;
+        position: absolute;
+        top: calc(50% - 93px);
+        left: calc(50% - 167.5px);
+    }
+
+    .add-picText-checked,
+    .add-allPic-checked {
+        width: 300px;
+        height: 225px;
+        border: 1px solid #e7e7eb;
+        cursor: pointer;
+        position: absolute;
+        top: calc(50% - 112.5px);
+        left: 30px;
+    }
+
+    .allText-icon,
+    .picText-icon,
+    .allPic-icon {
+        float: left;
+        width: 14px;
+        height: 14px;
+        margin: 15.5px 10px 15.5px 0;
+        background-size: 100% 100%;
+    }
+
+    .allText-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText-on.png");
+    }
+
+    .picText-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText.png");
+    }
+
+    .allPic-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic.png");
+    }
+
+    /* 图文 */
+    .tuwen-title {
+        padding: 10px;
+        margin: 0;
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .tuwen-img, .tupian-img {
+        width: calc(100% - 20px);
+        background-color: rgb(241, 230, 215);
+        overflow: hidden;
+        margin: 0px 10px 5px;
+    }
+
+    .tuwen-lastupdata {
+        width: 148px;
+        margin-left: 10px;
+        font-size: 14px;
+        color: #929292;
+        background-color: white;
+    }
+
+    .tuwen-item {
+        padding: 5px 13px;
+        display: flex;
+        border-top: solid 1px #e7e7eb;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tuwen-item-title {
+        width: calc(100% - 75px);
+        height: 50px;
+        margin: 0;
+        padding: 0 5px;
+        font-size: 16px;
+        background-color: #d3d3d3;
+    }
+
+    .tuwen-item-img {
+        width: 50px;
+        height: 50px;
+        margin: 0px;
+        background-color: #368bfe;
+    }
+
+    .tuwen-item-more {
+        height: auto;
+        width: 100%;
+        position: absolute;
+        z-index: 77;
+        right: 0px;
+        background-color: #fff;
+        border-bottom: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+
+    .tuwen-item-more-box {
+        width: 100%;
+        height: auto;
+        border-bottom: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+
+    .tuwen-tool {
+        width: 100%;
+        height: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tuwenbox-item, .tupianbox-item {
+        float: left;
+        position: relative;
+        width: 300px;
+        height: 224px;
+        margin: 0 10px;
+        box-sizing: border-box;
+        border: 1px solid #d3d3d3;
+        background-color: #ffffff;
+        cursor: pointer;
+    }
+
+    .tuwenbox-item-mask, .tupianbox-item-mask {
+        position: absolute;
+        z-index: 111;
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+
+    .tuwenbox-item-checked, .tupianbox-item-checked {
+        position: absolute;
+        width: 54px;
+        height: 38px;
+        top: calc(50% - 19px);
+        left: calc(50% - 27px);
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-checked.png");
+        background-size: 100% 100%;
+    }
+
+    .tuwenselect-edit-ft, .tupianselect-edit-ft {
+        width: 100%;
+        height: 72px;
+        text-align: center;
+    }
+    .maincontainer {
+        width: 100%;
+        height: calc(100% - 190px);
+    }
+</style>
+<div style="width:100%;height: calc(100% - 47px);background-color: #ffffff;">
+    <!-- tab切换 -->
+    <div class="c-header">
+        <div class="tab-span tab-span-on" data-index="0" data-id="{$attention['id']}">首次关注回复</div>
+        <div class="tab-span" data-index="1">关键词回复</div>
+        <div class="tab-span" data-index="2" data-id="{$auto['id']}">默认回复</div>
+    </div>
+    <div style="position:relative;width: 100%;height: calc(100% - 11px);background-color: #ffffff;">
+        <!-- 关注回复 -->
+        <div id="attention-reply">
+            <div class="prompt">
+                当用户关注您的公众号时，将自动发送以下信息给用户。
+            </div>
+            <div class="attention-reply-operation">
+                <!-- tab切换 -->
+                <div class="attention-reply-operation-tab">
+                    <div id="attention-reply-operation-tab-0" data-id="click" class="attention-reply-operation-item"
+                         onclick="checkAllText('attention')">
+                        <span class="allText-icon"></span>
+                        <span style="color: #368bfe;font-size:14px;">纯文本</span>
+                    </div>
+                    <div id="attention-reply-operation-tab-1" data-id="view_limited"
+                         class="attention-reply-operation-item" onclick="checkPicText('attention')">
+                        <span class="picText-icon"></span>
+                        <span style="color: #8d8d8d;font-size:14px;">图文信息</span>
+                    </div>
+                    <div id="attention-reply-operation-tab-2" data-id="media_id" class="attention-reply-operation-item"
+                         onclick="checkAllPic('attention')">
+                        <span class="allPic-icon"></span>
+                        <span style="color: #8d8d8d;font-size:14px;">图片</span>
+                    </div>
+                </div>
+                <div>
+                    <!-- 纯文本 -->
+                    <div id="attention-reply-allText">
+                        <textarea name="" id="textarea-allText" placeholder="请在此输入文字内容"><if
+                                condition="$attention['reply_type'] eq 10">{$attention['content']}
+                        </if></textarea>
+                    </div>
+                    <!-- 图文 -->
+                    <div id="attention-reply-picText" style="display:none;"
+                    <if condition="$attention['reply_type'] eq 20"> materialId="{$attention['content']}"</if>
+                    >
+                    <div class="add-picText" onclick="picTextSelect('attention-reply')">
+                        <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                            从素材库中选择
+                        </div>
+                        <div class="img-add"></div>
+                    </div>
+                </div>
+                <!-- 图片 -->
+                <div id="attention-reply-allPic" style="display:none;"
+                <if condition="$attention['reply_type'] eq 30"> materialId="{$attention['content']}"</if>
+                >
+                <div class="add-allPic" onclick="allPicSelect('attention-reply')">
+                    <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                        从素材库中选择
+                    </div>
+                    <div class="img-add"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width:100%;text-align:center;position: absolute;bottom: 0;padding: 30px 0;">
+        <div class="btn-confirm">保存</div>
+    </div>
+        </div>
+        <!-- 关键回复 -->
+        <div id="key-reply" style="display:none;">
+            <div class="prompt">
+                当用户发送消息到公众号，消息触发关键词则自动回复配置信息。
+            </div>
+            <div class="key-reply-operation">
+                <!-- <div>
+                    <div class="btn-speed" onclick="addKeyWord()">新增关键词</div>
+                </div> -->
+                <div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="width:1024px;height: 500px;">
+                    <include file="./Application/Common/Layout/Default/list_header_auto.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+                    <tr>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'keyword',width:150,align:'center'">关键字</th>
+                        <th data-options="field:'match_type',width:100,align:'center',formatter:formatMatchType">匹配模式
+                        </th>
+                        <th data-options="field:'reply_type',width:100,align:'center',formatter:formatReplyType">回复类型
+                        </th>
+                        <th data-options="field:'content',width:300,align:'center',formatter:formatContent">回复内容</th>
+                    </tr>
+                    <include file="./Application/Common/Layout/Default/list_footer.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+                </div>
+                <div style="width:100%;text-align:center;position: absolute;bottom: 0;padding: 30px 0;">
+                    <div class="btn-confirm">保存</div>
+                </div>
+            </div>
+        </div>
+        <!-- 默认回复 -->
+        <div id="default-reply" style="display:none;">
+            <div class="prompt">
+                当用户发送消息到公众号，消息未匹配关键词则自动回复以下消息。
+            </div>
+            <div class="default-reply-operation">
+                <!-- tab切换 -->
+                <div class="default-reply-operation-tab">
+                    <div id="default-reply-operation-tab-0" data-id="click" class="default-reply-operation-item"
+                        onclick="checkAllText('default')">
+                        <span class="allText-icon"></span>
+                        <span style="color: #368bfe;font-size:14px;">纯文本</span>
+                    </div>
+                    <div id="default-reply-operation-tab-1" data-id="view_limited" class="default-reply-operation-item"
+                        onclick="checkPicText('default')">
+                        <span class="picText-icon"></span>
+                        <span style="color: #8d8d8d;font-size:14px;">图文信息</span>
+                    </div>
+                    <div id="default-reply-operation-tab-2" data-id="media_id" class="default-reply-operation-item"
+                        onclick="checkAllPic('default')">
+                        <span class="allPic-icon"></span>
+                        <span style="color: #8d8d8d;font-size:14px;">图片</span>
+                    </div>
+                </div>
+            <div>
+            <!-- 纯文本 -->
+            <div id="default-reply-allText">
+                <textarea name="default-reply-allText" id="textarea-allText" placeholder="请在此输入文字内容"><if
+                        condition="$auto['reply_type'] eq 10">{$auto['content']}
+                </if></textarea>
+            </div>
+            <!-- 图文 -->
+            <div id="default-reply-picText" style="display:none;"
+            <if condition="$auto['reply_type'] eq 20"> materialId="{$auto['content']}"</if>
+            >
+            <div class="add-picText" onclick="picTextSelect('default-reply')">
+                <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                    从素材库中选择
+                </div>
+                    <div class="img-add"></div>
+                </div>
+            </div>
+            <!-- 图片 -->
+            <div id="default-reply-allPic" style="display:none;"
+            <if condition="$auto['reply_type'] eq 30"> materialId="{$auto['content']}"</if>
+            >
+            <div class="add-allPic" onclick="allPicSelect('default-reply')">
+                <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                    从素材库中选择
+                </div>
+                <div class="img-add"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="width:100%;text-align:center;position: absolute;bottom: 0;padding: 30px 0;">
+    <div class="btn-confirm">保存</div>
+</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $.parser.parse(".maincontainer");
+    var replyType = [10, 10, 10];
+    var isClick = false;
+    // tab切换
+    $(".c-header>div.tab-span").on("click", function () {
+        $(this).addClass("tab-span-on");
+        $(this).siblings().removeClass("tab-span-on");
+        if ($(this).attr("data-index") == 0) {
+            $("#attention-reply").show();
+            $("#key-reply").hide();
+            $("#default-reply").hide();
+        } else if ($(this).attr("data-index") == 1) {
+            $.parser.parse("#WxReply-maincontainer");
+            $("#WxReply-datagrid").datagrid('reload');
+            $("#attention-reply").hide();
+            $("#key-reply").show();
+            $("#default-reply").hide();
+        } else if ($(this).attr("data-index") == 2) {
+            $("#attention-reply").hide();
+            $("#key-reply").hide();
+            $("#default-reply").show();
+
+            if (isClick == false) {
+                isClick = true;
+            }
+        }
+    });
+    // 纯文本、图文、图片tab切换功能
+    function checkAllText(type) {
+        setReplyType(type, 10);
+        $(`#${type}-reply-allText`).show();
+        $(`#${type}-reply-picText`).hide();
+        $(`#${type}-reply-allPic`).hide();
+        $(`#${type}-reply-operation-tab-0`).find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText-on.png')");
+        $(`#${type}-reply-operation-tab-0`).find("span").eq(1).css("color", "#368bfe");
+        $(`#${type}-reply-operation-tab-1`).find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText.png')");
+        $(`#${type}-reply-operation-tab-1`).find("span").eq(1).css("color", "#8d8d8d");
+        $(`#${type}-reply-operation-tab-2`).find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic.png')");
+        $(`#${type}-reply-operation-tab-2`).find("span").eq(1).css("color", "#8d8d8d");
+    }
+    function checkPicText(type) {
+        setReplyType(type, 20);
+        $(`#${type}-reply-allText`).hide();
+        $(`#${type}-reply-picText`).show();
+        $(`#${type}-reply-allPic`).hide();
+        $(`#${type}-reply-operation-tab-1`).find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText-on.png')");
+        $(`#${type}-reply-operation-tab-1`).find("span").eq(1).css("color", "#368bfe");
+        $(`#${type}-reply-operation-tab-0`).find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText.png')");
+        $(`#${type}-reply-operation-tab-0`).find("span").eq(1).css("color", "#8d8d8d");
+        $(`#${type}-reply-operation-tab-2`).find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic.png')");
+        $(`#${type}-reply-operation-tab-2`).find("span").eq(1).css("color", "#8d8d8d");
+    }
+
+    function checkAllPic(type) {
+        setReplyType(type, 30);
+        $(`#${type}-reply-allText`).hide();
+        $(`#${type}-reply-picText`).hide();
+        $(`#${type}-reply-allPic`).show();
+        $(`#${type}-reply-operation-tab-2`).find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic-on.png')");
+        $(`#${type}-reply-operation-tab-2`).find("span").eq(1).css("color", "#368bfe");
+        $(`#${type}-reply-operation-tab-1`).find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText.png')");
+        $(`#${type}-reply-operation-tab-1`).find("span").eq(1).css("color", "#8d8d8d");
+        $(`#${type}-reply-operation-tab-0`).find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText.png')");
+        $(`#${type}-reply-operation-tab-0`).find("span").eq(1).css("color", "#8d8d8d");
+    }
+    function addKeyWord() {
+        replyType[2] = 10;
+        createDialog("WxReply/add", "新增关键词", 'WxReply');
+    }
+    // 图文素材选择功能
+    function picTextSelect(obj) {
+        console.log(obj);
+        createDialog(`WxMenu/material/material/news/obj/${obj}`, '图文选择', 'material-news-dialog');
+    }
+    // 图片素材选择功能
+    function allPicSelect(obj) {
+        console.log(obj);
+        createDialog(`WxMenu/material/material/image/obj/${obj}`, '图片选择', 'material-image-dialog');
+    }
+    // 搜索框悬停效果
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+
+    //获取选择回复类型
+    function getEventType() {
+        var EventType = $(".c-header>div.tab-span-on").attr('data-index');
+        return parseInt(EventType);
+    }
+
+    function setReplyType(type, eventType) {
+        switch (type) {
+            case 'default':
+                replyType[1] = eventType;
+                break;
+            case 'attention':
+                replyType[0] = eventType;
+                break;
+            case 'key' :
+                replyType[2] = eventType;
+                break;
+        }
+
+    }
+
+    //获取历史数据的ID
+    function getDataId() {
+        var id = $(".c-header>div.tab-span-on").attr('data-id');
+        id = parseInt(id);
+        if (isNaN(id)) {
+            return 0;
+        }
+
+        return id;
+    }
+    //表单提交
+    var submitForm = function (input) {
+        var EventType = getEventType();
+        switch (EventType) {
+            case 0 :
+                var data = getAttentionInput();
+                break;
+            case 1:
+                data = input;
+                break;
+            case 2:
+                var data = getDefaultInput();
+                break;
+            default :
+                $.dialog.alert('异常操作，请重新进入该界面');
+                break;
+        }
+
+        if (data.id == undefined || data.id == null) {
+            data.id = getDataId();
+        }
+
+        var URL = data.id == 0 ? 'WxReply/add' : 'WxReply/update';
+        $.post(URL, data, function (res) {
+            if (res.code == 0) {
+                $.dialog.tips('保存成功!');
+                $(".c-header>div.tab-span-on").attr('data-id', res.message.id);
+                typeof callback == 'function' ? callback() : false;
+            } else {
+                $.dialog.alert(res.message);
+            }
+        }, 'json');
+    };
+    $(".btn-confirm").click(submitForm);
+
+    //保存选择的 素材ID;
+    function setSelectMaterial(materialId, type) {
+        var EventType = getEventType();
+        switch (EventType) {
+            case 0 :
+                if (type == 20) {
+                    $("#attention-reply-picText").attr('materialId', materialId);
+                }
+
+                if (type == 30) {
+                    $("#attention-reply-allPic").attr('materialId', materialId);
+                }
+                break;
+            case 1 :
+                if (type == 20) {
+                    $("#key-reply-picText").attr('materialId', materialId);
+                }
+                if (type == 30) {
+                    $("#key-reply-allPic").attr('materialId', materialId);
+                }
+                break;
+            case 2:
+                if (type == 20) {
+                    $('#default-reply-picText').attr('materialId', materialId);
+                }
+                if (type == 30) {
+                    $('#default-reply-allPic').attr('materialId', materialId);
+                }
+                break;
+        }
+    }
+    /**
+     * 获取默认回复的数据
+     * */
+    function getDefaultInput() {
+        var reply_type = replyType[1];
+        var content = '';
+        if (reply_type == 10) {
+            content = $('#default-reply-allText > textarea').val();
+        } else if (reply_type == 20) {
+            content = $("#default-reply-picText").attr('materialId');
+        } else if (reply_type == 30) {
+            content = $("#default-reply-allPic").attr('materialId');
+        }
+
+        return {
+            content: content,
+            reply_type: reply_type,
+            event_type: 30
+        }
+    }
+
+    /**
+     * 获取关注回复数据
+     * */
+    function getAttentionInput() {
+        var reply_type = replyType[0];
+        var content = '';
+        if (reply_type == 10) {
+            content = $('#attention-reply-allText > textarea').val();
+        } else if (reply_type == 20) {
+            content = $("#attention-reply-picText").attr('materialId');
+        } else if (reply_type == 30) {
+            content = $("#attention-reply-allPic").attr('materialId');
+        }
+
+        return {
+            content: content,
+            reply_type: reply_type,
+            event_type: 10
+        }
+    }
+
+    <if condition = "$attention['reply_type'] eq 20" > $("#attention-reply-operation-tab-1").click();
+    showPicText('attention-reply', "{$attention['child_title']}", "{$attention['child_local_thumb_url']}", "{$attention['father_update_time']}");
+    </if>
+    <if condition = "$attention['reply_type'] eq 30" > $("#attention-reply-operation-tab-2").click();
+    showImageAll('attention-reply', "{$attention['father_name']}", "{$attention['father_local_thumb_url']}");
+    </if>
+    <if condition = "$auto['reply_type'] eq 20" > checkPicText('default');
+    showPicText('default-reply', "{$auto['child_title']}", "{$auto['child_local_thumb_url']}", "{$$auto['father_update_time']}");
+    </if>
+    <if condition = "$auto['reply_type'] eq 30" > checkAllPic('default');
+    showImageAll('default-reply', "{$auto['father_name']}", "{$auto['father_local_thumb_url']}");
+    </if>
+
+    /**
+     * @param type  = attention-reply
+     * */
+    function showImageAll(type, title, src) {
+        if (title == null) title = '';
+        var Html = `<div class="tupianbox-item" style="margin: 15px auto 15px 30px;" onclick="allPicSelect('${type}')">
+                                    <div class="tupianbox-item-mask" style="display: none;">
+                                        <div class="tupianbox-item-checked"></div>
+                                    </div>
+                                    <p class="tupian-name" title="${title}">${title}</p>
+                                    <div class="tupian-img" style="height: 155px;">
+                                        <img src="${src}" alt="">
+                                    </div>
+                                </div>`;
+
+        if (type == null) {
+            return Html;
+        }
+
+        $(`#${type}-allPic`).html(Html);
+    }
+
+    function showPicText(type, title, src, date) {
+        date = getLocalTime(date);
+        if (title == null) title = '';
+        var Html = `<div class="tuwenbox-item" style="margin: 15px auto 15px 30px;" onclick="picTextSelect('${type}')">
+                                    <div class="tuwenbox-item-mask" style="display: none;">
+                                    <div class="tuwenbox-item-checked"></div>
+                                    </div>
+                                    <p class="tuwen-title" title="【财穗运营100】第八期：两个神奇的小工具：让客户自己找上门！">${title}</p>
+                                    <div class="tuwen-img" style="height: 145px;">
+                                    <img style="width: 100%;height: 100%;" src="${src}" alt="">
+                                    </div>
+                                    <div class="tuwen-tool">
+                                    <span class="tuwen-lastupdata">${date}</span>
+                                    </div>
+                                    </div>`
+        if (type == null) {
+            return Html;
+        }
+
+        $(`#${type}-picText`).html(Html);
+    }
+
+    function getLocalTime(nS) {
+        return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ');
+    }
+</script>

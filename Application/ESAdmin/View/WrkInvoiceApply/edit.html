@@ -1,0 +1,139 @@
+<style>
+	.readonly{
+		background-color: rgb(221, 221, 221) !important;
+	}
+</style>
+<div class="detailcontainer" id="WrkInvoiceApply-detailcontainer" style="width: 800px;height: 550px;">
+	<form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="WrkAgreement-dataform" method="post" name="WrkAgreement-dataform">
+		<div class="tableForm" style="width: 100%;overflow-y: auto;height: 500px;padding-right: 50px">
+			<input name="id"  type="hidden"  value="{$model.id}">
+			<input name="agreement_id"  type="hidden"  value="{$model.agreement_id}">
+			<h3 style="text-align: center;font-size: 16px">合同基本信息</h3>
+			<div class="row">
+				<div class="caption"><span>公司：</span></div>
+				<div class="inputbox">
+					<input type="text" value="{$model.branch_name}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+				<div class="caption"><span>合同编号：</span></div>
+				<div class="inputbox">
+					<input name="" value="{$model.ag_agreement_sn}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+			</div>
+			<!--<div class="row">
+
+				<div class="caption"><span>合同系统编号：</span></div>
+				<div class="inputbox">
+					<input name="" value="{$model.ag_sys_sn}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+			</div>-->
+			<div class="row">
+				<div class="caption"><span>合同名称：</span></div>
+				<div class="inputbox">
+					<input name="" value="{$model.ag_name}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+				<div class="caption"><span>合同金额：</span></div>
+				<div class="inputbox">
+					<input name="" value="{$model.ag_agreement_money}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+			</div>
+			<div class="row">
+				<div class="caption"><span>合同开始日期：</span></div>
+				<div class="inputbox">
+					<input name="" value="{$model.ag_start_time}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+				<div class="caption"><span>合同结束日期：</span></div>
+				<div class="inputbox">
+					<input name="" value="{$model.ag_finish_time}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+			</div>
+			<div class="row">
+				<div class="caption"><span>开票客户负责人：</span></div>
+				<div class="inputbox">
+					<input name="" value="{$model.customer_leader}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+				<div class="caption"><span>开票客户可见人：</span></div>
+				<div class="inputbox">
+					<input name="" value="{$model.customer_visiblers}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+			</div>
+			<div class="row">
+				<div class="caption"><span>开票商户负责人：</span></div>
+				<div class="inputbox">
+					<input name="" value="{$model.wip_leader_name}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+				<div class="caption"><span>开票商户可见人：</span></div>
+				<div class="inputbox">
+					<input name="" value="{$model.wip_visiblers_name}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+			</div>
+			<hr>
+			<h3 style="text-align: center;font-size: 16px">开票申请信息</h3>
+			<div class="row">
+				<div class="caption"><span>开票申请日期：</span></div>
+				<div class="inputbox" style="width: 18%">
+					<input name="" value="{$model.notify_day}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+				<div class="caption" style="margin-left: 2%"><span>发票申请金额：</span></div>
+				<div class="inputbox" style="width: 15%">
+					<input name="" value="{$model.plan_money}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+				<div class="caption" style="margin-left: 2%"><span>发票需求日期：</span></div>
+				<div class="inputbox" style="width: 18%">
+					<input name="" value="{$model.plan_day}" class="easyui-validatebox readonly"  type="text" readonly>
+				</div>
+			</div>
+			<div style="text-align: center;margin-top: 20px">
+				<if condition="$model.state != 1">
+					<a href="javascript:void(0)" class="modal-close-btn btn-update" plain="true" onclick="cancelApply()" >取消开票申请</a>
+					<a href="javascript:void(0)" class="modal-save-btn" plain="true" onclick="goInvoiceDetail()" style="margin-left: 20px">开票详情</a>
+					<a href="javascript:void(0)" class="modal-save-btn" plain="true" onclick="goInvoice()" style="margin-left: 20px">开票通知</a>
+				</if>
+			</div>
+		</div>
+		<div class="form-actions" id='WrkInvoiceApply-form-actions' style="margin: 5px">
+			<div class='actions-sysdefault'>
+				<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()" style="margin: 5px">关闭</a>
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+	function cancelApply(){
+	    $.dialog.confirm("确认取消该开票申请吗",function(){
+            $.post("WrkInvoiceApply/cancelApply",{id:$("input[name='id']").val()},function(result){
+                if(result.error == 0){
+                    closeDialog("WrkInvoiceApply");
+                    refreshDatagrid(getDataGrid("WrkInvoiceApply"));
+                }
+                $.dialog.tips(result.message);
+            },'json')
+		});
+	}
+	function goInvoiceDetail(){
+	    var id = $("input[name='id']").val();
+		$.post("WrkInvoiceApply/getDetailId",{id:id},function(result){
+			if(result.code==1){
+                createDialog("WrkInvoicePlanDetail/detail/id/"+result.message,"",'WrkInvoicePlanDetail');
+			}else if(result.code == 0){
+                createDialog("WrkInvoicePlan/detail/id/"+result.message,"",'WrkInvoicePlan');
+			}else{
+			    $.dialog.alert(result.message);
+			}
+		},'json');
+	}
+
+	function goInvoice(){
+        var id = $("input[name='id']").val();
+        $.post("WrkInvoiceApply/getPlanId",{id:id},function(result){
+            if(result.code==1){
+                createDialog("WrkInvoicePlanDetail/invoice/plan_id/"+result.message+"/type/WrkInvoicePlanDetail","",'WrkInvoicePlanDetail');
+            }else if(result.code == 0){
+                createDialog("WrkInvoicePlanDetail/invoice/plan_id/"+result.message+"/type/WrkInvoicePlan","",'WrkInvoicePlan');
+            }else{
+                $.dialog.alert(result.message);
+            }
+        },'json');
+	}
+</script>
+
+

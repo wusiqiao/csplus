@@ -1,0 +1,59 @@
+<script type="text/javascript">
+function formatType(value,row){
+    var scale_text = ["借出单","归还单"];
+    return scale_text[parseInt(value)];
+}
+function formatStatus(value,row){
+    var scale_text = ["未申请","已申请","同意申请","借出签收","拒绝申请","归还签收"];
+    return scale_text[parseInt(value)];
+}
+function formatOperation(value, row, index) {
+    var btnHtml = '<a onclick="action_record('+row.id+')">物品借还记录</a>';
+    return btnHtml;
+}       
+
+</script>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="ComSundryOrder" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'no',width:180,align:'left'">{$Think.lang.SUNDRY_ORDER_NO}</th>
+        <th data-options="field:'sundry_names',width:180,align:'left'">物品名称</th>
+        <!-- <th data-options="field:'type',width:120,align:'left',formatter:formatType">{$Think.lang.SUNDRY_ORDER_TYPE}</th> -->
+        <th data-options="field:'lender_name',width:120,align:'left'">{$Think.lang.SUNDRY_ORDER_LENDER}</th>
+        <th data-options="field:'returner_name',width:120,align:'left'">{$Think.lang.SUNDRY_ORDER_RETURNER}</th>
+        <th data-options="field:'status',width:120,align:'left',formatter:formatStatus">{$Think.lang.SUNDRY_ORDER_STATUS}</th>
+        <th data-options="field:'borrow_date',width:120,align:'left',formatter:formatDate">{$Think.lang.SUNDRY_ORDER_BOWRROWER_DATE}</th>
+        <!-- <th data-options="field:'expected_return_date',width:120,align:'left',formatter:formatDate">{$Think.lang.SUNDRY_ORDER_EXPECTED_BOWRROWER_DATE}</th> -->
+        <th data-options="field:'return_date',width:120,align:'left',formatter:formatDate">{$Think.lang.SUNDRY_ORDER_RETURN_DATE}</th>
+        <!-- <th data-options="field:'created_at',width:120,align:'left',formatter:formatDate">{$Think.lang.SUNDRY_ORDER_CREATED_AT}</th> -->
+        <th data-options="field:'operation',width:240,align:'left',formatter:formatOperation">操作</th>
+    </tr>
+   <include file="./Application/Common/Layout/Default/list_footer.html"  controller="ComSundryOrder" />
+</div>
+<if condition="($permissions.add eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+    <div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+        <a href="javascript:void(0)" class="common-blue-btn" style="width:auto" plain="true" onclick="sending_application()">发送申请</a>
+    </div>
+</if>
+<script type="text/javascript">
+function action_record(id) {
+    createDialog("ComSundryOrder/record/id/" + id,'物品借还记录', "ComSundryOrder-record");
+}
+function sending_application() {
+    var row = getDataGrid("{$Think.const.CONTROLLER_NAME}").datagrid("getSelected");
+    if (row){
+        if (row.type==0 && row.status==0) {
+                $.post("ComSundryOrder/apply/id/"+row.id, function(result) {
+                    $.dialog.tips(result.message);
+                    getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid('reload');
+                },'JSON')
+        } else {
+            $.dialog.tips("该操作只针对未申请的借出单！");
+        }
+    }else{
+        $.dialog.tips("至少选择一条记录！");
+    }
+}
+
+</script>

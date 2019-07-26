@@ -1,0 +1,10 @@
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:120,align:'left'">{$Think.lang.FLD_NAME}</th>
+        <th data-options="field:'comments',width:640,align:'left'">{$Think.lang.FLD_COMMENTS}</th>
+        <th data-options="field:'is_valid',width:40,align:'center',formatter:formatValidState">{$Think.lang.FLD_IS_VALID}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>

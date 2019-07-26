@@ -1,0 +1,118 @@
+<style>
+    .search-panel{
+        display: block !important;
+        position: absolute !important;
+        top: 0;
+        right: 0;
+        width: auto !important;
+    }
+</style>
+<script>
+    function branchTemplate(branch_id, data, index) {
+        if (branch_id == 0) {
+            return '系统模板';
+        }
+
+        return '自定义';
+    }
+</script>
+<div class="c-header" id="page">
+    <div class="tab-span" data-index="0" data-type="10">对账单</div>
+    <div class="tab-span" data-index="1" data-type="20">自开票</div>
+</div>
+
+<div class="search-panel " id="{$Think.const.CONTROLLER_NAME}-search-panel">
+    <div class="search-table">
+        <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+            <input onkeyup="doSearchQuery('{$Think.const.CONTROLLER_NAME}')" type="text" placeholder="请输入标题"
+                   style="width:300px;" class="easyui-validatebox validatebox-text filter-field" name="name">
+            <input type="hidden" name="type" value="{$type}" class="filter-field">
+            <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="">
+        </div>
+    </div>
+</div>
+
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <table fitColumns="true" class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+           data-options="
+        url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/list?type={$type}',
+        pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+        pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+        toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+        pageNumber:1,
+        checkOnSelect:true,
+        singleSelect:false,
+        border:true,
+        onSelect:function(value,row){
+            if(row.branch_id == 0){
+                $.dialog.tips('提示：系统模板不可删除')
+            }
+        }">
+        <thead>
+        <!-- <include file="./Application/Common/Layout/Default/list_header_auto.html" controller="{$Think.const.CONTROLLER_NAME}"/> -->
+        <tr>
+            <th data-options="field:'branch_id',width:70,align:'center', formatter:branchTemplate">来源</th>
+            <th data-options="field:'name',width:200,align:'center'">{$Think.lang.NAME}</th>
+            <th data-options="field:'start',width:120,align:'center'">{$Think.lang.START}</th>
+            <th data-options="field:'invo_no',width:80,align:'center'">{$Think.lang.INVO_NO}</th>
+            <th data-options="field:'buyer',width:120,align:'center'">{$Think.lang.BUYER}</th>
+            <th data-options="field:'invo_date',width:80,align:'center'">{$Think.lang.INVO_DATE}</th>
+            <th data-options="field:'goods_name',width:80,align:'center'">{$Think.lang.GOODS_NAME}</th>
+            <th data-options="field:'unit',width:80,align:'center'">{$Think.lang.UNIT}</th>
+            <th data-options="field:'quantity',width:80,align:'center'">{$Think.lang.QUANTITY}</th>
+            <th data-options="field:'price',width:80,align:'center'">{$Think.lang.PRICE}</th>
+            <th data-options="field:'amount',width:80,align:'center'">{$Think.lang.AMOUNT}</th>
+            <th data-options="field:'tax_rate',width:80,align:'center'">{$Think.lang.TAX_RATE}</th>
+            <th data-options="field:'tax_amount',width:80,align:'center'">{$Think.lang.TAX_AMOINT}</th>
+        </tr>
+        <include file="./Application/Common/Layout/Default/list_footer.html"
+                 controller="{$Think.const.CONTROLLER_NAME}"/>
+</div>
+<script>
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+    $(".common-blue-btn").hide();
+</script>
+<script>
+    (function () {
+        var type = "{$type}";
+        type = type ? type : 10;
+        $("#page .tab-span").on('click', function () {
+            var url = '/VcrBillTemplates/index?type=' + $(this).data('type');
+            toggleType(url);
+        });
+        $("#page .tab-span").each(function () {
+            if ($(this).data('type') == '{$type}') {
+                $(this).addClass('tab-span-on');
+            }
+        });
+
+        $("#VcrBillTemplates-toolbar a :eq(0)").attr('onclick', "action_add('VcrBillTemplates','', {type:" + type + "})")
+        $("#VcrBillTemplates-toolbar .actions").append('<a href="javascript:void(0)" class="btn-speed detail-delete" plain="true" onclick="downloadTemplate(\'{$Think.const.CONTROLLER_NAME}\')">导出模板</a>');
+    })();
+
+    function downloadTemplate(ID){
+        var obj = $("#" + ID + '-datagrid').datagrid('getSelected');
+        var id  = 0;
+        if(obj){
+            id = obj.id;
+        }else{
+            $.dialog.alert('请选择要导出的模板!');
+            return false;
+        }
+
+        window.open("/VcrBillTemplates/exportTemplate?id=" + id,'_blank');
+    }
+
+    function toggleType(url) {
+        $.get(url, function (result) {
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+</script>

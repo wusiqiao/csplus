@@ -1,0 +1,106 @@
+<style>
+        #VcrBillTax-toolbar .choose-month a{
+                width: 115px;
+                margin-left: 5px;
+        }
+</style>
+<div style="width: 86vw;height: 500px;overflow-y: scroll">
+        <div id="VcrBillTax-toolbar">
+                <div class="choose-month">
+                        <div style="width:100%;display: flex;flex-wrap: wrap;">
+                                <span style="line-height: 32px;">会计期间：</span>
+                                <select class="easyui-combobox" id="account_section" name="state" style="width:80px;">
+                                        <option value="2019">2019年</option>
+                                        <option value="2018">2018年</option>
+                                </select>
+                                <div style="height: 10px;width: 100%;"></div>
+                                <a>一月<span style="color: red;"></span></a><a>二月<span style="color: red;"></span></a><a>三月<span style="color: red;"></span></a><a>四月<span style="color: red;"></span></a><a>五月<span style="color: red;"></span></a><a>六月<span style="color: red;"></span></a><a>七月<span style="color: red;"></span></a><a>八月<span style="color: red;"></span></a><a>九月<span style="color: red;"></span></a><a>十月<span style="color: red;"></span></a><a>十一月<span style="color: red;"></span></a><a>十二月<span style="color: red;"></span></a>
+                                <input type="hidden" name="accounting_section" value="{$accounting_section}" >
+                        </div>
+                </div>
+        </div>
+        <div class="intel-done">
+                <table id="VcrBillTax-datagrid" width="100%" class="easyui-datagrid datagrid" cellspacing="0"
+                       data-options="url:'/VcrBill/taxList/type/{$type}/id/{$bill_id}',fit:false,pagination:true,pageSize:20,onLoadSuccess(data){if(data.total == 0){$('#empty-notice').show()}else{$('#empty-notice').hide()}}">
+                        <thead>
+                        <tr>
+                                <th data-options="field:'id',width:0,hidden:true"></th>
+                                <th data-options="field:'source_flag',align:'center',resizable:false,formatter:formatTaxType", width="13%">发票类型</th>
+                                <th data-options="field:'bill_date',align:'center',resizable:false,formatter:formatDate", width="13%">录入日期</th>
+                                <th data-options="field:'accounting_section',align:'center',resizable:false", width="13%">会计期间</th>
+                                <th data-options="field:'bill_no',align:'center',resizable:false", width="15%">发票号码</th>
+                                <th data-options="field:'total_amount',align:'center',resizable:false", width="15%">发票金额</th>
+                                <th data-options="field:'source_date',align:'center',resizable:false,formatter:formatDate", width="13%">开票日期</th>
+                                <th data-options="field:'is_link_bill',align:'center',resizable:false,formatter:formatTaxLink", width="13%">操作</th>
+                        </tr>
+                        </thead>
+                </table>
+                <div id="empty-notice" style="color: rgb(180, 180, 180);display:none;width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 250px;font-size: 20px">当前会计期间无发票</div>
+        </div>
+</div>
+
+
+<script>
+   //$(function(){
+       //银行回单会计期间
+       create_year_combox($("#VcrBillTax-toolbar .choose-month select"), function(value){
+           $("#VcrBillTax-toolbar .choose-month a").removeClass("month-on");
+           getBillTotal();
+           queryReceipt();
+       });
+       monthChoose($("#VcrBillTax-toolbar .choose-month a"), function (index, isChecked) {
+           queryReceipt();
+       });
+
+   //})
+
+   $(function () {
+       getBillTotal();
+   })
+
+        function formatTaxLink(value,row) {
+            var data = {image_id: row.image_id,tax_id:row.id};
+            if(value > 0){
+                return `<div style="color:grey;cursor: pointer;">已被关联</div>`
+            }else if("{$bill_id}" == 0 && "{$type}" == "{$Think.const.FLAG_BILL_TAX_INCOME}"){
+                //自开票
+                return `<div onclick="closeDialog();VcrBillFunctions.showSaleEditDialog(`+JSON.stringify(data).replace(/"/g, '&quot;')+`)" style="color:#368bfe;cursor: pointer;">选择</div>`
+            }else if("{$bill_id}" == 0 && "{$type}" == "{$Think.const.FLAG_BILL_TAX_PAY}"){
+                //外取票
+                return `<div onclick="closeDialog();VcrBillFunctions.showBuyEditDialog(`+JSON.stringify(data).replace(/"/g, '&quot;')+`);" style="color:#368bfe;cursor: pointer;">选择</div>`
+            }else if("{$bill_id}" != 0){
+                return `<div onclick="linkTaxBill(${row.id},${row.image_id})" style="color:#368bfe;cursor: pointer;">关联</div>`
+            }
+        }
+
+        function linkTaxBill(id,image_id){
+                $.dialog.confirm("是否确认关联该发票？",function(){
+                    $.post("VcrBill/linkBill",{bill_id:"{$bill_id}",tax_id:id,image_id:image_id,type:"tax"},function(result){
+                        if(result.error == 0){
+                            closeDialog("selectTax");
+                            $("#VcrBill-sale-datagrid").datagrid("reload");
+                            $("#VcrBill-buy-datagrid").datagrid("reload");
+                            $("#VcrBill-tax-datagrid").datagrid("reload");
+                        }
+                        $.dialog.tips(result.message);
+                    },'json')
+                })
+        }
+
+        function queryReceipt(){
+            var accounting_section = getMonthChooseValue($("#VcrBillTax-toolbar .choose-month"));
+            var queryParams = isNaN(accounting_section) ? {'q-accounting_section': accounting_section} : {'ql-accounting_section': accounting_section};
+            $("#VcrBillTax-datagrid").datagrid("load", queryParams);
+        }
+
+        function getBillTotal(){
+            var year = $("#account_section").combobox("getValue");
+            $.post("VcrBill/taxCount",{year:year,source_type:"{$type}"},function(result){
+                for(var k in result){
+                    $("#VcrBillTax-toolbar span.combo").siblings("a").eq(k-1).find("span").text(`（${result[k].num}-${result[k].unselected_count}）`);
+                }
+            },'json');
+        }
+
+</script>

@@ -1,0 +1,71 @@
+<style>
+    .example-dialog{position: absolute; width:50%; height:80%; top:5%; left:25%;background: #cccccc;border: 1px solid #c2ccd1;display: none}
+    .example-dialog .close-dlg{width: 100%;position: absolute;left: 0;bottom: 0;color: red;font-size: 2rem;text-align: center;background: #fff;overflow-y: auto}
+    .tpl-item-active{color:blue}
+    .example-dialog .content{padding: 10px;}
+    .example-dialog .content-header{width: 100%;font-weight: bold;text-align: center;background: #fff;padding: 10px 0px}
+</style>
+<div class="detailcontainer" id="WxTemplateMessage-detailcontainer" style="position: relative">
+    <form id="WxTemplateMessage-form">
+        <div class="tableForm" style="overflow-y: auto;height:400px">
+            <notempty name="list">
+                <volist name="list" id="msg">
+                    <div style="padding: 0px" class="tpl-item">
+                        <div style="padding: 10px">
+                            <label>{$key|sprintf='%02d', ###}</label>
+                            <span>模板编号：</span><input type="text" value="{$msg.standard_id}" class="item-standard-id" name="standard_id[]" style="width:15%; border:none; border-bottom: red 1px solid; background-color: #fff" >
+                            <input type="text" value="{$msg.title}" class="item-title" name="title[]" style="width:50%;border: none; border-bottom: #7D7D7D 1px solid; background-color: #fff" readonly>
+                            <a href="javascript:;" class="show-example" onclick="showExample(this)" style="border: 1px solid #ccc;padding: 2px; border-radius: 2px">查看示例</a>
+                            <input type="checkbox" value="{$key}" name="item_selected[]" class="item-select" data-ignore-uncheck>
+                        </div>
+                        <div style="display: none">
+                        <input type="hidden" name="template_id[]" value="{$msg.template_id}"/>
+                        <textarea name="content[]" class='item-content' style="display:none">{$msg.content}</textarea>
+                        <textarea name="example[]" class='item-example'style="display:none">{$msg.example}</textarea>
+                        </div>
+                    </div>
+                </volist>
+                <else/>
+                <div style="padding: 20px; margin-top:190px;width:90%;text-align: center;font-weight: bold">没有可以导入的模板消息</div>
+            </notempty>
+        </div>
+    </form>
+    <div class='actions-sysdefault' style="text-align: right">
+        <input type="checkbox" id="select-all-tpl" />全选/反选
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button btn-update" plain="true" icon="fa-save fa-lg"  onclick="action_import()">导入</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">关闭</a>
+    </div>
+    <div class="example-dialog"><div class="content-header"></div><div class="content"></div><i class="close-dlg fa fa-check-circle-o"></i></div>
+</div>
+
+
+<script type="text/javascript">
+    $("#select-all-tpl").change(function(){
+        $("input[name='item_selected[]']").prop("checked", $(this).prop("checked"));
+    });
+    $(".item-select").change(function(){
+        $(this).closest(".tpl-item").find(".item-standard-id").focus();
+    });
+    function action_import(){
+        if ($.dialog.confirm("请务必设置正确的模板编号，否则可能导致模板消息发送失败！", function(){
+            var data = $("#WxTemplateMessage-form").serialize();
+            showMaskLayer();
+            $.post("WxTemplateMessage/import", data, function(result){
+                if (result.code == 0){
+                    getDataGrid("WxTemplateMessage").datagrid("reload");
+                    closeDialog("tpl_import");
+                }
+                $.dialog.tips(result.message);
+                hideMaskLayer();
+            },"json");
+        }));
+    }
+    function showExample(sender){
+        $(".tpl-item").removeClass("tpl-item-active");
+        $(sender).closest(".tpl-item").addClass("tpl-item-active");
+        var example = $(sender).closest(".tpl-item").find(".item-example").val();
+        $(".example-dialog .content").html(example.replace(/[\r\n]/g,"<br>"));
+        $(".example-dialog .content-header").html($(sender).closest(".tpl-item").find(".item-title").val());
+        $(".example-dialog").show().click(function(){$(this).hide()});
+    }
+</script>

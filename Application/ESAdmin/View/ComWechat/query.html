@@ -1,0 +1,54 @@
+<script>
+    function formatterHead(src){
+        return `<img src="${src}" class="img">`;
+    }
+</script>
+<style>
+    .img {
+        width:40px;
+        height: 40px;
+        border-radius:20px
+    }
+</style>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="width:400px;height: 350px;">
+    <table class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+           data-options="
+           url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/queryList',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:false,
+           border:true">
+        <thead>
+    <tr>
+        <th data-options="field:'head_pic',width:150,align:'center', formatter:formatterHead">微信头像</th>
+        <th data-options="field:'staff_name',width:200,align:'center'">员工姓名</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+</div>
+<div style="width:100%;text-align:center;padding: 20px 0;">
+    <div class="btn-confirm" onclick="query()">确定</div>
+    <div class="btn-cancel" onclick="closeDialog()">取消</div>
+</div>
+
+
+<script>
+    $("#ComWechat-datagrid").datagrid({
+        onDblClickRow : function(){
+
+        }
+    });
+
+
+    function query(){
+        var data = $("#ComWechat-datagrid").datagrid('getSelected');
+        if(! data){
+            $.dialog.alert('请选择');
+            return false;
+        }
+        closeDialog()
+        typeof getWechatData == 'function' ? getWechatData(data) : $.dialog.alert('请用 getWechatData 进行接收');
+    }
+</script>

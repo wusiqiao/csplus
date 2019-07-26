@@ -1,0 +1,41 @@
+<style>
+
+</style>
+
+<div style="background-color: #ffffff;">
+    <div style="padding: 10px 35px;display: flex;align-items: center;">
+        <div style="color: #333;">群聊名称：</div>
+        <div>
+            <input id="group_name" name="group_name" type="text" placeholder="请输入群聊名称" style="width: 270px;height: 32px;outline: none;border: 1px solid #d3d3d3;box-sizing: border-box;text-indent: 8px;">
+        </div>
+    </div>
+    <div style="padding: 10px 35px;">
+        <div style="width: 100px;margin: 0 0 0 auto;">
+            <span class="btn-confirm" onclick="creat_group()">确认</span>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        hideMaskLayer();
+    });
+    function creat_group(){
+        showMaskLayer();
+        var group_name = $("#group_name").val();
+        var data = {
+            name:group_name
+        }
+        $.post("/MsgGroupMember/createGroup",data, (result)=>{
+            console.log(result);
+            if(result.code == 0){
+                // 刷新群聊列表
+                attachmentVue.loadingList();
+                hideMaskLayer();
+                closeDialog("attach_addgroup");
+            }else{
+                $.dialog.alert("创建失败");
+                hideMaskLayer();
+            }
+        },"json");
+    }
+</script>

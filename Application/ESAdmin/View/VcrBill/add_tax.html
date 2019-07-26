@@ -1,0 +1,210 @@
+<style>
+.easy-file-caption {
+    width: 80px;
+}
+#edit-receipt-dataform textarea{
+    height: unset !important;
+    white-space: unset;
+}
+</style>
+<div style="width:60vw;position: relative;" id="add-receipt-maincontainer">
+    <form id="edit-receipt-dataform">
+        <input type="hidden" name="id" value="{$model.id}">
+        <input type="hidden" name="image_id" value="{$model.image_id}">
+        <div style="width:100%;display: flex;" class="choose-month">
+            <div style="flex: 1;">
+                <img id="img" style="width: 100%;max-height: 350px" src="{$model.path}" alt="">
+            </div>
+            <div style="width: 320px;margin: 0 10px;">
+                <div style="margin: 10px 0;width: 100%;height: 32px;display: flex;align-items: center;">
+                    <div style="width: 80px;">发票类型：</div>
+                    <div style="flex: 1;display: flex;margin-left: 1px">
+                        <!--<select class="easyui-combobox" id="source_flag" name="source_flag" style="width:165px;">
+                            <option value="0">自开票</option>
+                            <option value="1">外取票</option>
+                        </select>-->
+                        <input type="text" style="width: 165px;" name="source_flag" id="source_flag" />
+                    </div>
+                </div>
+                <div style="margin: 10px 0;width: 100%;height: 32px;display: flex;align-items: center;">
+                    <div style="display: flex;align-items: center;" >
+                        <input type="file" id="file" name="file" title="上传发票：" value="{$model.filename}" accept="*.jpg,*.jpeg,*.png" class="easyui-file" validType="fileSize:[5,'MB']"/>
+                        <div style="width: 30px;height: 30px;margin-left: 10px;"></div>
+                        <input type="hidden" name="file_name" value="{$model.name}">
+                    </div>
+                </div>
+                <div style="margin: 10px 1px;width: 100%;height: 32px;display: flex;align-items: center;">
+                    <div style="width: 80px;">会计期间：</div>
+                    <div style="flex: 1;display: flex;margin-top: 1px">
+                        <input type="text" style="width: 120px" name="accounting-section-year" id="receipt-accounting-section-year" />
+                        <input type="text" style="width: 120px" name="accounting-section-month" id="receipt-accounting-section-month" />
+                        <input type="hidden" name="accounting_section" value="{$model.accounting_section}">
+                    </div>
+                </div>
+                <div style="margin: 10px 0;width: 100%;display: flex;height: 32px;align-items: center;">
+                    <div style="width: 80px;">发票号码：</div>
+                    <div style="flex: 1;display: flex;">
+                        <input style="width: 100%;border: 1px solid #d3d3d3;height: 28px;" type="text" class="easyui-validatebox" placeholder="请输入发票号码" name="bill_no" value="{$model.bill_no}">
+                    </div>
+                </div>
+                <div style="margin: 10px 1px;width: 100%;height: 32px;display: flex;align-items: center;">
+                    <div style="width: 80px;">开票日期：</div>
+                    <div style="flex: 1;display: flex;">
+                        <input name="source_date" id="source_date" class="easyui-datebox" value="{$model.source_date}" required
+                               data-options="prompt:'请选择日期',editable:false" style="width: 100%">
+                    </div>
+                </div>
+                <div style="margin: 10px 0;width: 100%;height: 32px;display: flex;align-items: center;">
+                    <div style="width: 80px;">发票金额：</div>
+                    <div style="flex: 1;display: flex;">
+                        <input style="width: 100%;border: 1px solid #d3d3d3;height: 28px;" type="text" class="easyui-validatebox" placeholder="请输入金额" name="total_sum" value="{$model.total_sum}" required>
+                    </div>
+                </div>
+                <!--<div style="margin: 10px 0;width: 100%;display: flex;">
+                    <div style="width: 80px;">回单内容：</div>
+                    <div style="flex: 1;display: flex;">
+                        <textarea style="width: 100%;resize: none;border: 1px solid #d3d3d3;" class="easyui-validatebox" name="memo" id="" cols="30" rows="6" required>{$model.memo}</textarea>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+        <div style="padding: 20px 0;border-top: 1px solid #d3d3d3;text-align: center;">
+            <div class="btn-confirm" onclick="save_tax()">保存</div>
+            <if condition="$show_delete_link eq 1">
+                <div class="btn-confirm" onclick="delete_link()">删除关联</div>
+            </if>
+            <div class="btn-confirm" onclick="closeDialog()">关闭</div>
+        </div>
+    </form>
+</div>
+
+<script>
+    easyui_combobox($("#source_flag"), [{id: 0, name: '自开票'},{id: 1, name: '外取票'}],0);
+    //会计区间
+    /*create_accounting_section_combox("#accounting_section");*/
+    create_accounting_section_combox("#receipt-accounting-section-year","","year");
+    create_accounting_section_combox("#receipt-accounting-section-month","","month");
+    $("#receipt-accounting-section-year").combobox({
+        onSelect : function() {
+            setSourceDate();
+        }
+    });
+    $("#receipt-accounting-section-month").combobox({
+        onSelect : function() {
+            setSourceDate();
+        }
+    });
+
+    function setSourceDate(){
+        var year = $("#receipt-accounting-section-year").combobox("getValue");
+        var month = $("#receipt-accounting-section-month").combobox("getValue");
+        if(year != '' && month != ''){
+            var date = month + "/01/" + year;
+            $("#source_date").datebox('setValue', date);
+        }
+    }
+
+    function getAccountingSection(){
+        var accounting_section = $("#receipt-accounting-section-year").combobox("getValue")+"/"+$("#receipt-accounting-section-month").combobox("getValue");
+        return accounting_section;
+    }
+
+    $('#file').change(function(e){
+        var files = e.currentTarget.files[0];
+        var fileName = handlerFileName(files['name']);
+        $('input[name=file_name]').val(fileName);
+        var reader = new FileReader();
+        reader.readAsDataURL(files);
+        reader.onload = function(){
+            $("#img").attr("src",reader.result);
+        }
+    });
+
+    function handlerFileName(filesName){
+        var fileName = filesName.split('.');
+        fileName.splice(fileName.length - 1,1);
+        return fileName.join('.');
+    }
+
+    function save_tax() {
+        showMaskLayer();
+        var formData = new FormData(document.getElementById("edit-receipt-dataform"));
+        /*if($("#file").get(0).files[0] != undefined && $("#file").get(0).files[0].size > 2097152){
+            hideMaskLayer();
+            $.dialog.alert("文件超过2M限制！");
+            return false;
+        }*/
+        var validate = $("#edit-receipt-dataform").form("validate");
+        if(!validate){
+            hideMaskLayer();
+            $.dialog.tips("请输入必填项！");
+            return validate;
+        }
+        var total_sum = $("input[name='total_sum']").val();
+        if(parseFloat(total_sum) <= 0 || isNaN(parseFloat(total_sum))){
+            hideMaskLayer();
+            $.dialog.tips("请输入正确的发票金额");
+            return false;
+        }
+        $.ajax({
+            url:'VcrBill/editTax',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            //这两个设置项必填
+            contentType: false,
+            processData: false,
+            async:true,
+            beforeSend:function(){
+
+            },
+            success:function(data){
+                hideMaskLayer();
+                if(data.code == 1){
+                    $.dialog.alert(data.message);
+                    return false;
+                }
+                closeDialog();
+                $.dialog.tips(data.message);
+                getDataGrid('VcrBill-tax').datagrid("reload");
+                if(typeof getTaxTotal == "function"){
+                    getTaxTotal();
+                }
+            },
+            error:function(){
+                hideMaskLayer();
+            }
+        })
+    }
+
+
+    $(function(){
+        var accounting_section = $("input[name='accounting_section']").val();
+        var id = $("input[name='id']").val();
+        if(accounting_section != '' || id == ''){
+            var section = accounting_section.split("/");
+            $("#receipt-accounting-section-year").combobox("setValue",section[0]);
+            $("#receipt-accounting-section-month").combobox("setValue",section[1]);
+        }
+        $("#source_flag").combobox("setValue","{$model.source_flag}");
+    });
+
+    //删除关联
+    function delete_link(){
+        var tax_id = $("input[name='id']").val();
+        $.dialog.confirm("是否确认删除关联？",function(){
+            $.post("/VcrBill/deleteLink",{tax_id:tax_id,type:"tax"},function(result){
+                if(result.code == 0){
+                    closeDialog('editTax');
+                    refreshDatagrid($("#VcrBill-sale-datagrid"));
+                    refreshDatagrid($("#VcrBill-tax-datagrid"));
+                    refreshDatagrid($("#VcrBill-buy-datagrid"));
+                }
+                $.dialog.tips(result.message);
+            },'json');
+        })
+    }
+
+
+
+</script>

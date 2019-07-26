@@ -1,0 +1,577 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .spanBtn{
+        display: inline;
+        padding: 10px 25px;
+        background: #398bfe;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+    }
+    .tableForm .row .sec{
+        display: none;
+    }
+    .grey{
+        background:#b4b5b7;
+    }
+    .readonly{
+        background-color: rgb(221, 221, 221) !important;
+    }
+    .width260{
+        width: 260px !important;
+    }
+    /* 保存(确认)按钮 */
+    .btn_save_blue{
+    display: inline-block;
+    width: 84px;
+    height:34px;
+    line-height: 34px;
+    text-align: center;
+    background-color: #529bfd;
+    color: #fff;
+    padding: 0px 10px;
+    margin: 5px 10px;
+    cursor: pointer;
+    }
+    .btn_save_blue:hover{
+        background-color: #6eacfe;
+    }
+    /* 关闭(取消)按钮 */
+    .btn_close_gray{
+        display: inline-block;
+        width: 84px;
+        height:34px;
+        line-height: 34px;
+        text-align: center;
+        padding: 0px 10px;
+        margin: 5px 10px;
+        color: #333;
+        border:1px solid #d3d3d3;
+        cursor: pointer;
+    }
+    .btn_close_gray:hover{
+        border:1px solid #6eacfe;
+    }
+
+    .select_left{
+        width: 330px;
+        height: auto;
+    }
+    .chosen-choices{
+        border-radius: 2px !important;
+    }
+    li.search-choice{
+        border-radius: 1px !important;
+        background-color: #fff !important;
+        color: #333 !important;
+        border: 1px solid #d3d3d3 !important;
+        margin: 5px !important;
+        width: 100px !important;
+    }
+    .easyui-validatebox{
+        border-radius: 2px;
+    }
+    .chosen-container-single .chosen-single {
+        border-radius: 2px;
+    }
+    .chosen-container-single .chosen-single span {
+        height: 100%;
+    }
+    .dac_tips{
+        color: red;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="max-height: 650px;overflow-y: scroll;width: 700px">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm" style="width:600px;height: auto;margin-left: 50px;margin-top: 20px;" >
+            <empty name="model.id">
+                <!--<div class="row">
+                    <div class="caption">用户信息：</div>
+                    <div class="inputbox">
+                        <input name="search" class="easyui-validatebox" data-options="required:true" placeholder="" />
+                    </div>
+                    <div class="inputbox">
+                        <span style="color:#555555;padding-left:20px">输入会员或粉丝列表用户的昵称、备注、手机</span>
+                    </div>
+                </div>-->
+                <div class="row">
+                    <div class="caption"><span><span style="color:#FF0000">*</span>微信绑定：</span></div>
+                    <div class="inputbox width260">
+                        <input name="search" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" placeholder="请选择用户" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                    </div>
+                    <!--<div class="inputbox fir">
+                        &lt;!&ndash;<span class="spanBtn" style="margin-left:20px;" onclick="sendInvite()">发送邀请</span>&ndash;&gt;
+                        <a class="common-blue-btn" style="margin-left:20px;" onclick="sendInvite()">发送邀请</a>
+                    </div>
+                    <div class="sec">
+                        &lt;!&ndash;<span class="spanBtn grey" style="margin-left:20px;">待确认</span>
+                        <span class="spanBtn" style="margin-left:20px;">重新邀请</span>&ndash;&gt;
+                        <a class="common-blue-btn grey" style="margin-left:20px;">待确认</a>
+                        <a class="common-blue-btn" style="margin-left:10px;" onclick="sendInvite()">重新邀请</a>
+                    </div>-->
+                </div>
+                <div  style="margin-left:20px;margin-top: 20px">
+                    <span style="float: left;position: relative;left:-15px" class="tips-danger"><img src="../../Application/ESAdmin/Public/images/img/danger.png"></span>
+                    <span style="padding-bottom: 10px;display: block">1.请输入员工的微信昵称、手机号或备注快速搜索，输入之前确保员工已经关注公众号</span>
+                    <span style="margin-left: 20px">2.员工需在微信上进行确认才能绑定成功。</span>
+                </div>
+            </empty>
+            <input name="id" type="hidden" value="{$model.id}">
+            <input name="user_type" type="hidden" value="{$Think.const.USER_TYPE_COMPANY_MANAGER}">
+
+            <if condition="$model.id eq ''">
+                    <div class="row" style="margin-top: 20px">
+                        <div class="caption"><span><span style="color:#FF0000">*</span>{$Think.lang.FLD_STAFF_NAME}：</span></div>
+                        <div class="inputbox width260">
+                            <input name="staff_name" class="easyui-validatebox" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="{$model.staff_name}" placeholder="请输入员工姓名"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 20px">
+                        <div class="caption"><span><span style="color:#FF0000">*</span>手机号：</span></div>
+                        <div class="inputbox width260">
+                            <input name="mobile" class="easyui-validatebox" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" data-options="required:true" value="{$model.mobile}" placeholder="请输入手机号码"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-left:20px;margin-top: 20px">
+                        <span style="float: left;position: relative;left:-15px" class="tips-danger"><img src="../../Application/ESAdmin/Public/images/img/danger.png"></span>
+                        手机号将作为登录账号，且作为找回密码的凭据
+                    </div>
+                <else/>
+                    <div class="row">
+                        <!--<div class="caption" style="vertical-align: center"><span style="color:#FF0000">*</span>微信绑定：</div>-->
+                        <div class="inputbox_x2">
+                            <table>
+                                <tr>
+                                    <td><span style="color:#FF0000;margin-right: 10px">*</span>微信绑定：</td>
+                                    <td rowspan=3><img src="{$model.head_pic}" name="head_pic" width="50px" height="50px" style="border-radius: 50px"></td>
+                                    <td><span id="name" style="margin-left: 10px">{$model.name}</span></td>
+                                </tr>
+                                <!--<tr>
+                                    <td><span id="mobile">{$Think.lang.FLD_MOBILE}：{$model.mobile}</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="comments">{$Think.lang.FLD_REMARK}：{$model.comments}</span></td>
+                                </tr>-->
+                            </table>
+                        </div>
+                    </div>
+                    <div  style="margin-left:20px;margin-top: 20px">
+                        <span style="float: left;position: relative;left:-15px" class="tips-danger"><img src="../../Application/ESAdmin/Public/images/img/danger.png"></span>
+                        <span style="padding-bottom: 10px;display: block">绑定微信之前请先关注公众号，否则无法绑定成功，邀请发送之后需让员工在手机上</span>
+                        <span style="margin-left: 20px">进行确认才能绑定成功</span>
+                    </div>
+                    <div class="row" style="margin-top: 20px">
+                        <div class="caption"><span><span style="color:#FF0000">*</span>{$Think.lang.FLD_STAFF_NAME}：</span></div>
+                        <div class="inputbox width260">
+                            <input name="staff_name" class="easyui-validatebox readonly" value="{$model.staff_name}" readonly />
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 20px">
+                        <div class="caption"><span><span style="color:#FF0000">*</span>手机号：</span></div>
+                        <div class="inputbox width260">
+                            <input name="mobile" class="easyui-validatebox readonly" value="{$model.mobile}" readonly/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-left:20px;margin-top: 20px">
+                        <span style="float: left;position: relative;left:-15px" class="tips-danger"><img src="../../Application/ESAdmin/Public/images/img/danger.png"></span>
+                        手机号将作为登录账号，且作为找回密码的凭据
+                    </div>
+
+            </if>
+            <div class="row" style="margin-top: 30px">
+                <div class="caption"><span style="color:#FF0000">*</span><span>所属部门：</span></div>
+                <div class="inputbox width260">
+                    <!--<select id="deptment_id" name="deptment_id" class="easyui-combotree width260"
+                            data-options="url:'Organization/treeList/type/1',value:'{$model.deptment_id}',prompt:'请选择所属部门'">
+                    </select>-->
+                    <input type="text" class="easyui-validatebox" name="deptment_name" onclick="select_dept()" placeholder="请选择所属部门" value="{$model.dept_name}" readonly style="background-color: white">
+                    <input type="hidden" name="deptment_id" value="{$model.deptment_id}">
+                </div>
+                <!--<div class="inputbox">
+                    <span style="color:#555555;padding-left:20px">将用户分配到部门中</span>
+                </div>-->
+            </div>
+            <if condition="$edit_dac eq 1 or $edit_dac eq ''">
+                <div class="row" style="margin-top: 30px">
+                    <div class="caption"><span><span style="color:#FF0000">*</span>角色：</span></div>
+                    <div class="inputbox width260" >
+                        <!--兼容原有数据-->
+                        <if condition="$model.is_leader eq 1 or $model.role_ids eq 2">
+                            <input class="easyui-validatebox readonly" value="系统管理员" readonly/>
+                            <input type="hidden" value="{$model.role_ids}" name="role_ids"/>
+                         <else/>
+                            <select name="role_ids[]" class="chosen-select"  data-placeholder="请选择角色" id="role_id_select" data-options="all:true,value:'{$model.role_ids}',search_key_url:'Organization/roleList'"  multiple style="width:100%;" required>
+                                <option value="" disabled >请至少选择一个角色</option>
+                            </select>
+                        </if>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 45px;">
+                    <div class="caption"><span>查看范围：</span></div>
+                    <div class="inputbox" style="width: 450px">
+                        <input type="radio" class="css-radio" name="dac_type" id="all" value="1" <if condition="($model.dac_type eq 1) or ($model.dac_type eq '')">checked</if>>
+                        <label for="all" style="margin-right: 30px">
+                            全部
+                        </label>
+                        <input type="radio" class="css-radio" name="dac_type" id="appoint" value="2" <if condition="$model.dac_type eq 2">checked</if>>
+                        <label for="appoint" style="margin-right: 30px">
+                            指定部门
+                            <a href="javascript:void(0)" onclick="dac_branch()" style="color: #368BFE;<if condition='$model.dac_type neq 2'>display:none</if>" id="dac_branchs">编辑</a>
+                            <input type="hidden" value="{$model.dac_branchs}" name="dac_branchs">
+                        </label>
+                        <input type="radio" class="css-radio" name="dac_type" id="dacUsers" value="3" <if condition="$model.dac_type eq 3">checked</if>>
+                        <label for="dac_users" style="margin-right: 30px">
+                            指定人员
+                            <a href="javascript:void(0)" onclick="dac_user()" style="color: #368BFE;<if condition='$model.dac_type neq 3'>display:none</if>" id="dac_users">编辑</a>
+                            <input type="hidden" value="{$model.dac_users}" name="dac_users">
+                        </label>
+                        <input type="radio" class="css-radio" name="dac_type" id="default" value="0" <if condition="$model.dac_type eq 0 and $model.dac_type neq ''">checked</if>>
+                        <label for="default" style="margin-right: 30px">
+                            仅自己
+                        </label>
+                    </div>
+                </div>
+                <else/>
+                <div class="row" style="margin-top: 30px">
+                    <div class="caption"><span><span style="color:#FF0000">*</span>角色：</span></div>
+                    <div class="inputbox width260" >
+                        <if condition="$model.is_leader neq 1 and $model.role_ids neq 2">
+                            <select name="role_ids[]" class="chosen-select"  data-placeholder="请选择角色" id="role_id_select" data-options="all:true,value:'{$model.role_ids}',search_key_url:'Organization/roleList'"  multiple style="width:100%;" required disabled>
+                                <option value="" disabled >请至少选择一个角色</option>
+                            </select>
+                            <else/>
+                            <input class="easyui-validatebox readonly" value="系统管理员" readonly/>
+                            <input type="hidden" value="{$model.role_ids}" name="role_ids"/>
+                        </if>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 45px;">
+                    <div class="caption"><span>数据权限：</span></div>
+                    <div class="inputbox" style="width: 450px">
+                        <input type="radio" class="css-radio" name="dac_type" id="all" value="1" <if condition="($model.dac_type eq 1) or ($model.dac_type eq '')">checked</if> disabled>
+                        <label for="all" style="margin-right: 30px">
+                            全部
+                        </label>
+                        <input type="radio" class="css-radio" name="dac_type" id="appoint" value="2" <if condition="$model.dac_type eq 2">checked</if> disabled>
+                        <label for="appoint" style="margin-right: 30px">
+                            指定部门
+                            <a href="javascript:void(0)" onclick="dac_branch()" style="color: #368BFE;<if condition='$model.dac_type neq 2'>display:none</if>" id="dac_branchs">编辑</a>
+                            <input type="hidden" value="{$model.dac_branchs}" name="dac_branchs">
+                        </label>
+                        <input type="radio" class="css-radio" name="dac_type" id="dacUsers" value="3" <if condition="$model.dac_type eq 3">checked</if> disabled>
+                        <label for="dac_users" style="margin-right: 30px">
+                            指定人员
+                            <a href="javascript:void(0)" onclick="dac_user()" style="color: #368BFE;<if condition='$model.dac_type neq 3'>display:none</if>" id="dac_users">编辑</a>
+                            <input type="hidden" value="{$model.dac_users}" name="dac_users">
+                        </label>
+                        <input type="radio" class="css-radio" name="dac_type" id="default" value="0" <if condition="$model.dac_type eq 0 and $model.dac_type neq ''">checked</if> disabled>
+                        <label for="default" style="margin-right: 30px">
+                            仅自己
+                        </label>
+                    </div>
+                </div>
+            </if>
+            <div class="row" style="margin-top: 5px;">
+                <div class="caption"><span></span></div>
+                <div class="inputbox" style="width: 450px">
+                    <span id="tips_all" class="dac_tips" style="margin-left: 10px;<if condition="$model.dac_type neq 1 and $model.dac_type neq ''">display:none</if>">可查看功能内全部数据</span>
+                    <span id="tips_appoint" class="dac_tips" style="margin-left: 50px;<if condition="$model.dac_type neq 2 or $model.dac_type eq ''">display:none</if>">仅能查看所选部门创建的数据</span>
+                    <span id="tips_dacUsers" class="dac_tips" style="margin-left: 150px;<if condition="$model.dac_type neq 3 or $model.dac_type eq ''">display:none</if>">仅能查看所选人员创建的数据</span>
+                    <span id="tips_default" class="dac_tips" style="margin-left: 250px;<if condition="$model.dac_type neq 0 or $model.dac_type eq ''">display:none</if>">仅能查看自己创建的数据</span>
+                </div>
+            </div>
+
+            <!--<div class="row" style="margin-top: 30px">
+                <div class="caption"><span style="color:#FF0000">*</span><span>上级主管：</span></div>
+                <div class="inputbox width260">
+                    &lt;!&ndash;<select id="" name="" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization/roleList/'">
+                        <option value=""></option>
+                    </select>
+                    <input type="hidden" name="role_ids_changed" value="1">&ndash;&gt;
+                    <input name="director" class="easyui-validatebox" value="{$model.director_name}" required placeholder="请输入用户名搜索"/>
+                </div>
+            </div>-->
+            <!--<div class="row">
+                <div class="caption"><span>角色：</span></div>
+                <div class="inputbox" style="width: 36%">
+                    <select name="role_ids[]" class="chosen-select" data-placeholder=" " id="role_id_select" data-options="all:true,value:'{$model.role_ids}',search_key_url:'Organization1/roleList'"  multiple style="width:100%">
+                    </select>
+                </div>
+            </div>-->
+            <!--<div id="custom-attr">
+                <div id="custom-item">
+                <foreach name="model.custom" item="v">
+                    <div class="row">
+                        <div class="caption"><span>{$v.title}：</span></div>
+                        <if condition="$v.type eq 0 ">
+                            <input name="custom-value[]" placeholder="请输入{$v.title}" value="{$v.value}" class="easyui-validatebox" />
+                            <else />
+                            <input name="custom-value[]" placeholder="请输入{$v.title}" value="{$v.value}" class="easyui-datebox" />
+                        </if>
+                        <input name="custom-type[]" value="{$v.type}" type="hidden" />
+                        <input name="custom-title[]" value="{$v.title}" type="hidden" />
+                        <a href="javascript:void(0);" class="common-blue-btn" style="margin-left: 15px;" onclick="removeCustomAttr(this);">删除</a>
+                    </div>
+                </foreach>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>自定义信息：</span></div>
+                    <div class="inputbox_x2">
+                        <select name="add-custom-type" class="chosen-select" style="width:15%">
+                            <option selected value=0>文本类型</option>
+                            <option value=1>日期类型</option>
+                        </select>
+                        <input name="add-custom-title" class="easyui-validatebox" style="width:30%" placeholder="请输入自定义信息标题" />
+                        <a href="javascript:void(0);" class="common-blue-btn" style="margin-left: 15px;" onclick="addCustomAttr(this);">添加</a>
+                    </div>
+                </div>
+            </div>-->
+        </div>
+    </form>
+    <div class="form-actions" id='Organization-form-actions' style="margin: 50px 0 40px 0;height: auto;">
+        <div class='actions-sysdefault'>
+            <if condition="$edit_dac neq 2" >
+                <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="staff_save()">保存</a>
+            </if>
+            <!--<notempty name="model.id">
+                <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="deleteStaff()">离职删除</a>
+            </notempty>-->
+            <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()" style="margin-left: 20px">取消</a>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+$(function() {
+    var $custom_actions = $('#Organization-actions-custom');
+    if ($custom_actions.length > 0) {
+        $custom_actions.appendTo($('#Organization-form-actions')).show();
+    }
+    // $..dialog("option",{title:"xxx"});
+
+    autocompleteAjax($("input[name='director']"), "Organization/staffListForSearch/detailId/{$model.id}", function(item) {
+
+    });
+
+    autocompleteAjax($("input[name='search']"), "Organization/userList", function(item) {
+        $("input[name='id']").val(item.id);
+        $("img[name='head_pic']").attr("src", item.head_pic);
+        $("#name").text("{$Think.lang.FLD_LINKNAME}：" + item.name);
+        if (item.mobile != null) {
+            $("#mobile").text("{$Think.lang.FLD_MOBILE}：" + item.mobile);
+        }else{
+            $("#mobile").text("{$Think.lang.FLD_MOBILE}：");
+        }
+        if (item.comments != null) {
+            $("#comments").text("{$Think.lang.FLD_REMARK}：" + item.comments);
+        }else{
+            $("#comments").text("{$Think.lang.FLD_REMARK}：");
+        }
+        if (item.mobile != null && item.mobile != '') {
+            $("input[name='mobile']").val(item.mobile);
+        }else{
+            $("input[name='mobile']").val(item.mobile);
+        }
+        if (/^1[3-8]+\d{9}$/.test(item.account)) {
+            $("input[name='account']").val(item.account);
+        }else{
+            $("input[name='account']").val(item.mobile);
+        }
+        /*$("input[name='staff_name']").val(item.deptment_id);
+        $("input[name='staff_name']").val(item.staff_name);*/
+        $("input[name='email']").val(item.email);
+        $("input[name='qq']").val(item.qq);
+        $("#deptment_id").val(item.deptment_id);
+        $("#deptment_id").trigger("chosen:updated");
+        $(".modal-save-btn").show();
+
+        var custom = item.custom;
+        var html = "";
+        var str = "";
+        for (var i = 0; i < custom.length; i++) {
+            if (custom[i].type == 0) {
+                str = '<input name="custom-value[]" placeholder="请输入'+custom[i].title+'" value="'+custom[i].value+'" class="easyui-validatebox" />';
+            } else {
+                str = '<input name="custom-value[]" placeholder="请输入'+custom[i].title+'" value="'+custom[i].value+'" class="easyui-datebox" />';
+            }
+            html += '<div class="row">'+
+                '<div class="caption"><span>'+custom[i].title+'：</span></div>'+
+                str +
+                '<input name="custom-type[]" value="'+custom[i].type+'" type="hidden" />'+
+                '<input name="custom-title[]" value="'+custom[i].title+'" type="hidden" />'+
+                '<a href="javascript:void(0);" class="common-blue-btn" style="margin-left: 15px;" onclick="removeCustomAttr(this);">删除</a>'+
+            '</div>';
+        }
+        $("#custom-item").html(html);
+        parseForm($("#custom-attr"));
+    });
+
+    $("input[name='search']").on("change",function(){
+        if($("input[name='search']").length > 0 && $("input[name='search']").val() == ""){
+            $("input[name='search_id']").val("");
+        }
+    });
+
+    getDataForm("{$Think.const.CONTROLLER_NAME}").bind("afterUpdate", function(event, data) {
+            var selected = $('.department-tree').tree('getSelected');
+            var action = "/Organization/treeList";
+            var $tree_target = getDepartmentTree('{$Think.const.CONTROLLER_NAME}');
+            $.getJSON(action, {}, function(result) {
+                $tree_target.tree({
+                    data: result,
+                    onLoadSuccess: function(node, data) {
+                        if (data.length > 0) {
+                            var n = $('.department-tree').tree('find', selected.id);
+                            $('.department-tree').tree('select', n.target);
+                            getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                            $('#deptment-datagrid').datagrid('reload');
+                        }
+                    }
+                })
+            });
+    });
+
+    // $('#deptment_id').combotree('setValue', 1);   
+})
+
+        $('#deptment_id').combotree({
+            onLoadSuccess: function (node, data) {
+                if (data.length > 0) {
+                    $("span.tree-file").addClass("tree-folder");
+                    // $("span.tree-indent").addClass("tree-icon");
+                    $("span.tree-file").removeClass("tree-file");
+                }
+            }
+        })
+
+
+function deleteStaff() {
+    var list = new Array();
+    var id = '{$model.id}';
+    list.push(id);
+
+    if (list.length > 0) {
+        $.dialog.confirm('是否确认删除此员工？', function () {
+            showMaskLayer();
+            $.post('/Organization/deleteStaff', {user_ids: list}, function (result) {
+                hideMaskLayer();
+                if (result.code == 0) {
+                    var selected = $('.department-tree').tree('getSelected');
+                    var action = "/Organization/treeList";
+                    var $tree_target = getDepartmentTree('{$Think.const.CONTROLLER_NAME}');
+                    $.getJSON(action, {}, function (result) {
+                        $tree_target.tree({
+                            data: result,
+                            onLoadSuccess: function (node, data) {
+                                if (data.length > 0) {
+                                    var n = $('.department-tree').tree('find', selected.id);
+                                    $('.department-tree').tree('select', n.target);
+                                    getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                                    $('#deptment-datagrid').datagrid('reload');
+                                }
+                            }
+                        })
+                    });
+                    closeDialog("{$Think.const.CONTROLLER_NAME}");
+                }
+                $.dialog.tips(result.message);
+            }, 'json')
+        });
+
+    }
+}
+
+    $(function(){
+        $("#{$Think.const.CONTROLLER_NAME}-dataform").bind("afterUpdate", function(event, data){
+            if(typeof getTrees != 'undefined' && getTrees instanceof Function){
+                getTrees();
+            }
+            $("#Organization-datagrid").datagrid("reload");
+            $(".ui_close").trigger("click");
+        });
+    });
+
+    function sendInvite(){
+        var id = $("input[name='search_id']").val();
+        var name = $("input[name='search']").val();
+        if(id != "" && id != undefined){
+            var mobile = $("input[name='mobile']").val();
+            if(!(/^(13[0-9]|14[5-9]|15[012356789]|166|17[0-8]|18[0-9]|19[8-9])[0-9]{8}$/.test(mobile))){
+                $.dialog.tips("请输入正确的手机号码！");
+                return false;
+            }
+            $.dialog.confirm("是否确认发送邀请给 "+name,function(){
+                $.post("Organization/sendInvite/type/addStaff",{id:id,mobile:mobile},function(result){
+                    if(result.code == 0){
+                        $(".fir").hide();
+                        $(".sec").css("display",'inline-block');
+                        $.dialog.tips("已成功发送邀请！");
+                    }else{
+                        $.dialog.tips(result.message);
+                    }
+                },'json')
+            })
+        }else{
+            $.dialog.tips("请先选择一位用户！");
+        }
+    }
+
+    function staff_save(){
+        var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+        var validate = dataForm.form('validate');
+        if(!validate){
+            return validate;
+        }
+        var role_selected = $("#role_id_select").val();
+        var role_ids = $("input[name='role_ids']").val();
+        var dept = $("input[name='deptment_id']").val();
+        var id = $("input[name='id']").val();
+        if(!id){
+            $.dialog.tips("请选择一位用户！");
+            return false;
+        }
+        if(role_selected == null && role_ids == undefined){
+            $.dialog.tips("角色不能为空！");
+            return false;
+        }
+        if(dept == ""){
+            $.dialog.tips("请选择部门！");
+            return false;
+        }
+        action_update('{$Think.const.CONTROLLER_NAME}');
+    }
+
+    $("input[name='dac_type']").on("change",function(){
+        $(".dac_tips").hide();
+        var val = $("input[name='dac_type']:checked").val();
+        if(val == 2){
+            $("#dac_branchs").show();
+            $("#dac_users").hide();
+            $("#tips_appoint").show();
+        }else if(val == 1){
+            $("#dac_branchs").hide();
+            $("#dac_users").hide();
+            $("#tips_all").show();
+        }else if(val == 3){
+            $("#dac_branchs").hide();
+            $("#dac_users").show();
+            $("#tips_dacUsers").show();
+        }else{
+            $("#dac_branchs").hide();
+            $("#dac_users").hide();
+            $("#tips_default").show();
+        }
+    });
+
+    function dac_branch(){
+        createDialog("Organization/set_dac_branchs","选择指定部门","dlg_set_dac_branchs");
+    }
+
+    function dac_user(){
+        createDialog("Organization/set_dac_users","选择指定人员","dlg_set_dac_users");
+    }
+    function select_dept(){
+        createDialog("Organization/select_dept","选择所属部门","dlg_select_dept");
+    }
+
+</script>

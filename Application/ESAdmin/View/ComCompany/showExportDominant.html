@@ -1,0 +1,116 @@
+<style>
+    .detailcontainer{
+        width: 532px;
+        background-color: #ffffff;
+        position: relative;
+        overflow: hidden;
+    }
+    .example-dialog {
+        position: absolute;
+        width: 50%;
+        height: 80%;
+        top: 5%;
+        left: 25%;
+        background: #cccccc;
+        border: 1px solid #c2ccd1;
+        display: none
+    }
+
+    .example-dialog .close-dlg {
+        width: 100%;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        color: red;
+        font-size: 2rem;
+        text-align: center;
+        background: #fff;
+        overflow-y: auto
+    }
+
+    .tpl-item-active {
+        color: blue
+    }
+
+    .example-dialog .content-header {
+        width: 100%;
+        font-weight: bold;
+        text-align: center;
+        background: #fff;
+        padding: 10px 0px
+    }
+
+    .tpl-item div label.css-label {
+        position: absolute;
+        right: 0;
+        top: 0px;
+        left: 0px;
+    }
+    .select-item{
+        float: left;
+        width: 119px;
+        height: 22px;
+        margin: 22px 25px;
+        display: flex;
+        align-items: center;
+    }
+</style>
+<div class="detailcontainer" id="WxTemplateMessage-detailcontainer">
+    <form id="WxTemplateMessage-form">
+        <div style="overflow-y: auto;height:400px;width: 100%;padding-right: 35px">
+            <notempty name="dominants">
+                <volist name="dominants" id="vo">
+                    <div style="padding: 0px" class="tpl-item">
+                        <div class="select-item">
+                            <input type="checkbox" style="margin-right: 12px;" value="{$vo.value}" name="item[]"
+                                class="item-select" data-ignore-uncheck>
+                            <label style="line-height:22px;" title="{$vo.text}">{$vo.text}</label>
+                        </div>
+                    </div>
+                </volist>
+                <else />
+                <div style="padding: 20px; margin-top:190px;width:90%;text-align: center;font-weight: bold">没有可选择项</div>
+            </notempty>
+        </div>
+    </form>
+    <div class='actions-sysdefault' style="width: 200px;margin: 30px 20px 20px auto;">
+        <input type="checkbox" id="select-all-tpl" style="float: left" />
+        <label for="select-all-tpl">全选/反选</label>
+        <div style="border-radius: 0px;" class="btn-update btn-confirm" plain="true" onclick="action_import()">导出</div>
+    </div>
+    <div class="example-dialog">
+        <div class="content-header"></div>
+        <div class="content"></div><i class="close-dlg fa fa-check-circle-o"></i>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $("#select-all-tpl").change(function () {
+        $("input[name='item[]']").prop("checked", $(this).prop("checked"));
+    });
+    $(".item-select").change(function () {
+        $(this).closest(".tpl-item").find(".item-standard-id").focus();
+    });
+    function action_import() {
+        var data = $("#WxTemplateMessage-form").serialize();
+        showMaskLayer();
+        $.post("ComCompany/showExportDominant", data, function (result) {
+            hideMaskLayer();
+            $.dialog.tips(result.message);
+            //var result1 = JSON.parse(result);
+            //console.log(result1.message);
+            if (result.code == 0) {
+                window.location.href = '/ComCompany/exportDominant';
+            }
+        }, "json");
+    }
+    function showExample(sender) {
+        $(".tpl-item").removeClass("tpl-item-active");
+        $(sender).closest(".tpl-item").addClass("tpl-item-active");
+        var example = $(sender).closest(".tpl-item").find(".item-example").val();
+        $(".example-dialog .content").html(example.replace(/[\r\n]/g, "<br>"));
+        $(".example-dialog .content-header").html($(sender).closest(".tpl-item").find(".item-title").val());
+        $(".example-dialog").show().click(function () { $(this).hide() });
+    }
+</script>

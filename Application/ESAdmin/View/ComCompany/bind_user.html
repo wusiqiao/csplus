@@ -1,0 +1,262 @@
+<style>
+    #bindWeiXin-edit {
+        width: 861px;
+        background-color: #ffffff;
+    }
+    .NewCustomer-steps div{
+        float: left;
+        width: calc(100% / 3);
+        height: 58px;
+        line-height: 58px;
+        padding: 15px 0;
+    }
+
+    .NewCustomer-info input{
+        width: 270px;
+        height: 32px;
+        line-height: 32px;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        color: #666666;
+        text-indent: 13px;
+        outline: none;
+    }
+    .NewCustomer-steps div.active{
+        border-bottom:2px solid #368bfe;
+    }
+    select{
+        width: 270px;
+        height: 32px;
+        color: #676767;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        outline: none;
+        text-indent: 13px;
+    }
+    .row select{
+        float: left;
+        width:99px !important;
+        box-sizing: border-box;
+    }
+    .chosen-container-single .chosen-single{
+        margin-right:8px;
+        height: 32px !important;
+        line-height: 32px !important;
+    }
+
+    .selected-table{
+        width:100%;
+        border-collapse:collapse;
+        text-align: center;
+        line-height: 50px;
+    }
+    .selected-table thead tr{
+        background: #fbfbfb;
+    }
+    .selected-table tbody tr:nth-child(even){
+        background: #fbfbfb;
+    }
+    #mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 88;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+    .del{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c11.png')0 5px no-repeat;
+    }
+    .del{
+        display: inline-block;
+        padding:3px 0;
+        width:20px;
+        height:20px;
+    }
+    .datagrid-header-rownumber,.datagrid-cell-rownumber{
+        width:40px;
+    }
+</style>
+<script>
+    function formatRadio(value,row){
+        var html = `<input type='radio' name='bind_select' class='css-checkbox' id='c-${row.id}'>
+        <label for='c-${row.id}' class='css-label'></label>`;
+        return html;
+    }
+
+    function formatName(value,row){
+        if(row.head_pic){
+            return `<div style="width:80%;height:35px;display:flex;">
+                    <img src="`+row.head_pic+`" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;" onerror="this.onerror=null;this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                    <div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">`+value+`</div>
+                    </div>`;
+        }else{
+            return `<div style="width:80%;height:35px;display:flex;">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;">
+                    <div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">`+value+`</div>
+                    </div>`;
+        }
+    }
+
+    function formatMobileStatus(value,row){
+        if (value==null || value=='') {
+            if (row.is_follow == 1) {
+                return `未绑定手机&nbsp;&nbsp;<a style="color:#368bfe;" onclick="inviteBoundMobile(`+row.id+`)">邀请绑定</a>`;
+            } else {
+                return `未绑定手机`;
+            }
+        }else{
+            return value;
+        }
+    }
+</script>
+
+<!-- 绑定微信用户弹窗 -->
+<div id="bindWeiXin-edit" style="">
+    <div style="width:100%;height: 530px;display: flex;">
+        <div style="flex:1;padding:30px 35px;border-right:1px solid #d3d3d3;box-sizing: border-box;">
+            <div style="margin:0;" class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                <input type="text" placeholder="客户昵称/备注/手机/公司" style="width:300px;" class="filter-field" name="SerachComPotential"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="queryComPotential()">
+            </div>
+            <div style="width:372px;height:405px;margin-top:33px;overflow-y:auto;overflow-x:hidden;" id="table-area">
+                <table id="ComPotential-datagrid" class="" data-options="url:'ComPotential/list/user_type/4',singleSelect:true,pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>" fitColumns="true">
+                    <thead>
+                    <tr>
+                        <th data-options="field:'name',width:50,align:'left',formatter:formatName">客户昵称</th>
+                        <th data-options="field:'mobile',width:60,align:'left',formatter:formatMobileStatus">手机号码</th>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'c',width:30,align:'center',formatter:formatRadio">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="flex:1;padding:30px 35px;">
+            <div style="margin:0;border: none;color: grey" class="search_ipt select_tips">
+                请勾选需要添加的对象
+            </div>
+            <div style="margin-top:35px;width: 100%;height: 363px;">
+                <table class="selected-table " style="width: 95%;margin-bottom: 10px;">
+                    <thead><td width="50" style="width: 50px">客户昵称</td>
+                    <td width="70" style="width: 70px">绑定手机</td>
+                    <td width="30" style="width: 30px">操作</td></thead>
+                    <tr id="selected"></tr>
+                </table>
+                <input type="hidden" name="selected" value="0">
+            </div>
+            <div style="width: 100px;margin: 0 0 0 auto;">
+                <span class="btn-confirm" onclick="select_confirm()">保存</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="mask" style="display:none;"></div>
+<!-- 绑定微信用户确认提示弹窗 -->
+<div id="isbindWeiXin-edit" style="display:none;">
+
+    <div style="width: 470px;height: 14px;line-height: 14px;text-align: center;color: #666666;margin: 49px auto 59px;">
+        是否替换原公司档案的联系人和联系电话
+    </div>
+    <div style="width:204px;margin:0 30px 30px auto">
+        <span class="btn-confirm" onclick="replace_link()">是</span>
+        <span class="btn-cancel" onclick="closeDialog();closeDialog('bind_user');">否</span>
+    </div>
+</div>
+
+<script>
+    var searchTime = "";
+    $("input[name='SerachComPotential']").bind("input propotychange",function(){
+        clearTimeout(searchTime);
+        searchTime = setTimeout(function(){
+            $("#ComPotential-datagrid").datagrid("reload",{
+                SerachComPotential:$("input[name='SerachComPotential']").val()
+            })
+        },'500')
+    });
+
+    /*$("#ComPotential-datagrid").datagrid('load',{
+        user_type:2
+    });*/
+
+    $("#ComPotential-datagrid").datagrid({
+        onClickRow:function(index,row){
+            $(".select_tips").html("已选择1个对象");
+            $("input:radio").eq(index).attr("checked",true);
+            goToRight(row.id,row.name,row.mobile,row.head_pic);
+            $("input[name='selected']").val(1);
+        },
+        onLoadSuccess:function(){
+            removeSelect();
+        }
+    });
+
+    function goToRight(id,name,mobile,head_pic){
+        var picName = getPicName(head_pic,name);
+        var del = "<i onclick='removeSelect(this)' class='del'></i>";
+        var html = "<td class='picName'>" + picName +
+            "</td><td class='mobile' >" + mobile +
+            "</td><td>" + del +
+            "</td>";
+        $("#selected").html(html);
+    }
+
+    function removeSelect(obj){
+        $("#selected").html("");
+        $(".select_tips").html("请勾选需要添加的对象");
+        $("input[name='selected']").val(0);
+    }
+
+    $(function(){
+        hideMaskLayer();
+    });
+
+    function select_confirm(){
+        var row = getGridSelections("ComPotential");
+        var html = "";
+        if(row[0]){
+            html += formatName(row[0].name,row[0]);
+        }
+        $(".selected_user").html(html);
+        var is_selected = $("input[name='selected']").val();
+        if(is_selected == 1){
+            //$("#bindWeiXin-edit").hide();
+            
+            // $("#mask").show();
+            $.dialog({
+                id:"isbindWeiXin-edit",max:false,min:false,title:"温馨提示",content:$("#isbindWeiXin-edit").html(),lock:true
+            });
+            //closeDialog("bind_user");
+            $("#toSelectUser").html("更换微信");
+            $("input[name='customer_leader_id']").val(row[0].id);
+        }else{
+            $("#toSelectUser").html("绑定微信用户");
+            $("input[name='customer_leader_id']").val("");
+            var unBindHtml = "<div style=\"width:80%;height:35px;display:flex;\">\n" +
+                " <img src=\"/Application/ESAdmin//Public/images/icon/user_pic_none.jpg\" style=\"max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;\" onerror=\"this.onerror=null;this.src='/Application/ESAdmin//Public/images/icon/user_pic_none.jpg'\">\n" +
+                " <div style=\"align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;\" title=\"未设置\">未设置</div>\n" +
+                " </div>" ;
+            $(".selected_user").html(unBindHtml);
+            closeDialog("bind_user");
+        }
+    }
+
+    function replace_link(){
+        var row = getGridSelections("ComPotential");
+        $("input[name='customer_leader_id']").val(row[0].id);
+        $("input[name='linkman']").val(row[0].name);
+        $("input[name='contact']").val(row[0].mobile);
+        closeDialog();
+        closeDialog("bind_user");
+    }
+
+    function inviteBoundMobile(id){
+        var data = new Array();
+        var ids = new Array();
+        ids.push(id);
+        createDialog("ComPotential/bindTel/", '绑定通知','dlg-company-select', {data:data,ids:ids});
+    }
+</script>

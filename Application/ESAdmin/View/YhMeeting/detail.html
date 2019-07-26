@@ -1,0 +1,475 @@
+<style>
+  #yhDetail {
+    min-height: 100%;
+    background-color: #fff;
+  }
+
+  #yhDetail-content {
+    padding: 0 18px;
+  }
+
+  #yhDetail-title {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid #d3d3d3;
+    padding-bottom: 20px;
+  }
+
+  .yhDetail-title-left {
+    width: 380px;
+    height: 280px;
+    overflow: hidden;
+    position: relative;
+    margin-right: 10px;
+  }
+
+  .yhDetail-title-info {
+    width: 100%;
+    text-align: center;
+    padding: 15px 0;
+    color: #fff;
+    font-size: 20px;
+    background-color: rgba(10, 80, 220, 0.3);
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  }
+
+  .yhDetail-title-right {
+    flex: 1;
+    height: 280px;
+    position: relative;
+  }
+
+  .yhDetail-state {
+    width: 60px;
+    height: 28px;
+    line-height: 28px;
+    border: 1px solid #d3d3d3;
+    color: #333;
+    border-radius: 2px;
+    text-align: center;
+  }
+
+  .yhDetail-title-right .info-line {
+    margin: 10px 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    height: 32px;
+    line-height: 32px;
+  }
+
+  .yhDetail-title-right .info-line .title {
+    width: 100px;
+    text-align: right;
+  }
+
+  .info-memberlist {
+    margin: 10px 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    height: 32px;
+    line-height: 32px;
+    width: 100%;
+  }
+
+  #yhDetail-introduce {
+    display: flex;
+    align-items: flex-start;
+    padding: 20px 0;
+    border-bottom: 1px solid #d3d3d3;
+  }
+
+  #yhDetail-live {
+    display: flex;
+    align-items: flex-start;
+    padding: 20px 0;
+  }
+
+  #activity-live {
+    padding: 5px;
+    height: 600px;
+    border: 1px solid #d3d3d3;
+    position: relative;
+  }
+
+  #activity-picture {
+    display: none;
+    padding: 5px;
+    height: 600px;
+    border: 1px solid #d3d3d3;
+  }
+
+  #activity-picture-list {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 530px;
+  }
+
+  #activity-picture-list::-webkit-scrollbar {
+    width: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+  }
+
+  #activity-picture-list::-webkit-scrollbar-thumb {
+    background: #b8b4b4;
+    border-radius: 4px;
+  }
+
+  .activity-picture-item {
+    width: 280px;
+    height: 180px;
+    border: 1px solid #d3d3d3;
+    position: relative;
+    padding: 5px 10px;
+    overflow: hidden;
+    margin: 5px 10px;
+  }
+
+  .activity-picture-tool {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 32px;
+    line-height: 32px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(10, 50, 120, 0.3);
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  }
+
+  /* 工具栏图标 */
+  .btn-attachment-add {
+    float: left;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-right: 10px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .btn-attachment-add input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+  }
+
+  .icon-updata-img {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-attachment1.png");
+  }
+
+  .icon-updata-img:hover {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-attachment1-hover.png");
+  }
+
+  .icon-updata-file {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-attachment.png");
+  }
+
+  .icon-updata-file:hover {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-attachment-hover.png");
+  }
+
+  /* 输入框 */
+  #txt-content {
+    height: 80px;
+    padding: 0px 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    outline: none;
+    word-break: break-all;
+  }
+
+  #txt-content::-webkit-scrollbar {
+    width: 4px;
+    background-color: #eee;
+    border-radius: 2px;
+  }
+
+  #txt-content::-webkit-scrollbar-thumb {
+    background: #b8b4b4;
+    border-radius: 2px;
+  }
+  .actions{ 
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 30px;
+    position: relative;
+    z-index: 8;
+}
+.activity-picture-title{
+  width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin: 10px 0;
+}
+</style>
+<div id="yhDetail">
+  <div class="btn-speed menu_item" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index')">返回</div>
+  <div id="yhDetail-content">
+    <!-- title -->
+    <div id="yhDetail-title">
+      <div class="yhDetail-title-left">
+        <img style="width: 100%;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png" alt="">
+        <div class="yhDetail-title-info">{$model.num}人参与</div>
+      </div>
+      <div class="yhDetail-title-right">
+        <div style="display: flex;align-items: center;">
+          <h2 style="font-size: 28px;padding: 0 20px;">{$model.title}</h2>
+          <div class="yhDetail-state">
+              <if condition="$model.status eq 1">
+                  待报名
+                  <elseif condition="$model.status eq 2" />
+                  报名中
+                  <elseif condition="$model.status eq 3" />
+                  待进行
+                  <elseif condition="$model.status eq 4" />
+                  进行中
+                  <elseif condition="$model.status eq 5" />
+                  已结束
+                  <elseif condition="$model.status eq 6" />
+                  已关闭
+                  <else/>
+                  已归档
+              </if>
+          </div>
+        </div>
+        <div class="info-line">
+          <div class="title">活动时间：</div>
+          <div class="">{$model.start_time|date="Y-m-d H:i",###}--{$model.end_time|date="Y-m-d H:i",###}</div>
+        </div>
+        <div class="info-line">
+          <div class="title">活动地点：</div>
+          <div class="">{$model.address}</div>
+        </div>
+        <div class="info-line">
+          <div class="title">活动类型：</div>
+          <div class="">{$model.type_name}</div>
+        </div>
+        <notempty name="model.userList">
+        <div class="info-memberlist">
+          <div style="width: 100px;text-align: right;">参会人员：</div>
+          <div style="display: flex;align-items: center;">
+              <foreach name="model.userList" item="val">
+              <div class="btn-label" style="width: 70px;height: 28px;line-height: 28px;">{$val['user_name']}</div>
+              </foreach>
+          </div>
+          <div class="btn-speed" onclick="toggleType('YhMeeting/applyList/id/{$model.id}')">查看全部 ></div>
+        </div>
+        </notempty>
+      </div>
+    </div>
+    <!-- introduce -->
+    <div id="yhDetail-introduce">
+      <div style="width: 100px;text-align: right;">活动简介：</div>
+      <div style="flex: 1;padding: 5px;height: 300px;border: 1px solid #d3d3d3;">
+        　{$model.content}
+      </div>
+    </div>
+    <!-- live -->
+    <div id="yhDetail-live">
+      <div style="width: 100px;text-align: right;">活动现场：</div>
+      <div style="flex: 1;">
+        <div class="c-header" style="position:relative;">
+          <div class="tab-span tab-span-on" data-index="0">活动直播</div>
+          <div class="tab-span" data-index="1">活动照片</div>
+        </div>
+        <!-- 活动直播 -->
+        <div id="activity-live">
+          <div style="width: 100%;height: 435px;background-color: #f5f5f5">
+
+          </div>
+
+
+          <div class="input-header" style="width: 100%;height: 155px;background-color: #fff;">
+            <!-- 聊天工具栏 -->
+            <div style="padding: 5px 0px 5px 30px;border-bottom: 1px solid #d3d3d3;overflow: hidden;margin-bottom:5px;">
+              <!-- 图片上传 -->
+              <div class="btn-attachment-add icon-updata-img">
+                <input onchange="" id="" type="file" accept="image/*,application/msword,application/vnd.ms-powerpoint" multiple="multiple">
+              </div>
+              <!-- 文档上传 -->
+              <div class="btn-attachment-add icon-updata-file">
+                <input onchange="" id="" type="file" accept="image/*,application/msword,application/vnd.ms-powerpoint" multiple="multiple">
+              </div>
+            </div>
+            <!-- 聊天输入框 -->
+            <div class="input-area">
+              <div id="txt-content" onkeyup="contentFun(this)" onpaste="pasteFun()" contentEditable="true"></div>
+            </div>
+            <div class="actions">
+                <div id="btn-send-msg" class="btn-speed" style="margin: 0;" @click="postAttachmentData()">发送</div>
+            </div>
+          </div>
+        </div>
+        <!-- 活动照片 -->
+        <div id="activity-picture">
+          <div style="display: flex;align-items: center;justify-content: space-between;border-bottom: 1px solid #d3d3d3;">
+            <div class="btn-speed">上传照片</div>
+          </div>
+          <!-- 照片 -->
+          <div id="activity-picture-list">
+            <div class="activity-picture-item">
+              <div class="activity-picture-title">
+                XXXXXXXXXXXXXXX</div>
+              <img style="width: 100%;"
+                src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png" alt="">
+              <div class="activity-picture-tool">
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">下载</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">预览</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">删除</div>
+              </div>
+            </div>
+
+            <div class="activity-picture-item">
+              <div class="activity-picture-title">
+                XXXXXXXXXXXXXXX</div>
+              <img style="width: 100%;"
+                src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png" alt="">
+              <div class="activity-picture-item">
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">下载</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">预览</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">删除</div>
+              </div>
+            </div>
+
+            <div class="activity-picture-item">
+              <div class="activity-picture-title">
+                XXXXXXXXXXXXXXX</div>
+              <img style="width: 100%;"
+                src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png" alt="">
+              <div class="activity-picture-tool">
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">下载</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">预览</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">删除</div>
+              </div>
+            </div>
+
+            <div class="activity-picture-item">
+              <div class="activity-picture-title">
+                XXXXXXXXXXXXXXX</div>
+              <img style="width: 100%;"
+                src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png" alt="">
+              <div class="activity-picture-tool">
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">下载</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">预览</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">删除</div>
+              </div>
+            </div>
+
+            <div class="activity-picture-item">
+              <div class="activity-picture-title">
+                XXXXXXXXXXXXXXX</div>
+              <img style="width: 100%;"
+                src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png" alt="">
+              <div class="activity-picture-tool">
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">下载</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">预览</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">删除</div>
+              </div>
+            </div>
+
+            <div class="activity-picture-item">
+              <div class="activity-picture-title">
+                XXXXXXXXXXXXXXX</div>
+              <img style="width: 100%;"
+                src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png" alt="">
+              <div class="activity-picture-tool">
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">下载</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">预览</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">删除</div>
+              </div>
+            </div>
+
+            <div class="activity-picture-item">
+              <div class="activity-picture-title">
+                XXXXXXXXXXXXXXX</div>
+              <img style="width: 100%;"
+                src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png" alt="">
+              <div class="activity-picture-tool">
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">下载</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">预览</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">删除</div>
+              </div>
+            </div>
+
+            <div class="activity-picture-item">
+              <div class="activity-picture-title">
+                XXXXXXXXXXXXXXX</div>
+              <img style="width: 100%;"
+                src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png" alt="">
+              <div class="activity-picture-tool">
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">下载</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">预览</div>
+                <div style="margin: 0 5px;color: #fff;cursor: pointer;">删除</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    liveVue = new Vue({
+        el:"#activity-live",
+        data:{
+
+        }
+    });
+
+
+
+
+    function contentFun(that){
+        // 键盘按键
+        if (13 == event.keyCode && event.ctrlKey) {
+
+        }
+        if (13 == event.keyCode) {
+        }
+    }
+
+    function toggleType(url) {
+      $.get(url, function (result) {
+          $("#module-content .content").html("").append(result);
+          $.parser.parse("#module-content .content");
+      });
+    }
+
+    $('.c-header .tab-span').click(function () {
+      $(this).addClass('tab-span-on').siblings().removeClass('tab-span-on');
+      // console.log($(this).attr("data-index"))
+      if ($(this).attr("data-index") == 0) {
+          $("#activity-live").show();
+          $("#activity-picture").hide();
+      } else if ($(this).attr("data-index") == 1) {
+          $("#activity-live").hide();
+          $("#activity-picture").show();
+      }
+    });
+
+    function queryIcon_bule() {
+      $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray() {
+      $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+</script>

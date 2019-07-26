@@ -1,0 +1,69 @@
+<script type="text/javascript">
+    function format_operation(value ,row, index){
+        var html = '';
+        html += "<a style='color: #368BFE' onclick=\"templateDesc("+row.id+")\" >查看详情</a>";
+        return html;
+    }
+</script>
+<div class="maincontainer" id="WxBranchTemplate-maincontainer"  style="height:600px">
+    <div id="{$Think.const.CONTROLLER_NAME}-toolbar">
+        <div class="search-panel" style="display: block; border-top: 0px">
+            <table class="search-table" style="width:900px">
+                <tr>
+                    <th>日期区间：</th>
+                    <td>
+                        <input name="qdr-send_at[]" class="easyui-datebox filter-field" />-
+                        <input name="qdr-send_at[]" class="easyui-datebox filter-field" />
+                    </td>
+                    <th>模板标题：</th>
+                    <td>
+                        <input name="ql-title"  class="easyui-validatebox filter-field" value="" />
+                    </td>
+                </tr>
+
+            </table>
+            <div class="search-action-panel">
+                <a href="javascript:void(0)" class="common-blue-btn" plain ="true" onclick="doSearchQuery('{$Think.const.CONTROLLER_NAME}')">确定</a>
+            </div>
+        </div>
+    </div>
+    <table   class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+           data-options="
+           url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/userSendList/id/{$id}',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+           pageNumber:1,
+           checkOnSelect:false,
+           singleSelect:false,
+           border:true,
+           onRowContextMenu: function (e, rowIndex, rowData) {
+             $(this).datagrid('clearSelections');
+             $(this).datagrid('selectRow', rowIndex);
+           e.preventDefault();
+            $('#box_{$Think.const.CONTROLLER_NAME}').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+             });
+            }" >
+        <thead>
+        <tr >
+            <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+            <th data-options="field:'name',width:'100',align:'left'">{$Think.lang.USER_LINKNAME}</th>
+            <th data-options="field:'comments',width:'100',align:'left'">{$Think.lang.USER_RENAME}</th>
+            <th data-options="field:'mobile',width:'100',align:'left'">{$Think.lang.USER_MOBILE}</th>
+            <!--<th data-options="field:'group_name',width:'100',align:'left'">{$Think.lang.USER_GROUP}</th>-->
+            <th data-options="field:'tag_name',width:'100',align:'left'">{$Think.lang.USER_TAG}</th>
+            <th data-options="field:'template_title',width:'120',align:'left'">{$Think.lang.USER_SEND_TEMPLATE}</th>
+            <th data-options="field:'send_time',width:'160',align:'left'">{$Think.lang.USER_SEND_TIME}</th>
+            <th data-options="field:'operation',width:120,align:'center',formatter:format_operation">{$Think.lang.USER_OPERATION}</th>
+        </tr>
+        <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+
+<script>
+    function templateDesc(id)
+    {
+        createDialog("{$Think.const.CONTROLLER_NAME}/noticeDesc/id/"+id, '查看详情','dlg-notice-select');
+    }
+</script>

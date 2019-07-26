@@ -1,0 +1,97 @@
+<style>
+    .chosen-container .chosen-results {
+        max-height: 130px;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <input name="operation_name" type="hidden" >
+            <input name="operation_action" type="hidden" >
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" /></div>
+                <div class="caption"><span>{$Think.lang.FLD_PARENT_ID}：</span></div>
+                <div class="inputbox">
+                    <select name="parent_id" class="chosen-select" data-options="all:true,value:'{$model.parent_id}',search_key_url:'SysMenu/keyNameList/'">
+                        <option value="0">--选择所属菜单--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_IS_DAC}：</span></div>
+                <div class="inputbox"><input type="hidden" name="is_dac" value="0" />
+                    <input name="is_dac" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.is_dac}" /></div>
+                <div class="caption"><span>{$Think.lang.FLD_IS_SHOW}：</span></div>
+                <div class="inputbox"><input type="hidden" name="is_show" value="0" />
+                    <input name="is_show" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.is_show}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_IS_VALID}：</span></div>
+                <div class="inputbox">
+                    <input name="is_valid" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.is_valid}" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_IS_SYSTEM}：</span></div>
+                <div class="inputbox">
+                    <input name="is_system" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.is_system}" />
+                </div>                
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_URL}：</span></div>
+                <div class="inputbox"><input name="url" class="easyui-validatebox"  data-options="required:true" value="{$model.url}" /></div>
+                 <div class="caption"><span>{$Think.lang.FLD_PARAMS}：</span></div>
+                <div class="inputbox"><input name="params" class="easyui-validatebox" value="{$model.params}" /></div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_OPERATIONS}：</span></div>
+                <div class="inputbox" style="width: 65%">
+                    <select name="menu_operation_inputs[]" class="chosen-select" data-placeholder=" " id="menu_operation_select" data-options="all:true,value:'{$model.operations}',search_key_url:'SysOperation/keyNameList/menu_id/{$model.id}'"  multiple style="width:100%">
+                    </select>
+                </div>
+                <a href="javascript:void(0)" class="common-blue-btn" style="width:auto;margin-left: 5px" plain="true" onclick="addOperation()">新增权限</a>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_STYLE}：</span></div>
+                <div class="inputbox">
+                    <input name="style" type="radio" value="0" <eq name="model.style" value="0">checked</eq> />{$Think.lang.ENUM_STYLE_0}
+                    <input name="style" type="radio" value="1" <eq name="model.style" value="1">checked</eq> />{$Think.lang.ENUM_STYLE_1}
+                    <input name="style" type="radio" value="2" <eq name="model.style" value="2">checked</eq> />{$Think.lang.ENUM_STYLE_2}
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_IS_ONLINE}：</span></div>
+                <div class="inputbox"><input type="hidden" name="is_online" value="0" />
+                    <input name="is_online" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.is_online}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_SORT}：</span></div>
+                <div class="inputbox">
+                    <input name="sort" class="easyui-numberbox easyui-validatebox"  value="{$model.sort}" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_ICON}：</span></div>
+                <div class="inputbox">
+                    <input name="icon" class="easyui-validatebox"  value="{$model.icon}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption block"><span>{$Think.lang.FLD_COMMENTS}：</span></div>
+                <div class="inputbox_x2"><textarea name="comments" class="easyui-validatebox">{$model.comments}</textarea></div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="SysMenu" />
+
+</div>
+<script src="https://cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+<script>
+    function addOperation(){
+        var menu_id = $("input[name=id]").val();
+        createDialog('/SysMenu/addOperation/menu_id/'+menu_id,'新增权限')
+    }
+    $(function(){
+        $.get("SysOperation/keyNameList/menu_id/{$model.id}",function(result){
+            $("#menu_operation_select").data('menu_operation_inputs',result);
+        },'json')
+    })
+</script>

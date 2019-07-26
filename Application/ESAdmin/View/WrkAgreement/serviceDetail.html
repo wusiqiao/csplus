@@ -1,0 +1,167 @@
+<style>
+	.tableWrap tr{
+		height:40px;
+		text-align: center;
+	}
+	.bgcl-grey{
+		background:#f8f6f7;
+	}
+	.grey{
+		background: grey;
+	}
+	.spanWidth{
+		display: inline-block;
+		width:180px;
+		margin-left:20px;
+	}
+	.permit-table
+	{
+		border-collapse: collapse;
+		margin: 0 0 ;
+		text-align: center;
+	}
+	.permit-table td, .permit-table th
+	{
+		border: 1px solid #cad9ea;
+		color: #666;
+		height: 30px;
+	}
+	.permit-table thead ,.permit-table th
+	{
+		background-color: #CCE8EB;
+	}
+	.permit-table tr:nth-child(odd)
+	{
+		background: #fff;
+	}
+	.permit-table tr:nth-child(even)
+	{
+		background: #F5FAFA;
+	}
+	/*input[type=checkbox].css-checkbox + label.css-label {
+		height: auto;
+		width: 100px;
+		padding-top: 6px;
+		padding-bottom: 3px;
+		line-height: normal;
+	}*/
+</style>
+<div style="height: 450px;width:900px;overflow-y: hidden">
+	<div  style="height: 100%;overflow-y: scroll;padding-right:10px;">
+		<table width="100%" class="permit-table" style="margin-bottom: 10px;height: 500px;overflow-y: scroll" id="options">
+			<thead>
+			<tr>
+				<th width="200">
+					服务列表
+				</th>
+				<th>
+					服务选项
+				</th>
+			</tr>
+			<tr v-for="(item,index) in options" :text="'F'+item.id">
+				<td align="left" width="250" style="padding: 5px 5px 5px 20px;">
+					<input type="checkbox" class="css-checkbox" onclick="checkOperation(this,1)" :text="'F'+item.id" :id="item.id+'z'">
+					<label class="css-label" :for="item.id+'z'">
+						<span>&nbsp;{{item.name}}</span>
+					</label>
+				</td>
+				<td :id="'F'+item.id">
+					<table width="100%" frame=void class="permit-table" >
+						<thead v-for="it in item.child">
+							<td align="left" style="padding: 5px 5px 5px 20px" width="125">
+								<input type="checkbox" class="css-checkbox" :checked="it.checked?true:false" onclick="checkOperation(this,2)" :text="'S'+it.id" :id="it.id+'a'">
+								<label class="css-label" :for="it.id+'a'" style="height: auto">
+									<span>&nbsp;{{it.name}}</span>
+								</label>
+							</td>
+							<td :id="'S'+it.id">
+								<div style="text-align: left;padding-left:10px">
+									<div v-for="it1 in it.child" style="float:left;width:125px;padding: 8px 5px 8px 5px;">
+										<input :name="'o'+it.id" type="radio" :data-type1="item.type1" :data-type2="item.type2" :data-optionP="it.name" :data-option="it1.name" :id="it1.id+'o'" class="css-checkbox" >
+										<label :for="it1.id+'o'" class="css-label">
+											<span style="position:relative;left:3px;">{{it1.name}}</span>
+										</label>
+									</div>
+								</div>
+								<!--<span v-for="it1 in it.child" style="text-align: left;">
+									<span class="spanWidth" style="margin: 10px 5px;">
+										<input :name="'o'+it.id" type="radio" v-model="item.a" :data-type1="item.type1" :data-type2="item.type2" :data-optionP="it.name" :data-option="it1.name" :id="it1.id+'o'" class="css-checkbox" >
+										<label :for="it1.id+'o'" class="css-label">
+											<span style="position:relative;left:3px;">{{it1.name}}</span>
+										</label>
+									</span>
+								</span>-->
+							</td>
+						</thead>
+					</table>
+				</td>
+			</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+<div class="form-actions" id="WrkAssignment-form-actions" style="padding: 30px 0 20px;border-top: 1px solid #d3d3d3;height: auto;">
+	<div class="actions-sysdefault">
+		<a href="javascript:void(0)" class="btn-confirm btn-update" plain="true" onclick="save(this)">确定</a>
+		<a href="javascript:void(0)" class="btn-cancel" plain="true" onclick="closeDialog()">取消</a>
+	</div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+	var optionsVue = new Vue({
+		el:"#options",
+		data:{
+			options:[],
+		}
+	});
+	$(function(){
+		$.post("WrkAgreement/addOptions",{},function(result){
+			optionsVue.options = result;
+		},"json")
+	})
+	function checkOperation(obj,type){
+		var id = obj.getAttribute('text');
+		if(type == 1){
+			var arrChk = $("#"+id).find("input[type='checkbox']");
+		}else{
+			var arrChk = $("#"+id).find("input[type='radio']").eq(0);
+		}
+		if(obj.checked){
+			arrChk.attr("checked","checked");
+			$(arrChk).each(function(){
+				var sec = $(this).attr('text');
+				$("#"+sec).find("input[type='radio']").eq(0).attr("checked",'checked');
+			});
+		}else{
+			arrChk.removeAttr("checked");
+			var radio = $("#"+id).find("input[type='radio']");
+			radio.removeAttr("checked");
+		}
+	}
+	function save(obj){
+		if(!$(obj).hasClass("grey")){
+			$(obj).addClass("grey");
+			var ind = 0;
+			$("#options tr").each(function(){
+				var id = $(this).attr("text");
+				if(id != undefined){
+					var option1 = [];
+					$("#"+id).find("input[type='radio']:checked").each(function(index,item){
+						option1['type1'] = $(this).data("type1");
+						option1['type2'] = $(this).data("type2");
+						index +=1;
+						option1['attributes'+index] = $(this).attr("data-optionP")+"："+$(this).data("option");
+					});
+					if(option1['type1'] != "" && option1['type1'] != undefined){
+						/*option1['id'] = OptionsVue.items[OptionsVue.items.length-1].id+1;*/
+						option1['id'] = $("#product_options tr").length + ind;
+						ind ++;
+						OptionsVue.items.push(option1);
+					}
+				}
+			});
+			closeDialog();
+		}
+	}
+</script>
+

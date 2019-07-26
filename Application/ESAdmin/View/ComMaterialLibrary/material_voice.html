@@ -1,0 +1,362 @@
+<script>
+    function formatTime(value,row){
+        return `<div class="yuyin-updatatime">${value}</div>`;
+    }
+
+    function formatName(value,row){
+        return `<div class="yuyin-title">${value}</div>`;
+    }
+    function formatOperation(value,row){
+        return `<div class="yuyin-operation">
+                <!--<span class="icon-img-down" title="下载"></span>-->
+                <span id="${value}" class="icon-img-remove" title="删除" onclick="result = removeMaterial()"></span>
+            </div>`;
+    }
+</script>
+<style>
+    #app {
+        width: 100%;
+        height: calc(100% - 13px);
+        background-color: #fff;
+    }
+
+    .yuyin-list-item {
+        width: 100%;
+        border-bottom: 1px solid #d3d3d3;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .yuyin-updatatime, .yuyin-title,.yuyin-operation {
+        width: 100%;
+        height: 50px;
+        text-align: center;
+        line-height: 50px;
+    }
+    .yuyin-operation{
+        height: 30px;
+        padding: 10px 0;
+    }
+    .icon-img-down {
+        display: inline-block;
+        width: 14px;
+        height: 20px;
+        margin: 5px 5px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-img-down.png");
+        background-size: 100% 100%;
+        text-align: center;
+        cursor: pointer;
+    }
+    .icon-img-down:hover {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-img-down-hover.png");
+    }
+    .icon-img-remove {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin: 5px 5px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-remove.png");
+        background-size: 100% 100%;
+        cursor: pointer;
+    }
+    .icon-img-remove:hover{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-remove-hover.png");
+    }
+    #mask{
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 88;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+    #synchronous-edit,#remove-edit {
+        position: fixed;
+        z-index: 99;
+        top: calc(50% - 150px);
+        left: calc(50% - 276px);
+        width: 552px;
+        height: 300px;
+        background-color: #ffffff;
+    }
+    .synchronous-edit-header,.remove-edit-header{
+        height: 30px;
+        padding: 10px 10px;
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f9fafb;
+        font-size: 16px;
+        color: #35323b;
+        cursor: move;
+    }
+    .synchronous-edit-content{
+        width:100%;
+        text-align:center;
+        font-size: 14px;
+        padding-top:55px;
+        color: #666666;
+        font-size: 16px;
+    }
+    .remove-edit-content{
+        padding-left: 67px;
+        font-weight:400;
+        font-size: 16px;
+        color: #666666;
+    }
+    .remove-edit-confirm{
+        float: left;
+        width: 88px;
+        height: 32px;
+        line-height: 32px;
+        background-color: #368bfe;
+        text-align:center;
+        margin: 0 7.5px;
+        cursor: pointer;
+        color: #f8fafb;
+    }
+    .remove-edit-cancel{
+        float: left;
+        width: 88px;
+        height: 32px;
+        line-height: 32px;
+        text-align:center;
+        margin: 0 7.5px;
+        cursor: pointer;
+        color: #368bfe;
+        border: solid 1px #368bfe;
+        box-sizing: border-box;
+    }
+    /* 媒体查询 */
+    /* 大屏 */
+    /* @media screen and (min-width:1366px) and (max-width:1920px){
+        .show_box {
+            width: 250px;
+        }
+        .tuwen-item-more{
+            width: 250px;
+        }
+    } */
+    /* 中屏 */
+    /* @media screen and (min-width:1024px) and (max-width:1366px){
+        .show_box {
+            width: 180px;
+        }
+        .tuwen-item-more{
+            width: 180px;
+        }
+    } */
+    .action-panel {
+        border: 0px #ccc solid;
+        background: #FFF;
+        padding: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        display: inline-block;
+        width: 100%;
+    }
+</style>
+<div id="app" style="position:relative;">
+    <!-- tab切换 -->
+    <div class="c-header" style="position:relative;">
+        <div class="tab-span data-source" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index')" data-source="10">公共文章库</div>
+        <div class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index/material/news')">我的文章</div>
+        <div class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index/material/image')">我的图片</div>
+        <div class="tab-span tab-span-on" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index/material/voice')">我的语音</div>
+    </div>
+    <div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+        <table class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+               data-options="
+           url:'{$Think.const.CONTROLLER_NAME}/list/material/{$material}',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:true,
+           border:true,
+           fitColumns:true,
+           showFooter: true,
+            onLoadSuccess:function (data) {
+                    console.log(data)
+                if(data.total == 0){
+                    document.getElementById('empty-notice').style.display = 'block';
+                } else {
+                    document.getElementById('empty-notice').style.display = 'none';
+                }
+            },
+           onRowContextMenu: function (e, rowIndex, rowData) {
+             $(this).datagrid('clearSelections');
+             $(this).datagrid('selectRow', rowIndex);
+           e.preventDefault();
+            $('#box_{$Think.const.CONTROLLER_NAME}').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+             });
+            }">
+            <thead>
+            <tr>
+                <th data-options="field:'update_time',width:100,align:'center',formatter:formatDateTime">上传时间</th>
+                <th data-options="field:'name',width:100,align:'center',formatter:formatName">标题</th>
+                <th data-options="field:'tags_value',width:100,align:'center',formatter:formatOperation">操作</th>
+            </tr>
+            <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+            <div id="empty-notice" style="color: rgb(180, 180, 180);display:none;width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 40px;font-size: 20px">暂无数据</div>
+    </div>
+    <div id="actions-{$Think.const.CONTROLLER_NAME}">
+        <div class="extend-nav-menu" style="margin: 10px;">
+            <div style="padding-bottom: 10px;display: flex;justify-content: space-between;border-bottom: 1px solid #d3d3d3">
+                <span id="synchronous" class="btn_bg_blue">同步素材</span>
+                <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                    <input id="search" style="width:300px;" type="text" placeholder="请输入语音标题进行查询" class="filter-field"
+                           name="ql-name">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div id="mask" style="display:none;"></div>
+    <!-- 同步弹出信息提示框 -->
+    <div id="synchronous-edit" style="display:none;">
+        <p class="synchronous-edit-header">
+            <span>温馨提示</span>
+            <span onclick="Close()" style="cursor: pointer;">X</span>
+        </p>
+        <div class="synchronous-edit-content">图文素材共0个，已更新0个</div>
+        <p style="text-align:center;color: #929292;font-size: 16px;" id="synchronous-edit-timing">(3秒后自动关闭...)</p>
+    </div>
+    <!-- 删除按钮提示弹出框 -->
+    <div id="remove-edit" style="display:none;">
+        <p class="remove-edit-header">
+            <span>温馨提示</span>
+            <span style="cursor: pointer;" onclick="$(`#remove-edit`).hide();$(`#mask`).hide();">X</span>
+        </p>
+        <p class="remove-edit-content" style="padding-top:45px;">确认删除此素材？</p>
+        <p class="remove-edit-content">(若删除同步的素材，可以重新点击“同步素材”找回删除的素材)</p>
+        <div style="width:206px;height: 32px;margin: 60px auto 0 323px;">
+            <span onclick="isRemoveMaterial()" class="remove-edit-confirm">确认</span>
+            <span onclick="$(`#remove-edit`).hide();$(`#mask`).hide();" class="remove-edit-cancel">取消</span>
+        </div>
+    </div>
+</div>
+<!--<script src="./jquery-1.10.2.min.js"></script>-->
+<script>
+    $("#{$Think.const.CONTROLLER_NAME}-datagrid").datagrid({
+        onLoadSuccess:function (data) {
+            if(data.total == 0){
+                $("#empty-notice").show();
+            }else{
+                $("#empty-notice").hide();
+            }
+        }
+    })
+    $(".search_ipt input").keyup(function(){
+        doSearchQuery("{$Think.const.CONTROLLER_NAME}")
+    });
+    $(function(){
+        var H4 = $("#{$Think.const.CONTROLLER_NAME}-toolbar").height()+100;
+        $("#empty-notice").css("top",H4);
+    })
+    function toggleType(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+    //同步按钮弹出自动关闭
+    var autoClose;
+    var result;
+    var synchronou_toggle = true;
+    var material = '{$material}';
+    $("#synchronous").on("click", function () {
+        if (synchronou_toggle) {
+            showMaskLayer();
+            synchronou_toggle = false;//关闭同步按钮
+            //开始同步
+            $.post('/{$Think.const.CONTROLLER_NAME}/synchronization',{material:material},function(response){
+                hideMaskLayer();
+                if (response.code == 0) {
+                    $('.synchronous-edit-content').text('语音素材共'+response.data.total_count+'个，已更新'+response.data.total_count+'个');
+                    synchronous();
+                    doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+                } else {
+                    $.dialog.alert(response.message)
+                }
+                synchronou_toggle = true;
+            },'json')
+        } else {
+            $.dialog.tips('同步中请勿重复操作!')
+        }
+    })
+    function synchronous()
+    {
+        $("#mask").show();
+        $(`#synchronous-edit`).show();
+        autoClose = setTimeout(function () {
+            $("#mask").hide();
+            $(`#synchronous-edit`).hide();
+        }, 3000);
+    }
+    function Close() {
+        $("#mask").hide();
+        $(`#synchronous-edit`).hide();
+        clearTimeout(autoClose);
+    }
+    // 素材删除功能
+    function removeMaterial() {
+        $("#mask").show();
+        $("#remove-edit").show();
+    }
+    //确认删除
+    function isRemoveMaterial() {
+        var list = new Array();
+        var frameId = '{$Think.const.CONTROLLER_NAME}';
+        var rows = getGridSelections(frameId);
+        if (rows.length === 0) {
+            $.dialog.tips('请选择删除项!');
+        } else {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                list.push(row.id);
+            }
+        }
+        if (list.length > 0) {
+            var datagrid  = getDataGrid(frameId);
+            var controller = getController(frameId);
+            $.post(controller + '/delete',
+                {id: list},
+                function (result) {
+                    if (result.code === 0) {
+                        datagrid.trigger("afterDelete", list);
+                        refreshGrid(frameId, list, "delete");
+                        $.dialog.tips("删除成功！");
+                    } else {
+                        $.dialog.alert(result.message);
+                    }
+                    $("#mask").hide();
+                    $(`#remove-edit`).hide();
+                },
+                "json"
+            )
+            .error(
+                function(XMLHttpRequest, textStatus, errorThrown){
+                    $.dialog.alert("删除错误！");
+                }
+            );
+        }
+
+    }
+</script>

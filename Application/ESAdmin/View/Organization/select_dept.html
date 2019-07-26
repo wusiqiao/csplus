@@ -1,0 +1,124 @@
+<link rel="stylesheet" href="/{$Think.APP_PATH}Public/vender/vue-tree-2.0/vue-tree.css">
+<style>
+
+</style>
+<div id = "app" class="clearFix" style="overflow-y: scroll;height: 300px;width: 500px">
+    <!--<div class="nav-lef" style="height: 100%;">
+        &lt;!&ndash;<tree :folder = "trees"></tree>&ndash;&gt;
+    </div>-->
+    <ul id="object-tree" class="vue-tree" style="padding-left: 20px;width: 450px;padding-right: 10px">
+        <vue-tree style="cursor: pointer"  :model="trees" ></vue-tree>
+    </ul>
+</div>
+
+<div style="text-align: center;margin: 10px">
+    <a href="javascript:void(0)" class="common-blue-btn select-over" onclick="">选择完毕</a>
+    <a href="javascript:void(0)" class="common-red-btn" onclick="closeDialog()">取消</a>
+</div>
+<script src="__ROOT__/{$Think.MODULE_PATH}/Public/vue/vue.min.js"></script>
+<script>
+    // <tree v-if = "item.children" :folder = "item.children"></tree>
+    Vue.component("vue-tree", {
+        template:
+            `<li :class="'item item-'+model.id" style="width: 450px" style="display: block;clear: both;">
+                <div :class="isFolder?'bold tree-folder':'tree-folder'" style="width: 100%;height: 30px;">
+                    <span v-if="isFolder" :class="open?'tree-node tree-node-open':'tree-node tree-node-close'" @click="toggle"></span>
+                    <span v-else class='tree-node tree-node-child'></span>
+                    <span class="tree-node-title"><label class="css-label" :for="'B'+model.id">{{model.name}}</label></span>
+                    <span class="tree-node tree-node-edit" >
+                        <input type="radio" class="css-checkbox" :id="'B'+model.id" :value="model.id+'_'+model.name" name="branch">
+                        <label class="css-label" :for="'B'+model.id"></label>
+                    </span>
+                </div>
+                <!--<div class="bottom-line"></div>-->
+                <ul v-show="open" v-if="isFolder" :class="'vue-tree vue-tree-'+model.id">
+                    <vue-tree v-for="child in model.children" :model="child" ></vue-tree>
+                </ul>
+             </li>`,
+        props: {
+            model: Object,
+            actions: Object
+        },
+        data: function () {
+            return {
+                open: true
+            }
+        },
+        computed: {
+            isFolder: function () {
+                return this.model.children && this.model.children.length
+            }
+        },
+        methods: {
+            toggle: function () {
+                if (this.isFolder) {
+                    this.open = !this.open
+                }
+            },
+            select: function (event) {}
+        },
+        mounted:function(){
+            if (vue_tree != undefined) {
+                vue_tree.child_mounted();
+            }
+        }
+    });
+    var vue_tree = new Vue({
+        el:"#app",
+        data:{
+            trees:[],
+            current:Object,
+            index:0,
+            total_count:0
+        },
+        methods:{
+            select:function(){},
+            child_mounted:function(){
+                this.index ++;
+                if(this.index == this.total_count){
+                    var dac_branchs = parent.$("input[name='dac_branchs']").val();
+                    var ids = dac_branchs.split(",");
+                    for(var i in ids){
+                        $("#B"+ids[i]).attr("checked",true);
+                    }
+                }
+            },
+            click:function(){}
+        }
+    });
+
+    $(function(){
+        getSelectTrees();
+    });
+    function getSelectTrees(){
+        $.post("Organization/treeList/type/1",{},function(result){
+            //result.splice(1, 1);
+            //result = result[0]["children"];
+            vue_tree.trees = result[0];
+            vue_tree.total_count = result[0].children.length;
+            getCount(result[0].children);
+        },'json')
+    }
+
+    function getCount(data){
+        for(var i in data){
+            vue_tree.total_count += data[i].children.length;
+            if(data[i].children.length>0){
+                getCount(data[i].children);
+            }
+        }
+    }
+
+    $(".select-over").on("click",function(){
+        $.each($("#app input:radio:checked"),function(index){
+            var value = this.value;
+            var arr = value.split("_");
+            if(arr[0] == 0){
+                arr[0] = "{$branch_id}";
+            }
+            parent.$("input[name='deptment_id']").val(arr[0]);
+            parent.$("input[name='deptment_name']").val(arr[1]);
+        });
+        closeDialog();
+    });
+</script>

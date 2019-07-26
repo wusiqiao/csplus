@@ -1,0 +1,698 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title></title>
+    <!-- <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/codemirror.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/ueditor.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/ueditor.min.css"> -->
+    <style>
+        .inputbox input {
+            width: 270px;
+        }
+
+        .details-content {
+            text-indent: 0;
+            padding: 5px 10px;
+        }
+
+        .caption {
+            float: left;
+            width: 100px;
+            line-height: 30px;
+            text-align: right;
+            color: #676767;
+            white-space: nowrap;
+        }
+
+        #view-header {
+            width: 100%;
+        }
+
+        .activity-round-item {
+            width: 328px;
+            height: 140px;
+            float: left;
+        }
+
+        #activity-round ul {
+            transition: all 0.5s;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        .icon-time {
+            width: 20px;
+            height: 20px;
+            margin: 0 5px;
+            background-size: 100% 100%;
+            background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-activity-time.png");
+        }
+
+        #view-box::-webkit-scrollbar {
+            width: 4px;
+            background-color: #eee;
+            border-radius: 2px;
+        }
+
+        #view-box::-webkit-scrollbar-thumb {
+            background: #b8b4b4;
+            border-radius: 2px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #333;
+            border: 1px solid #d3d3d3;
+            border-radius: 50%;
+            margin: 8px 5px;
+        }
+
+        .dot-active {
+            background-color: #fff;
+        }
+
+        .drop-down {
+            display: inline-block;
+            width: 15px;
+            height: 11px;
+            margin: 5px 6px;
+            background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png");
+            background-size: 100% 100%;
+            cursor: pointer;
+            transition: transform .5s;
+        }
+        textarea{
+            border: 1px solid #d3d3d3;
+            outline: none;
+            padding: 5px;
+        }
+        textarea::-webkit-scrollbar {
+            width: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb{
+            background: #b8b4b4;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="add-VoteActivity" class="detailcontainer" style="width: 90vw;height: 78vh;overflow-y: auto;">
+    <div style="width: 100%;display: flex;">
+        <div class="details-section" style="flex: 3;border-right: 1px solid #d3d3d3;overflow: hidden;">
+            <div class="details-content" style="overflow: hidden;">
+                <p style="height: 23px;line-height: 23px;margin: 22px 0 22px 28px;display:flex;align-items: center;">
+                    <span class="txt">基础设置</span>
+                    <span class="drop-down" onclick="dropDown(this,'basic-setting')" style="transform: rotate(180deg);"></span>
+                </p>
+                <div id="basic-setting">
+                    <div class="search-table" style="display:flex;margin:11px 0;">
+                        <div style="flex: 1;display:flex;align-items: center;">
+                            <div class="caption"><span style="color: red;">*</span>活动名称：</div>
+                            <div class="inputbox">
+                                <input v-model="activityName" name="" class="easyui-validatebox" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 活动时间 -->
+                    <div class="search-table" style="margin:11px 0;">
+                        <div style="width: 100%;display:flex;align-items: center;">
+                            <div class="caption"><span style="color: red;">*</span>活动时间：</div>
+                            <div style="display: flex;align-items: center;">
+                                <div style="flex: 1;">
+                                    <input id="start_time" name="start_time" class="easyui-datebox" data-options="editable:false,onSelect:startTime" placeholder="选择活动开始时间"
+                                        required>
+                                </div>
+                                <span>--</span>
+                                <div style="flex: 1;">
+                                    <input id="finish_time" name="finish_time" class="easyui-datebox"  data-options="editable:false,onSelect:finishTime" placeholder="选择活动结束时间"
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 封面 -->
+                    <div class="search-table">
+                        <div style="width: 100%;display:flex;align-items: center;">
+                            <div class="caption"><span style="color: red;">*</span>活动封面：</div>
+                            <div class="btn-speed" style="position: relative;margin-left: 0;">
+                                选择封面
+                                <input id="update_coverImg" type="file" name=""
+                                       style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;opacity: 0;"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search-table">
+                        <div style="width: 100%;display:flex;align-items: center;">
+                            <div class="caption"></div>
+                            <div v-if="coverImgUrl" style="width: 220px;height: 110px;border: 1px solid #d3d3d3;">
+                                <img style="width: 100%;height: 100%;" :src="coverImgUrl" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 其他 -->
+                    <div class="search-table">
+                        <div style="width: 100%;display:flex;align-items: center;">
+                            <div class="caption">其它图片：</div>
+                            <div class="btn-speed" style="position: relative;margin-left: 0;">
+                                选择图片
+                                <input id="update_orderImg" type="file" name=""
+                                       style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;opacity: 0;"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search-table">
+                        <div style="width: 100%;display:flex;align-items: center;">
+                            <div class="caption"></div>
+                            <div style="display: flex;flex-wrap: wrap;">
+                                <div v-for="item in activityImgList.slice(1)"
+                                     style="width: 180px;height: 90px;border: 1px solid #d3d3d3;margin:  5px;">
+                                    <img style="width: 100%;height: 100%;" :src="item.url" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <!-- 活动说明 -->
+                    <div class="search-table" style="margin:11px 0;">
+                        <div style="width: 100%;display:flex;">
+                            <div class="caption">活动说明：</div>
+                            <div style="flex: 1;">
+                                <textarea v-model="comments" name="" id="" cols="30" rows="6" style="width: 430px;height: 160px;"></textarea>
+                            </div>
+                            <!-- <div id="edit-box" style="width: 480px;height: 400px;"></div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="details-content">
+                <p style="height: 23px;line-height: 23px;margin: 22px 0 22px 28px;display:flex;align-items: center;">
+                    <span class="txt">高级设置</span>
+                    <span class="drop-down" onclick="dropDown(this,'advanced-Settings')"></span>
+                </p>
+                <div id="advanced-Settings" style="display: none;">
+                    <div class="search-table" style="display:flex;margin:22px 0;">
+                        <div style="flex: 1;display:flex;align-items: center;">
+                            <div class="caption">报名需审核：</div>
+                            <div style="display: flex;align-items: center;">
+                                <span style="margin:0 10px;display: flex;align-items: center;">
+                                    <input type="radio" name="is_audit" id="audit" value="10" checked>
+                                    <label for="audit">是</label>
+                                </span>
+                                <span style="margin:0 10px;display: flex;align-items: center;">
+                                    <input type="radio" name="is_audit" id="un_audit" value="20">
+                                    <label for="un_audit">否</label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 票数限制 -->
+                    <div class="search-table" style="display:flex;">
+                        <div style="flex: 1;display:flex;align-items: center;">
+                            <div class="caption">票数限制：</div>
+                            <div style="display: flex;align-items: center;">
+                                <div style="margin:0 10px;display: flex;align-items: center;">
+                                    <input type="radio" name="set_count" id="every_day" value="10" checked>
+                                    <label for="every_day">每天</label>
+                                </div>
+                                <div style="margin:0 10px;display: flex;align-items: center;">
+                                    <input type="radio" name="set_count" id="activity_time" value="20">
+                                    <label for="activity_time">活动期间</label>
+                                </div>
+                                <div style="margin:0 10px;display: flex;align-items: center;">
+                                    <input type="radio" name="set_count" id="customize_count" value="30">
+                                    <label for="customize_count">自定义</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search-table" style="display:flex;">
+                        <div style="flex: 1;display:flex;align-items: center;">
+                            <div class="caption"></div>
+                            <div>
+                                <!-- 默认 -->
+                                <div id="default-set" style="margin: 10px 0;">
+                                    <span>1、每个微信号可投</span>
+                                    <input id="default-set-num" type="number" value="1" min="1" style="width: 40px;">
+                                    <span>票</span>
+                                </div>
+                                <!-- 自定义 -->
+                                <div id="defined-set" style="margin: 10px 0;display: none;">
+                                    <span>1、每个微信号每</span>
+                                    <input id="defined-set-day" type="number" value="1" min="1" style="width: 40px;">
+                                    <span>天可投</span>
+                                    <input id="defined-set-num" type="number" value="1" min="1" style="width: 40px;">
+                                    <span>票</span>
+                                </div>
+
+                                <div style="margin: 10px 0;">
+                                    <span>2、是否可以重复投票</span>
+                                    <label for="is_repeat" style="margin: 0 5px;"></label>
+                                    <input name="is_repeat" type="checkbox" id="is_repeat" checked="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 右侧预览 -->
+        <div style="flex: 2;position: relative;">
+            <p style="text-align: center;font-size: 18px;">移动端效果展示</p>
+            <p style="text-align: center;color: red;">实际效果以移动端为准</p>
+            <div id="preview-box"
+                 style="width: 330px;height: 660px;border: 1px solid #000;margin: 0px auto;box-sizing: border-box;background-color: #eee;position: relative;padding-bottom: 120px;">
+                <div id="view-header">
+                    <img style="width: 100%;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/view-phone-top.jpg"
+                         alt="">
+                </div>
+                <!-- 活动标题 -->
+                <div id="activity-title" style="width:100%;background-color: #000;overflow: hidden;position: relative;">
+                    <p v-if="activityName == ''" style="color: #fff;text-align: center;margin: 3px 0;">活动标题</p>
+                    <p v-else style="color: #fff;text-align: center;margin: 3px 0;">{{activityName}}</p>
+                </div>
+                <div id="view-box" style="width: 100%;height: 500px;overflow-y: auto;overflow-x: hidden;">
+                    <!-- 轮播 -->
+                    <div id="activity-round"
+                         style="width: 100%;height: 140px;position: relative;overflow: hidden;background-color: #fff;">
+                        <!--轮播图-->
+                        <ul style="width: 3000px;white-space: nowrap;position: absolute;top: 0;left: 0;">
+                            <li v-for="(item,index) in activityImgList" class="activity-round-item">
+                                <a style=" width: 328px;height: 140px;" href="#"><img
+                                        style=" width: 328px;height: 140px;" :src="item.url" alt=""></a>
+                            </li>
+                        </ul>
+                        <div id="dot-box"
+                             style="width: 100%;display: flex;align-items: center;justify-content: center;overflow: hidden;position: absolute;bottom: 0;left: 0;">
+                            <div v-for="k in activityImgList" class="dot"></div>
+                        </div>
+                    </div>
+                    <!-- 数据明细 -->
+                    <div id="data-detail" style="padding: 10px 5px 5px;">
+                        <div style="width: 100%;display: flex;align-items: center;justify-content: space-between;background-color: #31C9B1;">
+                            <div style="color: #fff;text-align: center;margin: 0 10px;flex: 1;">
+                                <p>0</p>
+                                <p>报名人数</p>
+                            </div>
+                            <div style="color: #fff;text-align: center;margin: 0 10px;flex: 1;">
+                                <p>0</p>
+                                <p>总票数</p>
+                            </div>
+                            <div style="color: #fff;text-align: center;margin: 0 10px;flex: 1;">
+                                <p>0</p>
+                                <p>浏览量</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 活动时间 -->
+                    <div id="activity-time" style="padding: 0px 5px 5px;">
+                        <div style="padding: 0 10px;background-color: #fff;overflow: hidden;">
+                            <p style="display: flex;align-items: center;">
+                                <i class="icon-time"></i>
+                                <span>活动开始时间：{{startTime}}</span>
+                            </p>
+                            <p style="display: flex;align-items: center;">
+                                <i class="icon-time"></i>
+                                <span>活动结束时间：{{endTime}}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- 活动说明 -->
+                    <div style="padding: 0px 5px 5px;">
+                        <div style="width: 100%;background-color: #fff;overflow: hidden;text-align: center;color: #FF9800;padding: 5px 0;">
+                            活动说明
+                        </div>
+                    </div>
+                    <!-- 自定义内容 -->
+                    <div style="padding: 0px 5px 5px;">
+                        <div contenteditable="true" id="custom-content" style="background-color: #fff;overflow: hidden;padding: 5px 5px;">{{comments}}</div>
+                    </div>
+                </div>
+                <div style="width: 100%;position: absolute;bottom: 0;">
+                    <!-- 我要报名 -->
+                    <div style="padding: 5px 5px;">
+                        <div style="text-align: center;color: #fff;background-color: #31C9B1;padding: 10px 0;">我要报名
+                        </div>
+                    </div>
+                    <!-- 底部导航条 -->
+                    <div style="width: 100%;background-color: #fff;border-top: 1px solid #d3d3d3;display: flex;justify-content: space-between;align-items: center;">
+                        <div style="flex: 1;margin: 0 10px;text-align: center;padding: 5px 0px 0px;">
+                            <img style="width: 26px;height: 26px;"
+                                 src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-home-active.png" alt="">
+                            <p style="color: #31C9B1;">首页</p>
+                        </div>
+                        <div style="flex: 1;margin: 0 10px;text-align: center;padding: 5px 0px 0px;">
+                            <img style="width: 26px;height: 26px;"
+                                 src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-rank.png" alt="">
+                            <p>排行榜</p>
+                        </div>
+                        <div style="flex: 1;margin: 0 10px;text-align: center;padding: 5px 0px 0px;">
+                            <img style="width: 26px;height: 26px;"
+                                 src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-playerlist.png" alt="">
+                            <p>选手</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="padding: 5px 0;text-align: center;border-top: 1px solid #d3d3d3;">
+    <div class="btn-speed" onclick="saveData()">保存</div>
+</div>
+<!-- <script type="text/javascript" defer="defer" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/codemirror.js"></script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/ueditor.config.js"></script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/ueditor.all.js"></script>
+<script type="text/javascript" charset="utf-8" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/lang/zh-cn/zh-cn.js"></script> -->
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    // 编辑器
+    // var ue = UE.getEditor('edit-box', {
+    //     toolbars: [
+    //         ['fullscreen', 'source', 'undo', 'redo', 'bold', 'italic', 'underline', 'horizontal', 'formatmatch', 'removeformat', 'justifyleft', 'justifyright', 'justifycenter', 'justifyjustify',]
+    //     ],
+    //     allowDivTransToP: false
+    // });
+   
+    var add_VoteActivity = new Vue({
+        el: "#add-VoteActivity",
+        data: {
+            id : '',
+            activityName: "",
+            startTime: "",
+            endTime: "",
+            coverImgUrl: "",
+            comments:"",
+            activityImgList: []
+        },
+        methods: {
+
+        },
+        mounted() {
+            // 实时更新自定义内容
+            // ue.addListener('contentChange', function () {
+            //     add_VoteActivity.comments = ue.getContent();
+            //     $("#custom-content").html(add_VoteActivity.comments);
+            // });
+            
+            if('{$Think.__FORM_ACTION__}' != 'add'){
+                this.id = '{$model.id}';
+                this.activityName = '{$model.name}';
+                // 初始化活动日期
+                parseForm();
+                $("#start_time").datebox("setValue",`{$model.start_time}`);
+                $("#finish_time").datebox("setValue",`{$model.end_time}`);
+                this.startTime = `{$model.startTime}`;
+                this.endTime = `{$model.endTime}`;
+                // 初始化封面
+                this.coverImgUrl = '{$model.cover_pic}';
+                if(this.coverImgUrl){
+                    this.activityImgList.push({url : this.coverImgUrl, urlPath: this.coverImgUrl});
+                }
+                //初始化活动说明
+                this.comments = `{$model.comments}`;
+                // $("#custom-content").html(this.comments);
+                // ue.setContent(this.comments);
+                
+                // 初始化其他图片
+                var orderImgAry =  `{$model.details_pic}`.split(',')
+                for(k in orderImgAry){
+                    this.activityImgList.push({url:orderImgAry[k],urlPath:orderImgAry[k]});
+                }
+
+                // 初始化高级设置
+                if(`{$model.review}` == 10){
+                    $("input[name='is_audit']").eq(0).attr("checked","true");
+                }else if(`{$model.review}` == 20){
+                    $("input[name='is_audit']").eq(1).attr("checked","true");
+                }
+
+                if (`{$model.vote_repeat}` == 10) {
+                    $("#is_repeat").attr("checked", "true");
+                } else if (`{$model.vote_repeat}` == 20) {
+                    $("#is_repeat").removeAttr("checked");
+                }
+
+
+                // dataObj.vote_cycle = 1;
+                // dataObj.vote_num = $("#default-set-num").val();
+                
+                // if(`{$model.vote_cycle}` == 1 && `{$model.vote_num}` == 1){
+
+                // }
+                // console.log(`{$model.vote_cycle}`);
+                // console.log(`{$model.vote_num}`);
+                
+                console.log(`{$model.cover_pic}`)
+                console.dir(`{$model.details_pic}`.split(','))
+            }
+            // 票数限制自定义显隐
+            $("input[name='set_count']").on("change", function () {
+                if (this.value == 30) {
+                    $("#defined-set").show();
+                    $("#default-set").hide();
+                } else {
+                    $("#default-set").show();
+                    $("#defined-set").hide();
+                }
+            })
+            // 轮播
+            var imgNum = 0;
+            setInterval(function () {
+                if (imgNum > add_VoteActivity.activityImgList.length - 1) {
+                    imgNum = 0;
+                    return false;
+                }
+                $("#activity-round").find("ul").css("left", `-${328 * imgNum}px`);
+                $("#dot-box").find("div").eq(imgNum).addClass("dot-active").siblings("div").removeClass("dot-active");
+                imgNum = imgNum + 1;
+            }, 2000);
+        }
+    });
+   
+    // 日期选择控件监听
+    function startTime() {
+        add_VoteActivity.startTime = $("#start_time").datebox("getValue");
+    }
+    function finishTime() {
+        add_VoteActivity.endTime = $("#finish_time").datebox("getValue");
+    }
+
+    function updateImg(file) {
+        var URL = '';
+        var formData = new FormData();
+        formData.append('file', file);
+        $.ajax({
+            url: "/ComUploads/uploadsImg",
+            type: "post",
+            data: formData,
+            contentType: false,
+            processData: false,
+            async: false,
+            mimeType: "multipart/form-data",
+            dataType:'json',
+            success: function (data) {
+                URL = data.data.images[0].url;
+            },
+        });
+
+        return URL;
+    }
+    // 上传封面
+    $("#update_coverImg").change(function () {
+        var oFiles = $(this).get(0).files;
+        $(oFiles).each(function (index, obj) {
+            var url = updateImg(obj);
+            if (url == false) {
+                $.dialog.alert('上传失败');
+                return false;
+            };
+
+            var _file = this;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(this);
+                reader.onload = function () {
+                    add_VoteActivity.coverImgUrl = this.result;
+                    if (add_VoteActivity.activityImgList.length == 0) {
+                        add_VoteActivity.activityImgList.unshift({
+                            url: this.result,
+                            urlPath:url,
+                            type: "image",
+                            src: reader.result,
+                            file: _file,
+                            file_name: _file.name
+                        });
+                    } else {
+                        add_VoteActivity.activityImgList.splice(0, 1, {
+                            url: this.result,
+                            urlPath:url,
+                            type: "image",
+                            src: reader.result,
+                            file: _file,
+                            file_name: _file.name
+                        });
+                    }
+                }
+            }
+        })
+    })
+    // 上传其他图片
+    $("#update_orderImg").change(function () {
+        if (add_VoteActivity.activityImgList.length == 0) {
+            $.dialog.tips("请先选择封面");
+            return false;
+        }
+        if (add_VoteActivity.activityImgList.length == 7) {
+            $.dialog.tips("最多选择六张图片");
+            return false;
+        }
+        var oFiles = $(this).get(0).files;
+        $(oFiles).each(function (index, obj) {
+            var url = updateImg(obj);
+            // console.log(url)
+            if (url == false) {
+                $.dialog.alert('上传失败');
+                return false;
+            };
+
+            var _file = this;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(this);
+                reader.onload = function () {
+                    add_VoteActivity.activityImgList.push({
+                        urlPath : url,
+                        url: this.result,
+                        type: "image",
+                        src: reader.result,
+                        file: _file,
+                        file_name: _file.name
+                    })
+                }
+            }
+        })
+    })
+    // 下拉功能
+    function dropDown(ele, id) {
+        if ($(`#${id}`).css("display") == "none") {
+            $(`#${id}`).show();
+            $(ele).css("transform", "rotate(180deg)")
+        } else {
+            $(`#${id}`).hide();
+            $(ele).css("transform", "rotate(0deg)")
+        }
+    }
+    // 数据上传
+    function saveData() {
+        // 活动名称必填
+        if (add_VoteActivity.activityName == "") {
+            $.dialog.tips("请输入正确的活动名称");
+            return false;
+        }
+        // 封面图片必填
+        if (add_VoteActivity.activityImgList.length == 0) {
+            $.dialog.tips("请选择封面图片");
+            return false;
+        }
+        // 活动时间必选
+        if (add_VoteActivity.startTime == "" || add_VoteActivity.endTime == "") {
+            $.dialog.tips("请选择活动时间");
+            return false;
+        }
+        // 活动期间天数计算
+        var start_t = new Date(add_VoteActivity.startTime).getTime();
+        var end_t = new Date(add_VoteActivity.endTime).getTime();
+        if (start_t > end_t) {
+            $.dialog.tips("活动时间设置错误");
+            return false;
+        }
+        var during_t = end_t - start_t;
+        var day_n = Math.floor(during_t / 86400000);
+        // console.log(day_n);
+
+        var dataObj = {}
+        // 活动名称
+        dataObj.name = add_VoteActivity.activityName;
+        // 封面图片
+        dataObj.cover_pic = add_VoteActivity.activityImgList[0].urlPath;
+        // 其他图片
+        dataObj.details_pic = [];
+        var details_pic = [];
+        details_pic = add_VoteActivity.activityImgList.slice(1);
+        for(var index in add_VoteActivity.activityImgList.slice(1)){
+            dataObj.details_pic.push(details_pic[index].urlPath);
+        }
+
+        // 活动开始时间
+        dataObj.start_time = add_VoteActivity.startTime;
+        // 活动结束时间
+        dataObj.end_time = add_VoteActivity.endTime;
+        // 活动说明
+        // dataObj.comments = ue.getContent();
+        dataObj.comments = add_VoteActivity.comments;
+        // 报名审核开关
+        dataObj.review = $("input[name='is_audit']:checked").val();
+        dataObj.id = add_VoteActivity.id;
+        // 票数限制
+        var vote_type = parseInt($("input[name='set_count']:checked").val());
+        dataObj.vote_type = vote_type;
+        switch(vote_type){
+            case 10 :
+                dataObj.vote_cycle = 1;
+                dataObj.vote_num = $("#default-set-num").val();
+                break;
+            case 20 :
+                dataObj.vote_cycle = day_n;
+                dataObj.vote_num = $("#default-set-num").val();
+                break;
+            case 30 :
+                dataObj.vote_cycle = $("#defined-set-day").val();
+                dataObj.vote_num = $("#defined-set-num").val();
+                break;
+            default :
+                dataObj.vote_cycle = 1;
+                dataObj.vote_num = $("#default-set-num").val();
+                break;
+        }
+
+        // 重复投票开关
+        if ($("#is_repeat").is(":checked")) {
+            dataObj.vote_repeat = 10;
+        } else {
+            dataObj.vote_repeat = 20;
+        }
+
+        var error = false;
+        $.ajax({
+            url: "VoteActivity/{$Think.__FORM_ACTION__}",
+            async: false,
+            type: 'post',
+            data: dataObj,
+            dataType: 'json',
+            success: function (res) {
+                if (res.code == 0) {
+                    $("#MaterialCenter-datagrid").datagrid('clearSelections');
+                     error = true;
+                    closeDialog();
+                    $.dialog.alert('保存成功!');
+                    getVoteActivityLsit();
+                }else{
+                    $.dialog.alert(res.message);
+                }
+            }
+        });
+
+        return error;
+    }
+</script>
+</body>
+
+</html>

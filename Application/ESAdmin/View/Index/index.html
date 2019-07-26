@@ -1,0 +1,1021 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>微店后台管理</title>
+   
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/easyui/themes/icon.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/easyui/themes/default/easyui.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/css/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/css/index.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/css/comm.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/chosen/chosen.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/style.css" rel="stylesheet" />
+        
+		<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/linAdd.css" rel="stylesheet" />
+		
+		<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/newRule.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/intelligent.css" rel="stylesheet">
+		<link href="__ROOT__/{$Think.APP_PATH}/Public/vender/layer/skin/layer.css" rel="stylesheet">
+	
+		<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+
+		<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/newBtn.css" rel="stylesheet" />
+
+		<link href="__ROOT__/{$Think.APP_PATH}/Public/script/viewer.min.css" rel="stylesheet">
+
+
+	
+
+
+		<script type="text/javascript">
+            window.app_config = {module:"__MODULE__", path: "__ROOT__/{$Think.APP_PATH}"};
+            window.UMEDITOR_HOME_URL = app_config.path + 'Public/vender/baidu/umeditor/';
+            // $(function () {
+            //     newTabFrame("Index", "首页", "__CONTROLLER__/body", "fa fa-home fa-lg", false, 0);
+            // });
+        </script>
+		<style>
+			.top-menu{
+				color: #368BFE;
+				margin-right: 0;
+			}
+			.secondary-menu {
+				text-align: left !important;
+				padding-left: 15px;
+			}
+			.menu-enable-1{color:#2e8eff}
+			.menu-enable-0{color:#ccc !important}
+			.layout-panel-north.layout-panel {
+				position: absolute !important;
+			}
+			#north_top{
+				width: 100% !important;
+			}
+			.rightContainer{
+				padding: 30px 0 0;
+				background-size: 100% 100%;
+				background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/bg/bg-NewbieGuide.jpg");
+			}
+			.ui_max_b {
+				top: 18px;
+				left: -3px;
+				height: 8px;
+			}
+			.ui_min_b {
+				top: 20px;
+				left: -32px;
+			}
+			.ui_res_t, .ui_res_b {
+				top: 20px;
+				left: -3px;
+				width: 10px;
+				height: 5px;
+			}
+			.ui_res_b {
+				top: 16px;
+				left: 0px;
+			}
+			.red-point{
+				height:6px;
+				width:6px;
+				border-radius:50%;
+				color:#fff;
+				background:red;
+				display: inline-block;
+				position: relative;
+				top: -5px;
+				right: -2px;
+				-webkit-animation: twinkling 1s infinite ease-in-out;
+			}
+			.msg-tips{
+				display: none;
+				position: absolute;
+				bottom: -60px;
+    			right: -15px;
+				width: 90px;
+				height: 32px;
+				line-height: 32px;
+				padding: 10px;
+				color: #333;
+				background-color: #fff;
+				box-shadow: 1px 1px 5px 1px #d3d3d3;
+			}
+		</style>
+    </head>
+    <body class="easyui-layout index-wrap" style="list-style-position: outside; list-style-type: none;display: list-item;margin: 0; padding: 0;position: relative;width: 100%;">
+		<!-- 顶部导航条 -->
+        <div region="north" id="north_top" split="false" border="false" class="flex-between" style="position:fixed;width: 100%;">
+            <div class="topleft logo" id="logo_img">
+                <!-- <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/logo/logo-caisui+.png"> -->
+                <img :src="logo_img" onerror="onerror=null;src='__ROOT__/{$Think.MODULE_PATH}/Public/images/logo/logo-caisui+.png'">
+			</div>
+            <div style="display: flex;align-items: center;justify-content: space-between;">
+				<div style="min-width: 300px;flex:1;display: flex;align-items: center;">
+					<div style="color: grey;margin-right: 3%"><span style="color: #222;font-weight: 550;font-size: 15px;">{$user_session.currBranchName}</span>&nbsp;
+						<span style="color:#555;" id="userName">&nbsp;</span><br></div>
+						<!-- <span style="color:#555;" id="userName">&nbsp;{$user_session.userName}</span>,您好！<br></div> -->
+						
+					<if condition="count($user_session['branchList']) gt 1">
+						<a class="top-menu" style="font-weight: 600;" href="javascript:void(0)" id="toggileCom">切换公司
+							<!--<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-toggle.png">-->
+						</a>
+					</if> 
+				</div>
+
+				<div class="flex-end-center" style="min-width:430px;justify-content: space-between;">
+					<div class="search pr hide">
+						<input type="text" placeholder="快速搜索功能"/>
+						<button></button>
+					</div>
+					
+					<a class="top-menu" style="font-weight: 600;" href="">我的首页</a>
+					<!-- <div class="top-menu" style="font-weight: 600;cursor: pointer;" onclick="SubjectSwitch()">我的主题</div> -->
+						
+					<if condition="$user_session['isPlatformUser']">
+						<a class="top-menu" style="font-weight: 600;" href="javascript:void(0)" onclick="indexFunctions.clearCache()">清除缓存</a>
+					</if>
+	
+					<div style="height:40px;position: relative;">
+						<div onclick="downClick(this)" class="top-menu" style="height:100%;font-weight: 600;display: flex;align-items: center;cursor: pointer;">
+							<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-service.png" style="width:18px;height: 18px;" alt="">
+							<!-- 员工姓名 -->
+							<span style="margin:0 8px;" onclick=""><!--{$user_session.userName}-->{$user_session.staffName}</span>
+							<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png" style="width:15px;height: 9px;" alt="">
+						</div>
+						<div class="down-content" style="position: absolute;right: -35px;top: 40px;width: 140px;background-color: rgba(54, 139, 254, 0.8);display: none;">
+							<div class="top-menu" style="font-weight: 600;color: #fff;text-align: center;margin: 5px 0;cursor: pointer;" id="changePassword" onclick="changePassword('{$user_session.userId}', '{$user_session.userName}')">密码修改</div>
+							<div class="top-menu" id="signout" style="font-weight: 600;color: #fff;text-align: center;margin: 5px 0;cursor: pointer;">退出系统</div>
+						</div>
+					</div>
+					<if condition="$is_admin neq 1 ">
+					<div style="height:40px;position: relative;">
+						<div class="top-menu" style="height:100%;font-weight: 600;display: flex;align-items: center;cursor: pointer;">
+							<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-msg.png" style="width:18px;height: 18px;" alt="">
+							<span style="position: relative;margin:0 5px;" onclick="myMessage()">
+								我的消息
+								<!-- <u style="color:red;" id="myMessageCount">(0)</u> -->
+								<!-- 消息提示 -->
+								<div class="msg-tips">您有新的消息</div>
+							</span>
+							<!-- <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png" style="width:15px;height: 9px;" alt=""> -->
+						</div>
+						<!-- <div style="position: absolute;right: 20;top: 40px;width: 100%;color: #fff;background-color: #368BFE;">
+							<div></div>
+							<div></div>
+						</div> -->
+					</div>
+					</if>
+					<!--<a class="top-menu" style="font-weight: 600;" href="javascript:void(0)" onclick="">教程</a>-->
+	
+					<div class="topright" style="width: 1px">
+						<!--<div style="color: grey;margin-left: 10%">我的首页<br></div>
+						<div style="color: grey;margin-left: 10%">退出系统<br></div>-->
+						<ul class="flex-end-center"></ul>
+						<!--<ul class="flex-end-center">
+							&lt;!&ndash;<li class="flex-center-center flex-1 pr hide">
+								<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sys-msg.png" alt="" />
+								<span>系统消息</span>
+								<div class="expand sys-msg">
+									<div class="main-tab">
+										<div class="item active">我的消息</div>
+										<div class="item">功能更新</div>
+									</div>
+									<div>
+										<div>
+											<div class="list-style word-hidden">09月05日更新：全民砍价浪潮又一次来临啦，接下来的5天里将会有一大批的商品折价抛售。</div>
+											<div class="list-style word-hidden">09月05日更新：全民砍价浪潮又一次来临啦，接下来的5天里将会有一大批的商品折价抛售。</div>
+										</div>
+										<div class="hide">
+											<div class="list-style word-hidden">09月05日更新：新功能前往管理，敬请期待本期更新内容。1、上线员工管理和模板消息等</div>
+											<div class="list-style word-hidden">09月05日更新：新功能前往管理，敬请期待本期更新内容。1、上线员工管理和模板消息等</div>
+										</div>
+									</div>
+								</div>
+							</li>
+							<li class="flex-center-center flex-1 hide">
+								<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-online-service.png" alt="" />
+								<span>在线客服</span>
+							</li>&ndash;&gt;
+
+							<li class="flex-center-center flex-3 pr">
+								<span class="member-center-title">会员中心</span>
+								<div id="user-info" class="expand member-center">
+									<div class="member-welcome flex-center-center">
+										<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/picture.png" alt="" />
+										<div>{$login_user:userName}，下午好！<br></div>
+									</div>
+									<div class="member-center-btn flex-between-center">
+										<div class="tool-button flex-1 hide" style="color: #73acfe;">
+											<div>会员续费</div>
+										</div>
+										<div class="tool-button flex-1">
+											<div id="changePassword" onclick="changePassword('{$login_user:userId}', '{$login_user:userName}')">修改密码</div>
+										</div>
+										<div class="tool-button flex-1">
+											<div id="signout">退出登录</div>
+										</div>
+									</div>
+	
+								</div>
+							</li>
+						</ul>-->
+					</div>
+				</div>
+            </div>
+        </div>
+
+		<div class="major-content flex-start" >
+			<div class="side-bar flex-start" >
+				<ul style="padding:0px">
+                    <volist name="user_menus" id="menu">
+                        <notempty name="menu.children">
+                        <li class="flex-center-center" id="main-menu-{$menu.id}" data-id='{$menu.id}'data-url="{$menu.url}">
+                            <!--<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-company-mng.png"/>-->
+                            <empty name="memu.icon">
+                                <i class="fa fa-clone fa-lg"></i>
+                                <else/>
+                                <i class="fa {$menu.icon} fa-lg"></i>
+                            </empty>
+
+                            <span>{$menu.name}</span>
+                        </li>
+                        </notempty>
+                    </volist>
+				</ul>
+				<volist name="user_menus" id="menu">
+					<div class="extend-nav" bind="menu{$menu.id}">
+						<a class="secondary-menu" style="font-weight: 600;" href="">返回首页</a>
+	                    <volist name="menu.children" id="menu_sub">
+							<neq name="menu_sub.is_online" value="0">
+								<div class="secondary-menu menu_item menu-{$menu_sub.id} menu-enable-{$menu_sub.allow}" data-url="{$menu_sub.url}"  data-id='{$menu_sub.id}' data-options="id:{$menu_sub.id}, text:'{$menu_sub.name}', url:'{$menu_sub.url}',params:'{$menu_sub.params}',allow:{$menu_sub.allow}">{$menu_sub.name}</div>
+								<else/>
+								<div class="secondary-menu menu_item" data-options="text:'{$menu_sub.name}', url:'SysMenu',params:'/comingSoonShow'" style="color: #e4e4e4">{$menu_sub.name}</div>
+							</neq>
+	                    </volist>
+					</div>
+				</volist>
+			</div>
+					
+			<div class="flex-1" id="module-content" class="easyui-tabs" fit="true" border="false">
+                <div class="head page-selected">
+					<span>首页</span>
+				</div>
+                <div class="content">
+                	<div class="hide" style="padding: 40px 40px;">
+	                	<div class="mission-content">
+	                		<div class="mission today">
+	                			<div class="total"><span>10</span>个</div>
+	                			<div class="title">今日工作</div>
+	                		</div>
+	                		<div class="mission delay">
+	                			<div class="total"><span>3</span>个</div>
+	                			<div class="title">延期工作</div>
+	                		</div>
+	                		<div class="mission remind">
+	                			<div class="total"><span>5</span>个</div>
+	                			<div class="title">提醒工作</div>
+	                		</div>
+	                	</div>
+	                	<div class="misson-charts">
+	                		<div class="total-misson">
+	                			<div class="weekly-mission" style="margin-right: 40px;">
+	                				<div class="chart-title"><span class="bg-f93322"></span>本周任务完成情况</div>
+	                				<ul>
+	                					<li>
+	                						<div class="red-f93322 font26">100</div>
+	                						<div>本周任务总数</div>
+	                					</li>
+	                					<li>
+	                						<div class="red-f93322 font26">60</div>
+	                						<div>已完成任务数</div>
+	                					</li>
+	                					<li>
+	                						<div class="red-f93322 font26">40</div>
+	                						<div>未完成任务数</div>
+	                					</li>
+	                				</ul>
+	                			</div>
+	                			<div class="month-mission">
+	                				<div class="chart-title"><span class="bg-67b6ff"></span>本月任务完成情况</div>
+	                				<ul>
+	                					<li>
+	                						<div class="blue-0099ff font26">400</div>
+	                						<div>本周任务总数</div>
+	                					</li>
+	                					<li>
+	                						<div class="blue-0099ff font26">160</div>
+	                						<div>已完成任务数</div>
+	                					</li>
+	                					<li>
+	                						<div class="blue-0099ff font26">240</div>
+	                						<div>未完成任务数</div>
+	                					</li>
+	                				</ul>
+	                			</div>
+	                		</div>
+	                		<div>
+	                			<div class="chart-title"><span class="bg-298cff"></span>图表</div>
+	                			<div id="charts-container" style="min-width:400px;height:400px"></div>
+	                		</div>
+	                	</div>
+                	</div>
+                	<div class="rightContainer">
+                		<div class="modulesContainer">
+							<if condition="$user_session.userType eq 2">
+								<div style="width: 100%;display: flex;align-items: center;">
+									<img style="width: 6px;height: 23px;margin: 0 12px 0 25px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-txtTab.png" alt="">
+									<span style="color: #636975;font-size: 20px;">新手教程</span>
+								</div>
+								<div style="width: 100%;overflow-x: hidden;overflow-y: auto;display: flex;flex-wrap:wrap;">
+									<div v-for="(item,index) in NewbieGuideList" style="width: calc((100% - 150px) / 3);margin: 20px 25px;box-shadow: 3px 4px 15px 0px rgba(121, 164, 234, 0.18);background-color: #ffffff;">
+										<p style="color: #fff;font-size: 16px;font-weight: 700;margin: 0;background-color: #368bfe;padding: 10px 0 10px 30px;border-top-right-radius: 5px;border-top-left-radius: 5px;">{{item.name}}</p>
+										<div v-for="(edit,idx) in item.childs" style="background-color: #ffffff;">
+											<p style="width:100%;display: flex;justify-content: space-between;align-items: center;padding: 11px 0;margin: 0;">
+												<span style="margin: 0px 20px;color: #636975;font-size: 16px;">{{idx+1}}、{{edit.name}}</span>
+												<!-- <a class="btn-speed" style="margin: 0px 20px" :href="edit.url" target="_blank">操作教程</a> -->
+												<span class="btn-speed" style="margin: 0px 20px" @click="toGuide(edit.url)">操作教程</span>
+											</p>
+										</div>
+										<div v-if="item.childs != undefined && item.childs.length < 2" style="background-color: #fff;">
+											<p style="width:100%;display: flex;justify-content: space-between;align-items: center;padding: 10px 0;margin: 0;height: 32px;"></p>
+										</div>
+										<div v-if="item.childs != undefined && item.childs.length < 3" style="background-color: #fff;">
+											<p style="width:100%;display: flex;justify-content: space-between;align-items: center;padding: 10px 0;margin: 0;height: 32px;"></p>
+										</div>
+									</div>
+								</div>
+							<else/>
+								<div style="padding:0 40px;">
+									<if condition="$show_WxBranchTemplate eq 1 or $show_WxTemplateMessage eq 1">
+										<div class="modules_box" id="WxBranchTemplate">
+											<div class="modules-img module-msg">
+												<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-msg.png" alt="" />
+												<div class="img-text">
+													<span>模板消息</span>
+												</div>
+											</div>
+											<div class="modules-text">
+												<div>
+													<span>给粉丝群发消息</span>
+												</div>
+												<div class="link-btn">
+													<div class="ModuleBtn" >
+														<span class="manageModuleText" onclick="toManage(this)" url="WxBranchTemplate/userSendStatistics" text="模板通知" menu_id="14" item_id="134">前往管理</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</if>
+									<if condition="$show_DistributionSetting eq 1">
+										<div class="modules_box">
+											<div class="modules-img module-msg">
+												<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-fenxiao.png" alt="" />
+												<div class="img-text">
+													<span>一级分销</span>
+												</div>
+											</div>
+											<div class="modules-text">
+												<div>
+													<span>促进客户转介绍</span>
+												</div>
+												<div class="link-btn">
+													<div class="ModuleBtn">
+														<span class="manageModuleText" onclick="toManage(this)" url="DistributionSetting/index" text="分销管理" menu_id="119" item_id="120">前往管理</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</if>
+									<if condition="$show_ComProduct eq 1">
+										<div class="modules_box">
+											<div class="modules-img module-msg">
+												<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-service.png" alt="" />
+												<div class="img-text">
+													<span>服务管理</span>
+												</div>
+											</div>
+											<div class="modules-text">
+												<div>
+													<span>一键发布服务</span>
+												</div>
+												<div class="link-btn">
+													<div class="ModuleBtn">
+														<span class="manageModuleText" onclick="toManage(this)" url="ComProduct/index" text="服务管理" menu_id="106" item_id="107">前往管理</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</if>
+									<if condition="$show_WrkAgreement eq 1">
+										<div class="modules_box">
+											<div class="modules-img module-msg">
+												<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-hetong.png" alt="" />
+												<div class="img-text">
+													<span class="new-module"></span>
+													<span>合同管理</span>
+												</div>
+											</div>
+											<div class="modules-text">
+												<div>
+													<span>轻松管理客户合同</span>
+													<span>
+															<span class="tips-update">新功能</span>
+														</span>
+												</div>
+												<div class="link-btn">
+													<div class="ModuleBtn">
+														<span class="manageModuleText" onclick="toManage(this)" url="WrkAgreement/index" text="合同列表" menu_id="14" item_id="171" >前往管理</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</if>
+									<if condition="$show_ComPotential eq 1">
+										<div class="modules_box">
+											<div class="modules-img module-msg">
+												<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-user.png" alt="" />
+												<div class="img-text">
+													<span class="new-module"></span>
+													<span>用户管理</span>
+												</div>
+											</div>
+											<div class="modules-text">
+												<div>
+													<span>分管不同类型用户</span>
+													<span>
+															<span class="tips-update">新功能</span>
+														</span>
+												</div>
+												<div class="link-btn">
+													<div class="ModuleBtn">
+														<span class="manageModuleText" onclick="toManage(this)" url="ComPotential/index" text="用户管理" menu_id="142" item_id="140">前往管理</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</if>
+									<if condition="$show_SysDocument eq 1">
+										<div class="modules_box">
+											<div class="modules-img module-msg">
+												<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-file.png" alt="" />
+												<div class="img-text">
+													<span class="new-module"></span>
+													<span>文件管理</span>
+												</div>
+											</div>
+											<div class="modules-text">
+												<div>
+													<span>与客户方便互传文件</span>
+													<span>
+														<span class="tips-update">新功能</span>
+													</span>
+												</div>
+												<div class="link-btn">
+													<div class="ModuleBtn">
+														<span class="manageModuleText" onclick="toManage(this)" url="SysDocument/index" text="公司管理" menu_id="142" item_id="147">前往管理</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</if>
+									<if condition="$show_Organization eq 1">
+										<div class="modules_box">
+											<div class="modules-img module-msg">
+												<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-limit.png" alt="" />
+												<div class="img-text">
+													<span class="new-module"></span>
+													<span>员工权限</span>
+												</div>
+											</div>
+											<div class="modules-text">
+												<div>
+													<span>不同账号不同权限不同内容</span>
+													<span>
+														<span class="tips-update">新功能</span>
+													</span>
+												</div>
+												<div class="link-btn">
+													<div class="ModuleBtn">
+														<span class="manageModuleText" onclick="toManage(this)" url="StaffPermit/index" text="员工权限" menu_id="158" item_id="161">前往管理</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</if>
+								</div>
+							</if>
+							
+                			<!-- <div class="modules_box module-more" onclick="openAttForm()">
+                				<div class="more-module">更多功能&nbsp;敬请期待</div>
+                				<div class="more-subline"></div>
+							</div> -->
+							
+							<!--<if condition="$show_SysDocument eq 1 ">
+								<div class="modules_box">
+									<div class="modules-img module-msg">
+										<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-file.png" alt="" />
+										<div class="img-text">
+											<span>文件管理</span>
+										</div>
+									</div>
+									<div class="modules-text">
+										<div>
+											<span>文件互传实时共享</span>
+										</div>
+										<div class="link-btn" >
+											<div class="ModuleBtn" >
+												<span class="manageModuleText" onclick="toManage(this)" url="SysDocument" text="客户文件" menu_id="142" item_id="147">前往管理</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</if>-->
+                			<!--<div class="modules_box">
+                				<div class="modules-img module-msg">
+                					<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/module-file.png" alt="" />
+                					<div class="img-text">
+                						<span>未上线</span>
+                					</div>
+                				</div>
+                				<div class="modules-text">
+                					<div>
+                						<span>未上线介绍</span>
+	                					
+                					</div>
+									<div class="link-btn" >
+										<div class="openModuleBtn" >
+											<span class="openModuleText" onclick="toManage(this)" url="SysDocument" text="客户文件" menu_id="142" item_id="147">前往管理</span>
+										</div>
+									</div>
+                				</div>-->
+						</div>
+                			<!--<div class="modules_box module-more">
+                				<div class="more-module">更多功能&nbsp;敬请期待</div>
+                				<div class="more-subline"></div>
+                			</div>-->
+					</div>
+                		
+                		<!-- <div class="mark-tips">
+                			<div class="mark-tips-head">
+                				<div class="portal-line"></div>平台公告
+                			</div>
+                			<ul>
+                				<li>
+                					<div class="tips-box">
+                						<span class="dot"></span>
+                						<span>[新闻]社保由税务同征后，将全面社保由税务同征后</span>
+                					</div>
+                				</li>
+                				<li>
+                					<div class="tips-box">
+                						<span class="dot"></span>
+                						<span>[新闻]社保由税务同征后，社保由税务同征后</span>
+                					</div>
+                				</li>
+                			</ul>
+                			<div class="tips-conf">
+                			</div>
+                		</div> -->
+                	</div>
+                </div>
+				
+			</div>
+		</div>
+
+        <div id="sub_menu" class="right-menus-container custom-float">
+        </div>
+        <div class="mask-layer mask-layer-half-transparent">
+            <img src="__ROOT__/{$Think.APP_PATH}/Public/images/loading-0.gif" style="position: absolute;top:50%;left:50%" />
+        </div>
+		<eq name="user_session.userType" value="2">
+			<div  style="display: none; float:right;padding-right: 20px" class="company-selected-container">
+				<span style="color:grey">当前客户：</span>
+				<span class="company-name"></span>
+				<a href="javascript:;" onclick="selectVourcherCompany('toggle')" style="color:#2e8eff;padding-left: 10px">切换</a>
+			</div>
+		</eq>
+        <!--<script src="https://img.hcharts.cn/highcharts/highcharts.js"></script>-->
+        <!--<script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+        <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>-->
+        <!--<script>
+        	var chart = Highcharts.chart('charts-container',{
+			    chart: {
+			        type: 'column'
+			    },
+			    title: {
+			        text: '上周任务完成情况'
+			    },
+			    subtitle: {
+			        text: '数据来源: 财穗+'
+			    },
+			    xAxis: {
+			        categories: [
+			            '周一','周二','周三','周四','周五'
+			        ],
+			        crosshair: true
+			    },
+			    yAxis: {
+			        min: 0,
+			        title: {
+			            text: '任务量(个)'
+			        }
+			    },
+			    tooltip: {
+			        // head + 每个 point + footer 拼接成完整的 table
+			        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+			        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+			        '<td style="padding:0"><b>{point.y:.1f} 个</b></td></tr>',
+			        footerFormat: '</table>',
+			        shared: true,
+			        useHTML: true
+			    },
+			    plotOptions: {
+			        column: {
+			            borderWidth: 0
+			        }
+			    },
+			    series: [{
+			        name: '已完成',
+			        data: [10, 20, 50, 30, 40]
+			    }, {
+			        name: '未完成',
+			        data: [40, 30, 0, 20, 10]
+			    }]
+			});
+		</script>-->
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.easyui.min.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.easyui.patch.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/locale/easyui-lang-zh_CN.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/chosen/chosen.jquery.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/chosen/ajax-chosen.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/script/easyui-editor.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/script/ext-chosen.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}Public/script/gridtoolbar.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/script/core.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/script/comm.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/script/app.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/script/index.js"></script>
+	<script src="__ROOT__/{$Think.MODULE_PATH}/Public/script/common.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/script/viewer-jquery.min.js"></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/uploader/uploader.js"></script>
+	<script src="__ROOT__/{$Think.MODULE_PATH}/Public/script/vcr_common.js"></script>
+	<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+	<script src="__ROOT__/{$Think.APP_PATH}/Public/lhgdialog/lhgdialog.js?skin=idialog"></script>
+    <script src="__ROOT__/{$Think.MODULE_PATH}/Public/vue/vue.min.js"></script>
+	<script type="application/javascript">
+		var NewbieGuide = new Vue({
+			el:".rightContainer",
+			data:{
+				NewbieGuideList:[]
+			},
+			methods: {
+				toGuide(url){
+					var Guide = $.dialog({
+						title: "教程",
+						autoSize: false,
+						content: `url:${url}`,
+						lock: false,
+						max: true,
+						min: true,
+						zIndex:111,
+						width:900,
+						height:600
+					})
+				}
+			},
+			mounted() {
+				$.get("/SysGuide/client", (data) => {
+					this.NewbieGuideList = data;
+				},'json');
+			},
+		})
+    	var indexVue = new Vue({
+			el:"#logo_img",
+			data:{
+				logo_img:null
+			}
+		});
+	    //获取logo
+	    function getLogoImg() {
+	        $.post("/ComStore/getLogo",function(result) {
+	        	var logo_img = result.logo_img;
+	            // console.log("!!!");
+	            if (!logo_img) {
+	            	logo_img = '__ROOT__/{$Think.MODULE_PATH}/Public/images/logo/logo-caisui+.png';
+	            }
+	            indexVue.logo_img = logo_img;
+	        }, "json");
+	    }
+	    getLogoImg();
+//	    myMessageStatistics();
+	    //var myMessageCount = setInterval("myMessageStatistics()",20000);
+	    function myMessageStatistics(){
+	    	$.post("/SysIterationMessage/statistics",function(result) {
+	    		$("#myMessageCount").text("("+result.count+")");
+			}, "json");
+	    }
+	    //我的消息
+	    function myMessage() {
+			openAttachForm("客户消息",function(){
+				attachmentVue = null;
+				// console.log(attachmentVue)
+			})
+		}
+		function toManage(obj){
+            var menu_id = obj.getAttribute('menu_id');
+            var item_id = obj.getAttribute('item_id');
+            var title = "";
+            if($("#main-menu-"+menu_id).size()>0){
+                $("#main-menu-"+menu_id).trigger('click');
+                $(".menu-"+item_id).addClass('active');
+                var url = app_config.module + "/" + obj.getAttribute('url');
+                title = $('.side-bar li.active').text() + ">" +  obj.getAttribute('text');
+            }else{
+                $("#main-menu-155").trigger('click');
+                $(".menu-133").addClass('active');
+                var url = app_config.module + "/WxTemplateMessage" ;
+                title = '系统管理 >模板消息';
+            }
+            $("#module-content .head").text(title);
+            $.get(url, function(result){
+                $("#module-content .content").html("").append(result);
+                $.parser.parse("#module-content .content");
+            });
+		}
+
+		$("#toggileCom").on("click",function(){
+            createDialog("Index/toggleCom",'请选择要进入的公司');
+		})
+
+		function openAttForm(){
+            openAttachmentForm("附件",[{text:"注册公司",attach_group:null}], function(item){
+               alert(item.group);
+			});
+		}
+		//凭证导航
+        $(document).keydown(function(event){
+            if ($(".voucherdraf-content .intel-table").hasClass("on")) {
+                switch (event.keyCode) {
+                    case 37: //左方向键
+                        if (VcrVoucherDeafFunctions.currentViewId > 0) {
+                            VcrVoucherDeafFunctions.moveView("prev");
+                        }
+                        break;
+                    case 39: //右方向键
+                        VcrVoucherDeafFunctions.moveView("next");
+                        break;
+                }
+                console.log(event.keyCode);
+            }
+        });
+		var indexFunctions = {
+		    clearCache:function(){
+		        $.post("System/clearCache", function(){
+		           $.dialog.tips("清除完成")
+                });
+			}
+		}
+		// 切换主题
+		function SubjectSwitch(){
+			var subjectAlart = $.dialog({
+				title: "切换主题",
+				autoSize: true,
+				content: "url:Index/subject_switch",
+				lock: true,
+				max: false,
+				min: false,
+				zIndex:111,
+				cancel:false,
+				button:[{
+                	name: '保存',
+					callback: function () {
+						var subjectAry = subjectAlart.content.document.getElementsByName('subject_switch');
+						for(var i = 0;i<subjectAry.length;i++){
+							if(subjectAry[i].checked == true){
+								var checkedColor = subjectAry[i].style.backgroundColor;
+							}
+						}
+						$(".major-content .side-bar").css("backgroundColor",checkedColor);
+						return true;
+					}
+				},{
+					name: '取消',
+					callback: function () {
+						return true;
+					}
+				}]
+			})
+		}
+		// 导航条下拉功能
+		function downClick(el){
+			if($(el).siblings(".down-content").css("display") == "none"){
+				$(el).siblings(".down-content").show();
+			}else{
+				$(el).siblings(".down-content").hide();
+			}
+		}
+
+		$(function(){
+		    $.post("Index/getShowRecNotice",function(result){
+		        if(result){
+		            var html = "<div class='red-point'></div>";
+		            $("#main-menu-"+result.parent_id).append(html);
+		            $(".menu-"+result.id).append(html);
+				}
+			},'json')
+		})
+	</script>
+	
+	<script>
+		var attachmentVue = null;
+		// 声明WebSocket方法对象
+		websocket = function(){
+			let url = "ws://120.26.97.87:19999?branch_id={$branchId}&user_id={$userId}";
+			let ws  = null;
+			let resetInterval  = null;
+			// let code = null;
+			// 初始化 
+			var init = function(){
+				creatSocket()
+			}
+			// 创建WebSocket对象
+			var creatSocket = function(){
+				ws = new WebSocket(url);
+
+				ws.onopen = openSocket;
+				ws.onmessage = onMsgSocket;
+				ws.onclose = onCloseSocket;
+				ws.onerror = onErrorSocket;
+			}
+			// Socket启动回调
+			var openSocket = function(){
+				clearInterval(resetInterval);
+				console.log("已启动")
+			}
+			// 查找消息列表中对应的用户
+			var searchUser = function(data){
+				var index = null;
+				var search = null;
+				var type = null;
+				for(var k in attachmentVue.memberList){
+					if(attachmentVue.memberList[k].group_id == data.msg_group_id){
+						console.log("member + 1")
+						attachmentVue.statistics.member += 1;
+						attachmentVue.memberList[k].count += 1;
+						index = k;
+						search = attachmentVue.memberList[k];
+						type = "member";
+						break
+					}
+				}
+				for(var k in attachmentVue.staffList){
+					if(attachmentVue.staffList[k].group_id == data.msg_group_id){
+						console.log("staff + 1")
+						attachmentVue.statistics.staff += 1;
+						attachmentVue.staffList[k].count += 1;
+						index = k;
+						search = attachmentVue.staffList[k];
+						type = "staff";
+						break
+						// console.log(attachmentVue.statistics.staff)
+						// console.log(attachmentVue.staffList[k].count)
+					}
+				}
+				for(var k in attachmentVue.groupList){
+					if(attachmentVue.groupList[k].group_id == data.msg_group_id){
+						console.log("group + 1")
+						attachmentVue.statistics.group += 1;
+						attachmentVue.groupList[k].count += 1;
+						index = k;
+						search = attachmentVue.groupList[k];
+						type = "group";
+						break
+					}
+				}
+				// console.log(index + "---" + search + "---" + type)
+				
+				if(type == "member"){
+					attachmentVue.memberList.splice(index,1);
+					attachmentVue.memberList.unshift(search);
+				}else if(type == "staff"){
+					attachmentVue.staffList.splice(index,1);
+					attachmentVue.staffList.unshift(search);
+				}else if(type == "group"){
+					attachmentVue.groupList.splice(index,1);
+					attachmentVue.groupList.unshift(search);
+				}
+			}
+			// Socket接收处理消息回调
+			var onMsgSocket = function(event){
+				var result = JSON.parse(event.data);
+				if(result.event == "msg"){
+					var data = result.data.data;
+					console.log(attachmentVue)
+					// 判断弹窗是否开启
+					if(attachmentVue == null){
+						// 提示有消息
+						$("div.msg-tips").show();
+					}else{
+						// 判断当前选择的聊天对象
+						console.log(attachmentVue.chat)
+						if(attachmentVue.chat == {}){
+							// 未选中聊天对象
+							console.log(data);
+							searchUser(data);
+						}else{
+							// 判断已选中聊天对象是否是当前的聊天对象
+							console.log(attachmentVue.chat.group_id)
+							if(attachmentVue.chat.group_id == data.msg_group_id){
+								// 选中聊天对象为当前消息发送者
+								attachmentVue.historys.push(data)
+								attachmentVue.$nextTick(()=> {
+									var scrollHeight = $('.records').prop("scrollHeight");
+									$('.records').scrollTop(scrollHeight);
+								});
+							}else{
+								// 选中聊天对象不是当前消息发送者
+								// console.log(attachmentVue.chat.group_id)
+								// console.log(data.msg_group_id)
+								searchUser(data);
+							}
+						}
+						console.log(attachmentVue.chat)
+					}
+				}else if(result.event == "notice"){
+
+				}
+				console.log(result)
+			}
+
+			// Socket关闭回调
+			var onCloseSocket = function(close){
+				// ws = null;
+				// code = close.code
+				// console.log(close)
+				console.log(close.code)
+				console.log("已关闭")
+				clearInterval(resetInterval)
+				resetInterval = setInterval(creatSocket,5000);
+			}
+
+			// Socket发生错误回调
+			var onErrorSocket = function(error){
+				// console.log(error)
+				// clearInterval(resetInterval)
+				// resetInterval = setInterval(creatSocket,5000)
+			}
+
+			// 发送消息
+			var sendMsgSocket = function(event,data){
+				console.log(data)
+				var obj = {
+					event : event,
+					data : data
+				}
+				obj = JSON.stringify(obj)
+				// console.log(ws.readyState);
+				if(ws.readyState == 1){
+					ws.send(obj)
+				}else if(ws.readyState == 3 || ws.readyState == 2){
+					// websocket关闭时发送模板通知
+					if(event == "msg"){
+						var wait = data.acceptIds;
+						var branchId = data.branch_id;
+						var contents = data.contents;
+						var type = data.type;
+						var wechatData = {
+							wait:wait,
+							branchId:branchId,
+							contents:contents,
+							type:type
+						}
+						wechatData = JSON.stringify(wechatData);
+						$.post("/MsgGroupMember/sendWechatMsg",wechatData,(result)=>{
+							if(result.code == 0){
+								// console.log(result)
+								// $.dialog.tips("");
+							}else{
+								// $.dialog.alert("");
+							}
+						})
+					}
+				}
+			}
+
+			init();
+
+			return{
+				sendMsgSocket:sendMsgSocket,
+				onErrorSocket:onErrorSocket,
+				// code:code
+			}
+		}
+
+		self.websocket = new websocket();
+	</script>
+
+    </body>
+</html>

@@ -1,0 +1,144 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$dept_action}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform" style="width: 500px">
+        <div class="tableForm" style="margin-left: 50px;margin-bottom: 50px">
+            <if condition="$dept_name neq '' and $model.id eq ''">
+                <div class="row">
+                    <div class="caption"><span><span style="color:#FF0000">*</span>上级部门：</span></div>
+                    <div class="inputbox" style="width:40%">
+                        <input name="" class="easyui-validatebox" data-options="required:true" value="{$dept_name}" readonly />
+                    </div>
+                </div>
+            </if>
+            <div class="row" style="margin-top: 30px">
+                <input type="hidden" name="id" value="{$model.id}">
+                <div class="caption"><span><span style="color:#FF0000">*</span>{$Think.lang.FLD_DEPARTMENT_NAME}：</span></div>
+                <div class="inputbox" style="width:40%">
+                    <input name="name" class="easyui-validatebox" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" placeholder="请输入部门名称（最多十个字）" value="{$model.name}" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='Organization-form-actions' style="height:auto;">
+        <div class='actions-sysdefault'>
+            <if condition="'addDept' eq $dept_action">
+                <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="addDept()">保存</a>
+                <else />
+                <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="editDept()">保存</a>
+                <!--<if condition="($permissions.deleteDept eq 1) ">
+                    <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="deleteDept()">删除</a>
+                </if>-->
+            </if>
+            <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()" style="margin-left: 20px">取消</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+function addDept() {
+    var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+    var validate = dataForm.form('validate');
+    if (!validate){
+        return validate;
+    }
+
+    showMaskLayer();
+    var name = $("input[name='name']").val();
+    $.post('/Organization/addDept/dept_id/{$dept_id}', { name: name }, function(result) {
+        hideMaskLayer();
+        if (result.code == 0) {
+            getTrees();
+            var selected = $('.department-tree').tree('getSelected');
+            var action = "/Organization/treeList";
+            var $tree_target = getDepartmentTree('{$Think.const.CONTROLLER_NAME}');
+            $.getJSON(action, {}, function(result) {
+                $tree_target.tree({
+                    data: result,
+                    onLoadSuccess: function(node, data) {
+                        if (data.length > 0) {
+                            var n = $('.department-tree').tree('find', selected.id);
+                            $('.department-tree').tree('select', n.target);
+                            getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                            $('#deptment-datagrid').datagrid('reload');
+                        }
+                    }
+                })
+            });            
+            closeDialog();
+        }
+        $.dialog.tips(result.message);
+    }, 'json')
+}
+
+function editDept() {
+    var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+    var validate = dataForm.form('validate');
+    if (!validate){
+        return validate;
+    }
+
+    showMaskLayer();
+    var name = $("input[name='name']").val();
+    $.post('/Organization/editDept/id/{$model.id}', { name: name }, function(result) {
+        hideMaskLayer();
+        if (result.code == 0) {
+            getTrees();
+            var selected = $('.department-tree').tree('getSelected');
+            var action = "/Organization/treeList";
+            var $tree_target = getDepartmentTree('{$Think.const.CONTROLLER_NAME}');
+            $.getJSON(action, {}, function(result) {
+                $tree_target.tree({
+                    data: result,
+                    onLoadSuccess: function(node, data) {
+                        if (data.length > 0) {
+                            var n = $('.department-tree').tree('find', selected.id);
+                            $('.department-tree').tree('select', n.target);
+                            getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                            $('#deptment-datagrid').datagrid('reload');
+                        }
+                    }
+                })
+            }); 
+            closeDialog();
+        }
+        $.dialog.tips(result.message);
+    }, 'json')
+}
+
+function deleteDept() {
+    if ("{$model['user_count']}" > 0) {
+        alert('部门内还存在员工，请先删除员工');
+    }else{
+        $.dialog.confirm('是否确认删除此部门', function() {
+            showMaskLayer();
+            $.post('/Organization/deleteDept/id/{$model.id}', function(result) {
+                hideMaskLayer();
+                if (result.code == 0) {
+                    var selected = $('.department-tree').tree('getSelected');
+                    var action = "/Organization/treeList";
+                    var $tree_target = getDepartmentTree('{$Think.const.CONTROLLER_NAME}');
+                    $.getJSON(action, {}, function(result) {
+                        $tree_target.tree({
+                            data: result,
+                            onLoadSuccess: function(node, data) {
+                                if (data.length > 0) {
+                                    // var n = $('.department-tree').tree('find', selected.id);
+                                    // $('.department-tree').tree('select', n.target);
+                                    getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                                    $('#deptment-datagrid').datagrid('reload');
+                                }
+                            }
+                        })
+                    });
+
+                    closeDialog('dlg-edit-deptment');
+                    // initial_branch_tree("{$Think.const.CONTROLLER_NAME}", "Organization1/treeList", getUserQueryParams);
+                    // getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("load", { branch_id: null });
+                    // $('#deptment-datagrid').datagrid('load', { branch_id: null });
+                    // dept_id = "";
+                    // $("#editDept").hide();
+                }
+                $.dialog.tips(result.message);
+            }, 'json')
+        });
+    }
+}
+</script>

@@ -1,0 +1,36 @@
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <div class="easyui-layout" data-options="fit:true,border: true" >
+        <if condition="($permissions._IS_ADMIN_ eq 1)">
+            <div data-options="region:'west',split:false,border:true" style="width: 20%; height: 100%" >
+                <div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+                    <ul style="border: 0px #F2F2F2 solid;height: 99%" class="department-tree" data-options="animate:true"></ul>
+                </div>
+            </div>
+        </if>
+        <div data-options="region:'center',border:false" style="width: auto; height: 100%">
+            <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+            <tr> 
+                <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+                <th data-options="field:'name',width:240,align:'left'">{$Think.lang.FLD_NAME}</th>
+                <th data-options="field:'querykey',width:120,align:'left'">{$Think.lang.FLD_DEPT_NO}</th>
+                <th data-options="field:'director_name',width:120,align:'left'">{$Think.lang.FLD_DIRCTOR}</th>
+                <th data-options="field:'contact',width:120,align:'left'">{$Think.lang.FLD_CONTACT}</th>
+                <th data-options="field:'phone',width:120,align:'left'">{$Think.lang.FLD_PHONE}</th>
+                <th data-options="field:'is_valid',width:60,align:'left',formatter:formatValidState">{$Think.lang.FLD_IS_VALID}</th>
+            </tr>
+            <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        //initial_branch_tree("{$Think.const.CONTROLLER_NAME}", "{$Think.const.CONTROLLER_NAME}/tree");
+        initial_project_tree("{$Think.const.CONTROLLER_NAME}");
+        re_bind_action_add("{$Think.const.CONTROLLER_NAME}", function () {
+            department_action_add("{$Think.const.CONTROLLER_NAME}");
+        });
+    });
+    function department_action_add() {
+        add_branch_x(3, "parent_id", "{$Think.const.CONTROLLER_NAME}");
+    }
+</script>

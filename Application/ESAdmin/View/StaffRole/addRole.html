@@ -1,0 +1,140 @@
+<style>
+    /* 保存(确认)按钮 */
+    .btn_save_blue{
+            display: inline-block;
+            width: 84px;
+            height:34px;
+            line-height: 34px;
+            text-align: center;
+            background-color: #529bfd;
+            color: #fff;
+            padding: 0px 10px;
+            margin: 5px 10px;
+            cursor: pointer;
+        }
+        .btn_save_blue:hover{
+            background-color: #6eacfe;
+        }
+        /* 关闭(取消)按钮 */
+        .btn_close_gray{
+            display: inline-block;
+            width: 84px;
+            height:34px;
+            line-height: 34px;
+            text-align: center;
+            padding: 0px 10px;
+            margin: 5px 10px;
+            color: #333;
+            border:1px solid #d3d3d3;
+            cursor: pointer;
+        }
+        .btn_close_gray:hover{
+            border:1px solid #6eacfe;
+        }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$role_action}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform" style="width:360px">
+        <div class="tableForm">
+            <div class="row">
+                <input type="hidden" name="id" value="{$model.id}">
+                <div class="caption"><span><span style="color:#FF0000">*</span>{$Think.lang.FLD_ROLE_NAME}：</span></div>
+                <div class="inputbox">
+                    <input name="name" class="easyui-validatebox" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" placeholder="请输入角色名(最多10个字)" value="{$model.name}" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='StaffRole-form-actions' style="height:auto;">
+        <div class='actions-sysdefault'>
+            <if condition="'addRole' eq $role_action">
+                <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="addRole()">保存</a>
+            <else/>
+                <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="editRole()">保存</a>
+                <!--<a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="deleteRole()">删除</a>-->
+            </if>
+            <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()">取消</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+function addRole() {
+    var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+    var validate = dataForm.form('validate');
+    if (!validate){
+        return validate;
+    }
+
+    showMaskLayer();
+    var name = $("input[name='name']").val();
+    $.post('/StaffRole/addRole', {name:name}, function(result) {
+        hideMaskLayer();
+        if (result.code == 0) {
+            closeDialog();
+            /*getDataGrid('role').datagrid("reload");
+            getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");*/
+            if(typeof getRoleList != 'undefined' && getRoleList instanceof Function){
+                getRoleList();
+            }
+        }
+        $.dialog.tips(result.message);
+    }, 'json')
+}
+
+function editRole() {
+    var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+    var validate = dataForm.form('validate');
+    if (!validate){
+        return validate;
+    }
+
+    showMaskLayer();
+    var name = $("input[name='name']").val();
+    $.post('/StaffRole/editRole/id/{$model.id}', {name:name}, function(result) {
+        hideMaskLayer();
+        if (result.code == 0) {
+            closeDialog();
+            role_id ="";
+            /*getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+            getDataGrid('role').datagrid("reload");
+            $('.detail-add').addClass("bg-grey");
+            $('.detail-delete').addClass("bg-grey");
+            $('#role_name').html(name+"权限选择");*/
+            var div = $(".on").attr("id").split("-");
+            if(div[1] == "{$model.id}"){
+                $('#role_name').html(name+"权限选择")
+            }
+            if(typeof getRoleList != 'undefined' && getRoleList instanceof Function){
+                getRoleList();
+            }
+        }
+        $.dialog.tips(result.message);
+    }, 'json')
+}
+
+function deleteRole() {
+    var str = '是否确认删除此角色？';
+    if('1' == '{$has_user}'){
+        str = '该角色下已有员工，请先移除员工！';
+        $.dialog.alert(str, function(){});
+        return false;
+    }
+    $.dialog.confirm(str, function () {
+        showMaskLayer();
+        var name = $("input[name='name']").val();
+        $.post('/StaffRole/deleteRole/id/{$model.id}', {name:name}, function(result) {
+            hideMaskLayer();
+            if (result.code == 0) {
+                closeDialog('dlg-edit-role');
+                role_id ="";
+                /*getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                getDataGrid('role').datagrid("reload");*/
+                $('.detail-add').addClass("bg-grey");
+                $('.detail-delete').addClass("bg-grey");
+                roleVue.show = false;
+                $("#role_name").hide();
+            }
+            $.dialog.tips(result.message);
+        }, 'json')
+    });
+}
+</script>

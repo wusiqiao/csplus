@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .grey{
+            background: grey;
+        }
+        .search-panel{
+            display: block !important;
+        }
+        .datagrid-body::-webkit-scrollbar {
+            display: none;
+        }
+        .button-btn{
+            padding: 8px 40px;
+            background-color: #368BFE;
+            color: #fff ;
+            border-radius: 4px;
+            border: 0;
+            margin: 0 2px;
+        }
+        input[readonly],select:disabled,.chosen-disabled .chosen-choices{
+            background: initial !important;
+            background-color: #EEEEEE !important;
+        }
+        .chosen-disabled{
+            opacity: initial !important;
+        }
+        th{
+            text-align: right;
+            width: 50px;
+        }
+
+    </style>
+    <script>
+        function formatCapitalOperation(value, row, index)
+        {
+            if (row.id > 0) {
+                var hasLeaderW = '{$has_leaders.comwithdrawal}';
+                var hasLeaderR = '{$has_leaders.comrecharge}';
+                var hasBranchLeader = '{$has_branch_leader}';
+                var html = '';
+                html+= '<button  class="operation-btn"  style="width:auto"  onclick="actionCapitalFolder(\''+row.attach_group+'\','+row.id+',\''+row.operation+'\')">附件备注</button>';
+                if (row.polarity === '+' && (hasLeaderR == '1' || hasBranchLeader == '1') && row.state == '0') {
+                    html+= '<button  class="operation-btn"  style="width:auto"  onclick="createDialog(\'/'+value+'/detail/id/'+row.id+'\',\''+row.income_type+'确认\',\'ComRecharge\')">'+row.income_type+'确认</button>';
+                } else if (row.polarity === '-' && (hasLeaderW == '1' || hasBranchLeader == '1') && row.state == '0') {
+                    html+= '<button  class="operation-btn"  style="width:auto"  onclick="createDialog(\'/'+value+'/detail/id/'+row.id+'\',\''+row.pay_type+'确认\',\'ComWithdrawals\')">'+row.pay_type+'确认</button>';
+                }
+                return html;
+            }
+        }
+    </script>
+    <script src="../../Public/script/common.js"></script>
+    <script src="../../Public/script/common1.js"></script>
+</head>
+<body>
+<div class="details-wrap" >
+    <div style="overflow-y: scroll;height:600px;padding-right: 10px;width: 900px">
+        <div class="details-section">
+            <p class="line">
+                <span class="txt">账户信息</span>
+                <span class="drop-down"></span>
+                <input type="hidden" name="id" value="{$model.id}">
+            </p>
+        </div>
+        <div class="search-panel" >
+            <form id="capitalForm">
+            <table class="search-table" >
+                <tr>
+                    <th>资金账户名称：</th>
+                    <td>
+                        <input  class="easyui-validatebox" readonly="true" value="{$model.name}" />
+                    </td>
+                    <eq name="model.capital_type" value="user">
+                        <th>银行卡号：</th>
+                        <td>
+                            <input  class="easyui-validatebox" readonly="true" value="{$model.bank_account}" />
+                        </td>
+                    </eq>
+                </tr>
+                <tr>
+                    <th>资金客户负责人：</th>
+                    <td>
+                        <input  class="easyui-validatebox" readonly="true" value="{$account_belong.customer_capital_leader_view}" />
+                    </td>
+                    <th>资金客户可见人：</th>
+                    <td style="width: 100%">
+                        <select  class="chosen-select" disabled id="customer_capital_visiblers_select"   multiple style="width:100%">
+                            <notempty name="account_belong.customer_capital_visiblers_view">
+                                <volist name="account_belong.customer_capital_visiblers_view" id="vo">
+                                    <option value="{$vo.id}" selected>{$vo.name}</option>
+                                </volist>
+                            </notempty>
+                        </select>
+                    </td>
+                </tr>
+                <if condition="($has_branch_leader eq 1)">
+                    <tr>
+                        <th>充值商户负责人：</th>
+                        <td>
+                            <input name="recharge_leader" style="width: 95%;" class="easyui-validatebox filter-field" value="{$account_belong.recharge_leader_view}" data-name="recharge_leader_id" placeholder="请输入账户名称" />            </td>
+                            <input type="hidden" name="recharge_leader_id" value="{$account_belong.recharge_leader_id}">
+                        </td>
+                        <th>充值商户可见人：</th>
+                        <td>
+                            <select name="recharge_visiblers_inputs[]" class="chosen-select"  data-placeholder=" " id="recharge_visiblers_select" data-options="all:true,value:'{$account_belong.recharge_visiblers}',search_key_url:'WrkAgreement/service_leaderList/id/{$model.idt}'"  multiple style="width:100%">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>提现商户负责人：</th>
+                        <td>
+                            <input name="withdrawal_leader" style="width: 95%;" class="easyui-validatebox filter-field" value="{$account_belong.withdrawal_leader_view}" data-name="withdrawal_leader_id" placeholder="请输入账户名称" />            </td>
+                            <input type="hidden" name="withdrawal_leader_id" value="{$account_belong.withdrawal_leader_id}">
+                        </td>
+                        <th>提现商户可见人：</th>
+                        <td>
+                            <select name="withdrawal_visiblers_inputs[]" class="chosen-select"  data-placeholder=" " id="withdrawal_visiblers_select" data-options="all:true,value:'{$account_belong.withdrawal_visiblers}',search_key_url:'WrkAgreement/service_leaderList/id/{$model.idt}'"  multiple style="width:100%">
+                            </select>
+                        </td>
+                    </tr>
+                    <else/>
+                    <tr>
+                        <th>充值商户负责人：</th>
+                        <td>
+                            <input name="recharge_leader" style="width: 95%;" readonly class="easyui-validatebox filter-field" value="{$account_belong.recharge_leader_view}" data-name="recharge_leader_id" placeholder="" />            </td>
+                        <input type="hidden" name="recharge_leader_id" value="{$account_belong.recharge_leader_id}">
+                        </td>
+                        <th>充值商户可见人：</th>
+                        <td>
+                            <select name="recharge_visiblers_inputs[]" disabled class="chosen-select"  data-placeholder=" " id="recharge_visiblers_select" data-options="all:true,value:'{$account_belong.recharge_visiblers}',search_key_url:'WrkAgreement/service_leaderList/id/{$model.idt}'"  multiple style="width:100%">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>提现商户负责人：</th>
+                        <td>
+                            <input name="withdrawal_leader" style="width: 95%;" readonly class="easyui-validatebox filter-field" value="{$account_belong.withdrawal_leader_view}" data-name="withdrawal_leader_id" placeholder="" />            </td>
+                            <input type="hidden" name="withdrawal_leader_id" value="{$account_belong.withdrawal_leader_id}">
+                        </td>
+                        <th>提现商户可见人：</th>
+                        <td>
+                            <select name="withdrawal_visiblers_inputs[]" disabled class="chosen-select"  data-placeholder=" " id="withdrawal_visiblers_select" data-options="all:true,value:'{$account_belong.withdrawal_visiblers}',search_key_url:'WrkAgreement/service_leaderList/id/{$model.idt}'"  multiple style="width:100%">
+                            </select>
+                        </td>
+                    </tr>
+                </if>
+            </table>
+                <input type="hidden" name="id" value="{$model.id}" class="filter-field">
+                <input type="hidden" name="capital_type" value="{$model.capital_type}" class="filter-field">
+            </form>
+            <div style="text-align: left">
+                <if condition="($has_branch_leader eq 1)">
+                    <button class="button-btn" onclick="accountJurisdiction()">保存</button>
+                </if>
+            </div>
+        </div>
+        <div class="details-section">
+            <div class="details-content">
+                <p class="line">
+                    <span class="txt">账户明细</span>
+                    <span class="drop-down"></span>
+                </p>
+            </div>
+            <div id="{$Think.const.CONTROLLER_NAME}-search-panel">
+                <table class="search-table">
+                    <tbody>
+                    <tr>
+                        <th>明细类型：</th>
+                        <td>
+                            <div class="indexes-start-up indexes" data-toggle="mold">
+                                <div class="btn-screening btn-screening-on"  data-status="0">全部</div>
+                                <div class="btn-screening" data-status="1">收入</div>
+                                <div class="btn-screening" data-status="2">支出</div>
+                                <input type="hidden" name="mold" value="0" class="filter-field">
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="search-table">
+                    <tbody>
+                    <tr>
+                        <th>收入类型：</th>
+                        <td>
+                            <div class="indexes-start-up indexes" data-toggle="income">
+                                <div class="btn-screening btn-screening-disable indexes-start-up"  data-status="0">全部</div>
+                                <eq name="model.capital_type" value="company">
+                                    <div class="btn-screening btn-screening-disable" data-status="5">充值</div>
+                                    <div class="btn-screening btn-screening-disable" data-status="3">转账</div>
+                                    <div class="btn-screening btn-screening-disable" data-status="4">退款</div>
+                                <else/>
+                                    <div class="btn-screening btn-screening-disable" data-status="1">充值</div>
+                                    <div class="btn-screening btn-screening-disable" data-status="2">佣金</div>
+                                </eq>
+                                <input type="hidden" name="income" value="0" class="filter-field">
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="search-table">
+                    <tbody>
+                    <tr>
+                        <th>支出类型：</th>
+                        <td>
+                            <div class="indexes-start-up indexes" data-toggle="pay">
+                                <div class="btn-screening btn-screening-disable"  data-status="0">全部</div>
+                                <eq name="model.capital_type" value="company">
+                                    <div class="btn-screening btn-screening-disable" data-status="1">付款</div>
+                                    <div class="btn-screening btn-screening-disable" data-status="2">提现</div>
+                                <else/>
+                                    <!--<div class="btn-screening btn-screening-disable" data-status="1">付款</div>-->
+                                    <div class="btn-screening btn-screening-disable" data-status="2">提现</div>
+                                    <div class="btn-screening btn-screening-disable" data-status="3">转账</div>
+                                </eq>
+                                <input type="hidden" name="pay" value="0" class="filter-field">
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" >
+            <table class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+                   data-options="
+                       url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/accountDetailsList/capital_type/{$model.capital_type}/id/{$model.id}',
+                       pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+                       pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+                       toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+                       pageNumber:1,
+                       checkOnSelect:true,
+                       singleSelect:false,
+                       border:true,
+                       showFooter: true,
+                       onRowContextMenu: function (e, rowIndex, rowData) {
+                         $(this).datagrid('clearSelections');
+                         $(this).datagrid('selectRow', rowIndex);
+                       e.preventDefault();
+                        $('#box_{$Think.const.CONTROLLER_NAME}').menu('show', {
+                            left: e.pageX,
+                            top: e.pageY
+                         });
+                        }">
+                <thead>
+                <tr>
+                    <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+                    <th data-options="field:'created_time',width:150,align:'left'">发生日期</th>
+                    <th data-options="field:'income_money',width:100,align:'left',formatter:formatMoneyShow">收入金额</th>
+                    <th data-options="field:'pay_money',width:100,align:'left',formatter:formatMoneyShow">支出金额</th>
+                    <th data-options="field:'actual_money',width:80,align:'left',formatter:formatMoneyShow">账户余额</th>
+                    <th data-options="field:'detail_type',width:80,align:'left'">明细类型</th>
+                    <th data-options="field:'income_type',width:80,align:'left'">收入类型</th>
+                    <th data-options="field:'pay_type',width:80,align:'left'">支出类型</th>
+                    <th data-options="field:'state_view',width:80,align:'left'">状态</th>
+                    <th data-options="field:'operation',width:200,align:'left',formatter:formatCapitalOperation">操作</th>
+                </tr>
+                <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+        </div>
+        <div id="actions-{$Think.const.CONTROLLER_NAME}">
+            <div class="extend-nav-menu" style="margin: 10px;">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    autocompleteAjax($("input[name='recharge_leader']"),"WrkAgreement/service_manList", function(item) {});
+    autocompleteAjax($("input[name='withdrawal_leader']"),"WrkAgreement/service_manList", function(item) {});
+    $("input[name='withdrawal_leader']").on('change', function() {
+        if ($("input[name='withdrawal_leader']").val()=="") {
+            $('input[name="withdrawal_leader_id"]').val("");
+        }
+    });
+    $("input[name='recharge_leader']").on('change', function() {
+        if ($("input[name='recharge_leader']").val()=="") {
+            $('input[name="recharge_leader_id"]').val("");
+        }
+    });
+    $('div.indexes-start-up > .btn-screening').on('click','',function(){
+        if (!$(this).hasClass('btn-screening-on')) {
+            var toggle = $(this).parent('div').data('toggle');
+            var status = $(this).data('status');
+            if(toggle != 'mold'){
+                var mold_status = $(".indexes[data-toggle=mold]").find(".btn-screening-on").data("status");
+                if(mold_status == 0){
+                    return false;
+                }
+            }
+            //if (toggle == 'mold' && status > 0){
+            if (toggle == 'mold'){
+                if (status == 2) {
+                    $('.indexes[data-toggle=income]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+                    $('.indexes[data-toggle=pay]').addClass('indexes-start-up').find('div:first').addClass('btn-screening-on');
+
+                    $('.indexes[data-toggle=income]').find('div').addClass("btn-screening-disable");
+                    $('.indexes[data-toggle=pay]').find('div').removeClass("btn-screening-disable");
+
+                    $('input[name=income]').val('');
+                    $('input[name=pay]').val('0');
+                } else if(status == 1) {
+                    $('.indexes[data-toggle=pay]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+                    $('.indexes[data-toggle=income]').addClass('indexes-start-up').find('div:first').addClass('btn-screening-on');
+
+                    $('.indexes[data-toggle=pay]').find('div').addClass("btn-screening-disable");
+                    $('.indexes[data-toggle=income]').find('div').removeClass("btn-screening-disable");
+
+                    $('input[name=pay]').val('');
+                    $('input[name=income]').val('0');
+                }else{
+                    $('.indexes[data-toggle=pay]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+                    $('.indexes[data-toggle=income]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+
+                    $('.indexes[data-toggle=pay]').find('div').addClass("btn-screening-disable");
+                    $('.indexes[data-toggle=income]').find('div').addClass("btn-screening-disable");
+
+                    $('input[name=pay]').val('');
+                    $('input[name=income]').val('');
+                }
+            }
+            /*if (toggle == 'mold'){
+                var status_old;
+                status_old = $(this).siblings('.btn-screening-on').data('status');
+                if (status_old == 2) {
+                    $('input[name=income]').val(0);
+                    $('.indexes[data-toggle=income]').addClass('indexes-start-up').find('div:first').addClass('btn-screening-on');
+                } else if (status_old == 1) {
+                    $('input[name=pay]').val(0);
+                    $('.indexes[data-toggle=pay]').addClass('indexes-start-up').find('div:first').addClass('btn-screening-on');
+                }else if(status_old == 0){
+
+                }
+            }*/
+            if ($(this).parent('div').hasClass('indexes-start-up')) {
+                $(this).addClass('btn-screening-on').siblings('.btn-screening').removeClass('btn-screening-on');
+                $(this).siblings('input').val(status);
+                doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+            }
+        }
+    })
+    function accountJurisdiction()
+    {
+        $.post('/{$Think.const.CONTROLLER_NAME}/saveAccountJurisdiction',$('#capitalForm').serialize(),function(data){
+            $.dialog.tips(data.message);
+        },'json')
+    }
+    function callHandler(row)
+    {
+        doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+    }
+    function actionCapitalFolder(attach_group,id,operation) {
+        openAttachmentForm("附件备注", [{text:"备注附件",attach_group:attach_group}],function(result){
+            if (attach_group == '') {
+                $.post('/{$Think.const.CONTROLLER_NAME}/setAttachGroup', {
+                    id: id,
+                    attach_group: result.group,
+                    operation : operation
+                }, function () {
+
+                }, 'json')
+                refreshGrid("{$Think.const.CONTROLLER_NAME}", {id: id, attach_group: result.group}, 'edit');
+            }
+        });
+    }
+</script>
+</body>
+</html>
+
+

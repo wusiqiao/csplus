@@ -1,0 +1,72 @@
+<div class="content" id="intelligent">
+    <div class="main-content">
+        <div>
+            <div id="VcrCompare-toolbar">
+                <div class="choose-month">
+                    <div>
+                        <span>会计期间：</span>
+                        <select class="easyui-combobox" name="state" style="width:100px;">
+                            <option>2018年</option>
+                            <option>2019年</option>
+                        </select>
+                        <a class="month-on">一月</a><a>二月</a><a>三月</a><a>四月</a><a>五月</a><a>六月</a><a>七月</a><a>八月</a><a>九月</a><a>十月</a><a>十一月</a><a>十二月</a>
+                    </div>
+                </div>
+                <div>
+                    <div class="opt-group">
+                        <a class="opt-importTax" onclick="showAuthDataImportDialog(this)">导入税三</a>
+                        <!--<a class="">开始认证</a>-->
+                        <span class="identification">共有<span>2</span>笔资料未认证，请导入本月认证明细进行认证对比</span>
+                    </div>
+                    <div class="intel-done">
+                        <table id="VcrCompare-datagrid" class="easyui-datagrid datagrid" width="100%" cellspacing="0" data-options="url:'/VcrCompare/list',fit:false,pagination:true,pageSize:20">
+                            <thead>
+                            <tr>
+                                <th data-options="field:'id',width:0,hidden:true">序号</th>
+                                <th data-options="field:'source_no',align:'center',resizable:true", width="20%">发票号码</th>
+                                <th data-options="field:'bill_id',align:'center',resizable:true,formatter:formatCompareBill", width="10%">来源单</th>
+                                <th data-options="field:'name',align:'center',resizable:true", width="20%">销售方名称</th>
+                                <th data-options="field:'total_amount',align:'center',resizable:true", width="20%">金额</th>
+                                <th data-options="field:'total_tax',align:'center',resizable:true", width="20%">税额</th>
+                                <th data-options="field:'authed',align:'center',resizable:true,formatter:formatAuthState", width="10%">认证状态</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-temp" id="importDialog">
+    <div class="importTax">
+        <form  action="{$Think.const.CONTROLLER_NAME}/import"  id="auth-import-form" method="post" enctype="multipart/form-data" style="width:360px;position: relative">
+            <input type="file" id="auth-file" name="auth_file" accept="*.xls,*.xlsx,*.csv" class="easyui-file" title="认证文件："/>
+        </form>
+        <div class="btn-group">
+            <input class="blue-btn" type="button" value="导入" onclick="importAuthData()"/>
+            <input class="square-btn" type="button" value="取消" onclick="closeDialog();"/>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        monthChoose($("#VcrCompare-toolbar .choose-month a"), function(index, isChecked){
+            // alert(index + (isChecked == true?"t":"f"));
+        });
+    });
+    function showAuthDataImportDialog(){
+        var html = $("#importDialog").html();
+        $.dialog({max:false,min:false, title: "认证资料导入", content: html});
+        parseInputFile("#auth-import-form");
+    }
+    function importAuthData() {
+        var customer = $(".page-selected .company-name").text();
+        if (customer != "") {
+            action_import("auth-file", "VcrCompare/compare", "确定导入客户【" + customer + "】的认证资料？", function (result) {
+                $.dialog.tips(result.message);
+                setTimeout('getDataGrid("{$Think.const.CONTROLLER_NAME}").datagrid("reload")', 2000);
+            })
+        }
+    }
+</script>

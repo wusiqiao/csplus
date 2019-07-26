@@ -1,0 +1,288 @@
+<style>
+    #mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 88;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+    #setCompanyTag-edit {
+        width: 589px;
+        height: 370px;
+        background-color: #ffffff;
+        top: calc(50% - 208.5px);
+        left: calc(50% - 294.5px);
+        z-index: 99;
+    }
+    #unRemove-edit{
+        width: 554px;
+        height: 270px;
+        background-color: #ffffff;
+        top: calc(50% - 135px);
+        left: calc(50% - 277px);
+        z-index: 111;
+        position: fixed;
+    }
+
+    .setCompanyTag-edit-hd,.unRemove-edit-hd {
+        width: 100%;
+        height: 50px;
+        background-color: #f9fafb;
+        color: #35323b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: move;
+    }
+
+    .setCompanyTag-edit-bd {
+        margin: 40px 64px;
+        overflow: hidden;
+    }
+
+    .setCompanyTag-type {
+        float: left;
+        height: 32px;
+        line-height: 32px;
+        text-align: right;
+        margin-right: 20px;
+        color: #666666;
+        font-size: 14px;
+    }
+
+    .setCompanyTag-edit-bd input {
+        float: left;
+        width: 270px;
+        height: 32px;
+        line-height: 32px;
+        border: 1px solid #d3d3d3;
+        outline: none;
+        text-indent: 13px;
+        box-sizing: border-box;
+        /*color: #bdbebe;*/
+    }
+    .setCompanyTag-tab{
+        margin-top: 35px;
+        width: 100%;
+        height: 22px;
+        line-height: 22px;
+        /* overflow: hidden; */
+    }
+    .setCompanyTag-tab span{
+        float: left;
+        width: 84px;
+        height: 22px;
+        line-height: 22px;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        text-align: center;
+        font-size: 12px;
+        color: #676767;
+        margin-right: 27px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        position: relative;
+
+    }
+    .setCompanyTag-tab-txt{
+        width: 68px !important;
+        line-height: 22px;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        border: none !important;
+        margin: 0 auto;
+    }
+    .setCompanyTag-tab .on{
+        border: 1px solid #368bfe;
+        color:#368bfe;
+    }
+    .setCompanyTag-tab .on span{
+        color:#368bfe;
+    }
+    .setCompanyTag-tab span i{
+        position: absolute;
+        top: -7.5px;
+        right: -7.5px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-remove-tab.png");
+        background-size: 100% 100%;
+        cursor: pointer;
+    }
+    .setCompanyTag-tab span i:hover{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-remove-tab-hover.png");
+    }
+</style>
+<div class="detailcontainer" id="ComCompany-select-detailcontainer"  style="width:610px;height:417px;overflow-y: auto">
+    <div id="setCompanyTag-edit" style="display:block;">
+        <!--<div class="setCompanyTag-edit-hd">
+            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">设置客户来源</span>
+            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                  onclick="$(`#setCompanyTag-edit`).hide(); $(`#mask`).hide();">X</span>
+        </div>-->
+        <div class="setCompanyTag-edit-bd setCompanyTagType">
+            <div class="setCompanyTag-type">客户类型：</div>
+            <input type="text" name="value" placeholder="请在此输入想要新增的客户类型" value="" maxlength="8">
+            <a href="javascript:void(0)" style="margin: 0 0 0 16px;display: none;width: 44px" class="btn-speed btn-edit-save" onclick="editTag(0)">保存</a>
+            <a href="javascript:void(0)" class="btn-cancel btn-add-save" onclick="addTag(0)" style="margin: 0 0 0 16px">新增</a>
+            <div class="setCompanyTag-tab tag0">
+                <volist name="typeList" id="vo">
+                    <span class='tag-{$vo.value}' data-name='{$vo.text}' onclick='toEdit("{$vo.value}",0)'>
+                        <div class="tag setCompanyTag-tab-txt" title="{$vo.text}">{$vo.text}</div>
+                        <i onclick='deleteTag("{$vo.value}",0)'></i>
+                    </span>
+                </volist>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 遮罩层 -->
+<div id="mask" style="display:none;"></div>
+<!-- 标签不可删除提示弹窗 -->
+<div id="unRemove-edit" style="display:none;">
+    <div class="unRemove-edit-hd">
+        <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+        <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;" onclick="$('#unRemove-edit').hide();$('#mask').hide()">X</span>
+    </div>
+    <div style="width: 250px;height: 14px;line-height: 14px;text-align:center;font-size: 14px;color: #666666;margin: 52px auto 86px;">该标签已被使用，无法删除。</div>
+    <div style="width: 100px;height: 32px;margin: 0 30px 30px auto;"><span onclick="$('#unRemove-edit').hide();$('#mask').hide()" class="btn-confirm">知道了</span></div>
+</div>
+
+<script type="text/javascript">
+    // 删除客户标签
+    var isUsed = false;
+    function removeCompanyTag(e){
+        if(isUsed){
+            //未使用可删除
+            $(e.target).parent().hide()
+        }else{
+            // 以使用不可删除
+            $("#unRemove-edit").show();
+            //$("#setCompanyTag-edit").hide()
+        }
+    }
+
+    //新增标签
+    function addTag(type){
+        event.stopPropagation();
+        //type = 0 客户类型 1 来源渠道
+        var value = $.trim($("input[name='value']").eq(type).val());
+        if(value != ""){
+            $.post("YhMeeting/addType",{type:type,value:$.trim(value)},function(result){
+                $.dialog.tips(result.message);
+                if(result.error == 0){
+                    $("input[name='value']").eq(type).val("");
+                    var html = "<span class='tag-"+result.id+"' data-name='"+$.trim(value)+"' onclick='toEdit("+result.id+","+type+")'>"+"<span class='tag setCompanyTag-tab-txt' title='"+$.trim(value)+"'>"+$.trim(value)+"</span><i onclick='deleteTag("+result.id+","+type+")'></i></span>";
+                    $(".tag"+type).append(html);
+                    updateSelect(type);
+                }
+            },'json')
+        }else{
+            $.dialog.tips("请输入正确的名称！");
+        }
+    }
+
+    //删除标签
+    function deleteTag(id,type) {
+        $(".tag-"+id).addClass("on").siblings().removeClass("on");
+        $.dialog.confirm("是否确认删除该标签？",function(){
+            var name = $(".tag-"+id).attr("data-name");
+            $.post("YhMeeting/deleteType",{id:id},function(result){
+                if(result.code == 0){
+                    if($("input[name='value']").eq(type).val() == name){
+                        $("input[name='value']").eq(type).val("").removeAttr("data-id");
+                        $(".btn-add-save").show();
+                        $(".btn-edit-save").hide();
+                    }
+                    updateSelect(type);
+                    $.dialog.tips(result.message);
+                    $(".tag-"+id).remove();
+                }else if(result.code == 2){
+                    //$.dialog.alert(result.message);
+                    $("#mask").show();
+                    $("#unRemove-edit").show();
+                }else{
+                    $.dialog.tips(result.message);
+                }
+            },'json')
+        })
+    }
+
+    //编辑保存
+    function editTag(type){
+        event.stopPropagation();
+        //type = 0 客户类型 1 来源渠道
+        var value = $.trim($("input[name='value']").eq(type).val());
+        var id = $("input[name='value']").eq(type).attr("data-id");
+        if(value && id){
+            $.post("YhMeeting/editType",{type:type,value:$.trim(value),id:id},function(result){
+                $.dialog.tips(result.message);
+                if(result.error == 0){
+                    var html = "<span class='tag setCompanyTag-tab-txt' title='"+$.trim(value) + "'>"+$.trim(value) + "</span><i onclick='deleteTag("+id+","+type+")'></i>";
+                    $(".tag-"+id).html(html).attr("data-name",value).removeClass("on");
+                    $("input[name='value']").eq(type).val("").removeAttr("data-id");
+                    $(".btn-edit-save").eq(type).hide();
+                    $(".btn-add-save").eq(type).show();
+                    updateSelect(type);
+                }
+            },'json')
+        }else{
+            $.dialog.tips("请输入正确的名称！");
+        }
+    }
+
+    function toEdit(id,type){
+        event.stopPropagation();
+        if($(".tag-"+id).hasClass("on")){
+            $(".tag-"+id).removeClass("on");
+            $("input[name='value']").eq(type).val("").removeClass("on").removeAttr("data-id");
+            $(".btn-add-save").eq(type).show();
+            $(".btn-edit-save").eq(type).hide();
+        }else{
+            $(".tag-"+id).addClass("on").siblings().removeClass("on");
+            var name = $(".tag-"+id).attr("data-name");
+            $("input[name='value']").eq(type).val(name).attr("data-id",id);
+            $(".btn-edit-save").eq(type).show();
+            $(".btn-add-save").eq(type).hide();
+        }
+    }
+
+    function updateSelect(type){
+        $.post("YhMeeting/typeList",function(result){
+            YhEdit.typeList = result;
+            // var html = "<option value=''>全部</option>";
+            // for (var i in result) {
+            //     html += "<option value='" + result[i].value + "'>" + result[i].text + "</option>"
+            // }
+            // if(type == 0){
+            //     $("#tag_type_select").empty().append(html).trigger("chosen:updated");
+            // }else{
+            //     $("#tag_origin_select").empty().append(html).trigger("chosen:updated");
+            // }
+            console.log(YhEdit.typeList);
+        },'json');
+    }
+
+    $(function(){
+        if( $("#ComCompany-select-detailcontainer").length > 0){
+            $("#ComCompany-select-detailcontainer").on("click",'.tag,input',function(e){
+                e.stopPropagation();
+            });
+            $(document).on("click",function(){
+                var tag_type = $("input[name='value']").eq(0).val();
+                var tag_origin = $("input[name='value']").eq(1).val();
+                if($.trim(tag_origin) || $.trim(tag_type)){
+                    $.dialog.tips("您有未保存操作！");
+                }
+            })
+        }
+    });
+
+</script>
+
+

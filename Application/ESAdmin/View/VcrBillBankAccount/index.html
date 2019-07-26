@@ -1,0 +1,21 @@
+<div class="maincontainer" id="VcrBillBankAccount-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="VcrBillBankAccount" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th> 
+        <th data-options="field:'bill_date',width:160,align:'left',formatter:formatDate">录入日期</th>
+        <th data-options="field:'bill_no',width:160,align:'left'">录入单号</th>     
+        <th data-options="field:'bill_type_text',width:240,align:'left'">票据类型</th>
+        <th data-options="field:'name',width:240,align:'left'">对象</th>
+        <th data-options="field:'bank',width:240,align:'left'">银行</th>
+        <th data-options="field:'amount',width:120,align:'left'">金额</th>        
+        <th data-options="field:'creator',width:120,align:'left'">{$Think.lang.FLD_CREATOR}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="VcrBillBankAccount" />
+</div>
+<script type="text/javascript">
+    $(function () {
+        re_bind_action_add("VcrBillBankAccount", function() {
+            createDialog("/VcrBillBankAccount/chooseType", "选择票据类别", "dlg_bankbilltype");
+        });
+    });    
+</script>

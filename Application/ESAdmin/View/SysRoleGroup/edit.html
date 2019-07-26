@@ -1,0 +1,39 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" /></div>
+                <div class="caption"><span>{$Think.lang.FLD_SORT}：</span></div>
+                <div class="inputbox"><input name="sort" class="easyui-numberbox easyui-validatebox"  value="{$model.sort}" /></div>         
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_PRIMARY_ROLES}：</span></div>
+                <div class="inputbox_x2">                    
+                    <select name="primary_roles_inputs[]" class="chosen-select" data-placeholder=" " id="primary_roles_select" data-options="all:true,value:'{$model.primary_roles}',search_key_url:'SysRole/keyNameList/',title:'角色'"  multiple>
+                    </select>
+                </div>
+            </div>
+             <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_AUXILIARY_ROLES}：</span></div>
+                <div class="inputbox_x2">                    
+                    <select name="auxiliary_roles_inputs[]" class="chosen-select" data-placeholder=" " id="auxiliary_roles_select" data-options="all:true,value:'{$model.auxiliary_roles}',search_key_url:'SysRole/keyNameList/',title:'角色'"  multiple>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_IS_VALID}：</span></div>
+                <div class="inputbox">
+                    <input type="hidden" name="is_valid" value="0" />
+                    <input name="is_valid" class="easyui-validatebox"  type="checkbox" value="1" <eq name="model.is_valid" value="1">checked</eq> />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption block"><span>{$Think.lang.FLD_COMMENTS}：</span></div>
+                <div class="inputbox_x2"><textarea name="comments" class="easyui-validatebox">{$model.comments}</textarea></div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="SysRoleGroup" />
+</div>

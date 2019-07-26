@@ -1,0 +1,25 @@
+<div title="管理权限" style="padding:10px">
+    <input type="hidden" name="user_dac_changed" value="0" />
+        <div style="margin: 5px">
+            <input name="dac_type" type="radio" value="0" <eq name="model.dac_type" value="0">checked</eq> />{$Think.lang.ENUM_DAC_TYPE_0}
+            <input name="dac_type" type="radio" value="1" <eq name="model.dac_type" value="1">checked</eq> />{$Think.lang.ENUM_DAC_TYPE_1}
+            <input name="dac_type" type="radio" value="2" <eq name="model.dac_type" value="2">checked</eq> />{$Think.lang.ENUM_DAC_TYPE_2}
+            <input name="dac_type" type="radio" value="3" <eq name="model.dac_type" value="3">checked</eq> />{$Think.lang.ENUM_DAC_TYPE_3}
+        </div>
+
+    <div class="easyui-layout" data-options="fit:true,border: true" >
+        <div data-options="region:'west',split:true,border:false" style="width: 55%; height: 100%" >
+            <ul style="border: 1px #F2F2F2 solid;height: 99%" id="tree_user_dac" class="easyui_tree" data-options="animate:true,checkbox:true,cascadeCheck:false"></ul>
+        </div>
+        <div data-options="region:'center',border:false" style="width: 45%; height: 100%">
+            <ul style="border: 1px #F2F2F2 solid; height: 99%" id="user_dac_list">
+                <volist name="userBranch.dac" id="vo">
+                    <li id="user_dac_li_{$vo.branch_id}" ondblclick="$(this).remove();data_changed('user_dac_changed')">
+                        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:100%" icon="fa-sitemap fa-lg" plain="true" onclick="">{$vo.branch_name}</a>
+                        <input type="hidden" name="user_dac_inputs[]" value="{$vo.branch_id}" />
+                    </li>
+                </volist>
+            </ul>
+        </div>
+    </div> 
+</div>

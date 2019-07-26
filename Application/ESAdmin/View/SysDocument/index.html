@@ -1,0 +1,690 @@
+<script>
+    // setMainContainerConfig("{$Think.const.CONTROLLER_NAME}", {add:{text:"上传文件",icon:"fa-arrow-up"}});
+
+</script>
+<style>
+	.toggleDivParent{
+		position: relative;
+		background:#fff;
+		height:45px !important;
+		border-bottom: 1px solid #ccc;
+	}
+    .toggle-div{
+        position: relative;
+        top: 11px;
+        left: 65px;
+    }
+    .toggle-div::after{
+    	display: block;
+    	content: '';
+    	clear: both;
+    }
+    .toggle-span{
+        padding: 7px 15px;
+        color: #368BFE;
+    }
+   .toggle-span{
+   		float: left;
+   	 	padding: 7px 15px;
+        border:1px solid #ccc;
+        color: #666;
+    }
+    .toggle-span + span{
+        border-left:none;
+    }
+    /* .toggle-span.checked{
+        background-color: #368BFE;
+        border-bottom-color:#fff;
+        border-radius: 4px;
+        color: #368BFE;
+    } */
+    .toggle-span.checked{
+        padding: 7px 15px;
+        border-bottom-color:#fff;
+        /*background-color: #368BFE;*/
+        /*border-radius: 4px;*/
+        color: #368BFE;
+    }
+    .datagrid-toolbar .action-panel{
+        height: 34px;
+    }
+    /*.datagrid-pager,.datagrid-view1{
+        display: none !important;
+    }
+    .search-button{
+        padding: 8px 12px;
+        background-color: #368BFE;
+        border-radius: 4px;
+        color: #fff;
+        border-color: #368BFE;
+    }*/
+    .branch_list{
+        overflow-y: auto;
+    }
+    .branch_list::-webkit-scrollbar {
+        width: 6px;
+        background-color: #eee;
+        border-radius: 3px;
+    }
+    .branch_list::-webkit-scrollbar-thumb{
+        background: #b8b4b4;
+        border-radius: 3px;
+    }
+    /*.icon-file {*/
+        /*display: inline-block;*/
+        /*width: 20px;*/
+        /*height: 18px;*/
+        /*background-size: 18px;*/
+        /*background: url('__ROOT__/{$Think.APP_PATH}/EShop/Public/images/tool/icon-file.png') no-repeat;*/
+    /*}*/
+    /*.icon-document {*/
+        /*display: inline-block;*/
+        /*width: 20px;*/
+        /*height: 18px;*/
+        /*background-size: 18px;*/
+        /*background: url('__ROOT__/{$Think.APP_PATH}/EShop/Public/images/tool/icon-document.png') no-repeat;*/
+    /*}*/
+    .navigation-bar{
+        height: 6%
+    }
+    .navigation-bar div{
+        display: -webkit-inline-flex;
+    }
+    .navigation-bar div span.checked{
+        color: #2174FF;
+    }
+    .data-lists  .tree-file {
+        background: url('__ROOT__/{$Think.APP_PATH}/Public/easyui/themes/default/images/tree_icons.png') no-repeat -240px 0px;
+    }
+    .Invisible{
+        display: none;
+    }
+    .hide{
+        display: none;
+    }
+    .dubbleTab tr{
+    	text-indent: 20px;
+    }
+    .dubbleTab{
+    	color:#666 !important;
+    }
+    .dubbleTab tr{
+    	height:50px;
+    }
+    .dubbleTab tr td{
+    	cursor: pointer;
+    }
+    .dubbleTab tr:nth-child(odd){
+    	background: #fff;
+    }
+    .dubbleTab tr:nth-child(even){
+    	background: #f9f9f9;
+    }
+    /*.tableForm .row .caption{
+    	width: auto !important;
+    	margin-bottom: 15px;
+    }
+    .easyui-validatebox{
+    	border:none !important;
+    }
+    .inputbox_x2{
+    	border:1px solid #ccc;
+    }
+    span[class="easyui-file-caption"]{
+    	height:100%;
+    	padding: 0;
+    }*/
+    .visible-manner{
+        color:rgb(156, 156, 156);
+    }
+    .filed-block::-webkit-scrollbar{
+        display: none;
+    }
+</style>
+<assign name="action_add_prefix" value="{$Think.const.CONTROLLER_NAME}_" />
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="display: flex;  flex-flow: row;">
+    <eq name="is_staff" value="1">
+        <div style="flex:1; height: 100%;" >
+            <div class="maincontainer" style="border-right:1px solid #ddd;">
+                <div style="margin: 10px 0 10px 20px">
+                    <input name="ql-name"  class="easyui-validatebox filter-field" value="" />
+                    <span class="search-button">搜索</span>
+                </div>
+                <ul style="border: 0px #F2F2F2 solid;height: 93%"  class="department-tree branch_list" data-options="animate:true"></ul>
+            </div>
+        </div>
+    </eq>
+    <input name="q-branch_id" type="hidden" class="easyui-validatebox filter-field user-branch-id" value=""/>
+    <div style="flex:4; height: 100%;" class="data-lists panel-noscroll" id="app">
+        <div class="panel datagrid easyui-fluid" v-bind:class="[isStartTipShow? 'hide' : '']" style="height: 8%">
+            <div id="actions-{$Think.const.CONTROLLER_NAME}" class="toggleDivParent" style="height:0">
+                <div class="toggle-div">
+                    <span class="toggle-span" v-bind:class="[myFile? 'checked' : '']" @click="toggleTab(true)">我的</span>
+                    <span class="toggle-span" v-bind:class="[myFile? '' : 'checked']" @click="toggleTab(false)" style="margin-right: 15px">{{taView}}
+                    <!--<span class="toggle-span " v-if="!myFile" @click="toggleTab(false)">刷新</span>-->
+                    	<i class="fa fa-refresh" v-bind:class="[myFile? 'hide' : '']" @click="refresh()"></i>
+                    </span>
+                </div>
+                <div v-bind:class="[myFile && isAction ? '' : 'Invisible']"  style="top:5px;right: 65px;position: absolute">
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button detail-add"  style="width:auto" icon="fa fa-arrow-up fa-lg" plain="true" onclick="actionAppendFile('{$Think.const.CONTROLLER_NAME}')">上传文件</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button append-file" style="width:auto" icon="fa fa-folder fa-lg" plain="true" onclick="actionAppendFolder('{$Think.const.CONTROLLER_NAME}')">新建文件夹</a>
+                </div>
+            </div>
+        </div>
+        <div style="height: 90%;" v-bind:class="[isStartTipShow? 'hide' : '']">
+            <div class="navigation-bar" style="background-color: #fff;height:40px !important;line-height: 40px;">
+                <div  v-for="(NavigationBar,index) in NavigationBars" >
+                    <span  style="margin: 0 6px;font-weight: 400;color: #c0c4cc;">›</span>
+                    <span  @click="leapOfFreedom(NavigationBar.parent)" v-if="NavigationBar.checked" class="checked">{{NavigationBar.text}}</span>
+                    <span   v-if="!NavigationBar.checked" style="display:inline-block;height:100%;">{{NavigationBar.text}}</span>
+                </div>
+                <input type="text" style="float: right;width: 200px" class="easyui-validatebox" name="keyword" placeholder="请输入文件或文件夹名称搜索" v-model="keyword">
+            </div>
+            <table class="datagrid-htable dubbleTab" border="0" cellpadding="0" style="height:50px;width: 100%;background: #f9f9f9;">
+                <tr>
+                    <th class="item" style="width: 25%;text-align: left;margin-left: 2%;">文件名</th>
+                    <th class="item" style="width: 20%;text-align: left;margin-left: 2%;">修改时间</th>
+                    <th class="item" style="width: 20%;text-align: left;margin-left: 2%;">类型</th>
+                    <th class="item" style="width: 10%;text-align: left;margin-left: 2%;">大小</th>
+                    <th class="item" style="width: 20%;text-align: left;margin-left: 2%;">操作</th>
+                </tr>
+            </table>
+            <div id="empty-notice" style="color: rgb(180, 180, 180);display:none;width:60%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 200px;font-size: 20px">暂无数据</div>
+            <div class="filed-block" style="height: 88%;overflow-y: scroll;">
+                <table class="datagrid-btable dubbleTab dubblesubTab" cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width: 100%;">
+                <!--<table style="width: 100%;">-->
+                    <tr class="noTabHeight" style="height: 0px;">
+                        <colgroup>
+                            <col style="width: 25%"></col>
+                            <col style="width: 20%"></col>
+                            <col style="width: 20%"></col>
+                            <col style="width: 10%"></col>
+                            <col style="width: 20%"></col>
+                        </colgroup>
+                    </tr>
+                    <tr  v-for="(document,index) in documents" >
+                        <td @click="intoSubsidiary(index,document.visible)" style="text-align: left;margin-left: 2%">
+                            <span class="tree-icon tree-folder" v-if="document.mold != 'file'"></span>
+                            <span class="tree-file" v-if="document.mold == 'file'"></span>
+                            <span v-bind:class="{'visible-manner':!document.visible}" v-html="document.text">{{document.name}}</span>
+                        </td>
+                        <td @click="intoSubsidiary(index,document.visible)" style="text-align: left;margin-left: 2%;color:#9C9C9C">
+                            {{document.time}}
+                        </td>
+                        <td @click="intoSubsidiary(index,document.visible)" style="text-align: left;margin-left: 2%;color:#9C9C9C">
+                            {{document.format}}
+                        </td>
+                        <td @click="intoSubsidiary(index,document.visible)" style="text-align: left;margin-left: 2%;color:#9C9C9C">
+                            {{getSize(document.size,document.mold)}}
+                        </td>
+                        <td style="text-align: left;margin-left: 2%;">
+                            <i style="width:5%;height:24px;line-height: 24px;margin:  0 10px;cursor:pointer" class="fa fa-edit fa-lg"             @click="editFiles(document.id,document.name,document.parent_id,document.branch_id,document.type)" v-if="myFile && document.visible" title="修改名称"></i>
+                            <i style="width:5%;height:24px;line-height: 24px;margin:  0 10px;cursor:pointer" class="fa fa-trash-o fa-lg"          @click="deleteAction(document.id,document.parent_id)" v-if="myFile && document.visible && document.permit_value==8" title="删除"></i>
+                            <i style="width:5%;height:24px;line-height: 24px;margin:  0 10px;cursor:pointer" class="fa fa-download fa-lg"       @click="downFile(document.path,document.name,document.mold)" v-if="document.mold == 'file' && document.visible"  title="下载"></i>
+                            <i style="width:5%;height:24px;line-height: 24px;margin:  0 10px;cursor:pointer" class="fa fa-external-link fa-lg"    @click="moveFolder(document.id)" v-if="document.mold == 'file' && myFile && document.visible"  title="移动"></i>
+                            <i style="width:5%;height:24px;line-height: 24px;margin:  0 10px;cursor:pointer" class="fa fa-eye fa-lg"       @click="shareFile(document.id,document.parent_id)" v-if="document.mold == 'file' && myFile && document.share_toggle && document.share == '1'"  title="与他人共享中"></i>
+                            <i style="width:5%;height:24px;line-height: 24px;margin:  0 10px;cursor:pointer" class="fa fa-eye-slash fa-lg"       @click="shareFile(document.id,document.parent_id)" v-if="document.mold == 'file' && myFile && document.share_toggle && document.share == '0'"  title="不与他人共享"></i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div v-bind:class="[isStartTipShow? '' : 'hide']">
+            <div style="margin-top: 25%;
+                        color: #b4b4b4;
+                        font-size: 18px;
+                        text-align: center;
+            ">
+                {{startTipShow}}
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    document.onkeydown = function () {
+        if (window.event && window.event.keyCode == 13) {
+            window.event.returnValue = false;
+        }
+    }
+    var app = new Vue({
+        el:'#app',
+        data:{
+            isStartTip:true,
+            startTipShow:'暂无公司选择，请先在客户档案中新增公司',
+            documents:[],
+            reveals:[],
+            parentId:[],
+            file_location:'首页',
+            checkedId:[],
+            myFile: true,
+            is_staff:'{$is_staff}',
+            target_branch : 0,
+            keyword:"",
+            isAction : true
+        },
+        created(){
+
+        },
+        computed:{
+            taView(){
+                return this.is_staff === '1' ? '客户上传的文件' : '商户上传的文件';
+            },
+            NavigationBars(){
+                console.log(this.file_location);
+
+                var bars = this.file_location.split('/');
+                var navigationBars = [];
+                navigationBars[0] = {'text':bars[0],'parent':0,'checked':true};
+                if (bars.length > 1) {
+                    for (var i = 0; i < this.parentId.length ; i++) {
+                        navigationBars[i+1] = {'text':bars[i+1],'parent':this.parentId[i],'checked':true};
+                    }
+                }
+                navigationBars[navigationBars.length - 1]['checked'] = false;
+                return navigationBars;
+            },
+            isStartTipShow(){
+                if(this.is_staff > 0 && this.isStartTip === true) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        },
+        methods:{
+            getSize(size,mold){
+                var format_unit = {
+                    1:'KB',
+                    2:'MB',
+                    3:'GB'
+                }
+                if (mold == 'folder') {
+                    return '';
+                } else {
+                    return size > 0 ? (size/Math.pow(1024,this.get_unit_level(size))).toFixed(2)+format_unit[this.get_unit_level(size)] : '0KB';
+                }
+            },
+            getSelectId(){
+                var $tree_target = getDepartmentTree('{$Think.const.CONTROLLER_NAME}');
+                var node = $tree_target.tree("getSelected");
+                return node.id;
+            },
+            get_unit_level(size) {
+                $mb = Math.pow(1024,2);
+                $gb = Math.pow(1024,3);
+                if (size < $mb) {
+                    return 1;
+                }else if (size > $mb && size < $gb) {
+                    return 2;
+                } else {
+                    return 3;
+                }
+            },
+            intoSubsidiary(index,visible){
+                if (!visible){
+                    return false;
+                }
+                if (this.parentId.length > 0) {
+                    var template = {};
+                    for (var i = 0; i < this.parentId.length ; i++) {
+                        template = i > 0 ? template[this.parentId[i]]['children'] : this.reveals[this.parentId[i]].children;
+                    }
+                    if (template[index].mold == 'folder' ) {
+                        this.file_location = template[index].current;
+                        this.documents = template[index].children;
+                        this.parentId.push(index);
+                    }
+                } else {
+                    if (this.reveals[index].mold == 'folder') {
+                        this.file_location = this.reveals[index].current;
+                        this.documents = this.reveals[index].children;
+                        this.parentId.push(index);
+                    }
+
+                }
+            },
+            formSubsidiary(parent){
+                /*if(this.keyword != "" ){
+                    var arr = Object.values(this.parentId);
+                    //if(arr.length == 0 || (arr.length > 0 && !arr.indexOf(parent))) {
+                    if(arr.length == 0) {
+                        parent = 0;
+                    }
+                }*/
+                if(this.keyword != "" && this.parentId.length == 0){
+                    parent = 0;
+                }
+                if (parent == 0) {
+                    this.documents = this.reveals;
+                    this.parentId = [];
+                } else {
+                    var template = {};
+                    var newParentId = [];
+                    var idLength = this.parentId.length;
+                    /*if(this.parentId.length == 0 && this.keyword != ""){
+                        this.parentId[0] = {'text':"首页",'parent':0,'checked':true};
+                    }*/
+                    for (var i = 0; i < idLength; i++) {
+                        newParentId.push(this.parentId[i]);
+                        if (i > 0) {
+                            template = (this.parentId[i] == parent) ? template[this.parentId[i]]: template[this.parentId[i]].children
+                        } else {
+                            template = (this.parentId[i] == parent)  ? this.reveals[this.parentId[i]] : this.reveals[this.parentId[i]].children;
+                        }
+                        if (this.parentId[i] == parent) {
+                            break;
+                        }
+                    }
+                    this.file_location = template.current;
+                    this.documents = template.children;
+                    this.parentId = newParentId;
+                }
+            },
+            getSingle(index){
+                return this.documents[index];
+            },
+            leapOfFreedom(parent){
+                if (parent == 0) {
+                    this.documents = this.reveals;
+                    this.parentId = [];
+                } else {
+                    var template = {};
+                    var newParentId = [];
+                    var idLength = this.parentId.length - 1;
+                    for (var i = 0; i < idLength; i++) {
+                        newParentId.push(this.parentId[i]);
+                        if (i > 0) {
+                            template = (this.parentId[i] == parent) ? template[this.parentId[i]]: template[this.parentId[i]].children
+                        } else {
+                            template = (this.parentId[i] == parent)  ? this.reveals[this.parentId[i]] : this.reveals[this.parentId[i]].children;
+                        }
+                        if (this.parentId[i] == parent) {
+                            break;
+                        }
+                    }
+                    this.file_location = template.current;
+                    this.documents = template.children;
+                    this.parentId = newParentId;
+                }
+            },
+            downFile(url,name,mold){
+                if (mold == 'file') {
+                    window.location.href = url+'?attname='+name;
+                }
+            },
+            deleteAction(id,pid){
+                    var hasChildren = 0;
+                    var template = [];
+                    var idLength = this.parentId.length;
+                    if (idLength > 0) {
+                        idLengthMax = idLength -1;
+                        for (var i = 0; i < idLength; i++) {
+                            if (i > 0) {
+                                template = (i == idLengthMax) ? template[this.parentId[i]].children: template[this.parentId[i]].children
+                            } else {
+                                template = (i == idLengthMax)  ? this.reveals[this.parentId[i]].children : this.reveals[this.parentId[i]].children;
+                            }
+                            if (i == idLengthMax) {
+                                break;
+                            }
+                        }
+                    } else {
+                        template = this.reveals;
+                    }
+                    if (Object.getOwnPropertyNames(template[id].children).length > 0 && template[id].children.length != 0) {
+                        hasChildren = 1;
+                    }
+                    var message = '';
+                    if (hasChildren == 1) {
+                        message = '此文件夹中还有文件存在，是否确认删除吗?';
+                    } else {
+                        message = '确定删除该文件吗';
+                    }
+                    $.dialog.confirm(message, function() {
+                        showMaskLayer();
+                        $.post('{$Think.const.CONTROLLER_NAME}/deleteFile', {id: id}, function (data) {
+                            hideMaskLayer();
+                            if (data.code == 0) {
+                                $.dialog.tips('删除成功');
+                                saveRefreshDocuments(pid);
+                            } else {
+                                $.dialog.tips(data.message);
+                            }
+                        }, 'JSON')
+                    })
+            },
+            shareFile(id,pid){
+                $.post('{$Think.const.CONTROLLER_NAME}/shareFile', {id: id}, function (data) {
+                    if (data.code == 0) {
+                        $.dialog.tips(data.message);
+                        saveRefreshDocuments(pid);
+                    } else {
+                        $.dialog.tips(data.message);
+                    }
+                }, 'JSON')
+            },
+            moveFolder(id) {
+                //移动
+                createDialog("{$Think.const.CONTROLLER_NAME}/moveFolder/id/"+id+'/target_branch/'+this.target_branch, '文件移动','dlg-move-select');
+            },
+            toggleTab(single)
+            {
+                if (this.myFile != single){
+                    //app.keyword = "";
+                    this.myFile = single;
+                    this.select_toggle = false;
+                    if ((this.target_branch == '0' || this.target_branch > 0)) {
+                        saveRefreshDocuments();
+                    }
+
+                }
+            },
+            refresh(){
+                var theParent = 0;
+                if (this.parentId.length > 0) {
+                    theParent = this.parentId[this.parentId.length - 1]
+                }
+                saveRefreshDocuments(theParent);
+
+            }
+        }
+    })
+</script>
+<script type="text/javascript">
+    $(function () {
+        initial_branch_tree("{$Think.const.CONTROLLER_NAME}", "SysDocument/getCompanys", getUserQueryParams);
+        $('.search-button').on('click',function(){
+            var name = $('input[name=ql-name]').val();
+            initial_branch_tree("{$Think.const.CONTROLLER_NAME}", "SysDocument/getCompanys/keyword/"+name, getUserQueryParams);
+        })
+        if (app.is_staff != 1) {
+            app.target_branch = 0;
+            saveRefreshDocuments();
+        }
+    });
+    //新建文件夹
+    function actionAppendFolder(frameId, title) {
+        var controller = getController(frameId);
+        var pid = 0;
+        if (app.parentId.length > 0 ){
+            pid = app.parentId[app.parentId.length - 1];
+        }
+        $.get(controller + "/appendFile", {'q-branch_id':app.target_branch,pid:pid},
+            function (data, status) {
+                if (typeof(data) === "object"){
+                    $.dialog.alert(data.message);
+                }else{
+                    $.dialog({
+                        id: frameId,
+                        title: getTitle(title) + '_新增',
+                        autoSize: true,
+                        content: data,
+                        lock: false,
+                        max: false,
+                        min: false
+                    });
+                    parseForm();
+                    formCache[frameId] = {data:data, action:"add"};
+                }
+            });
+    }
+    //新建文件
+    function actionAppendFile(frameId, title) {
+        var controller = getController(frameId);
+        var pid = 0;
+        if (app.parentId.length > 0 ){
+            pid = app.parentId[app.parentId.length - 1];
+        }
+        $.get(controller + "/add", {'q-branch_id':app.target_branch,pid:pid},
+            function (data, status) {
+                if (typeof(data) === "object"){
+                    $.dialog.alert(data.message);
+                }else{
+                    $.dialog({
+                        id: frameId,
+                        title: getTitle(title) + '_新增',
+                        autoSize: true,
+                        content: data,
+                        lock: true,
+                        max: false,
+                        min: false
+                    });
+                    parseForm();
+                    formCache[frameId] = {data:data, action:"add"};
+                }
+            });
+    }
+    //修改
+    function editFiles(id,name,parent_id,branch_id,type) {
+        $.dialog.prompt("请输入新名称：",
+            function(val){
+                val = $.trim(val);
+                if (val == '') {
+                    $.dialog.alert('输入的新名称不能为空');
+                    return false;
+                }
+                else if (type == 1) {
+                    console.log((name))
+                    var the_name = handlerFileName(name);
+                    if (the_name == val) {
+                        $.dialog.alert('输入的新名称与旧名称相同');
+                        return false;
+                    }
+                } else if (type == 0) {
+                    if (name == val) {
+                        $.dialog.alert('输入的新名称与旧名称相同');
+                        return false;
+                    }
+                }
+                showMaskLayer();
+                $.post('{$Think.const.CONTROLLER_NAME}/editFile',{id:id,name:val,branch_id:branch_id,parent_id:parent_id,target_branch:app.target_branch},function (response) {
+                    hideMaskLayer();
+                    if (response.code == 0) {
+                        var theParent = 0;
+                        if (app.parentId.length > 0) {
+                            theParent = app.parentId[app.parentId.length - 1]
+                        }
+                        saveRefreshDocuments(theParent);
+                        $.dialog.alert('文件名称修改成功');
+                    } else {
+                        $.dialog.alert(response.message);
+                        return false;
+                    }
+                },'json')
+            }
+        );
+    }
+    function handlerFileName(files_name)
+    {
+        var fileName = files_name.split('.');
+        fileName.splice(fileName.length - 1,1);
+        return fileName.join('.');
+    }
+    function saveRefreshDocuments(parentId = null)
+    {
+        var target = app.myFile ? 'myBranch' : 'hisBranch';
+
+        $.post('/SysDocument/list',{target:target,'q-branch_id':app.target_branch,keyword:app.keyword.trim()},function (response) {
+            app.reveals = response.data;
+            app.documents = response.data;
+            app.isAction = response.isAction;
+            console.log(app.isAction)
+            console.log(response.isAction)
+            // app.parentId = [];
+            app.file_location = '首页';
+            if (parentId === null) {
+                parentId = 0;
+            }
+            //if(app.keyword == "" && app.parentId.length == 0){
+                app.formSubsidiary(parentId);
+            //}
+            if(response.data.length == 0){
+                $("#empty-notice").show();
+            }else{
+                $("#empty-notice").hide();
+            }
+        },'JSON')
+    }
+
+    //
+    function load_branch_tree(action, $tree_target) {
+        $.getJSON(action, {}, function (result) {
+            $tree_target.tree({
+                data: result,
+                onLoadSuccess: function (node, data) {
+                    if (data.length > 0) {
+                        // var n = $(this).tree('find', data[0].id);
+                        // $(this).tree('select', n.target);
+                        // if (app.is_staff) {
+                        //     app.target_branch = data[0].id;
+                        // }
+                        // $.post('/SysDocument/list',{'q-branch_id':data[0].id},function (response) {
+                        //     app.documents = response;
+                        //     app.reveals = response;
+                        // },'JSON')
+                        app.startTipShow = '请先在左侧选择一家公司';
+                    } else {
+                        app.startTipShow = '暂无公司选择，请先在客户档案中新增公司';
+                    }
+                }
+            })
+        });
+    }
+    function re_bind_append_file(frameId, func){
+        $(".append-file").removeAttr("onclick").unbind("click").bind("click", function () {
+            func.call(this);
+        });
+    }
+    function getUserQueryParams(nodes){
+        $(".user-branch-id").val(nodes.id);
+        // var inputParams = getQueryParams($(".filter-field"));
+        var $tree_target = getDepartmentTree('{$Think.const.CONTROLLER_NAME}');
+        var node = $tree_target.tree("getSelected");
+        var inputParams = {'q-branch_id': node.id};
+        if (app.is_staff) {
+            app.target_branch = node.id;
+        }
+        app.isStartTip = false;
+        app.keyword = "";
+        saveRefreshDocuments();
+        return inputParams;
+    }
+
+    var searchTime;
+    $("input[name='keyword']").bind("input propotychange",function(){
+        clearTimeout(searchTime);
+        searchTime = setTimeout(function(){
+            saveRefreshDocuments();
+        },"500");
+    });
+
+    $(function(){
+        var h1 = $(".panel.datagrid.easyui-fluid").height();
+        var h2 = $(".navigation-bar").height();
+        var h3 = $(".datagrid-htable").height();
+        $("#empty-notice").css("top",h1+h2+h3+50);
+    })
+</script>

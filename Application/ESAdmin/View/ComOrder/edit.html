@@ -1,0 +1,126 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}/Public/css/step.css">
+    <style>
+        .order-table td{
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #ddd;
+            width: 15%;
+        }
+        .order-table th{
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #ddd;
+            width: 15%;
+        }
+        .order-table{
+            color:rgb(121, 121, 121);
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        .tips{
+            padding: 2px;
+            border: 1px solid #0099FE;
+            background-color: #0099ff;
+            color: #fff;
+            border-radius: 3px;
+            margin-right: 3px;
+            line-height: 30px;
+        }
+    </style>
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-tabs" style="width:700px;background: #ccc;height:480px">
+            <div title="基本资料" style="padding:10px" >
+                <table class="table table-bordered table-cut order-table">
+                    <tr>
+                        <td class="td-h">服务名称</td>
+                        <td>{$model.product_title}</td>
+                        <td class="td-h">服务类型</td>
+                        <td>{$model.category}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-h">联系方式</td>
+                        <td>{$model.tel}</td>
+                        <td class="td-h">购买时间</td>
+                        <td>{$model.on_time}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-h">结算方式</td>
+                        <td>{$model.trade}</td>
+                        <td class="td-h">状态</td>
+                        <td><span style="color:#c9171e">{$model.order_state}</span></td>
+                    </tr>
+                    <tr>
+                        <td class="td-h">购买者</td>
+                        <td>{$model.contacts}</td>
+                        <td class="td-h">购买价格</td>
+                        <td>{$model.real_cash}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-h">优惠金额</td>
+                        <td>{$model.discount}</td>
+                        <td class="td-h">实际付款金额</td>
+                        <td><span style="color:#ea5506">{$model.payment_money}</span></td>
+                    </tr>
+                    <tr>
+                        <td class="td-h">服务要求</td>
+                        <td colspan="3" >{$model.order_desc}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-h">服务属性</td>
+                        <td colspan="3" >
+                            <volist name="model.attribute" id="v">
+                                <span class="tips">{$v.name}</span>
+                            </volist>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div title="服务详情" style="padding:10px" >
+                <div>
+                    <table class="table table-bordered table-cut order-table">
+                        <tr>
+                            <th class="td-h">时间</th>
+                            <th class="td-h">进度</th>
+                        </tr>
+                        <volist name="reports" id="item">
+                            <tr>
+                                <td>{:date('Y-m-d H:i:s',$item[report_time])}</td>
+                                <td>
+                                    {$item[report_desc]}
+                                    <if condition="$item[pic0]"  >
+                                        <a href="$item[pic0]" target="_blank" class="btn btn-warning pull-right">查看</a>
+                                    </if>
+                                </td>
+                            </tr>
+                        </volist>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script type="text/javascript">
+    //模板替换
+    function parseTemplate(target, jsobject){
+        var tpl = $('#'+target).prop("outerHTML").replace(target,"");
+        var tpl = tpl.replace("display:none","");
+        console.log(tpl);
+        var reg = new RegExp("\{%([^%}]*)?%\}", "g");
+        var matchs = tpl.match(reg);
+        if (matchs != null) {
+            for (var i = 0; i < matchs.length; i++) {
+                var key = matchs[i].replace("{%", "").replace("%}", "");
+                var val = $.isEmptyObject(jsobject[key]) ? "" : jsobject[key];
+                tpl = tpl.replace(matchs[i], val);
+            }
+            return tpl;
+        }
+        return "";
+    }
+        
+</script>

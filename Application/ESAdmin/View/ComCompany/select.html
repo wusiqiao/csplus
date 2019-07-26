@@ -1,0 +1,113 @@
+<style>
+    .pagination-info{display: none;}
+    .pagination-page-list{dislay:none}
+    .btn-select-actions{position: absolute;top:40%;width:100%;text-align: center;}
+    ul.ul-select-list{margin-top: 40px;}
+    ul.ul-select-list .select-item{border-bottom: 1px #ccc solid; padding: 5px;}
+    ul.ul-select-list .select-item i{padding: 2px;border: 1px #ccc solid}
+    ul.ul-select-list .select-item i:hover{color: #007DDB}
+    .btn-clear-all{border-bottom: 1px #ccc solid;position: absolute;top: 0px;width: 100%;text-align: center;background: rgb(204, 204, 204)}
+    .btn-get-return{border-top: 1px #ccc solid;position: absolute;bottom: 0px;width: 100%;text-align: center;background: rgb(204, 204, 204)}
+</style>
+<div class="detailcontainer" id="ComCompany-select-detailcontainer"  style="width:800px;height:480px">
+    <div class="easyui-layout" data-options="border: true,fit:true">
+        <div data-options="region:'west',border:false" style="width: 550px; border: 0px #ccc solid">
+            <include file="./Application/Common/Layout/Default/select_header.html"  controller="ComCompany" />
+            <tr> 
+                <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+                <th data-options="field:'ck',checkbox:true"></th>
+                <th data-options="field:'name',width:200,align:'left'">{$Think.lang.FLD_NAME}</th>
+                <th data-options="field:'linkman',width:120,align:'left'">联系人</th>
+                <th data-options="field:'contact',width:120,align:'left'">联系电话</th>
+            </tr>
+            <include file="./Application/Common/Layout/Default/select_footer.html"  controller="ComCompany" />
+        </div>
+        <div data-options="region:'center'" style="width: auto; height: 100%;border: 0px #ccc solid;position: relative" >
+            <div class="btn-select-actions">
+                <a class="easyui-linkbutton btn-select-add" href="javascript:;" style="padding:10px"  plain ="true" icon=""><i class="fa  fa-angle-double-right fa-2x"></i></a>              
+            </div>
+        </div>
+        <div data-options="region:'east',border:true" style="width: 200px; height: 100%;border: 1px #ccc solid;" >
+            <ul class="ul-select-list"></ul>
+            <div class="btn-clear-all">
+                <a class="easyui-linkbutton" href="javascript:;" style="padding:5px 0px;border-width:0px"  plain ="true">清除</a>
+            </div>
+            <div class="btn-get-return">
+                <a class="easyui-linkbutton" href="javascript:;" style="padding:5px 0px;border-width:0px"  plain ="true">取回</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="search-panel" id="ComCompany-select-search-panel" style="display: none">
+    <table class="search-table">
+        <tr>
+            <th>客户名称：</th>
+            <td>
+                <input name="ql-name"  class="easyui-validatebox filter-field" value="" />
+            </td>        
+        </tr>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $(".btn-select-add").click(function () {
+            var datas = getGridSelections("ComCompany-select");
+            if (datas.length > 0) {
+                addSelectItems(datas);
+            }
+        });
+        $(".btn-clear-all").click(function () {
+            $("ul.ul-select-list").removeData("items");
+            $("ul.ul-select-list").children().remove();
+        });
+        $(".btn-get-return").click(function () {
+            var data = $.dialog.list["dlg-company-select"].data;
+            if (data !== undefined && data.hasOwnProperty("callback")) {
+                var result = [];
+                $("li.select-item").each(function () {
+                    result.push({id: $(this).attr("data-value"), name: $(this).attr("title")});
+                });
+                data.callback.call(this, result);
+            }
+            closeDialog("dlg-company-select");
+        });
+        
+    });
+    
+    function initial_select_data() {
+        var data = $.dialog.list["dlg-company-select"].data;
+        if (!$.isEmptyObject(data.list)) {
+            addSelectItems(data.list);
+        }
+    }
+    
+    function removeSelectItem(target){
+        var $ul_select_list = $("ul.ul-select-list");
+        var select_list = $.data($ul_select_list.get(0), "items"); 
+        if (select_list !== undefined){
+            var id = $(target).parents("li").attr("data-value");
+            select_list.splice($.inArray(id, select_list),1); 
+        }
+        $(target).parents("li").remove();
+        
+    }
+    function addSelectItems(list) {
+        var $ul_select_list = $("ul.ul-select-list");
+        var select_list = $.data($ul_select_list.get(0), "items");
+        if (select_list === undefined){
+            select_list = [];
+            $.data($ul_select_list.get(0), "items", select_list);
+        }
+        $(list).each(function () {
+            if ($.inArray(this.id, select_list) === -1) {
+                select_list.push(this.id);
+                $('<li class="select-item" data-value="' + this.id + '" title="' + this.name + '">'
+                        + '<i class="fa fa-times" onclick="removeSelectItem(this);"></i>'
+                        + this.name + '</li>'
+                        ).appendTo($ul_select_list);
+            }
+        });
+    }
+</script>

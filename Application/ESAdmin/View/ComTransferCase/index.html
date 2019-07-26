@@ -1,0 +1,67 @@
+<script type="text/javascript">
+    function format_pro_state(value, row){
+        var scale_text = ["审核中","审核成功","审核失败","订单已关闭"];
+        return scale_text[parseInt(value)];
+    }
+</script>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th data-options="field:'id',hidden:true">id</th>
+        <th data-options="field:'pro_product_title',width:200" sortable="true">{$Think.lang.TC_PRODUCT_TITLE}</th>
+        <th data-options="field:'order_sn',width:200,align:'left'">{$Think.lang.TC_ORDER_SN}</th>
+        <th data-options="field:'account',width:120,align:'left'">{$Think.lang.TC_TRANSFER_CASE}</th>
+        <!--<th data-options="field:'pic',width:120,align:'left'">{$Think.lang.TC_TRANSFER_VOUCHER}</th>-->
+        <th data-options="field:'pay_status',width:120,align:'left',formatter:format_pro_state">{$Think.lang.TC_TRANSFER_STATE}</th>
+        <th data-options="field:'ctime',width:150,align:'center'" sortable="true" order="desc">{$Think.lang.TC_TRANSFER_CREATE_TIME}</th>
+        <th data-options="field:'co_contacts',width:120,align:'left'">{$Think.lang.TC_TRANSFER_CONTACT}</th>
+
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<div id="actions-{$Think.const.CONTROLLER_NAME}">
+    <if condition="($permissions.approval eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+        <div class="btn-separator"></div><a href="javascript:void(0)"  class="common-blue-btn detail-edit role-approval-setting" style="width:auto" plain="true">审核</a>
+        <div class="right-menu role-approval-setting">审核</div>
+    </if>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $(".role-approval-setting").click(function () {
+            var row = getDataGrid("{$Think.const.CONTROLLER_NAME}").datagrid("getSelected");
+            if (row){
+                createDialog("ComTransferCase/approval/id/" + row.id, row.name, "ComTransferCase-approval");
+            }else{
+                $.dialog.tips("至少选择一条记录！");
+            }
+        });
+    });
+</script>
+
+
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table">
+        <tr>
+            <th>{$Think.lang.TC_ORDER_SN}：</th>
+            <td>
+                <input name="ql-order_sn" class="easyui-validatebox filter-field" >
+            </td>
+            <th>{$Think.lang.TC_TRANSFER_STATE}：</th>
+            <td>
+                <select name="q-pay_status" class="chosen-select filter-field">
+                    <option value="">&nbsp;</option>
+                    <option VALUE="1">审核成功</option>
+                    <option VALUE="2">审核失败</option>
+                    <option VALUE="0">审核中</option>
+                </select>
+            </td>
+            <th>{$Think.lang.TC_TRANSFER_CREATE_TIME}：</th>
+            <td>
+            <td>
+                <input name="qdr-ctime" id="day_start" class="easyui-datebox filter-field" value="" />－
+                <input name="qdr-ctime" id="day_end" class="easyui-datebox filter-field" value=""  />
+            </td>
+            </td>
+        </tr>
+    </table>
+</div>

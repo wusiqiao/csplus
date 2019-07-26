@@ -1,0 +1,199 @@
+<script>
+    function format_is_valid(value, row){
+        var now = new Date();
+        var end = new Date(row.end_date);
+        var txt = "";
+        if (end > now) {
+            if (row.is_valid == 0) {
+                txt = "暂停";
+            } else {
+                txt = "正常";
+            }
+        }else{
+            txt = "到期";
+        }
+        return "<a href='javascript:;' onclick='updateBranchValidState("+ row.id +",\""+txt+"\")'>"+ txt + "</a>"
+    }
+    function updateBranchValidState(id,status){
+        if(status != "到期"){
+            if(status == "正常"){
+                var content = "暂停服务可能导致客户系统无法访问，<br>您确定要继续执行此操作吗？";
+            }else{
+                var content = "是否切换服务状态为正常？";
+            }
+            $.dialog.confirm(content, function () {
+                $.post("/SysBranchAgreement/updateAgreementValidState", {id: id}, function(result){
+                    if (result.code == 0){
+                        $.dialog.tips("修改成功！");
+                        refreshDatagrid(getDataGrid("SysBranchAgreement"), result.message, "edit");
+                    }else{
+                        $.dialog.tips("修改失败！");
+                    }
+                },"json");
+            })
+        }else{
+            $.dialog.tips("当前状态无法切换！请修改到期时间");
+        }
+    }
+    function format_state(value,row){
+        return row.count == 0 ? "意向客户":"成交客户";
+    }
+
+    function format_operation(value,row){
+        var html = "<a href='javascript:void(0)' onclick='openDetail("+row.id+")'>查看详情</a> "
+        return html;
+    }
+
+    function openDetail(id){
+        createDialog("SysBranchAgreement/detail/id/"+id,"系统管理 >我的服务列表_查看");
+    }
+
+</script>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css"/>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <!--<table class="datagrid" id="SysBranchAgreement-datagrid"
+           data-options="
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#SysBranchAgreement-toolbar',
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:false,
+           border:true">
+        <thead>
+    <tr>-->
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'agreement_no',width:180,align:'left'">合同编号</th>
+        <th data-options="field:'branch_name',width:230,align:'left'">公司</th>
+        <th data-options="field:'bundles',width:200,align:'left'">服务</th>
+        <th data-options="field:'start_date',width:120,align:'left'">开通时间</th>
+        <th data-options="field:'end_date',width:120,align:'left'">到期时间</th>
+        <th data-options="field:'is_valid',width:60,align:'left',formatter:format_is_valid">服务状态</th>
+        <th data-options="field:'goto_shop',width:150,align:'center',formatter:format_operation">操作</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table" >
+        <tr>
+            <th>购买服务：</th>
+            <td >
+                <select name="q-bundles" class="easyui-validatebox chosen-select" id="bundles" >
+                    <option value="" >全部</option>
+                    <option value="gzh" >公众号</option>
+                    <option value="xcx" >小程序</option>
+                    <option value="pc" >PC商城</option>
+                    <option value="gzh,xcx" >公众号+小程序</option>
+                    <option value="gzh,xcx,pc" >公众号+小程序+PC商城</option>
+                    <option value="dyy" >微信公众号代运营</option>
+                </select>
+            </td>
+            <th>服务状态：</th>
+            <td >
+                <select name="q-state" class="easyui-validatebox chosen-select" id="state" style="width: 100px;">
+                    <option value="" >全部</option>
+                    <option value="1" >正常</option>
+                    <option value="0" >暂停</option>
+                    <option value="2" >到期</option>
+                </select>
+            </td>
+            <th>到期时间：</th>
+            <td >
+                <select name="ql-date" class="easyui-validatebox chosen-select" id="date" style="width: 150px;">
+                    <option value="" >全部</option>
+                    <option value="1" >近一个月到期的服务</option>
+                    <option value="2" >近二个月到期的服务</option>
+                    <option value="3" >近三个月到期的服务</option>
+                </select>
+            </td>
+            <td>
+                <input name="search"  class="easyui-validatebox filter-field" value="{$branch_name}" placeholder="请输入关键字查询" style="width: 150px;margin-left: 10px;float: right"/>
+            </td>
+            <td id="search_state" style="display: none">
+                <input type="hidden" name="state" value="" class="easyui-validatebox filter-field">
+            </td>
+            <td id="search_date" >
+                <input type="hidden" name="date" value="" class="easyui-validatebox filter-field">
+            </td>
+            <td id="search_bundles" >
+                <input type="hidden" name="bundles" value="" class="easyui-validatebox filter-field">
+            </td>
+    </table>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script>
+
+    $("#state").on("change",function(){
+        var isValid = $("#state :checked").val();
+        $("input[name='state']").val(isValid);
+        doSearchQuery("SysBranchAgreement");
+    });
+
+    $("#date").on("change",function(){
+        var months = $("#date :checked").val();
+        $("input[name='date']").val(months);
+        doSearchQuery("SysBranchAgreement");
+    });
+
+    $("#bundles").on("change",function(){
+        var bundles = $("#bundles :checked").val();
+        $("input[name='bundles']").val(bundles);
+        doSearchQuery("SysBranchAgreement");
+    });
+
+    $(function(){
+        $("input[name='search']").on("change",function(){
+            changeUrl();
+            /*if($("input[name='search']").val() == "{$branch_name}" && $("input[name='search']").val() != ""){
+                $("#SysBranchAgreement-datagrid").datagrid({
+                    url:"SysBranchAgreement/list/branch_id/{$branch_id}"
+                })
+            }else{
+                $("#SysBranchAgreement-datagrid").datagrid({
+                    url:"SysBranchAgreement/list"
+                })
+            }*/
+            if($("input[name='search']").length > 0 && $("input[name='search']").val() == ""){
+                doSearchQuery("SysBranchAgreement");
+            }
+        });
+       /* $("#SysBranchAgreement-datagrid").datagrid({
+            url:"SysBranchAgreement/list/branch_id/{$branch_id}"
+        })*/
+        changeUrl();
+    });
+
+    function changeUrl(){
+        if($("input[name='search']").val() == "{$branch_name}" && $("input[name='search']").val() != ""){
+            $("#SysBranchAgreement-datagrid").datagrid({
+                url:"SysBranchAgreement/list/branch_id/{$branch_id}"
+            })
+        }else{
+            $("#SysBranchAgreement-datagrid").datagrid({
+                url:"SysBranchAgreement/list"
+            })
+        }
+    }
+    /*autocompleteAjaxEx($("input[name='search']"),"SysBranch/autocomplete/search/name/result/name",{
+        formatItem(row){
+            return row.name;
+        },
+        onSelected:function(row){
+            doSearchQuery("SysBranch");
+        }
+    })*/
+
+    /*$("input[name='search']").on("keyup",function(){
+        doSearchQuery("SysBranch");
+    })*/
+
+    var search_time;
+    $("input[name='search']").bind("input propertychange",function(){
+        clearTimeout(search_time);
+        search_time=setTimeout(function(){
+            doSearchQuery("SysBranchAgreement");
+        },500)
+    });
+
+</script>

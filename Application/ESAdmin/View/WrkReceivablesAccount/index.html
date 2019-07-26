@@ -1,0 +1,220 @@
+<script>
+setMainContainerConfig("{$Think.const.CONTROLLER_NAME}", {
+    onDblClickRow: function(){}
+})
+function formatOperation(value, row, index) {
+    var btnHtml = `<a onclick="event.stopPropagation();showDetailForm('{$Think.const.CONTROLLER_NAME}',` + row.id + `,'收款账户')">详情</a>&nbsp`;
+    if(row.is_wx == 1){
+        return btnHtml;
+    }
+    if (value == 1 ) {
+        btnHtml += `<a onclick="activateAccount(` + row.id + `,` + row.status + `)">已激活</a>&nbsp`;
+    } else {
+        btnHtml += `<a onclick="activateAccount(` + row.id + `,` + row.status + `)">未激活</a>&nbsp`;
+    }
+    btnHtml += `<a onclick="another_delete(` + row.id + `,` + row.record_count + `)">删除</a>&nbsp`;
+
+    if (row.id!='other') {
+    	return btnHtml;
+    }
+}
+// function formatStatus(value) {return value==1? '已激活' : '未激活';}
+</script>
+<div class="maincontainer" id="WrkReceivablesAccount-maincontainer" style="display: flex;  flex-flow: column;height: 100%">
+    <div style="height:50%">
+        <div style="background: #ffffff;padding:5px 15px;"><!--<span>收款账户</span>-->
+            <if condition="($permissions.add eq 1) ">
+                <a href="javascript:void(0)" class="common-blue-btn detail-add" style="width:auto" plain="true" onclick="action_add('WrkReceivablesAccount','{$title}')">新增账户</a>
+            </if>
+                <?php 
+            		$begin_date = date('Y-m-01', strtotime(date("Y-m-d")));
+					$end_date = date('Y-m-t');
+            	?>
+            	<span>合同开始日期</span>
+            	<input placeholder="选择日期" value="{$begin_date}" id="begin_date" name="begin_date" class="easyui-datebox" data-options="onSelect:onChangeDate"/>
+            	 &nbsp;—&nbsp;
+            	<input placeholder="选择日期" value="{$end_date}" id="end_date" name="end_date" class="easyui-datebox"  data-options="onSelect:onChangeDate">
+        </div>
+        <div  style="height:65%">
+        <table class="datagrid" id="WrkReceivablesAccount-datagrid" data-options="
+           url:'__MODULE__/WrkReceivablesAccount/list',
+           pagination:false,
+           toolbar:'#WrkReceivablesAccount-toolbar',
+           checkOnSelect:true,
+           singleSelect:false,
+           border:true">
+            <thead>
+                <tr>
+                    <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+                    <th data-options="field:'is_wx',hidden:true"></th>
+                    <th data-options="field:'name',width:200,align:'left'">{$Think.lang.RECEIVABLES_ACCOUNT_NAME}</th>
+                    <th data-options="field:'account',width:200,align:'left'">{$Think.lang.RECEIVABLES_ACCOUNT_ACCOUNT}</th>
+                    <th data-options="field:'in_amount',width:120,align:'left'">累计实入金额</th>
+                    <th data-options="field:'out_amount',width:120,align:'left'">累计实出金额</th>
+                    <th data-options="field:'status',width:200,align:'left',formatter:formatOperation">操作</th>
+                </tr>
+            </thead>
+        </table>
+        </div>
+        <div style="height:20%">
+            <table class="easyui-datagrid datagrid" id="WrkReceivablesAccountSum-datagrid" data-options="
+               pagination:false,
+               checkOnSelect:true,
+               singleSelect:false,
+               rownumbers:false,
+               showHeader:false">
+                <thead>
+                    <tr>
+                        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+                        <th data-options="field:'rownumber',width:25,align:'left'"></th>
+                        <th data-options="field:'name',width:200,align:'left'">{$Think.lang.RECEIVABLES_ACCOUNT_NAME}</th>
+                        <th data-options="field:'account',width:200,align:'left'">{$Think.lang.RECEIVABLES_ACCOUNT_ACCOUNT}</th>
+                        <th data-options="field:'in_amount',width:120,align:'left'">累计实入金额</th>
+                        <th data-options="field:'out_amount',width:120,align:'left'">累计实出金额</th>
+                        <th data-options="field:'status',width:120,align:'left',formatter:formatOperation">操作</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div  style="height:50%">
+    	<div style="background: #ffffff;padding:10px 18px;" id="detail-title">收款明细：总账</div>
+        <div  style="height:90%">
+        <table id="record-datagrid" class="datagrid" fitColumns="true" data-options="url:'WrkReceivablesAccount/record'">
+            <thead>
+                <tr>
+                    <th data-options="field:'id',hidden:true"></th>
+                    <th data-options="field:'contract_no',width:120,align:'left'">商家合同编号</th>
+                    <th data-options="field:'company_name',width:200,align:'left'">公司</th>
+                    <th data-options="field:'customer_name',width:120,align:'left'">账户客户负责人</th>
+                    <th data-options="field:'contract_name',width:120,align:'left'">合同名称</th>
+                    <th data-options="field:'leader',width:120,align:'left'">账户商户负责人</th>
+                    <th data-options="field:'account_name',width:100,align:'left'">收款账户</th>
+                    <th data-options="field:'fina_time',width:160,align:'left',formatter:formatDateTime">发生时间</th>
+                    <th data-options="field:'actual_in',width:100,align:'left'">账户实入金额</th>
+                    <th data-options="field:'actual_out',width:100,align:'left'">账户实出金额</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+         </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function() {
+    initial_easyui_grid("WrkReceivablesAccount", "{$title}");
+});
+var has_wx = 0;
+$('#WrkReceivablesAccount-datagrid').datagrid({
+    onLoadSuccess: function(data){
+        if (data.rows.length > 0) {
+            var index = data.rows.length-1;
+            var rows= [];
+            rows.push(data.rows[index]);
+            //判断是否有微信账户
+            has_wx = 0;
+            for (var i = 0; i < data.rows.length; i++) {
+                if (data.rows[i].is_wx == 1) {
+                    has_wx = 1;
+                }
+            }
+            $("#WrkReceivablesAccountSum-datagrid").datagrid('loadData',rows);
+            $('#WrkReceivablesAccount-datagrid').datagrid('deleteRow',index);
+        }
+    },
+    onClickRow: function (index, row) {
+        account_id = row.id;
+        $("#detail-title").text("收款明细："+row.name);
+        $('#record-datagrid').datagrid('load',{
+            account_id:account_id
+        });
+        $("#WrkReceivablesAccountSum-datagrid").datagrid("clearChecked");
+    }
+});
+// $('#WrkReceivablesAccountSum-datagrid').datagrid({
+//     onLoadSuccess: function(data){
+//         if (data.rows.length > 0) {
+//                 console.info(data.rows);
+//             for (var i = 0; i <= data.rows.length; i++) {
+//                 $('#WrkReceivablesAccountSum-datagrid').datagrid('deleteRow',0);
+//             }
+//         }
+//     }
+// });
+
+function another_delete(id,record_count){
+    if (record_count > 0) {
+        alert('该账户含有收款记录，无法删除');
+    } else {
+        $.dialog.confirm("确定要删除此账户？", function () {
+            showMaskLayer();
+            $.post('WrkReceivablesAccount/delete',{id: id},function (result) {
+                if (result.code === 0) {
+                    refreshGrid('WrkReceivablesAccount', id, "delete");
+                    $.dialog.tips("删除成功！");
+                    $('#WrkReceivablesAccount-datagrid').datagrid('reload');
+                } else {
+                    $.dialog.alert(result.message);
+                }
+            }, "json");
+            hideMaskLayer();
+        });
+    }
+}
+
+var account_id = "other";
+function onChangeDate(){
+	var begin_date = $('#begin_date').datebox('getValue');
+	var end_date = $('#end_date').datebox('getValue');
+
+ 	$('#WrkReceivablesAccount-datagrid').datagrid('load',{                     
+        begin_date:begin_date,
+        end_date:end_date
+  	}); 
+	
+ 	$('#record-datagrid').datagrid('load',{
+ 		account_id:account_id,                          
+        begin_date:begin_date,
+        end_date:end_date
+  	}); 
+}
+
+$('#WrkReceivablesAccountSum-datagrid').datagrid({
+    onClickRow: function (index, row) {
+        account_id = row.id;
+        $("#detail-title").text("收款明细："+row.name);
+        $('#record-datagrid').datagrid('load',{                          
+              account_id:account_id
+        });
+        $("#WrkReceivablesAccount-datagrid").datagrid("clearChecked");  
+    }
+});
+
+
+$('#record-datagrid').datagrid();
+
+function activateAccount(id,status) {
+    $.get("WrkReceivablesAccount/activate/id/" + id + "/status/" + status,
+        function(result) {
+			// $.dialog.tips(result.message);
+			$('#WrkReceivablesAccount-datagrid').datagrid('reload');
+        });
+}
+
+function setWXAccount(id,status) {
+    if (has_wx == 1) {
+        $.dialog.confirm("是否切换微信账户", function () {
+            $.get("WrkReceivablesAccount/setWXAccount/id/" + id,
+            function(result) {
+                $('#WrkReceivablesAccount-datagrid').datagrid('reload');
+            });
+        });
+    }else{
+        $.get("WrkReceivablesAccount/setWXAccount/id/" + id,
+            function(result) {
+                $('#WrkReceivablesAccount-datagrid').datagrid('reload');
+            });
+    }
+}
+</script>

@@ -1,0 +1,20 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>授权失败</title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}mui/mui.css">
+<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+<link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+<style>
+    body{
+        height: auto;
+    }
+</style>
+<include file="Index:header" />
+<div style="margin-top: 1rem;width: 100%;overflow: hidden;">
+    <div style="width: 1.2rem;margin: 2rem auto 0;">
+        <img style="width: 100%;" src="/{$Think.MODULE_PATH}Public/images/login/login-aborted.png" alt="">
+    </div>
+    <div style="width: 100%;text-align: center;color: red;margin: 0.2rem 0;font-size: 1rem;">{$msg}</div>
+</div>

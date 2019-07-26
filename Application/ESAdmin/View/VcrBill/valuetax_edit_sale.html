@@ -1,0 +1,421 @@
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/mobile/mobile.js'></script>
+<link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}/Public/css/vcr_style.css" />
+
+<form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="VcrBill-dataform" method="post" name="VcrBill-dataform">
+    <div class="detailcontainer full-screen" id="VcrBill-detailcontainer" style="width:96vw; border: 0px #ccc solid; ">
+        <input name="id"  type="hidden"  value="{$model.id}">
+        <input name="image_id"  type="hidden"  value="{$model.image_id}">
+        <input name="source_flag" value="{$model.source_flag}" type="hidden" />
+        <input name="image_id" value="{$model.image_id}" type="hidden" />
+        <input name="tax_id" value="{$model.tax_id}" type="hidden" />
+        <div  style="width:50%; height: 90vh;float:left">
+            <div  class="intel-image">
+                <div>
+                    <img id="image" src="{$model.image_url}" alt="Picture">
+                </div>
+            </div>
+        </div>
+        <div  style="width:50%; height: 90vh;overflow-y: auto;float:right" >
+            <div class="bill-content">
+                <input name="bill_flag" type="hidden" value="{$model.bill_flag}" />
+                <div class="property-content">
+                    <ul class="input-contents" style="display: flex">
+                        <li style="flex:1; padding-right: 5px">
+                            <div class="title required">录入日期</div>
+                            <div class="input">
+                                <input type="text" name="bill_date" style="width:100%" class="easyui-datebox easyui-validatebox"
+                                       data-options="formatter:formatDate" value="{$model.bill_date}"
+                                       style="width: 100%">
+                            </div>
+                        </li>
+                        <li style="flex:1; padding-right: 5px">
+                            <div class="title required">录入单号</div>
+                            <div class="input">
+                                <input type="text" name="bill_no" class="easyui-validatebox"
+                                       data-options="formatter:formatDate" value="{$model.bill_no}"
+                                       style="width: 100%">
+                            </div>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li style="flex:1">
+                            <div class="title required">会计期间</div>
+                            <div class="input">
+                                <!--<input type="text" name="accounting_section"  name="accounting_section" id="accounting_section"
+                                       value="{$model.accounting_section}"
+                                       style="width: 100%">-->
+                                <input type="text" style="width: 25%" name="accounting-section-year" id="sale-accounting-section-year" value=""/>
+                                <input type="text" style="width: 24%" name="accounting-section-month" id="sale-accounting-section-month" value=""/>
+                                <input type="hidden" name="accounting_section" value="{$model.accounting_section}">
+                            </div>
+                        </li>
+                    </ul>
+                    <ul  class="flex-row" style="margin-top: 5px">
+                        <li class="name-row fee-disable-row" style="flex:1; padding-right: 5px">
+                            <div class="title source_flag_title required">购买方</div>
+                            <div class="input">
+                                <input type="text" class="easyui-validatebox" name="name" data-options="required:false" placeholder=""
+                                       value="{$model.name}" style="width: 100%" required>
+                            </div>
+                        </li>
+                        <li class="memo-content" style="flex:2;">
+                            <div class="title required">摘要</div>
+                            <div class="input">
+                                <input name="memo" class="easyui-validatebox"  placeholder="" value="{$model.memo}" style="width: 100%" required/>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="tax-type-row source-input" style=" background: #f6f9fe; padding: 0px 20px; margin-top: 20px;">
+                        <div class="input" style="padding:15px 0px 10px; text-align: left">
+                            <ul class="switch-buttons" >
+                                <li class="checked"  data-value="false">非专用发票</li>
+                                <li data-value="true">专用发票</li>
+                            </ul>
+                            <input class="css-checkbox" name="tax_type" type="checkbox" value="{$Think.const.TAX_TYPE_VTX}"
+                                          data-value="{$model.tax_type}" >
+
+                        </div>
+                    </div>
+                    <div class="detail-list" style="padding: 5px 20px;border-bottom: 1px solid #f6f9fe; background: #f6f9fe">
+                        <fieldset style="border:1px #ccc solid;margin:0;border-radius:5px">
+                            <legend>明细</legend>
+                            <div class="contents"></div>
+                        </fieldset>
+                        <div style="text-align: center;width:100%;position: relative;text-align: center;padding: 10px">
+                            <a href="javascript:void(0)" style="padding: 5px 10px;color:#368bfe;border:1px solid #368bfe;background: #fff"  onclick="action_add_detail()">+添加明细</a>
+                            <div style="position: absolute; top:10px; right:20px;"><span>合计：</span><span class="total-all" style="color:red">0</span>元</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <input class="blue-btn" type="button" value="保存" onclick="VcrBillFunctions.saveValueTaxBill()"/>
+                    <input class="square-btn" type="button" value="取消" onclick="closeDialog()"/>
+                </div>
+                <div id="tv-item-detail-tmp" style="display: none">
+                    <div class="content content-{%index%}" style="padding: 5px;background: #F5F5F5;margin-bottom: 5px;border-bottom: 1px #ccc solid;float:left;width:100%">
+                        <div style="position: relative">
+                            <div class="title required" style="margin-right:20px">{%index%}、<span class="goods-title">货物或劳务、服务名称</span>
+                            </div>
+                            <div style="position: absolute;right:10px;top:0px;color:red;cursor: pointer"
+                                 onclick="$.dialog.confirm('确认删除当前项？', function(){remove_detail_item('{%index%}')})">
+                                删除
+                            </div>
+                            <div class="input">
+                                <input type="text" class="easyui-validatebox input-goods" disabled name="goods_name[]"
+                                       data-options="" placeholder="请输入货物或劳务、服务名称" value="{%goods_name%}" style="width: 94%" >
+                            </div>
+                        </div>
+
+                        <div style="height: auto;">
+                            <div class="total-amount-row" style="width:22%;float: left;margin-right: 2%">
+                                <div class="title total-amount-title required">总额</div>
+                                <div class="total-amount-row-inner">
+                                    <div class="input">
+                                        <input type="text" class="easyui-validatebox input-total-amount" disabled name="total_amount[]"
+                                               data-options="precision:2,validType:'number'" placeholder="" value="{%total_amount%}"
+                                        style="width: 100%" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width:22%;float: left; margin-right: 2%" class="tax-rate-row tax-row">
+                                <div class="title">税率(%)</div>
+                                <div class="input">
+                                    <input type="text" class="easyui-validatebox input-tax-rate" disabled name="tax_rate[]"
+                                           data-options="precision:1,validType:'number'" placeholder="" value="{%tax_rate%}"
+                                           style="width: 100%">
+                                </div>
+                            </div>
+                            <div class="tax-amount-row tax-row" style="width:22%;float: left;; margin-right: 2%">
+                                <div class="title">税额</div>
+                                <div class="input">
+                                    <input type="text" class="easyui-validatebox input-tax-amount" disabled name="tax_amount[]"
+                                           data-options="precision:2,validType:'number'" placeholder="" value="{%tax_amount%}"
+                                           readonly style="width: 100%">
+                                </div>
+                            </div>
+                            <div style="width:22%;float: left;; margin-right: 2%" class="">
+                                <div class="title">单价</div>
+                                <div class="input">
+                                    <input type="text" class="easyui-validatebox input-price" disabled name="price[]"
+                                           data-options="validType:'number'" placeholder="" value="{%price%}"
+                                           style="width: 100%" required>
+                                </div>
+                            </div>
+                            <div class="third-width" style="width:22%;float: left; margin-right: 2%">
+                                <div class="title">数量</div>
+                                <div class="input">
+                                    <input type="text" class="easyui-validatebox input-quantity" disabled name="quantity[]"
+                                           data-options="validType:'number'" placeholder="" value="{%quantity%}"
+                                           style="width: 100%" required>
+                                </div>
+                            </div>
+                            <div class="third-width " style="width:22%;float: left; margin-right: 2%">
+                                <div class="title">单位</div>
+                                <div class="input">
+                                    <input type="text" class="easyui-validatebox input-unit" disabled name="unit[]" data-options=""
+                                           placeholder="计量单位" value="{%unit%}"
+                                           style="width: 100%">
+                                </div>
+                            </div>
+                            <div style="width:22%;float: left; margin-right: 2%" class="amount-row  tax-row">
+                                <div class="title  required">金额</div>
+                                <div class="amount-row-inner">
+                                    <div class="input">
+                                        <input type="text" class="easyui-validatebox input-amount" disabled name="amount[]" disabled
+                                               data-options="precision:2,validType:'number'" placeholder=""
+                                               value="{%amount%}" readonly style="width: 100%">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    create_accounting_section_combox("#accounting_section", "{$model.accounting_section}");
+    var modelData = {
+        items:'{$model.items}',
+        ent_scale:'{$model.ent_scale}',
+        is_special_invo:'{$model.tax_type}'=='{$Think.const.TAX_TYPE_VTX}',
+        is_scale_small:'{$model.ent_scale}'=='{$Think.const.ENTERPRISE_SCALE_SMALL}',
+        income_taxrate:'{$model.income_taxrate}',
+    };
+    $(function () {
+        $(".switch-buttons li").click(function () {
+            $(this).siblings().removeClass("checked");
+            $(this).addClass("checked");
+            $("input[name=tax_type]:checkbox").prop("checked", $(this).data("value")).change();
+        });
+        $(".switch-buttons li").removeClass("checked");
+        $(".switch-buttons li[data-value="+modelData.is_special_invo+"]").addClass("checked");
+        $("input[name=tax_type]:checkbox").change(function () {
+            if ($(this).prop("checked")) {
+                $(".detail-list  .tax-row").show();
+            } else {
+                $(".detail-list  .tax-row").hide();
+            }
+        });
+        initView();
+        initAutoComplete();
+    });
+    function initAutoComplete() {
+        $.post("/VcrBillValueTax/getAutoCompleteDatas", {include: 9, bill_flag:"{$model.bill_flag}"}, function (result) {
+            if (result.code == 0) {
+                autocomplete($("input[name='name']"), result.message.names);
+                $(document).data("goods_name", result.message.goods_names);
+                $(document).data("unit_name", result.message.unit_names);
+                autocomplete($(".detail-list .content input[name='goods_name[]']"), $(document).data("goods_name"));
+                autocomplete($(".detail-list .content input[name='unit[]']"), $(document).data("unit_name"));
+            }
+        }, "json");
+    }
+
+    /*数量单价改变*/
+    function detailQuantityChanged(parent) {
+        var amount = $(parent).find(".input-amount").val();
+        var quantity = parseFloat($(parent).find(".input-quantity").val());
+        if (!isNaN(amount) && !isNaN(quantity) && quantity !=0) {
+            $(parent).find(".input-price").val((amount/quantity).toFixed(2));
+            calcTotalSum(false);
+        }
+    }
+
+    function detailPriceChanged(parent) {
+        var amount = $(parent).find(".input-amount").val();
+        var price = parseFloat($(parent).find(".input-price").val());
+        if (!isNaN(amount) && !isNaN(price) && price !=0) {
+            $(parent).find(".input-quantity").val((amount/price).toFixed(2));
+            calcTotalSum(false);
+        }
+    }
+
+    /*税率改变，反推金额税额和单价*/
+    function detailTaxRateChanged(parent) {
+        var tax_rate = parseFloat($(parent).find(".input-tax-rate").val());
+        if (isNaN(tax_rate)) {
+            tax_rate = 0;
+        }
+        var quantity = parseFloat($(parent).find(".input-quantity").val());
+        if (isNaN(quantity) || quantity === 0) {
+            quantity = 1;
+            $(parent).find(".input-quantity").val(1);
+        }
+        var total_amount = parseFloat($(parent).find(".input-total-amount").val());
+        if (!isNaN(total_amount)) {
+            var tax_amount = total_amount/(1+tax_rate/100)*tax_rate/100
+            $(parent).find(".input-tax-amount").val(tax_amount.toFixed(2));
+            $(parent).find(".input-amount").val((total_amount - tax_amount).toFixed(2));
+            $(parent).find(".input-price").val(((total_amount - tax_amount) / quantity).toFixed(2));
+            calcTotalSum(false);
+        }
+    }
+
+    /*价税合计改变*/
+    function detailTotalAmountChanged(parent) {
+        var total_amount = parseFloat($(parent).find(".input-total-amount").val());
+        var tax_rate = parseFloat($(parent).find(".input-tax-rate").val());
+        console.log(tax_rate);
+        if (isNaN(tax_rate)) {
+            tax_rate = 0;
+            $(parent).find(".input-tax-rate").val(0);
+        }
+        var quantity = parseFloat($(parent).find(".input-quantity").val());
+        if (isNaN(quantity) || quantity === 0) {
+            quantity = 1;
+            $(parent).find(".input-quantity").val(1);
+        }
+        if (!isNaN(total_amount)) {
+            var amount = total_amount/(1+tax_rate/100);
+            $(parent).find(".input-amount").val(amount.toFixed(2));
+            $(parent).find(".input-tax-amount").val((total_amount-amount).toFixed(2));
+            $(parent).find(".input-price").val((amount / quantity).toFixed(2));
+            calcTotalSum(false);
+        }
+    }
+
+    /*统计总计，是否重新计算价税合计*/
+    function calcTotalSum(is_reset_total) {
+        var total = 0;
+        $(".detail-list .content").each(function () {
+            var tax_amount = parseFloat($(this).find(".input-tax-amount").val());
+            var amount = parseFloat($(this).find(".input-amount").val());
+            if (!isNaN(tax_amount) && !isNaN(amount) ) {
+                total = total + tax_amount + amount;
+                if(is_reset_total) {
+                    $(this).find(".input-total-amount").val((tax_amount + amount).toFixed(2));
+                }
+            }
+        });
+        $(".total-all").text(total.toFixed(2));
+    }
+
+    function initView() {
+        if (modelData.is_scale_small) { //小规模
+            $(".tax-type-row").hide();
+        } else {
+            $(".tax-type-row").show();
+        }
+        appendBillDetail(modelData.items);
+        // calcTotalSum();
+    }
+    /*删除明细*/
+    function remove_detail_item(index){
+        $(".detail-list .contents .content-"+index).remove();
+        calcTotalSum();
+    }
+
+
+    /*显示税相关字段
+    /*自开：（一般纳税人，不管是否专用发票，都显示，小规模的话，受是否专票影响）*/
+    /* 外来：（都受是否专票影响）*/
+    function toggle_detail_tax_fields(parent, visible, is_special_invo){
+        if (visible){
+            $(parent).find(".tax-row").hide();
+            if (is_special_invo){
+                $(parent).find(".tax-row").show();
+            }
+        }else{
+            $(parent).find(".tax-row").hide();
+        }
+    }
+    function action_add_detail() {
+        appendBillDetail();
+    }
+
+    function appendBillDetail(json) {
+        var items = [];
+        var is_special_invo = modelData.is_special_invo;
+        if (json == '' || json == undefined) {
+            var item = {
+                goods_name: '',
+                price: '',
+                quantity: '',
+                amount: '',
+                tax_amount: '',
+                total_amount: '',
+                fee_type: 0,
+                tax_rate: modelData.income_taxrate
+            };
+            //自开的，默认税率
+            items.push(item);
+            is_special_invo = $("input[name=tax_type]:checkbox").prop("checked");
+        }else{
+            items = JSON.parse(json);
+        }
+        $(items).each(function (index) {
+            this.index = $(".detail-list .contents .content").length + 1;
+            var $tpl = $(parseTemplate($("#tv-item-detail-tmp .content"), this));
+            $(".detail-list .contents").append($tpl);
+            $(".detail-list .contents").find("input").removeAttr("disabled"); //如果不这样设置，validate的时候会报错
+            $.parser.parse(".detail-list .contents");
+            $tpl.find(".input-price").change(function () {
+                detailPriceChanged($tpl);
+            });
+            $tpl.find(".input-quantity").change(function () {
+                detailQuantityChanged($tpl);
+            });
+            $tpl.find(".input-tax-rate").change(function () {
+                detailTaxRateChanged($tpl);
+            });
+            $tpl.find(".input-total-amount").change(function () {
+                detailTotalAmountChanged($tpl);
+            });
+            $tpl.find(".input-goods").focus();
+            toggle_detail_tax_fields($tpl, true, is_special_invo);
+        });
+        autocomplete($(".detail-list .content input[name='goods_name[]']"), $(document).data("goods_name"));
+        autocomplete($(".detail-list .content input[name='unit[]']"), $(document).data("unit_name"));
+        calcTotalSum(true);
+    }
+    $(function(){
+        setTimeout(function () {
+            var $image = $('#image');
+            if($image.attr("src")){
+                $image.viewer({
+                    inline:true,
+                    navbar: false,
+                    title: false,
+                    movable: true,
+                    rotatable: false,
+                    scalable: false,
+                    keyboard: false,
+                    fullscreen: false,
+                    zoomRatio:false,
+                    transition:false
+                });
+                $image.viewer('zoomTo', 1);
+            }
+        },100);
+    });
+
+    create_accounting_section_combox("#sale-accounting-section-year","","year");
+    create_accounting_section_combox("#sale-accounting-section-month","","month");
+
+    $("#sale-accounting-section-year").combobox({
+        onSelect : function() {
+            setAccountingSection();
+        }
+    });
+    $("#sale-accounting-section-month").combobox({
+        onSelect : function() {
+            setAccountingSection();
+        }
+    });
+
+    function setAccountingSection(){
+        var accounting_section = $("#sale-accounting-section-year").combobox("getValue")+"/"+$("#sale-accounting-section-month").combobox("getValue");
+        $("input[name='accounting_section']").val(accounting_section);
+    }
+
+    $(function(){
+        var accounting_section = $("input[name='accounting_section']").val();
+        accounting_section = accounting_section.split("/");
+        $("#sale-accounting-section-year").combobox("setValue",accounting_section[0]);
+        $("#sale-accounting-section-month").combobox("setValue",accounting_section[1]);
+    })
+</script>
+

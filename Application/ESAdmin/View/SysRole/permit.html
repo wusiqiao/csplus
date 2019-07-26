@@ -1,0 +1,45 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="height:500px; width:800px; ">
+    <input type="hidden" name="role_permit_changed" value="0" />
+    <div data-options="region:'west',split:true,border:false" style="width: 100%; height: 470px;overflow-y: scroll" >
+        <ul style="border: 1px #F2F2F2 solid;height: 99%" id="tree_role_permit" class="easyui_tree" data-options="animate:true,checkbox:true,cascadeCheck:true"></ul>
+    </div>
+    <div class="form-actions">
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save"  onclick="action_update_role_permit()">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-reply" onclick="closeDialog('SysRole-permit')">关闭</a>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        var data = $.parseJSON('{$model.permits}');
+        $("#tree_role_permit").tree({
+            onCheck: check_roleTreeItem,
+            data: data
+        });
+    });
+    function check_roleTreeItem(node, checked) {
+        var prefix = "role_permit";
+        data_changed(prefix + "_changed");
+    }
+
+   function action_update_role_permit() {
+        var changed = parseInt($("input[name=role_permit_changed").val());
+        if (changed === 1) {
+            var data_list = new Array();
+            var nodes = $('#tree_role_permit').tree('getChecked');
+            $(nodes).each(function(index, element) {
+                if (element.leaf && element.parent_id) {
+                    data_list.push(element.parent_id + "_" + element.id);
+                }
+            });
+            $.post("SysRole/updatePermit", {id: "{$model.id}", data: data_list}, function(result) {
+                var ret = $.parseJSON(result);        
+                if (ret.code === 0) {
+                    $.dialog.tips("更新成功！");
+                }
+            })
+        }else{
+           closeDialog('SysRole-permit');
+        }
+
+    }
+</script>

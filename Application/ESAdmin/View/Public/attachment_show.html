@@ -1,0 +1,26 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/attachment.css" rel="stylesheet" />
+<div class="attachment-container" style="width:60vw;height: 60vh;position: relative">
+    <div class="image_area" style="overflow-y: auto;height: 100%">
+        <img src="" style="width:100%;"/>
+    </div>
+    <ul class="attachments" style="position: absolute; bottom:0px; left:0px">
+        <volist name="attachments" id="item">
+        <li title="{$item.name}">
+            <eq name="item.type" value="image">
+            <div class="img-wrap">
+                <img src="{$item.url}" alt="" onclick="$('.image_area img').attr('src', this.src);"/>
+            </div>
+            <else/>
+            <div class="img-wrap attachment-icon attachment-icon-{$item.type}">
+                <a href="{$item.url}" target="_blank" style="width:100%;height: 100%;display: inline-block"></a>
+            </div>
+            </eq>
+        </li>
+        </volist>
+    </ul>
+</div>
+<script>
+    if ($(".attachments img").length > 0) {
+        $('.image_area img').attr('src', $(".attachments img").get(0).src);
+    }
+</script>

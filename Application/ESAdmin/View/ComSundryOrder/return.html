@@ -1,0 +1,112 @@
+<div class="detailcontainer" id="ComSundryOrder-detailcontainer">
+    <form action="ComSundryOrder/return" id="ComSundryOrder-dataform" method="post" name="ComSundryOrder-dataform">
+        <div class="tableForm">
+            <input name="type" type="hidden" value="1">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.SUNDRY_ORDER_NO}：</span></div>
+                <div class="inputbox">
+                    <input name="no" class="easyui-validatebox" value="{$model.no}" />
+                </div>
+                <div class="caption"><span>{$Think.lang.SUNDRY_ORDER_LENDER}：</span></div>
+                <div class="inputbox">
+                    <select name="lender" class="chosen-select" data-options="all:true,value:'{$model.lender}',search_key_url:'SysUser/keyNameList/'" disabled></select>
+                    <input name="lender" type="hidden" value="{$model.lender}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>借出日期：</span></div>
+                <div class="inputbox">
+                    <input name="borrow_date" class="easyui-datebox" readonly="readonly" value="{$model.borrow_date}" />
+                </div>
+                <div class="caption"><span>预期归还日期：</span></div>
+                <div class="inputbox">
+                    <input name="expected_return_date" class="easyui-datebox" readonly="readonly" value="{$model.expected_return_date}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.SUNDRY_ORDER_RETURNER}：</span></div>
+                <div class="inputbox">
+                    <select name="returner" class="chosen-select" data-options="all:true,value:'{$model.returner}',search_key_url:'SysUser/keyNameList/'" ></select>
+                </div>
+                <div class="caption"><span>归还日期：</span></div>
+                <div class="inputbox">
+                    <input name="return_date" data-options="required:true" class="easyui-datebox" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>备注：</span></div>
+                <div class="inputbox">
+                    <textarea name="remarks" rows="5" cols="40"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <table id="sundry-items" style="margin-left:14%">
+                    <thead>
+                        <tr>
+                            <th width="200px">借出物品</th>
+                            <th width="60px">状态</th>
+                            <th width="120px">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <foreach name="model.items" item="v">
+                            <tr class="row">
+                                <td>
+                                    <input name="sundry_name" class="easyui-validatebox" readonly="readonly" value="{$v.sundry_name}" />
+                                </td>
+                                <td>
+                                    <if condition='$v.status eq 0'>
+                                        <span>借出中<span/>
+                                <else/>
+                                    <span>已归还<span/>
+                                </if>        
+                                </td>
+                                <td>
+                                    <if condition='$v.status eq 0'>
+                                    <input name="item_id" type="checkbox" value="{$v.id}" />
+                                    <input id="sundry_id-{$v.id}" type="hidden" value="{$v.sundry_id}">
+                                    </if> 
+                                </td>
+                            </tr>
+                        </foreach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='[controller]-form-actions'>
+    <div class='actions-sysdefault'>
+      <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button btn-update" plain="true" icon="fa-save fa-lg"  onclick="add_return_order()">保存</a>
+      <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">关闭</a>
+     </div>
+ </div>
+</div>
+<script type="text/javascript">
+
+function add_return_order(){
+    var data = {};
+    var tmp = [];
+    var sundry_ids = [];
+    var t = $('#ComSundryOrder-dataform').serializeArray();
+    $.each(t, function() {
+        if (this.name=="item_id") {
+            tmp.push(this.value);
+ 
+            sundry_ids.push($("#sundry_id-"+this.value).val());
+            console.log($("#sundry_id-"+this.value).val());
+        }else{
+            data[this.name] = this.value;
+        }
+    });
+    data["item_ids"] = tmp;
+    data["sundry_ids"] = sundry_ids;
+    // alert(JSON.stringify(data));
+    $.post("ComSundryOrder/return/id/"+"{$model.id}", {data:data}, function(result) {
+        $.dialog.tips(result.message);
+        getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid('reload');
+        if(result['error'] == 0){
+            closeDialog('ComSundryOrder-return')
+        }
+    },'JSON')
+}
+</script>

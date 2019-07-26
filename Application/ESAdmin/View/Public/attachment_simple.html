@@ -1,0 +1,124 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/attachment.css" rel="stylesheet" />
+<div class="attachment-container">
+    <div class="attachment-input">
+        <div class="input-header">
+            <div class="input-attachment">
+                <span class="tips">沟通反馈</span>
+                <div class="btn-attachment-add">
+                    <span>附件</span>
+                    <input type="file" accept="image/*,application/msword,application/vnd.ms-powerpoint" id="input-upload-attach" multiple="multiple">
+                </div>
+            </div>
+            <div class="input-area">
+                <textarea rows="4" placeholder="反馈内容" v-model="content" autofocus></textarea>
+            </div>
+        </div>
+        <ul class="attachments">
+            <li v-for="(item,index) in attachments" @click="removeAttachment(index)" :title="item.file_name">
+                <div v-if="item.type=='image'" class="img-wrap">
+                    <span class="btn-item-remove"></span>
+                    <img :src="item.src" alt=""/>
+                </div>
+                <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type">
+                    <span class="btn-item-remove"></span>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="actions">
+        <div class="btn-cancel"><a href="javascript:void(0)" class="common-cancel-btn"  @click="closeDialog()">关闭</a></div>
+        <div class="btn-ok"><a href="javascript:void(0)" class="common-blue-btn"  @click="postAttachmentData()">确定</a></div>
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script type="text/javascript">
+    var attachmentVue = new Vue({
+        el:".attachment-container",
+        data:{
+            title:"",
+            attachments:[],
+            content: "",
+            attach_group:"",
+            callback:null
+        },
+        methods:{
+            postAttachmentData:function(){
+                if (this.attachments.length == 0 && this.content == ""){
+                    $.dialog.tips("上传内容不能为空！");
+                    return;
+                }
+                var formData = new FormData();
+                var attach_group = this.attach_group;
+                if (attach_group != undefined && attach_group != "") {
+                    formData.append("attach_group", attach_group);
+                }
+                formData.append("content", this.content);
+                var files = this.attachments;
+                $(files).each(function (index) {
+                    formData.append(this.type+"-file-"+index, this.file);
+                });
+                $.ajax({
+                    url: "/ComAttachment/append",
+                    type: 'POST',
+                    data: formData,
+                    dataType:'json',
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        showMaskLayer();
+                    },
+                    success: function (response) {
+                        hideMaskLayer();
+                        if (response.code == 0) {
+                            var history = response.message;
+                            if (attachmentVue.callback != undefined){
+                                attachmentVue.callback.call(this, history);
+                            }
+                            closeDialog();
+                            $.dialog.tips("上传完成");
+                        }else{
+                            $.dialog.alert("上传失败");
+                        }
+                    },
+                    error:function () {
+                        hideMaskLayer();
+                        $.dialog.alert("上传失败");
+                    }
+                });
+            }
+        }
+    });
+    setTimeout(function(){
+        attachmentVue.callback = $.dialog.list["attachment_dialog"].data.callback;
+        attachmentVue.attach_group = $.dialog.list["attachment_dialog"].data.attach_group;
+    },100);
+
+    $("#input-upload-attach").change(function(){
+        var oFiles = $(this).get(0).files;
+        $(oFiles).each(function () {
+            var _file = this;
+            //var rFilter = /^(image\/jpeg|image\/png)$/i;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(this);
+                reader.onload = function () {
+                    attachmentVue.attachments.push({type:"image",src: reader.result, file: _file, file_name: _file.name})
+                }
+            }else{
+                var type = "unknown";
+                if (/(\.xls|\.xlsx)$/i.test(this.name)) {
+                    type = "excel";
+                }else{
+                    if (/(\.doc|.\.docx)$/i.test(this.name)) {
+                        type = "word";
+                    }else{
+                        if (/(\.txt)$/i.test(this.name)) {
+                            type = "txt";
+                        }
+                    }
+                }
+                attachmentVue.attachments.push({type:type,src: "", file: _file, file_name: _file.name})
+            }
+        });
+    });
+</script>

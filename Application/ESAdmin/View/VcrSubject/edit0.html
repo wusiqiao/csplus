@@ -1,0 +1,46 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="height: 400px">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption required"><span>{$Think.lang.FLD_NO}：</span></div>
+                <div class="inputbox"><input name="no" class="easyui-validatebox" data-options="required:true"  value="{$model.no}" /></div>
+                <div class="caption required"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" /></div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_PARENT_ID}：</span></div>
+                <div class="inputbox">
+                    <input name="parent_name" type="text" class="easyui-validatebox" /><input name="parent_id" type="hidden" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_TYPE_NAME}：</span></div>
+                <div class="inputbox">
+                    <input name="type_name" class="easyui-validatebox" /><input name="type_id" type="hidden" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>标准科目映射：</span></div>
+                <div class="inputbox_x2">
+                    <select name="std_subject_id" class="chosen-select" data-options="empty_line:true,all:true,value:'{$model.std_subject_id}',search_key_url:'VcrSysSubject/keyNameList/'">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script>
+    autocompleteAjaxEx($("input[name='parent_name']"), "/VcrSubject/autocomplete/search/name+querykey/result/name", {
+        onSelected: function(row){
+            $("input[name='parent_id']").val(row.id);
+            $.post("/VcrSubject/getMaxNoByParent", {parent_id: row.id}, function(result){
+                $("input[name=no]").val(result);
+            });
+        }
+    });
+    autocompleteAjaxEx($("input[name='type_name']"), "/VcrSubject/getSubjectTypes", {
+        onSelected: function(row){
+            $("input[name='type_id']").val(row.id);
+        }
+    });
+</script>

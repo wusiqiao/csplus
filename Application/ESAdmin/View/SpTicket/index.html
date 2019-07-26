@@ -1,0 +1,77 @@
+<script type="text/javascript">
+    function format_ticket_state(value, row) {
+        var scale_text = ["已关闭", "未开始", "进行中", "已结束", "已失效"];
+        return scale_text[parseInt(value)];
+    }
+    function fixWidth(percent)
+    {
+        return document.body.clientWidth * percent ; //这里你可以自己做调整
+    }
+    function formatOperation(value,row){
+        return "<a href='javascript:;' onclick=\"action_ticket("+row.id+")\" >查看详情</a>";
+    }
+</script>
+<style>
+    .maincontainer{
+        height: 100%;
+    }
+</style>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th data-options="field:'id',hidden:true">id</th>
+        <th data-options="field:'t_least_cost',width:fixWidth(0.08),align:'left'" sortable="true">{$Think.lang.SP_LEAST_COST}</th>
+        <th data-options="field:'t_reduce_cost',width:fixWidth(0.08),align:'left'">{$Think.lang.SP_REDUCE_COST}</th>
+        <th data-options="field:'at_total',width:fixWidth(0.08),align:'left'">{$Think.lang.SP_TICKET_TOTAL}</th>
+        <th data-options="field:'ac_user_get_limit',width:fixWidth(0.11),align:'left'">{$Think.lang.SP_USER_GET_LIMIT}</th>
+        <th data-options="field:'ticket_begin_date',width:fixWidth(0.11),align:'left',formatter:formatDateTime">{$Think.lang.SP_TICKET_BEGIN_DATE}</th>
+        <th data-options="field:'ticket_end_date',width:fixWidth(0.11),align:'left',formatter:formatDateTime" sortable="true" order="desc">{$Think.lang.SP_TICKET_END_DATE}</th>
+        <th data-options="field:'ticket_get_count',width:fixWidth(0.06),align:'left'">{$Think.lang.SP_TICKET_GET_COUNT}</th>
+        <!-- <th data-options="field:'ticket_use_count',width:120,align:'left'">{$Think.lang.SP_TICKET_USE_COUNT}</th> -->
+        <th data-options="field:'view_state',width:fixWidth(0.06),align:'left',formatter:format_ticket_state">{$Think.lang.SP_TICKET_STATE}</th>
+        <th data-options="field:'operation',width:fixWidth(0.1),align:'left',formatter:formatOperation">操作</th>
+
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script>
+    // $(function () {
+    //     getDataGrid("{$Think.const.CONTROLLER_NAME}").bind("beforeDetail", function (event, data, action) {
+    //         if (data[0].get_count > 0) {
+    //             throw "选中的优惠卷已有人领取,不能修改!";
+    //         }
+    //     });
+    // });
+//    function beforeDetail(data,action){
+//        if(data[0].get_count > 0){
+//            throw "选中的优惠卷已有人领取,不能修改!";
+//        }
+//    }
+</script>
+
+
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table">
+        <tr>
+            <th>创建时间：</th>
+            <td>
+            <td>
+                <input name="qdr-created_at" id="day_start" class="easyui-datebox filter-field" value="" />－
+                <input name="qdr-created_at" id="day_end" class="easyui-datebox filter-field" value=""  />
+            </td>
+            </td>
+            <!--<th>结束时间：</th>
+            <td>
+            <td>
+                <input name="qdr-ac*activity_end_date" id="day_start1" class="easyui-datebox filter-field" value="" />－
+                <input name="qdr-ac*activity_end_date" id="day_end1" class="easyui-datebox filter-field" value=""  />
+            </td>
+            </td>-->
+        </tr>
+    </table>
+</div>
+<script>
+    function action_ticket(id) {
+        createDialog("{$Think.const.CONTROLLER_NAME}/use_detail/id/" + id,'优惠券详情', "{$Think.const.CONTROLLER_NAME}-use-detail");
+    }
+</script>

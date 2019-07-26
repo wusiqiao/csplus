@@ -1,0 +1,155 @@
+<style type="text/css">
+    .pay_content_bankinfo {
+        width: 80%;
+        height: 200px;
+        background:#fde8ca;
+        padding: 2%;
+    }
+    .pay_content_bankinfo h3 {
+        background:url({$Think.MODULE_PATH}Public/images/icon/bankcard.png) no-repeat 2% 50%;
+        height: 36px;
+        line-height: 36px;
+        padding-left: 55px;
+        font-size: 14px;
+        color:#3f3f4c;
+        border-bottom: 1px solid #9e938b;
+    }
+    .pay_content_bank {
+        margin-top: 18px;
+    }
+    .pay_content_bank li {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 36px;
+    }
+    .pay_content_bank li span {
+        display:inline-block;
+        width: 100px;
+    }
+    th{
+        font-weight:initial;
+    }
+    .second-header{
+        display: block;
+        height: 50px;
+        line-height: 50px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #35323b;
+        padding-left: 15px;
+        background-color: #eeeeee;
+    }
+
+    .tabs-header{
+        border-style: hidden;
+    }
+    .ui_content{
+        padding: 10px 0 !important;
+    }
+    .capital-detailed-div{
+        padding: 10px 10%;
+        color:#666666;
+    }
+    .capital-detailed-div .detail-value.bank{
+        height: 50px;
+        background-color: #ebf8fe;
+        border-radius: 6px;
+        border: solid 1px #7dbced;
+    }
+    .capital-detailed-div .detail-title{
+        display: -webkit-inline-box;
+        width: 25%;
+    }
+    .capital-detailed-div .detail-value{
+        display: -webkit-inline-box;
+        width: 70%;
+    }
+    .color-blue{
+        color:#368bfe
+    }
+</style>
+<div class="detailcontainer" style="width:400px;">
+    <form id="pay-form">
+        <div class="row">
+            <div class="capital-detailed-div">
+                <div class="detail-title">提现金额：</div>
+                <div class="detail-value">
+                    <input name="money" type="number"  class="easyui-validatebox"  data-options="required:true,precision:2" value=""/>
+                </div>
+            </div>
+            <div class="capital-detailed-div">
+                <div class="detail-title"></div>
+                <div class="detail-value">可提现金额：{$model.workability_money}</div>
+                <input type="hidden" id="workability_money" value="{$model.workability_money}">
+            </div>
+            <div class="capital-detailed-div" id="bank-detail">
+                <div class="detail-title" style="line-height: 50px">提现银行卡 : </div>
+                <div class="detail-value bank" <empty name="model.bank_id">style="display:none"</empty>>
+                    <img src="/{$Think.APP_PATH}/EShop/Public/images{$model.bank_pic}" style="padding: 5px;" alt="">
+                    <div style="line-height: 50px">{$model.bank_account}</div>
+                </div>
+                <div class="detail-value color-blue"   onclick="createDialog('{$Think.const.CONTROLLER_NAME}/bank','银行卡添加页面','ComBankDetails')" <notempty name="model.bank_id">style="display:none"</notempty>>+添加银行卡</div>
+            </div>
+            <div class="capital-detailed-div" id="bank-edit" <empty name="model.bank_id"> style="display:none"</empty>>
+                <div class="detail-title"></div>
+                <div class="detail-value color-blue"  onclick="createDialog('{$Think.const.CONTROLLER_NAME}/bank','银行卡修改页面','ComBankDetails')">修改银行卡</div>
+            </div>
+            <div align="center" style="display: flex;padding: 15px 20%;">
+                <div style="flex: 1;margin: 0 12px;" class="operation-btn" onclick="customerPay()">确认提现</div>
+                <div style="flex: 1;background-color: red;margin: 0 12px;" class="operation-btn" onclick="closeDialog();">取消</div>
+            </div>
+            <div align="center" style="margin-bottom: 15px">
+                <span style="color: red">*</span><span style="color:#666666">确认后,预计2个工作日内到账</span>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script>
+    $('input[name=money]').change(function(){
+        var workability_money = $("#workability_money").val();
+        var money = $("input[name=money]").val();
+        if (workability_money > 0) {
+            if (workability_money < money){
+                $("input[name=money]").val(0)
+                $.dialog.alert('可提现金额不足!!');
+            }
+        } else {
+            $.dialog.alert('没有可提现金额!!');
+        }
+    })
+    function customerPay(){
+        var workability_money = $("#workability_money").val();
+        var money = $("input[name=money]").val();
+        if (workability_money > 0) {
+            if (workability_money < money){
+                $.dialog.alert('可提现金额不足!!');
+                return false;
+            }
+            if (money < 100){
+                $.dialog.alert('提现金额不能低于100！');
+                return false;
+            }
+        } else {
+            $.dialog.alert('没有可提现金额!!');
+            return false;
+        }
+        showMaskLayer();
+        $.post('/{$Think.const.CONTROLLER_NAME}/withdrawal',$('#pay-form').serialize(),function(data){
+            $.dialog.tips(data.msg);
+            hideMaskLayer();
+            if (data.error == 0) {
+                closeDialog('ComWithdrawalDetails');
+                callHandler();
+            }
+        },'json')
+    }
+    function callHandlerBank(data)
+    {
+        $('#bank-detail > .bank > img').attr('src','/{$Think.APP_PATH}/EShop/Public/images'+data.picurl);
+        $('#bank-detail > .bank > div').attr('text',data.title);
+        $('#bank-detail > .bank').show();
+        $('#bank-detail > .bank').next('div').hide();
+        $('#bank-edit').show();
+    }
+</script>

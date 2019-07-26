@@ -1,0 +1,151 @@
+<style>
+    .example-dialog{position: absolute; width:50%; height:80%; top:5%; left:25%;background: #cccccc;border: 1px solid #c2ccd1;display: none}
+    .example-dialog .close-dlg{width: 100%;position: absolute;left: 0;bottom: 0;color: red;font-size: 2rem;text-align: center;background: #fff;overflow-y: auto}
+    .tpl-item-active{color:blue}
+    .example-dialog .content{padding: 10px;}
+    .example-dialog .content-header{width: 100%;font-weight: bold;text-align: center;background: #fff;padding: 10px 0px}
+    .tableForm table{ border-collapse:collapse; }
+    .tableForm table td{ width: 300px; height:20px;  padding:5px;}
+    .tableForm table .table-label{width: 60px;}
+    .table-lo{border:0 !important; }
+    .table-lo td{ border:0 !important;}
+    .table-lo .lo-line{border-bottom: solid 1px Black;}
+     .button{padding: 10px 20px;background-color: #00AFFF;color: #fff;text-align: center;border: 1px;border-radius: 5px;}
+    .chosen-container{width: 100% !important;}
+    .company-button {padding: 5px 20px;background-color: #00AFFF;color: #fff;text-align: center;border: 1px;border-radius: 5px;margin: 5px;float: left;}
+    #bindCompany-form .datagrid-pager{display: none}
+</style>
+<div class="detailcontainer" id="indexesCompany-detailcontainer" style="position: relative">
+    <form id="indexesCompany-form">
+        <input type="hidden" name="id" value="{$user.id}">
+        <div class="tableForm" style="overflow-y: auto;height:220px">
+            <table>
+                <tr ><td colspan="4"><p style="padding-left: 8px;">个人信息</p></td></tr>
+                <tr >
+                    <td colspan="2" rowspan="3" style="width: 150px"><img src="{$user.head_pic}" alt=""></td>
+                    <td class="table-label"><span>昵称:</span></td>
+                    <td colspan="2"><span>{$user.name}</span></td>
+                </tr>
+                <tr >
+                    <!--<td colspan="2" rowspan="3"><img src="{$user.head_pic}" alt=""></td>-->
+                    <td class="table-label"><span>绑定手机:</span></td>
+                    <td colspan="2"><span>{$user.mobile}</span></td>
+                </tr>
+                <tr >
+                    <!--<td colspan="2" rowspan="3"><img src="{$user.head_pic}" alt=""></td>-->
+                    <td class="table-label"><span>备注:</span></td>
+                    <td colspan="2"><span>{$user.comments}</span></td>
+                </tr>
+            </table>
+        </div>
+        <notempty name="companys">
+            <div class="tableForm" style="overflow-y: auto;height:300px">
+                <table>
+                <tr >
+                    <td colspan="2"><p style="padding-left: 8px;">公司信息</p></td>
+                </tr>
+                <tr >
+                    <td class="table-label"><span>公司:</span></td>
+                    <td >
+                        <div class="inputbox">
+                            <select name="company_id" class="chosen-select" data-options="all:true,value:'{$model.branch_id}'">
+                                <volist name="companys" id="vo">
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                </volist>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr >
+                    <td class="table-label"><span>联系人:</span></td>
+                    <td ><span id="company_linkman"></span></td>
+                </tr>
+                <tr >
+                    <td class="table-label"><span>联系电话:</span></td>
+                    <td ><span id="company_contact"></span></td>
+                </tr>
+                </table>
+                <div id="company_added" style="display: none">
+                    本次已添加:
+                    <div style="margin-top: 10px" id="addeds">
+
+                    </div>
+                </div>
+            </div>
+            <else/>
+            <div style="padding: 20px;margin: 40px 0;width:90%;text-align: center;font-weight: bold">没有可加入的公司信息</div>
+        </notempty>
+        <div style="text-align: center">
+            <a href="javascript:;" class="button" onclick="actionIndexes()">加入</a>
+        </div>
+    </form>
+
+    <div class="example-dialog"><div class="content-header"></div><div class="content"></div><i class="close-dlg fa fa-check-circle-o"></i></div>
+</div>
+<script type="text/javascript">
+    var item = 'company_data';
+    $("#select-all-tpl").change(function(){
+        $("input[name='item_ids[]']").prop("checked", $(this).prop("checked"));
+    });
+    $(function(){
+
+        setTimeout(function(){
+            var companyData = {$company_data};
+            if (companyData != '') {
+                setLocalStorage(companyData,item);
+                showCompanyData();
+            }
+
+        },200)
+        $('select[name=company_id]').change(function(){
+            showCompanyData()
+        })
+    })
+    function showCompanyData()
+    {
+       var id = $('select[name=company_id]').val();
+       var data = getLocalStorage(item);
+       $('#company_linkman').text(data[id]['linkman']);
+       $('#company_contact').text(data[id]['contact']);
+    }
+    //设置localStorage
+    function setLocalStorage(data,itemValue){
+        data = ($.isArray(data) || $.type(data) == 'object') ? JSON.stringify(data):data ;
+        localStorage.setItem(itemValue,data);
+    }
+    function getLocalStorage(itemValue){
+        var value     = localStorage.getItem(itemValue);
+        return $.parseJSON(value);
+    }
+    function actionIndexes()
+    {
+        if ($.dialog.confirm("请务必确定需要绑定的公司！", function(){
+                showMaskLayer();
+                var data = $("#indexesCompany-form").serialize();
+                var companyId = $("select[name=company_id]").val();
+                $.post("{$Think.const.CONTROLLER_NAME}/indexesCompany", data, function(result){
+                    if (result.code == 0){
+                        //获取company_name
+                        var companyName = $('select[name=company_id] > option[value='+companyId+']').text();
+                        $('select[name=company_id] > option[value='+companyId+']').remove();
+                        $('select[name=company_id]').trigger("chosen:updated");
+                        getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                        // closeDialog("dlg-company-select");
+                        $('#addeds').append('<a href="javascript:;" class="company-button">'+companyName+'</a>');
+                        $('#company_added').show();
+                    }
+                    $.dialog.tips(result.message);
+                    hideMaskLayer();
+                },"json");
+            }));
+
+    }
+    function showExample(sender){
+        $(".tpl-item").removeClass("tpl-item-active");
+        $(sender).closest(".tpl-item").addClass("tpl-item-active");
+        var example = $(sender).closest(".tpl-item").find(".item-example").val();
+        $(".example-dialog .content").html(example.replace(/[\r\n]/g,"<br>"));
+        $(".example-dialog .content-header").html($(sender).closest(".tpl-item").find(".item-title").val());
+        $(".example-dialog").show().click(function(){$(this).hide()});
+    }
+</script>

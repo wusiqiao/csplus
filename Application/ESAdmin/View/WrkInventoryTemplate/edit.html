@@ -1,0 +1,316 @@
+<script type="text/javascript">
+
+    function format_operation(value ,row, index){
+        var html = '';
+        html += "<i style=\"width:auto;height:24px;line-height: 24px;margin:  0 10px;cursor:pointer\" class=\"fa fa-building fa-lg\" onclick=\"templateDesc("+row.id+")\" title=\"查看详情\"></i>";
+        return html;
+    }
+</script>
+<link href="/{$Think.MODULE_PATH}Public/minicolors/jquery.minicolors.css" rel="stylesheet" />
+<style>
+    .mt-15{
+        margin-top: 15px;
+    }
+    .pb-15{
+        padding-bottom: 15px;
+    }
+    .bd-ff{
+        border-bottom: 1px solid #ddd;
+    }
+    .maincontainer{
+        width:800px !important;
+    }
+    .page_sign{
+        padding: 9px 18px;
+        background-color: #fff;
+        border-radius: 5px;
+        color: #368bfe;
+        border: 1px solid #368bfe;
+    }
+    .page_sign.checked{
+        color:#fff;
+        background-color:#368bfe;
+    }
+    .hide{
+        display: none !important;
+    }
+    .show{
+        text-decoration: none;
+        display: inline-block;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        outline: none;
+        text-align: center;
+        vertical-align: middle;
+        padding: 5px 10px 0px 5px;
+    }
+    div.tag{
+        padding: 2px 10px;
+        background-color: #0b95ff;
+        color: #fff;
+        margin: 3px 5px;
+        line-height: 30px;
+        display: -webkit-inline-box;
+    }
+    .caption{
+        text-align: right !important;
+        margin-left: 23px !important;
+    }
+    .wd-120{
+        width: 100px !important;
+    }
+    td.content-text{
+        text-align: right;
+    }
+    .checked-users{
+        width: 80% !important;height: 200px;overflow-y: scroll
+    }
+    .checked-users::-webkit-scrollbar {
+        display: none;
+    }
+    .tableForm .row .inputbox{
+        width: 65%;
+        display: inline-block;
+    }
+    .tableForm .row .inputbox input{
+        width: 85%;
+    }
+    .submit-button{
+        text-align: center;margin-top: 10px
+    }
+    .submit-button .close-btn{
+        margin: 0 20px;
+        padding: 9px 41px;
+        color:#fff;
+        background-color: #e91835;
+        border-radius: 4px;
+    }
+    .submit-button .submit-btn{
+        margin: 0 20px;
+        padding: 9px 41px;
+        color:#fff;
+        background-color: #368bfe;
+        border-radius: 4px;
+    }
+</style>
+<div class="detailcontainer" id="WrkInventoryTemplate-detailcontainer" style="height:400px;">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+    <div id="app" style="margin-left: 20px">
+        <div style="height:350px;overflow-y: scroll;width: 800px;">
+            <div class="tableForm" style="width:750px;display: flex">
+                <div class="pb-15" style="flex:1;width: 420px">
+                    <div class="row">
+                        <div class="caption wd-120"><span>{$Think.lang.FLD_INVENTORY_TEMPLATE_NAME}：</span></div>
+                        <div class="inputbox">
+                            <input type="text" name="content"  class="easyui-validatebox" placeholder="请输入任务模板名称" data-options="required: true" v-model="inventory_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption wd-120"><span>{$Think.lang.FLD_SEARCH_WX_TEMPLATE}：</span></div>
+                        <div class="inputbox">
+                            <select  name="templates" v-model="selected" class="chosen-select" style="width: 86%;">
+                                <option v-for="template in templates" :value="template.value">{{template.text}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <div  class="row" v-for="(content, key) in contents.content_records">
+                            <div class="caption wd-120"><span>{{content.view}}：</span></div>
+                            <div class="inputbox simple-template-input select-color">
+                                <input type="text" :name="content.field" class="easyui-validatebox"  v-model="content.value" v-bind:placeholder="content.placeholder" v-bind:style="{color:content.color}"/>
+                                <input type="hidden" class="color" v-model="content.color">
+                                <span class="add-color" data-color="" v-bind="{id : key}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pb-15" style="flex:1">
+                    <div class="row">
+                        <div class="pr" style="margin-left: 15px">
+                            <div class="template-tip font24" style="text-align: center;margin: 35px 0 ">
+                                <span class="page_sign" v-bind:class="{checked : !showPreview}" @click="previewSwitch(false)">{$Think.lang.FLD_WX_SCENE_APPLY}</span>
+                                <span class="page_sign" v-bind:class="{checked : showPreview}" @click="previewSwitch(true)">{$Think.lang.FLD_REAL_PREVIEW}</span>
+                            </div>
+                            <div style="padding: 0.3rem 0;" v-if="!showPreview">
+                                <div style="padding: 2px;height: 22px" class="simple-template" v-for="(content , keys) in contents.example_records">
+                                    <span class="title gray-a1" v-if="content.key!=''">{{ content.key }}：</span>
+                                    <span v-if="keys != 'first'" style="flex: 1;">{{ content.title }}</span>
+                                </div>
+                            </div>
+                            <div style="padding: 0.3rem 0;" v-if="showPreview">
+                                <div  style="padding: 2px;height: 22px" class="simple-template" v-for="(example ,keys) in contents.example_records">
+                                    <span class="title gray-a1" v-if="example.key">{{ example.key }}：</span>
+                                    <span v-if="keys != 'first'" v-bind:style="{color:contents.content_records[keys]['color']}">{{contents.content_records[keys]['value']}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="height: 50px">
+            <div class="submit-button">
+                <a href="javascript:void(0)" class="close-btn" @click="closeDialog()" >取消</a>
+                <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+                    <a href="javascript:void(0)" class="submit-btn" @click="update()" >保存</a>
+                </if>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/minicolors/jquery.minicolors.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script type="text/javascript">
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            inventory_name:'{$model.name}',
+            templates:{$templates},
+            selected:'{$template_id}'||0,
+            contents:{$contents},
+            showPreview:false,
+            id:'{$id}' || 0,
+        },
+        created:function(){
+            if (this.selected == '' || this.selected == 0) {
+                this.selected = this.templates[0]['value'];
+            }
+        },
+        methods:{
+            previewSwitch(inc){
+                this.showPreview = inc;
+            },
+            update(){
+                var id = this.id;
+                var data={
+                    content : this.contents.content_records,
+                    examples : this.contents.example_records,
+                    template_id : this.selected,
+                    name:this.inventory_name,
+
+                };
+                if( id > 0 ) {
+                    data['id'] = id;
+                }
+                showMaskLayer();
+                var dataForm = getDataForm('WrkInventoryTemplate');
+                var validate = dataForm.form('validate');
+                if (!validate){
+                    hideMaskLayer();
+                    var errinput = dataForm.find('.validatebox-invalid');
+                    $(errinput.get(0)).focus();
+                    $.dialog.alert('请输入任务模板名称!');
+                    return false;
+                }
+                if(isEmpty(this.selected)){
+                    hideMaskLayer();
+                    $.dialog.alert('请选择微信模板!');
+                }
+                console.log(data);
+                for(var i= 0 ;i < this.contents.content_records.length ; i++) {
+                    if (isEmpty(this.contents.content_records[i].value)) {
+                        hideMaskLayer();
+                        $.dialog.alert(this.contents.content_records[i].placeholder);
+                        return false;
+                    }
+                }
+                hideMaskLayer();
+                return false;
+                $.post('/WrkInventoryTemplate/'+formCache['WrkInventoryTemplate'].action,data,function(result){
+                    if (result.code === 0) {
+                        //成功返回的message为本条记录
+                        $.dialog.tips("保存成功！");
+                        dataForm.trigger("afterUpdate", result.message.id); //提交成功后，触发
+                        if (formCache['WrkInventoryTemplate'].action === "add"){
+                            $.dialog.confirm('是否继续新增记录？',
+                                function () {
+                                    $.dialog({id: 'WrkInventoryTemplate'}).content(formCache['WrkInventoryTemplate'].data);
+                                    parseForm();
+                                    dataForm.trigger("renewForm", result.message.id); //重新新增后触发
+                                }
+                            );
+                        }
+                        $.dialog({id: 'WrkInventoryTemplate'}).close();
+                        refreshGrid('WrkInventoryTemplate', result.message, formCache['WrkInventoryTemplate'].action);
+                    } else {
+                        $.dialog.alert(result.message);
+                    }
+                    hideMaskLayer();
+                },'json')
+
+            }
+        }
+    });
+    function isEmpty(value)
+    {
+        if(typeof value == "undefined" || value == null || value == ""){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    $(function(){
+        var template = '{$template_id}';
+        if ( !vue.id || !template) {
+            get_template();
+        } else {
+            getColor()
+        }
+        $('select[name=templates]').change(function(){
+            vue.selected = $(this).val();
+            get_template()
+        })
+    })
+    function get_template(){
+        $.post("/WxBranchTemplate/getContent", {template_id: vue.selected}, function(result){
+            if (result.code == 0){
+                vue.contents = result.message;
+                setTimeout(function(){
+                    $('table').find('.minicolors-swatch > .minicolors-swatch-color').css('background-color','initial');
+                    getColor()
+                    for(var i= 0 ;i < vue.contents.content_records.length ; i++) {
+                        $('input[name='+vue.contents.content_records[i].field+']').validatebox({
+                            required: true,
+                        });
+                    }
+                },200)
+
+            }
+        },"json");
+
+    }
+    function getColor(){
+        $('.add-color').each( function() {
+            var obj  = $(this);
+            $(this).minicolors({
+
+                control: 'wheel',
+
+                defaultValue: '',
+
+                inline: false,
+
+                letterCase: 'lowercase',
+
+                opacity: false,
+
+                hideSpeed : 100,
+
+                position: 'bottom right',
+
+                change: function(hex, opacity) {
+                    try {
+                        // obj.siblings('.minicolors-swatch').css('background','initial')
+                        var  id = obj.attr('id');
+                        vue.contents.content_records[id]['color'] = hex;
+                    } catch(e) {}
+                },
+                theme: 'default'
+
+            });
+        });
+    }
+</script>

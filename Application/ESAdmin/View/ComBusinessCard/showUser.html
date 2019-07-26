@@ -1,0 +1,49 @@
+<div class="detailcontainer" >
+    <form>
+        <div class="tableForm" style="width:600px;min-height: 400px;;overflow-x:auto">
+            <table id="showUser-datagrid" class="easyui-datagrid datagrid" data-options="
+           url:'ComBusinessCard/userList/id/{$id}',
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:false,
+           fitColumns:true,
+           border:true">
+                <thead>
+                <tr>
+                    <th data-options="field:'id',hidden:true"></th>
+                    <th data-options="field:'headimgurl',width:100,formatter:format_head_pic">头像</th>
+                    <th data-options="field:'nickname',width:100">昵称</th>
+                    <th data-options="field:'subscribe_time',width:200">关注时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div id="empty-notice" style="color: rgb(180, 180, 180);width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 50px;font-size: 20px">暂无数据</div>
+        </div>
+    </form>
+    <div class="form-actions">
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="common-red-btn bg_red" plain="true" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/minicolors/jquery.minicolors.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    function format_head_pic(value){
+        var url = "<img src='" + value + "' width='40px' height='40px'>";
+        return url;
+    }
+
+    $("#showUser-datagrid").datagrid({
+        onLoadSuccess:function(data){
+            if(data.total == 0){
+                $("#empty-notice").show();
+            }else{
+                $("#empty-notice").hide();
+            }
+        }
+    });
+</script>

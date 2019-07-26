@@ -1,0 +1,145 @@
+<script>
+    function formatState(value){
+        switch (value) {
+			case '0':
+			    return "未开";
+            case '1':
+                return "已开";
+            case '2':
+                return "部分已开";
+        }
+    }
+    function toggleType(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+</script>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<div class="maincontainer" id="WrkInvoiceApply-maincontainer" style="height: 100%">
+	<div class="content-wrap">
+    	<div class="c-select">
+			<div id="WrkInvoiceApply-toolbar">
+				<div class="c-header" style="margin:2px 15px">
+					<span class="tab-span on" onclick="toggleType('WrkInvoiceApply')">开票申请</span>
+					<span class="tab-span" onclick="toggleType('WrkInvoicePlanDetail')">有计划开票</span>
+					<span class="tab-span" onclick="toggleType('WrkInvoicePlan')">无计划开票</span>
+				</div>
+				<table class="search-table">
+					<tbody>
+					<tr>
+						<td class="width125">公司：</td>
+						<td>
+							<input name="customer_branch"  class="easyui-validatebox filter-field" value="" data-name="q-ag*company_id" placeholder="请输入公司名称" />
+						</td>
+						<!--<td class="block"></td>
+						<td class="width125">开票客户负责人：</td>
+						<td>
+							<input name="customer_leader"  class="easyui-validatebox filter-field" value="" data-name="q-ag*customer_leader_id" placeholder="" readonly style="background-color: rgb(221, 221, 221);"/>
+						</td>-->
+					</tr>
+					</tbody>
+				</table>
+				<table class="search-table">
+					<tbody>
+					<tr>
+						<td class="width125">合同名称：</td>
+						<td>
+							<input name="name"  class="easyui-validatebox filter-field" value="" data-name="q-ag*name" placeholder="请输入合同名称" />
+						</td>
+						<td class="block"></td>
+						<td class="width125">开票商户负责人：</td>
+						<td>
+							<input name="service_man"  class="easyui-validatebox filter-field" value="" data-name="q-ag*leader_id" placeholder="请输入开票商户负责人" />
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+    	</div>
+    </div>
+
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="WrkInvoiceApply" />
+    <tr>
+        <th data-options="field:'id',hidden:true">ID</th>
+        <th data-options="field:'ag_agreement_sn',width:120,align:'left'">合同编号</th>
+        <th data-options="field:'branch_name',width:120,align:'left'">公司</th>
+        <th data-options="field:'ag_customer',width:120,align:'left'">开票客户负责人</th>
+        <th data-options="field:'ag_name',width:120,align:'left'">合同名称</th>
+        <th data-options="field:'wip_leader_name',width:120,align:'left'">开票商户负责人</th>
+		<th data-options="field:'notify_day',width:120,align:'left',formatter:formatDateTime">开票申请日期</th>
+		<th data-options="field:'plan_day',width:120,align:'left',formatter:formatDateTime">发票需求日期</th>
+		<th data-options="field:'plan_money',width:120,align:'left'">发票申请金额</th>
+        <!--<th data-options="field:'state',width:120,align:'left',formatter:formatState">开票状态</th>-->
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="WrkInvoiceApply" />
+
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+	$('.c-header .tab-span').click(function (){
+		$(this).addClass('on').siblings().removeClass('on');
+	});
+	$('.c-select .chooseSpan').click(function (){
+		$(this).addClass('on').siblings().removeClass('on');
+	});
+	$('.addSpan1').click(function (){
+		createDialog("/WrkInvoicePlan/details", "新增开票计划-无合同");
+	});
+    $(function() {
+        autocompleteAjax($("input[name='customer_branch']"),"WrkAgreement/companyList",function(item){
+            $("input[name='customer_leader']").val(item.customer);
+            doSearchQuery("WrkInvoiceApply");
+        });
+        $("input[name='customer_branch']").on('change', function() {
+            if ($('input[name="customer_branch"]').length > 0 && $("input[name='customer_branch']").val()=="") {
+                $("input[name='q-ag*company_id']").val("");
+                doSearchQuery("WrkInvoiceApply");
+            }
+        });
+        autocompleteAjax($("input[name='customer']"),"WrkAgreement/customerList",function(item){
+            doSearchQuery("WrkInvoiceApply");
+        });
+        $("input[name='customer']").on('change', function() {
+            if ($('input[name="customer"]').length > 0 && $("input[name='customer']").val()=="") {
+                $("input[name='q-ag*customer_leader_id']").val("");
+                doSearchQuery("WrkInvoiceApply");
+            }
+        });
+        autocompleteAjax($("input[name='service_man']"),"WrkAgreement/service_manList",function(item){
+            doSearchQuery("WrkInvoiceApply");
+        });
+        /*autocompleteAjaxEx($("input[name='service_man']"),"WrkAgreement/service_manList/",{
+            formatItem(row){
+                var mobile = row['mobile'];
+                var item_text = $.format(
+                    "<div style='display: flex;flex-direction: row;font-size: 13px;padding: 5px'>" +
+                    "<div style='flex: 1'>用户：<span style='color:#368bfe'>{0}</span></div>"+
+                    "<div style='flex: 1'>手机：<span style='color:#368bfe'>{1}</span></div>"+
+                    "</div>",
+                    [padLeft(row.name,10," "),(row.mobile == null || row.mobile == "")? "未绑定":row.mobile ]);
+                return item_text;
+            },
+            onSelected:function(row){
+                doSearchQuery("WrkInvoiceApply");
+            }
+        });*/
+
+        $("input[name='service_man']").on('change', function() {
+            if ($('input[name="service_man"]').length > 0 && $("input[name='service_man']").val()=="") {
+                $("input[name='q-ag*leader_id']").val("");
+                doSearchQuery("WrkInvoiceApply");
+            }
+        });
+        autocompleteAjax($("input[name='name']"),"WrkAgreement/nameList",function(item){
+            doSearchQuery("WrkInvoiceApply");
+		});
+        $("input[name='name']").on("change",function(){
+            if($("input[name='name']").val() == "" && $("input[name='name']").length >0){
+                $("input[name='q-ag*name']").val("");
+                doSearchQuery("WrkInvoiceApply");
+			}
+		})
+    });
+</script>

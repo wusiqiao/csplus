@@ -1,0 +1,199 @@
+<style>
+    .chosen-container {
+        width: 100% !important;
+    }
+    input:-internal-autofill-previewed, input:-internal-autofill-selected, textarea:-internal-autofill-previewed, textarea:-internal-autofill-selected, select:-internal-autofill-previewed, select:-internal-autofill-selected {
+        background-color: #fff !important;
+        background-image: none !important;
+        color: rgb(0, 0, 0) !important;
+    }
+    .whole-clock{
+        border: 1px solid #e3e3e3;
+        margin: 15px 25px 15px 0px;
+    }
+</style>
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/flatfoot.css?version={$version}" rel="stylesheet" />
+<form method="post" id="{$Think.const.CONTROLLER_NAME}-dataform" class="content-wrap " style="height: 100%;padding-top: 35px;background-color: #fff">
+    <!--<form method="post" id="{$Think.const.CONTROLLER_NAME}-dataform">-->
+    <div class="c-select" id="append">
+        <div class="whole-title">
+            <div class="title-tip bgb"></div>
+            <div class="title-message">{{getTitle}}</div>
+        </div>
+        <div class="whole-clock">
+            <div class="whole-div">
+                <div class="whole-substance">
+                    <div class="extra-black">
+                        <div class="extra-black-title">
+                            <span style="color: red">*</span>选择通知类型：
+                        </div>
+                        <div class="extra-black-input" >
+                            <select  name="templates" data-options="required:true"  v-model="specifics.selected" class="chosen-select" >
+                                <option v-for="template in specifics.templates" :value="template.value" :key="template">{{template.text}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="extra-black">
+                        <div class="extra-black-title">
+                            <span style="color: red">*</span>计划名称：
+                        </div>
+                        <div class="extra-black-input">
+                            <input type="text" name="name" v-model="specifics.name" style="width: 100%;" data-options="required:true,validType:'length[1,20]'" placeholder="请输入计划名称" class="easyui-validatebox" >
+                        </div>
+                    </div>
+                </div>
+                <div class="whole-message">
+                    <div class="whole-queue">
+
+                    </div>
+                </div>
+            </div>
+            <div class="whole-title">
+                <div class="title-message" style="font-weight: normal;"><i class="fa fa-weixin fa-lg" style="color: #368bfe;margin: 0 10px;"></i>基础信息设置</div>
+            </div>
+            <div class="whole-div">
+                <div class="whole-substance">
+                    <div class="extra-black" v-for="(content, key) in specifics.contents.content_records">
+                        <div class="extra-black-title">
+                            <span style="color: red">*</span>{{content.view}}：
+                        </div>
+                        <div class="extra-black-input" v-if="content.key">
+                            <input type="text" :name="content.field" style="width: 100%;" class="easyui-validatebox" v-model="content.value" v-bind:placeholder="content.placeholder"/>
+                        </div>
+                        <div class="extra-black-input" v-if="!content.key">
+                            <textarea name="remarks" style="border: 1px solid #D4D4D4;width: 100%;border-radius: 5px;resize: none" rows="5" :name="content.field" v-model="content.value" v-bind:placeholder="content.placeholder"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="whole-message">
+                    <div class="whole-viewshow">
+                        <div style="font-weight: 800; margin: 0 0 25px 0;font-size: 15px; ">场景模拟</div>
+                        <div>
+                            <div  v-for="(content , keys) in specifics.contents.example_records">
+                                <span v-if="content.key!=''">{{ content.key }}：</span>
+                                <span v-if="keys != 'first'">{{ content.title }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <div class="whole-small-div" >
+                    <a href="javascript:;"  onclick="perv()" class="btn_bg_blue">返回上级</a>
+                    <a href="javascript:;" onclick="next()" class="btn_bg_blue">下一步：选择公司</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var vue = new Vue({
+        el: '#append',
+        data:{
+            specifics:{$specifics},
+            tokenHash:'{$token_hash}'
+        },
+        created:function(){
+            if (!this.specifics.selected) {
+                if (getLocalStorage(this.tokenHash)){
+                    this.specifics = getLocalStorage(this.tokenHash);
+                } else {
+                    this.specifics.selected = this.specifics.templates[0]['value'];
+                }
+            }
+        },
+        computed:{
+            getTitle:function(){
+                return this.specifics.id > 0 ? '修改发送计划' : '创建发送计划';
+            }
+        }
+
+    });
+    parseForm($("#{$Think.const.CONTROLLER_NAME}-dataform"));
+    $(function(){
+        if (vue.specifics.id == 0 && getLocalStorage(vue.tokenHash) === false) {
+            get_template();
+        } else {
+            for(var i= 0 ;i < vue.specifics.contents.content_records.length ; i++) {
+                $('input[name='+vue.specifics.contents.content_records[i].field+']').validatebox({
+                    required: true,
+                    validType:['length[1,20]']
+                });
+                $('textarea[name='+vue.specifics.contents.content_records[i].field+']').validatebox({
+                    required: true,
+                    validType:['length[1,100]']
+                });
+            }
+        }
+        $('select[name=templates]').change(function(){
+            vue.specifics.selected = $(this).val();
+            get_template()
+        })
+    })
+    function perv(){
+        if (vue.specifics.id == 0) {
+            toggleType('{$Think.const.CONTROLLER_NAME}')
+        } else{
+            toggleType('{$Think.const.CONTROLLER_NAME}/send_premise/id/'+vue.specifics.id)
+        }
+    }
+    function get_template(){
+        $.post("/WxBranchTemplate/getContent", {template_id: vue.specifics.selected}, function(result){
+            if (result.code == 0){
+                vue.specifics.contents = result.message;
+                setTimeout(function(){
+                    for(var i= 0 ;i < vue.specifics.contents.content_records.length ; i++) {
+                        $('input[name='+vue.specifics.contents.content_records[i].field+']').validatebox({
+                            required: true,
+                            validType:['length[1,20]']
+                        });
+                        $('textarea[name='+vue.specifics.contents.content_records[i].field+']').validatebox({
+                            required: true,
+                            validType:['length[1,100]']
+                        });
+                    }
+                },200)
+            }
+        },"json");
+    }
+    function next()
+    {
+        var validate = $("#{$Think.const.CONTROLLER_NAME}-dataform").form('validate');
+        if (!validate){
+            hideMaskLayer();
+            // $.dialog.alert("请输入必填项！");
+            $(obj).removeClass("grey");
+            return validate;
+        } else {
+            setLocalStorage(vue.specifics,vue.tokenHash);
+            //判断是否名称重复
+            $.post('/{$Think.const.CONTROLLER_NAME}/isNameVarious',vue.specifics,function(result){
+                if(result.error == 0){
+                    toggleType('{$Think.const.CONTROLLER_NAME}/select_company/token_hash/'+vue.tokenHash)
+                } else {
+                    $.dialog.alert(result.message)
+                }
+            },'json')
+
+        }
+    }
+    function setLocalStorage(data,itemValue){
+        data = ($.isArray(data) || $.type(data) == 'object') ? JSON.stringify(data):data ;
+        localStorage.setItem(itemValue,data);
+    }
+    function getLocalStorage(itemValue){
+        if (localStorage.getItem(itemValue)) {
+            var value     = localStorage.getItem(itemValue);
+            return $.parseJSON(value);
+        } else {
+            return false;
+        }
+    }
+    function toggleType(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+</script>

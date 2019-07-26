@@ -1,0 +1,11 @@
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="SysRoleGroup" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:120,align:'left'">{$Think.lang.FLD_NAME}</th>
+        <th data-options="field:'is_valid',width:40,align:'left',formatter:formatValidState">{$Think.lang.FLD_IS_VALID}</th>
+        <th data-options="field:'primary_roles',width:240,align:'left'">{$Think.lang.FLD_PRIMARY_ROLES}</th>
+        <th data-options="field:'auxiliary_roles',width:240,align:'left'">{$Think.lang.FLD_AUXILIARY_ROLES}</th>
+    </tr>
+   <include file="./Application/Common/Layout/Default/list_footer.html"  controller="SysRoleGroup" />
+</div>

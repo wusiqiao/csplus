@@ -1,0 +1,296 @@
+<style>
+    .red_required {
+        color: red;
+        font-size: 21px;
+        padding: 0 2.5px
+    }
+    .options-table {
+        border-collapse: collapse;
+        margin: 0 0;
+        text-align: center;
+    }
+    .options-table td,
+    .options-table th {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+    .options-table thead,
+    .options-table th {
+        background-color: #f6f7fa;
+    }
+    .options-table tr:nth-child(even) {
+        background: #fbfafa;
+    }
+    hr {
+        height: 1px;
+        border: none;
+        border-top: 1px solid #d3d3d3;
+    }
+    .edit-tips {
+        color: #e91835;
+        font-size: 14px;
+    }
+    .triangle {
+        position: relative;
+        width: 15px;
+        height: 10px;
+        left: 3px;
+        transition: transform .5s;
+    }
+    .triangle.active {
+        transform: rotate(180deg);
+    }
+    textarea {
+        width: 95%;
+        border-radius: 1px;
+        border: 1px solid #ddd;
+    }
+    .plan-tips {
+        position: relative;
+        top: 8px;
+        left: 15px;
+        color: #e91835;
+        display: inline-block;
+        width: 400px;
+        margin-bottom: 20px;
+    }
+    .readonly {
+        background-color: #f7f5f5 !important;
+        cursor: not-allowed;
+    }
+    .caption {
+        color: #676767;
+        white-space: nowrap;
+        width: 20% !important;
+    }
+    .chosen-container-single .chosen-single {
+        border-radius: 0;
+        width: 100%;
+        overflow: hidden;
+    }
+    .tableForm .row .inputbox input {
+        width: 270px;
+    }
+    .easyui-validatebox {
+        margin: 0px;
+    }
+    .tableForm .row {
+        margin: 20px 0;
+        white-space: nowrap;
+    }
+    #mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 88;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+    #closeAgreement-edit {
+        width: 552px;
+        height: 300px;
+        background-color: #ffffff;
+        position: fixed;
+        top: calc(50% - 150px);
+        left: calc(50% - 276px);
+        z-index: 99;
+    }
+    .closeAgreement-edit-hd {
+        width: 100%;
+        height: 50px;
+        background-color: #f9fafb;
+        color: #35323b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: move;
+    }
+    #WrkTaskPlan-div::-webkit-scrollbar {
+        width: 8px;
+        background-color: #eee;
+        border-radius: 4px;
+    }
+    #WrkTaskPlan-div::-webkit-scrollbar-thumb{
+        background: #b8b4b4;
+        border-radius: 4px;
+    }
+</style>
+<div class="detailcontainer" id="WrkTaskPlan-detailcontainer" style="width: 850px;height: 560px;">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="WrkTaskPlan-dataform" method="post" name="WrkTaskPlan-dataform" style="height: 100%;">
+        <div class="tableForm" style="width: 100%;height: 100%;overflow-y: auto;overflow-x: hidden;" id="WrkTaskPlan-div">
+            <div class="row">
+                <div class="caption"><span>合同服务类型：</span></div>
+            </div>
+            <input name="contract_id" value="{$model.contract_id}" type="hidden">
+            <input name="company_id" value="{$model.company_id}" type="hidden">
+            <table class="options-table" id="product_options" style="width: 95%;margin-left: 35px;margin-bottom: 10px">
+                <thead>
+                    <tr>
+                        <td>序号</td>
+                        <td>服务类型1</td>
+                        <td>服务类型2</td>
+                        <td>服务选项1</td>
+                        <td>服务选项2</td>
+                        <td>服务选项3</td>
+                    </tr>
+                </thead>
+                <tr v-for="(item,index) in items">
+                    <td>{{item.id}}</td>
+                    <td>{{item.type1}}</td>
+                    <td>{{item.type2}}</td>
+                    <td>{{item.attributes1}}</td>
+                    <td>{{item.attributes2}}</td>
+                    <td>{{item.attributes3}}</td>
+                </tr>
+            </table>
+
+
+            <hr style="border-top:1px solid #d3d3d3;" />
+            <div class="row" style="margin: 20px 0">
+                <div class="caption"><span style="color: red">*</span>任务名称：</div>
+                <div class="inputbox" style="width: 270px;">
+                    <input name="id" value="{$model.id}" type="hidden" class="easyui-validatebox" data-name="q-id" />
+                    <input name="task_name" value="{$model.task_name}" class="easyui-validatebox" data-name="q-task_name" required>
+                </div>
+            </div>
+            <div class="row" style="margin: 20px 0">
+                <div class="caption"><span style="color: red">*</span>任务商户负责人：</div>
+                <div class="inputbox">
+                    <input name="service_man_name" value="{$model.service_man_name}" class="easyui-validatebox" data-name="q-service_man" placeholder="请选择负责人" required>
+                    <input type="hidden" name="leader_id" value="{$model.leader_id}">
+                </div>
+            </div>
+            <div class="row" style="margin: 20px 0">
+                <div class="caption"><span>任务商户协作人：</span></div>
+                <div class="inputbox" style="width: 270px;">
+                    <select name="collaborators[]" id="plan_collaborators" class="chosen-select filter-field" data-options="all:true,value:'{$model.collaborators}',search_key_url:'ComCompany/queryModuleUsers/module/WrkTaskPlan'" style="width: 270px; display: none;" multiple>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="margin: 20px 0">
+                <div class="caption"><span>任务商户可见人：</span></div>
+                <div class="inputbox" style="width: 270px;">
+                    <select name="visiblers[]" id="plan_visiblers" class="chosen-select filter-field" data-options="all:true,value:'{$model.visiblers}',search_key_url:'ComCompany/queryModuleUsers/module/WrkTaskPlan'" style="width: 270px; display: none;" multiple>
+                    </select>
+                </div>
+            </div>
+
+            <div class="search-table" style="display:flex;margin:22px 0 22px 40px;">
+                <div style="flex: 1">
+                    <input name="is_to_customer" class="css-checkbox" type="checkbox" value="1" id="is_to_customer" <if condition="$model.is_to_customer eq 1"> checked</if> >
+                    <label for="is_to_customer" class="css-label">
+                        <strong style="margin-left:5px;">开通客户端任务功能</strong>
+                    </label>
+                    <span style="color: #e91835;position: relative;display: inline-block;width: 300px;left: 10px">不开通则不通知客户，仅作商家内部管理</span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="form-actions" id="WrkAgreement-form-actions1" style="padding:0;height: auto;border-top: 1px solid #d3d3d3;">
+    <div class="actions-sysdefault" style="padding: 20px 0;">
+        <a href="javascript:void(0)" id="save" class="modal-save btn-update btn-confirm" plain="true" onclick="agreementSave()">保存</a>
+        <a href="javascript:void(0)" class="btn-cancel" id="cancel" plain="true" onclick="closeDialog();createDialog('WrkTaskPlan/taskList/contract_id/{$model.contract_id}', '合同任务', 'WrkTaskPlan')">关闭</a>
+    </div>
+</div>
+<script type="text/javascript" src="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+<script>
+    var OptionsVue = new Vue({
+        el: "#product_options", data: {
+            items: {$product_options},
+        }
+    });
+
+
+    $(function(){
+        autocompleteAjaxEx($("input[name='service_man_name']").eq(0),"ComCompany/queryModuleUsers/module/WrkTaskPlan",{
+            formatItem(row){
+                var mobile = row['mobile'];
+                var item_text = $.format(
+                    "<div style='display: flex;flex-direction: row;font-size: 13px;padding: 5px'>" +
+                    "<div style='flex: 1'>姓名：<span style='color:#368bfe'>{0}</span></div>"+
+                    "<div style='flex: 1'>部门：<span style='color:#368bfe'>{1}</span></div>"+
+                    "</div>",
+                    [padLeft(row.name,8," "),row.branch_name]);
+                return item_text;
+            },
+            onSelected:function(row){
+                $("input[name='leader_id']").eq(0).val(row.id);
+                $("#plan_visiblers option[value='"+row.id+"']").attr("selected",false);
+                $("#plan_collaborators option[value='"+row.id+"']").attr("selected",false);
+                $("#plan_collaborators").trigger("chosen:updated");
+                $("#plan_visiblers").trigger("chosen:updated");
+            }
+        });
+    });
+
+    $("select[name='collaborators[]']").bind("chosen:beforeSelected", function(event, selected){
+        var leader_id = $("input[name='leader_id']").val();
+        if (selected.value == leader_id) {
+            $.dialog.tips("协作人不能和负责人重复！");
+            selected.cancel = true;
+        }
+        /*$("#plan_visiblers option[value='"+selected.value+"']").attr("selected", false);//可见人
+         $("#plan_visiblers").trigger("chosen:updated");*/
+        var visiblers = $("select[name='visiblers[]']").val();
+        if(visiblers != null && visiblers.indexOf(selected.value) != -1){
+            $.dialog.tips("协作人不能和可见人重复！");
+            selected.cancel = true;
+        }
+    });
+
+    $("select[name='visiblers[]']").bind("chosen:beforeSelected", function(event, selected){
+        var leader_id = $("input[name='leader_id']").val();
+        var collaborators = $("select[name='collaborators[]']").val();
+        if (selected.value == leader_id) {
+            $.dialog.tips("可见人不能和负责人重复！");
+            selected.cancel = true;
+        }else if(collaborators != null && collaborators.indexOf(selected.value) != -1){
+            $.dialog.tips("可见人不能和协作人重复！");
+            selected.cancel = true;
+        }
+    });
+
+    function agreementSave() {
+        showMaskLayer();
+        var frameId = "WrkTaskPlan";
+        var dataForm = getDataForm(frameId);
+        var url = dataForm.attr("action");
+        var company_id = $("input[name='company_id']").val();
+        dataForm.form('submit', {
+            url: url, onSubmit: function () {
+                var validate = $(this).form('validate');
+                if (!validate) {
+                    hideMaskLayer();
+                    return validate;
+                }
+                if (company_id == "") {
+                    hideMaskLayer();
+                    $.dialog.alert("公司不存在！");
+                    return false;
+                }
+            }, success: function (ret) {
+                var pattern = /^\{.*code.*\}$/gi;
+                if (!pattern.test(ret)) {
+                    hideMaskLayer();
+                    $.dialog.alert(ret);
+                    return false;
+                }
+                var result = $.parseJSON(removeJsonQuote(ret));
+                if (result.code === 0) {
+                    //成功返回的message为本条记录
+                    $.dialog.tips("保存成功！");
+                    $.dialog({id: frameId}).close();
+                    createDialog('WrkTaskPlan/taskList/contract_id/{$model.contract_id}', '合同任务', 'taskList');
+                } else {
+                    $.dialog.alert(result.message);
+                }
+                hideMaskLayer();
+            }
+        });
+    }
+</script>

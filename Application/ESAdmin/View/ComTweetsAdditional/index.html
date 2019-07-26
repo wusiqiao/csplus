@@ -1,0 +1,256 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="margin: 10px;background: #fff;width:700px;border:1px solid #ccc;">
+    <style>
+        #ComTweetsAdditional-dataform .caption{
+            width: 18% !important;
+            text-align: left;
+            padding-left: 10px;
+        }
+        #ComTweetsAdditional-dataform .inputbox_x2{
+            width: 80% !important;
+        }
+    </style>
+    <form action="ComTweetsAdditional/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" enctype="multipart/form-data" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-section">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>软文附加信息</span></div>
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.ADDITIONAL_OPEN}：</span></div>
+                        <div class="inputbox">
+                            <input name="is_open" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.is_open}"  default="true"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>图片规格：</span></div>
+                        <div class="inputbox" style="color: red">规格1200*360为最佳展示</div>
+                    </div>
+                    <div class="row">
+                        <div class="caption">
+                            <input type="checkbox" name="able_top_pic" value="1" data-value="{$model.able_top_pic}" />
+                            <span>{$Think.lang.ADDITIONAL_TOP_PIC}：</span></div>
+                        <div class="inputbox">
+                            <input type="text" class="easyui-validatebox" id="top_pic" name="top_pic"  value="{$model.top_pic}"/>
+                        </div>
+                        <a href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="upImage();">上传图片</a>
+                        <notempty name="model.top_pic">
+                            <a href="{$model.top_pic}" class="easyui-linkbutton fontawesome-icon-button" target="_blank" id="show_pic">查看图片</a>
+                        </notempty>
+                        <a href="javascript:;" class="easyui-linkbutton fontawesome-icon-button" onclick="clear_pic('top_pic')">清除</a>
+                    </div>
+                    <div class="row">
+                        <div class="caption">
+                            <input type="checkbox" name="able_bottom_pic1" value="1" data-value="{$model.able_bottom_pic1}" />
+                            <span>{$Think.lang.ADDITIONAL_BOTTOM_PIC1}：</span></div>
+                        <div class="inputbox">
+                            <input type="text" class="easyui-validatebox" id="bottom_pic1" name="bottom_pic1"  value="{$model.bottom_pic1}"/>
+                        </div>
+                        <a href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="upImage2();">上传图片</a>
+                        <notempty name="model.bottom_pic1">
+                            <a href="{$model.bottom_pic1}" class="easyui-linkbutton fontawesome-icon-button" target="_blank" id="show_pic2">查看图片</a>
+                        </notempty>
+                        <a href="javascript:;" class="easyui-linkbutton fontawesome-icon-button" onclick="clear_pic('bottom_pic1')">清除</a>
+                    </div>
+                    <div class="row">
+                        <div class="caption">
+                            <input type="checkbox" name="able_bottom_pic2" value="1" data-value="{$model.able_bottom_pic2}" />
+                            <span>{$Think.lang.ADDITIONAL_BOTTOM_PIC2}：</span></div>
+                        <div class="inputbox">
+                            <input type="text" class="easyui-validatebox" id="bottom_pic2" name="bottom_pic2"  value="{$model.bottom_pic2}"/>
+                        </div>
+                        <a href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="upImage3();">上传图片</a>
+                        <notempty name="model.bottom_pic2">
+                            <a href="{$model.bottom_pic2}" class="easyui-linkbutton fontawesome-icon-button" plain="true" target="_blank" id="show_pic3">查看图片</a>
+                        </notempty>
+                        <a href="javascript:;" class="easyui-linkbutton fontawesome-icon-button" onclick="clear_pic('bottom_pic2')">清除</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions' style="height:40px;border-top:1px solid #ccc">
+    <div class='actions-sysdefault'>
+        <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="saveTweetsAdditionalForm()">保存</a>
+        </if>
+        <!--<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog('[controller]')">关闭</a>-->
+        </div>
+    </div>        
+    </form>
+</div>
+<script src="{$Think.const.JS_URL}ajaxfileupload.js" type="text/javascript"></script>
+<!--添加上传图片 start-->
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editorUploadImages/js/ueditor.config.js"></script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editorUploadImages/js/ueditor.all.js"></script>
+<script type="text/plain" id="upload_ue"></script>
+<script type="text/plain" id="upload_ue2"></script>
+<script type="text/plain" id="upload_ue3"></script>
+<!--添加上传图片 end-->
+<!--上传图片模块-->
+<script type="text/javascript">
+    var _editor;
+    var _editor2;
+    var _editor3;
+    $(function() {
+        //重新实例化一个编辑器，防止在上面的editor编辑器中显示上传的图片或者文件
+        _editor = UE.getEditor('upload_ue',
+            {
+                upload_model: "tweets_additional",
+                UEDITOR_HOME_URL:'__ROOT__Application/ESAdmin/Public/editorUploadImages/js/',
+            });
+        _editor.ready(function () {
+            //隐藏编辑器，因为不会用到这个编辑器实例，所以要隐藏
+            _editor.hide();
+            //侦听图片上传
+            _editor.addListener('beforeInsertImage', function (t, arg) {
+                //将地址赋值给相应的input,只去第一张图片的路径
+                $("#top_pic").attr("value", arg[0].src);
+                //图片预览
+                $("#show_pic").attr("href", arg[0].src);
+                $("#show_pic").show();
+            })
+        });
+        //重新实例化一个编辑器，防止在上面的editor编辑器中显示上传的图片或者文件
+        _editor2 = UE.getEditor('upload_ue2',
+            {
+                upload_model: "tweets_additional",
+                UEDITOR_HOME_URL:'__ROOT__Application/ESAdmin/Public/editorUploadImages/js/',
+            });
+        _editor2.ready(function () {
+            //隐藏编辑器，因为不会用到这个编辑器实例，所以要隐藏
+            _editor2.hide();
+            //侦听图片上传
+            _editor2.addListener('beforeInsertImage', function (t, arg) {
+                //将地址赋值给相应的input,只去第一张图片的路径
+                $("#bottom_pic1").attr("value", arg[0].src);
+                //图片预览
+                $("#show_pic2").attr("href", arg[0].src);
+                $("#show_pic2").show();
+            })
+        });
+        //重新实例化一个编辑器，防止在上面的editor编辑器中显示上传的图片或者文件
+        _editor3 = UE.getEditor('upload_ue3',
+            {
+                upload_model: "tweets_additional",
+                UEDITOR_HOME_URL:'__ROOT__Application/ESAdmin/Public/editorUploadImages/js/',
+            });
+        _editor3.ready(function () {
+            //隐藏编辑器，因为不会用到这个编辑器实例，所以要隐藏
+            _editor3.hide();
+            //侦听图片上传
+            _editor3.addListener('beforeInsertImage', function (t, arg) {
+                //将地址赋值给相应的input,只去第一张图片的路径
+                $("#bottom_pic2").attr("value", arg[0].src);
+                //图片预览
+                $("#show_pic3").attr("href", arg[0].src);
+                $("#show_pic3").show();
+            })
+        });
+    });
+    //弹出图片上传的对话框
+    function upImage() {
+        var myImage = _editor.getDialog("insertimage");
+        myImage.open();
+    }
+    //弹出图片上传的对话框
+    function upImage2() {
+        var myImage = _editor2.getDialog("insertimage");
+        myImage.open();
+    }
+    function upImage3() {
+        var myImage = _editor3.getDialog("insertimage");
+        myImage.open();
+    }
+</script>
+<script type="text/javascript">
+    parseForm($("#{$Think.const.CONTROLLER_NAME}-detailcontainer"));
+    function saveTweetsAdditionalForm(){
+        showMaskLayer();     
+        var dataForm = getDataForm("ComTweetsAdditional");
+        dataForm.trigger("Update");//触发子表grid获取数据，如果没有子表，不需要触发。
+        dataForm.form('submit', {
+            url: dataForm.attr("action"),
+            onSubmit:function(){
+                var validate = $(this).form('validate');
+                if (!validate){
+                    hideMaskLayer();
+                    //$.dialog.alert("请输入必填项！");
+                }
+                return validate;
+            },
+            success: function (ret) {
+                var result = $.parseJSON(removeJsonQuote(ret));
+                if (result.code === 0) {
+                    $.dialog.tips("保存成功！"); 
+                    //刷新窗体
+                    dataForm.find("input[name=id]").val(result.message.id);
+                    dataForm.attr("action", "ComTweetsAdditional/update");
+                } else {
+                    $.dialog.tips(result.message);
+                }
+                hideMaskLayer();
+            }
+        });
+    }
+    $('#slide_pic').filebox({
+        onChange : function(e) {
+            var file = $(this).next().find('input[id^="filebox_file_id_"]');
+            var fileId = file.attr('id');
+            handleUploadFile(file,fileId,'slide_pic_0');
+        }
+    });
+    $('#header_pic').filebox({
+        onChange : function(e) {
+            var file = $(this).next().find('input[id^="filebox_file_id_"]');
+            var fileId = file.attr('id');
+            handleUploadFile(file,fileId,'default_header_pic');
+        }
+    });
+    $('#login_interface').filebox({
+        onChange : function(e) {
+            var file = $(this).next().find('input[id^="filebox_file_id_"]');
+            var fileId = file.attr('id');
+            handleUploadFile(file,fileId,'login_interface_pic');
+        }
+    });
+        function handleUploadFile(obj,fileId,pushId){
+            var files = $(obj).get(0).files[0];//获取图片信息
+            var push  = $('#'+pushId);
+            var index = $(obj);
+            var maxfilesize = 1024 * 1024 * 5;//最大文件大小设置为2M
+            if (files.size > maxfilesize) {
+                $.dialog.tips("文件大小最多只能5M,请重新上传");
+                return false;
+            }
+            if (files.type != 'image/jpeg' && files.type != 'image/jpg' && files.type != 'image/gif' && files.type != 'image/png') {
+                $.dialog.tips("文件类型只能是jpeg/jpg/gif/png类型");
+                return false;
+            }
+            $.ajaxFileUpload({
+                url: '__MODULE__/Upload/Index/t/0.html',
+                secureuri: false,
+                fileElementId: fileId, //上传控件ID
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 1) {
+                        $.dialog.tips(data.message);
+                    } else {
+                        // $('#'+fileId).prev().attr('',data.pic)
+                        $('#show_'+pushId).attr('href',data.pic);
+                        $('#show_'+pushId).show();
+                        push.attr('value',data.pic);
+                        $.dialog.tips(data.message);
+
+                    }
+                }
+            });
+        }
+        function clear_pic(name){
+            var file = $("#" + name).val();
+            if (file !== ''){
+                $.post("__CONTROLLER__/clearPicture",{name: name, file: file}, function(){
+                    $("#" + name).val("");
+                    $.dialog.tips("已清除");
+                });
+            }
+        }
+</script>

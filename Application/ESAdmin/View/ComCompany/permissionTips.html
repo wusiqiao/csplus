@@ -1,0 +1,80 @@
+<style>
+    .extra-black .extra-black-title{
+         text-align: initial !important;
+    }
+    .extra-black{
+        width: 100% !important;
+        margin: 5px 20px !important;
+    }
+    .whole-substance{
+        width: 90%;
+    }
+    .title-message{
+        margin: 0 10px!important;
+    }
+    .tip-message{
+        margin: 15px 0;
+        color: #666666;
+        display: grid;
+    }
+    .tip-message span{
+        margin: 4px 0;
+    }
+
+
+</style>
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/flatfoot.css?version={$version}" rel="stylesheet" />
+<form method="post" id="{$Think.const.CONTROLLER_NAME}-dataform" class="content-wrap " style="height: 100%;padding: 15px 0 0 60px;background-color: #fff;width: 1100px">
+    <div class="c-select" id="append">
+        <div class="whole-title">
+            <div class="title-tip bgb"></div>
+            <div class="title-message">档案权限</div>
+        </div>
+        <div style="" class="tip-message">
+            <span>档案负责人：该人员为客户档案最高权限人员，可进行档案的编辑、删除操作，
+        并更换各功能模块的权限人员。可以移交档案负责人。</span>
+            <span>档案协作人：该人员为协助人员，可进行档案的编辑操作，但不可删除档案。
+        可更换各功能模块的权限人员，但不可修改档案负责人。</span>
+            <span>档案可见人：该人员仅可查看客户档案信息，不可进行任何操作。</span>
+        </div>
+        <div class="whole-title" style="padding-top: 21px">
+            <div class="title-tip bgb"></div>
+            <div class="title-message">文件权限</div>
+        </div>
+        <div style="" class="tip-message">
+            <span>文件负责人：该人员为文件的主管理人员，可进行上传、编辑、删除商户文件等操作
+        以及查看、下载客户文件。可删除文件协作人上传的文件。</span>
+            <span>文件协作人：该人员为文件的协作管理人员，可进行上传、编辑商户文件等操作
+        以及查看、下载客户文件，并删除自己上传的文件。不能删除文件负责人上传的文件。</span>
+        </div>
+        <div class="whole-title" style="padding-top: 25px">
+            <div class="title-tip bgb"></div>
+            <div class="title-message" style="">
+                群发通知权限
+                <span style="color:red;">不同群发功能可独立设置</span>
+            </div>
+        </div>
+        <div style="" class="tip-message">
+            <span>清卡负责人：该人员为客户清卡通知的主负责人员，可进行清卡消息模板的推送工作。</span>
+            <span>清卡协作人：该人员为客户清卡通知的协作人员，也可进行清卡消息模板的推送工作</span>
+            <span>清卡通知人：当客户收到清卡通知时，该人员也能收到相应消息提醒。</span>
+        </div>
+        <div class="whole-title" style="padding-top: 25px">
+            <div class="title-tip bgb"></div>
+            <div class="title-message">工作模块通知人
+                <span style="color:red;">商户接收工作通知的人员设置</span>
+            </div>
+        </div>
+        <div style="" class="tip-message">
+            <span>合同通知人：当客户收到合同模块相关消息时，该人员也能收到相应消息提醒。</span>
+            <span>开票通知人：当客户收到开票模块相关消息时，该人员也能收到相应消息提醒。</span>
+            <span>收款通知人：当客户收到收款模块相关消息时，该人员也能收到相应消息提醒。</span>
+            <span>催款通知人：当客户收到催款模块相关消息时，该人员也能收到相应消息提醒</span>
+        </div>
+        <div style="text-align: right;">
+            <div class="whole-small-div" style="padding: 0 25px 25px 0;margin: 0">
+                <a href="javascript:void(0);" onclick="closeDialog()" class="btn_bg_blue">知道了</a>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,624 @@
+<style>
+.account-info span {
+    text-indent: 0px;
+}
+.recording-voucher table div {
+    height: 24px;
+}
+.float_layer{
+    width: 50px;
+    height: 50px;
+    border: 1px solid #000;
+    background: #fff;
+    opacity: 0.3;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: none;
+}
+.icon-rotating{
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    padding: 0 10px;
+    color: #fff;
+    background-color: rgba(1,1,1, 0.4);
+    cursor: pointer;
+    margin: 0 0 10px 0;
+}
+.icon-cover{
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    padding: 0 10px;
+    color: #fff;
+    background-color: rgba(1,1,1, 0.4);
+    cursor: pointer;
+    margin: 0 0 10px 0;
+}
+#preview-img-div::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    background-color: #eee;
+    border-radius: 2px;
+}
+#preview-img-div::-webkit-scrollbar-thumb{
+    background: #a19797;
+    border-radius: 2px;
+}
+</style>
+<form style="width: 90vw;display: flex;overflow: hidden;" id="voucher-form" action="__CONTROLLER__/{$Think.__FORM_ACTION__}">
+    <div  style="position: relative;" >
+        <div id="preview-img-div" style="width: 330px;position: relative;max-height: 260px;overflow-y: auto;overflow-x: auto;padding: 0 50px 0 0;">
+            <div id="img-big-view" style="width: 100%;position: relative;border: 1px solid #d3d3d3;">
+                <span class="mark" style="width: 100%;height: 100%;position: absolute;z-index: 11;left: 0px;top: 0px;opacity: 0;"></span>
+                <span class="float_layer"></span>
+                <img style="width: 100%" src="" alt="">
+            </div>
+            <div style="position: absolute;top: 0;right: 0;display: flex;flex-direction: column;align-items: center;z-index: 12;">
+                <div onclick="ToRotating()" title="旋转" class="icon-rotating">旋转</div>
+                <div onclick="ToMax()" title="全屏" class="icon-cover">全屏</div>
+            </div>
+        </div>
+        <div class="img-viewer" style="width: 370px;position: absolute;top: 250px;left: 0;">
+            <div class="imgs-tip">
+                <span>上传原始凭证(点击图片后可查看原图)</span>
+                <span>共上传<i style="color:blue;padding: 0 5px" id="images-count">0</i>张</span>
+            </div>
+            <div class="imgs">
+                <ul id="viewer">
+                </ul>
+                <span class="uploadimg" onclick="VcrVoucherFunctions.showImageSelectDialog()"></span>
+            </div>
+        </div>
+        <div id="preview-img" style="display: none;width: 370px;height: 260px;overflow: hidden;position: relative;border: 1px solid #d3d3d3;z-index: 124;">
+            <img style="position: absolute;top: 0px;left: 0px;width: 1400px;" src="" alt="">
+        </div>
+    </div>
+    
+    <div style="flex: 1;">
+        <input type="hidden" name="id" value="{$model.id}" data-state="{$model.reviewed}"/>
+        <input type="hidden" name="source_id" value="{$model.source_id}" />
+        <h1 class="headline1">{$model.company_name}</h1>
+        <h2 class="headline2">记账凭证</h2>
+        <div class="content" id="intelligent" style="width: 100%;height: auto;">
+            <div class="main-content">
+                <div class="recording-voucher">
+                    <div>
+                        <span class="date">{$model.bill_date|date="Y年m月d日",###}</span>
+                        <span class="date" style="padding-left: 20px">会计期间：</span>
+                        <div style="width: 120px; display: inline-block;" class="date">
+                            <input name="accounting_section"  style="border-bottom: 1px solid #ccc" class="easyui-validatebox" value="{$model.accounting_section}" id="accounting-section">
+                        </div>
+                        <span class="number">记<span><input style="width:40px" name="number" value="{$model.number}"></span>号</span>
+                    </div>
+                    <table class="datagrid-btable" width="100%">
+                        <thead>
+                        <tr>
+                            <th rowspan="2" width="50%"><strong>摘要</strong></th>
+                            <th rowspan="2" width="50%"><strong>会计科目</strong></th>
+                            <th colspan="11"><strong>借方金额</strong></th>
+                            <th colspan="11"><strong>贷方金额</strong></th>
+                        </tr>
+                        <tr>
+                            <th class="dolar-unit" width="10px">亿</th>
+                            <th class="dolar-unit" width="10px">千</th>
+                            <th class="dolar-unit blue-l" width="10px">百</th>
+                            <th class="dolar-unit" width="10px">十</th>
+                            <th class="dolar-unit" width="10px">万</th>
+                            <th class="dolar-unit blue-l" width="10px">千</th>
+                            <th class="dolar-unit" width="10px">百</th>
+                            <th class="dolar-unit" width="10px">十</th>
+                            <th class="dolar-unit red-l" width="10px">元</th>
+                            <th class="dolar-unit" width="10px">角</th>
+                            <th class="dolar-unit" width="10px">分</th>
+                            <th class="dolar-unit" width="10px">亿</th>
+                            <th class="dolar-unit" width="10px">千</th>
+                            <th class="dolar-unit blue-l" width="10px">百</th>
+                            <th class="dolar-unit" width="10px">十</th>
+                            <th class="dolar-unit" width="10px">万</th>
+                            <th class="dolar-unit blue-l" width="10px">千</th>
+                            <th class="dolar-unit" width="10px">百</th>
+                            <th class="dolar-unit" width="10px">十</th>
+                            <th class="dolar-unit red-l" width="10px">元</th>
+                            <th class="dolar-unit" width="10px">角</th>
+                            <th class="dolar-unit" width="10px">分</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <volist name="model.detail" id="vo">
+                            <tr class="first-child data-row">
+                                <td><input class="textarea1" name="summary[]" value="{$vo.summary}"></td>
+                                <td>
+                                    <input class="textarea1" name="subject_name[]" type="text" value="{$vo.full_name}">
+                                    <input  name="subject_id[]" type="hidden" value="{$vo.subject_id}">
+                                </td>
+                                <td class="dolar-unit debit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit debit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit debit blue-l"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit debit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit debit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit debit blue-l"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit debit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit debit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit debit red-l"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit debit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit debit"><div contenteditable="true"></div></td>
+    
+                                <td class="dolar-unit credit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit credit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit credit blue-l"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit credit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit credit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit credit blue-l"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit credit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit credit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit credit red-l"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit credit"><div contenteditable="true"></div></td>
+                                <td class="dolar-unit credit"><div contenteditable="true"></div></td>
+                                <input name="debit_amount[]" type="hidden" value="{$vo.debit_amount}">
+                                <input name="credit_amount[]" type="hidden" value="{$vo.credit_amount}">
+                            </tr>
+                        </volist>
+                        <tr>
+                            <td><strong>附单据 <input type="text" name="attachment_count" style="width:20px;height:16px;" value="{$model.attachment_count}"/> 张</strong></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit blue-l"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit blue-l"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit red-l"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit blue-l"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit blue-l"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit red-l"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                            <td class="dolar-unit"><div></div></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="account-info">
+                        <span><strong>会计主管：</strong>
+                            <if condition="$model.show_sup eq 1">
+                                <if condition="$model.reviewed eq 2">
+                                    {$model.review_sup_name}
+                                    <else/>
+                                    <input class="blue-btn" type="button" value="审核" onclick="VcrVoucherFunctions.review(2,this)"/>
+                                </if>
+                            </if>
+                        </span>
+                        <span><strong>复核：</strong>
+                            <if condition="$model.reviewed lt 1 and $model.id neq ''">
+                                <input class="blue-btn" type="button" value="复核" onclick="VcrVoucherFunctions.review(1,this)"/>
+                                <else/>
+                                {$model.reviewer}
+                            </if>
+                            <!--<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-reviewed" style="width:auto" icon="fa fa-pencil-square fa-lg" plain="true"><span class="txt-reviewed">审核</span></a><div class="btn-separator"></div>-->
+                        </span>
+                        <span><strong>记账：</strong><if condition="$model.id neq ''">{$model.creater}</if></span>
+                        <span><strong>制单：</strong>{$model.creater}</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <div onclick="createDialog('VcrVoucherDraf/show_log','查看日志')" style="margin: 5px 0;" class="btn-speed">查看操作日志</div>
+                    </div>
+                    <div class="dealintelBtn">
+                        <a id="addintelBtn"></a>
+                        <a id="delintelBtn"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+</form>
+<div class="btn-group" style="padding: 20px 0;border-top: 1px solid #d3d3d3;">
+    <input class="blue-btn" type="button" value="保存" onclick="VcrVoucherFunctions.save()"/>
+    <input class="square-btn" type="button" value="取消" onclick="closeDialog()"/>
+</div>
+<div class="dialog-temp" id="image-select-dialog">
+    <div style="height: 60vh;width:60vw; overflow-y: hidden">
+        <div class="tree-wrap" style="height: 100%; overflow-y: auto;width:20vw;float: left;overflow-x: hidden">
+            <ul class="easyui-tree" id="bill-image-tree">
+            </ul>
+        </div>
+        <div style="float: right; height: 100%; width:40vw">
+            <div class="tree-content" id="bill-image-content" style="height: 90%;overflow-y: auto">
+                <img src="" width="100%">
+            </div>
+            <div class="btn-group" style="clear: both;padding-top: 10px;text-align: center">
+                <input class="blue-btn" type="button" value="确定" onclick="VcrVoucherFunctions.appendImage()"/>
+                <input class="square-btn" type="button" value="关闭" onclick="closeDialog()"/>
+            </div>
+        </div>
+   </div>
+</div>
+<img id="max-img" onclick="$('#max-img').hide();" style="display: none;width:100vw;height: 100vh;position:fixed;top: 0;left: 0;z-index: 999999;background-color: #000;" src="" alt="">
+<script type="text/javascript">
+    var VcrVoucherFunctions = {
+        images:{},
+        selectedRow:{},
+        logs:{},
+        save:function () {
+            showMaskLayer();
+            var _self = this;
+            $(".recording-voucher tbody tr.data-row").each(function () {
+                var debit_amount = _self.getDetailAmount($(this), "td.debit div");
+                var credit_amount = _self.getDetailAmount($(this),"td.credit div");
+                $(this).find("input[name='debit_amount[]']").val(debit_amount);
+                $(this).find("input[name='credit_amount[]']").val(credit_amount);
+            });
+            var postForm = $("#voucher-form");
+            var data = postForm.serialize();
+            var action = postForm.attr("action");
+            $.post(action, data, function (result) {
+                if (result.code == 0){
+                    closeDialog();
+                    $("#VcrVoucherDraf-datagrid").datagrid("reload");
+                    $("#VcrBill-datagrid").datagrid("reload");
+                    $.dialog.tips("保存成功");
+                    if(typeof getVoucherCount == "function"){
+                        getVoucherCount();
+                    }
+                    if(typeof getUncreateCount == "function"){
+                        getUncreateCount();
+                    }
+                }else{
+                    $.dialog.alert(result.message);
+                }
+                hideMaskLayer();
+            },"json");
+        },
+        getDetailAmount:function($rowTarget, selector){
+            var amount_val = "";
+            $rowTarget.find(selector).each(function (index) {
+                var val = $(this).text();
+                if (index == 9){
+                    amount_val = amount_val + ".";
+                }
+                amount_val =  amount_val + (($.trim(val) == "")?"0": String(val));
+            });
+            return amount_val;
+        },
+        showDetailAmount:function($rowTarget, selector, amount){
+            var amount_text = "";
+            if (amount > 0) {
+                var dotPos = (String(amount)).indexOf(".");
+                if (dotPos > -1) { //有小数点 181.82->____________18182
+                    //如果小数点后只有一位数则补一个0
+                    if((amount.length - dotPos) <= 2){
+                        amount += 0;
+                    }
+                    /*if(amount.split(".")[1].length<2){
+                        amount += 0;
+                    }*/
+                    amount_text = padLeft(amount.replace(".", ""), 11, "_");
+                } else {
+                    amount_text = padLeft(amount, 9, "_") + "00";
+                }
+                $rowTarget.find(selector).each(function (index) {
+                    var chr = amount_text.charAt(index);
+                    chr = (chr == "_") ? "" : chr;
+                    $(this).text(chr);
+                });
+            }
+        },
+        //显示附件选择窗
+        showImageSelectDialog(id){
+            var image_length = $("input[name='images[]']").length;
+            if(image_length >= 4){
+                $.dialog.alert("超过文件限制，无法新增！");
+                return false;
+            }
+            $.post("/VcrBill/getImageTree", function (result) {
+                $("#bill-image-content img").removeAttr("src");
+                $("#image-select-dialog input[name=model_id]").val(id);
+                var html = $("#image-select-dialog").html();
+                $.dialog({lock: true,max:false,min:false, title: "选择附件", content: html});
+                $("#bill-image-tree").tree({
+                    data: result,
+                    onlyLeafCheck: true,
+                    onLoadSuccess: function(node,data){
+                        $(this).tree("collapseAll");
+                        $(this).find("div.tree-node").each(function(){
+                            $(this).attr("title",$(this).find("span.tree-title").text());
+                            if($(this).next().html() == undefined){
+                                $(this).find(".tree-indent").eq(0).hide();
+                            }
+                        })
+
+                    },
+                    onSelect:function(node){
+                        $("#bill-image-content img").attr("src",node.path).data("image", node.id);
+                    }
+                });
+            },"json");
+        },
+        appendImage:function(){
+            var image_length = $("input[name='images[]']").length;
+            if(image_length >= 4){
+                $.dialog.tips("超过文件限制，无法新增！");
+                return false;
+            }
+            var src = $("#bill-image-content img").attr("src");
+            var docment_id = $("#bill-image-content img").data("image");
+            if(src){
+                this._appendImageInner(src, docment_id, 1);
+            }else{
+                closeDialog();
+            }
+        },
+        _appendImageInner: function(src, docment_id, type){
+            if (this.images["docment" + docment_id] == undefined){
+                var $item = $($.format("<li>\n" +
+                    " <img data-original=\"{0}\" src=\"{1}\" alt=\"图片1\">\n" +
+                    " </li>",[src, src]));
+                if (type == 1){ //凭证附件，非源单附件
+                    $item.append(
+                        $.format(" <a class=\"close\"></a><input name=\"images[]\" type='hidden' value='{0}'>",[docment_id])
+                    );
+                }
+                this.images["docment" + docment_id] = src;
+                $("#img-big-view>img").attr("src",src);
+                $("#preview-img>img").attr("src",src);
+                $("#max-img").attr("src",src);
+                // $("#preview-img-div").show();
+                $("#viewer").append($item);
+                this.incImages(1);
+            }else{
+                $.dialog.tips("附件已存在");
+            }
+        },
+        incImages:function(num){
+            var count = parseInt($("#images-count").text());
+            count =  count + num;
+            $("#images-count").text(count);
+        },
+        displaySubjectText:function(row){
+            if (row.id != "") {
+                if (row.parent_name) {
+                    return row.no + "—" + row.parent_name + "—" + row.name;
+                } else {
+                    return row.no + "—" + row.name;
+                }
+            }else{
+                return "";
+            }
+        },
+        initial_datarow: function($tr){
+            var _self = this;
+            var auto_url = "/VcrSubject/autocomplete/search/name+querykey+no/result/name+no+child_count/id/";
+            //第一次获取时，如果存在科目id，则只展示当前的科目以及子科目
+            var subject_name = $tr.find("input[name='subject_name[]']").val();
+            var subject_id = $tr.find("input[name='subject_name[]']").next().val();
+            if(subject_name !== "" && subject_id !== ""){
+                auto_url += $tr.find("input[name='subject_name[]']").next().val();
+            }
+            _autocomplete(auto_url);
+            function _autocomplete(auto_url){
+                autocompleteAjaxEx($tr.find("input[name='subject_name[]']"),auto_url , {
+                    onSelected: function(row){
+                        $(this).val(_self.displaySubjectText(row));
+                        $(this).siblings("input[name='subject_id[]']").val(row.id);
+                    },formatItem:function (row) {
+                        return _self.displaySubjectText(row);
+                    }
+                });
+            }
+            $tr.find("input[name='subject_name[]']").on("keydown",function(event){
+                if (event.keyCode == 8 || event.keyCode == 46){ //删除键
+                    $(this).val("").blur();
+                    auto_url = "/VcrSubject/autocomplete/search/name+querykey+no/result/name+no+child_count/";
+                    _autocomplete(auto_url);
+                }
+            });
+
+            $tr.find(".dolar-unit").each(function(i, td){
+                $(td).find("div").keyup(function(){
+                    var v = $(this).text();
+                    if(event.keyCode == 8){
+                        $(this).text("");
+                        var $next = $(this).parent().prev().find("div");
+                        $next.focus().select();
+                        return false;
+                    }
+                    if(!parseInt(v) > 0 && parseInt(v) != 0){
+                        $(this).text("")
+                    }else{
+                        if(v.length > 1){
+                            v = v.substr(0,1);
+                        }
+                        $(this).text(v) ;
+                        $(this).blur();
+                        $(this).siblings().val(v);
+                        var $next = $(this).parent().next().find("div");
+                        $next.focus().select();
+                    }
+                });
+                $(td).find("div").on("input",function(){
+                    var v = $(this).text();
+                    if(v.length > 1){
+                        $(this).text(v.substr(0,1));
+                    }
+                })
+            });
+            $tr.mouseenter(function(e){
+                e.stopPropagation;
+                var top = (this.offsetTop + 40);
+                $(".dealintelBtn").show().css( "top", top);
+                VcrVoucherFunctions.selectedRow = this;
+            });
+            //分解金额
+            var amount_val = $tr.find("input[name='debit_amount[]']").val();
+            _self.showDetailAmount($tr, "td.debit div", amount_val);
+            amount_val = $tr.find("input[name='credit_amount[]']").val();
+            _self.showDetailAmount($tr, "td.credit div", amount_val);
+        },
+        //获取日志
+        getVoucherLog:function(){
+            $.post("VcrVoucherDraf/getVoucherLog",{id:$("input[name='id']").val()},function(result){
+                /*for(var i in result){
+                    console.log(JSON.parse(result[i].content));
+                }*/
+                VcrVoucherFunctions.logs = result;
+            },'json')
+        },
+        //复核
+        review:function(reviewed,obj){
+            var state = $("input[name='id']").data('state');
+            if(reviewed == 2 && state == 0){
+                //会计主管审核时，如果会计未复核则不允许审核
+                $.dialog.alert("请先复核！");
+                return false;
+            }
+            $.dialog.confirm("是否确定复核凭证？",function(){
+                $.post("VcrVoucherDraf/reviewed",{reviewed:reviewed,id:[$("input[name=id]").val()]},function(result){
+                    $.dialog.tips(result.message);
+                    if(result.code == 0){
+                        $(obj).after(result.name).remove();
+                        if($("#VcrVoucherDraf-datagrid").length > 0){
+                            $("#VcrVoucherDraf-datagrid").datagrid("reload");
+                        }
+                        //如果是复核，更新页面凭证状态
+                        if(reviewed == 1){
+                            $("input[name='id']").data('state',1);
+                        }
+                    }
+                },'json')
+            })
+        }
+    };
+    $(function(){
+        $(".recording-voucher tbody tr.data-row").each(function () {
+            VcrVoucherFunctions.initial_datarow($(this));
+        });
+        create_accounting_section_combox("#accounting-section","{$model.accounting_section}");
+
+        $("#viewer").on("click", "a.close", function(){
+            $(this).parent().remove();
+            VcrVoucherFunctions.incImages(-1);
+            var document_id = $(this).next().val();
+            delete VcrVoucherFunctions.images["docment" + document_id] ;
+            //添加请求删除图片
+        });
+
+        $("#addintelBtn").on("click", function(){
+            var html =  $(".recording-voucher tbody tr.first-child:first-child").clone(false);
+            html.find("div").text("");
+            html.find("input").val("");
+            VcrVoucherFunctions.initial_datarow(html);
+            $(VcrVoucherFunctions.selectedRow).after(html);
+
+        });
+
+        $("#delintelBtn").on("click", function(){
+            $(VcrVoucherFunctions.selectedRow).remove();
+            $(".dealintelBtn").hide()
+        });
+        var attachments = '{$attachments}';
+        if (attachments != ''){
+            var images = JSON.parse(attachments);
+            $(images).each(function () {
+                VcrVoucherFunctions._appendImageInner(this.path, this.id, this.type);
+            })
+        }
+        // $('#viewer').viewer({
+        //     navbar: false,
+        //     title: false,
+        //     movable: false,
+        //     rotatable: false,
+        //     scalable: false,
+        //     keyboard: false,
+        //     fullscreen: false,
+        //     zoomRatio:false
+        // });
+        //获取日志
+        VcrVoucherFunctions.getVoucherLog();
+    })
+ 
+    var scaleNum = 1;
+    var rotatingNum = 0; 
+    function ToAmplification(){
+        scaleNum = scaleNum + 0.2;
+        $("#img-big-view>img").css("transform",`scale(${scaleNum})`);
+    }
+    function ToNarrow(){
+        scaleNum = scaleNum - 0.2;
+        $("#img-big-view>img").css("transform",`scale(${scaleNum})`);
+    }
+    function ToRotating(){
+        rotatingNum = rotatingNum + 90;
+        $("#img-big-view").css("transform",`rotate(${rotatingNum}deg)`);
+        $("#preview-img").css("transform",`rotate(${rotatingNum}deg)`);
+        $("#max-img").css("transform",`rotate(${rotatingNum}deg)`);
+    }
+    function ToMax(){
+        if($("#max-img").attr("src") == ""){
+            $.dialog.tips("请上传原始凭证图片");
+        }else{
+            $("#max-img").show();
+            $.dialog.tips("点击图片，退出全屏模式");
+        } 
+    }
+    $(function () {
+        var oBig = document.querySelector("#preview-img");
+        // console.log(oBig.offsetWidth)//0
+        // console.log(oBig.offsetHeight)//0
+        var oImg = document.querySelector("#preview-img>img");
+        var oMark = document.querySelector(".mark");
+        // console.log(oMark.offsetLeft)//0
+        // console.log(oMark.offsetTop)//0
+        var oFloat = document.querySelector(".float_layer");
+        // console.log(oFloat.offsetWidth)//0
+        // console.log(oFloat.offsetHeight)//0
+        oMark.onmouseover = function () {
+            $(".float_layer").show();
+            $("#preview-img").show();
+        }
+        oMark.onmouseout = function () {
+            $(".float_layer").hide();
+            $("#preview-img").hide();
+        }
+        oMark.onmousemove = function (ev) {
+            var oEvent = ev || event;
+            var l = oEvent.offsetX-25;
+            var t = oEvent.offsetY-25;
+            if (l < 0) {
+                l = 0;
+            }else if (l > oMark.offsetWidth - oFloat.offsetWidth) {
+                l = oMark.offsetWidth - oFloat.offsetWidth; 
+            }
+
+            if (t < 0) {
+                t = 0;
+            }else if (t > oMark.offsetHeight - oFloat.offsetHeight) { 
+                t = oMark.offsetHeight - oFloat.offsetHeight; 
+            }
+            oFloat.style.left = l + 'px';
+            oFloat.style.top = t + 'px';
+            
+            var tempX = l / (oMark.offsetWidth - oFloat.offsetWidth);
+            var tempY = t / (oMark.offsetHeight - oFloat.offsetHeight);
+
+            oImg.style.left = -tempX * (oImg.offsetWidth - oBig.offsetWidth) + 'px';
+            oImg.style.top = -tempY * (oImg.offsetHeight - oBig.offsetHeight) + 'px';
+        }
+        $("#viewer").on("click","li",function(){
+            $("#img-big-view>img").attr("src",$(event.target).attr("data-original"));
+            $("#preview-img>img").attr("src",$(event.target).attr("data-original"));
+            $("#max-img").attr("src",$(event.target).attr("data-original"));
+            // console.log($(event.target).attr("data-original"))
+        })
+    });
+</script>

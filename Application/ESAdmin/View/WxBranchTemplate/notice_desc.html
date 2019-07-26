@@ -1,0 +1,162 @@
+<script type="text/javascript">
+
+    function format_operation(value ,row, index){
+        var html = '';
+        html += "<i style=\"width:auto;height:24px;line-height: 24px;margin:  0 10px;cursor:pointer\" class=\"fa fa-building fa-lg\" onclick=\"templateDesc("+row.id+")\" title=\"查看详情\"></i>";
+        return html;
+    }
+</script>
+<style>
+    .mt-15{
+        margin-top: 15px;
+    }
+    .pb-15{
+        padding-bottom: 15px;
+    }
+    .bd-ff{
+        border-bottom: 1px solid #ddd;
+    }
+    .maincontainer{
+        width:600px !important;
+    }
+</style>
+<div class="maincontainer" id="WxBranchTemplate-maincontainer" style="height:600px;overflow-y: scroll;width: 800px;">
+    <div id="app" style="margin-left: 20px">
+        <div class="bd-ff pb-15">
+            <div class="row">
+                <div class="caption"><span>模板标题：{{title}}</span></div>
+            </div>
+            <div class="row mt-15">
+                <div class="caption"><span>发送时间：{{send_time}}</span></div>
+            </div>
+        </div>
+        <div class="bd-ff pb-15 mt-15">
+            <div class="simple-template" v-for="(template, keys) in templates">
+                <div v-if="template.key">
+                    <span class="title gray-a1">{{template.key}}：</span>
+                    <span class="flex-1" v-bind:style="{color:template['color']}">{{template.value}}</span>
+                </div>
+                <div v-else>
+                    <span v-bind:style="{color:template['color']}">{{template.value}}</span>
+                </div>
+            </div>
+        </div>
+        <div  class="bd-ff pb-15 mt-15" v-if="point">
+            <!--<div class="simple-con flex-wrap simple-template">-->
+            <!--<span class="title gray-a1">appid</span>-->
+            <!--<a href="javascript:;" class="flex-1 tr blue-4591fe ov-h">{{xcx_appid}}</a>-->
+            <!--</div>-->
+            <!--<div class="simple-con flex-wrap simple-template">-->
+            <!--<span class="title gray-a1">小程序链接</span>-->
+            <!--<a class="flex-1 tr blue-4591fe ov-h">{{xcx_url}}</a>-->
+            <!--</div>-->
+            <div class="simple-con flex-wrap simple-template">
+                <span class="title gray-a1">备用链接</span>
+                <a v-bind:href="xcx_space_url" class="flex-1 tr blue-4591fe ov-h">{{xcx_space_url}}</a>
+            </div>
+        </div>
+        <div class="bd-ff pb-15 mt-15" v-else>
+            <div>
+                <span class="title gray-a1">跳转链接</span>
+                <a v-bind:href="url" class="flex-1 tr blue-4591fe ov-h">{{url}}</a>
+            </div>
+        </div>
+        <!--<notempty name="tip">-->
+            <!--<div class="bd-ff pb-15 mt-15" >-->
+                <!--<span class="title gray-a1">备注:</span><span style="color: red">{$tip}</span>-->
+            <!--</div>-->
+        <!--</notempty>-->
+    </div>
+
+    <table style="width: 600px;"  class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+             data-options="
+           url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/noticeUsers/id/{$notice_id}',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+           pageNumber:1,
+           checkOnSelect:false,
+           singleSelect:false,
+           border:true,
+           onRowContextMenu: function (e, rowIndex, rowData) {
+             $(this).datagrid('clearSelections');
+             $(this).datagrid('selectRow', rowIndex);
+           e.preventDefault();
+            $('#box_{$Think.const.CONTROLLER_NAME}').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+             });
+            }" >
+        <thead>
+        <tr >
+            <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+            <th data-options="field:'name',width:'120',align:'left'">{$Think.lang.USER_LINKNAME}</th>
+            <th data-options="field:'comments',width:'120',align:'left'">{$Think.lang.USER_RENAME}</th>
+            <th data-options="field:'mobile',width:'100',align:'left'">{$Think.lang.USER_MOBILE}</th>
+            <!--<th data-options="field:'group_name',width:'120',align:'left'">{$Think.lang.USER_GROUP}</th>-->
+            <th data-options="field:'tag_name',width:'120',align:'left'">{$Think.lang.USER_TAG}</th>
+        </tr>
+        <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<eq name="sign" value="history">
+    <div style="text-align: center;margin-top: 10px">
+        <!--<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" onclick="deleteNotice()"  icon="fa fa-trash-o fa-lg" >删除</a>-->
+        <empty name="prohibit">
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" onclick="edit_send()"  icon="fa fa-edit fa-lg" >编辑发送</a>
+            <else/>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="background-color: #b3b3b3" onclick="errorTip()"  icon="fa fa-edit fa-lg" >编辑发送</a>
+        </empty>
+    </div>
+</eq>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script type="text/javascript">
+    var notice_vue = new Vue({
+        el: '#app',
+        data:{
+            templates:{$template},
+            point:{$point},
+            url:'{$url}',
+            xcx_appid:'{$xcx_appid}',
+            xcx_url:'{$xcx_url}',
+            xcx_space_url:'{$xcx_space_url}',
+            success:'{$success}',
+            error:'{$error}',
+            send_time:'{$send_time}',
+            id:{$notice_id},
+            title:'{$title}'
+        },
+        methods:{
+            // EditFromUrl(){
+            //     window.location.href = '/WxBranchTemplate/edit_send/id/'+this.id;
+            // },
+
+        }
+    });
+    function  edit_send()
+    {
+
+        createDialog('{$Think.const.CONTROLLER_NAME}/edit_send/id/'+notice_vue.id, '编辑发送','dlg-notice-select');
+        closeDialog('dlg-notice-select')
+    }
+    function errorTip(){
+        $.dialog.tips('该历史记录所属的微信消息模板不存在或已删除!');
+    }
+    function deleteNotice()
+    {
+        var id = notice_vue.id;
+        var message = '是否删除该条历史记录?';
+        $.dialog.confirm(message, function() {
+            showMaskLayer();
+            $.post('{$Think.const.CONTROLLER_NAME}/deleteHistory', {id: id}, function (data) {
+                hideMaskLayer();
+                if (data.code == 0) {
+                    $.dialog.tips('删除成功');
+                    closeDialog('dlg-notice-select')
+                    refreshGrid('{$Think.const.CONTROLLER_NAME}',{id:id}, 'delete');
+                } else {
+                    $.dialog.tips(data.message);
+                }
+            }, 'JSON')
+        })
+    }
+</script>

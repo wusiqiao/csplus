@@ -1,0 +1,77 @@
+<script>
+    function format_download(value, row){
+        //return '<a onclick="showDetailForm(\'ComBusinessCard\','+row.id+',\'{$title}\')">下载</a>';
+        var params = "/ComBusinessCard/download/id/" + row.id + "/name/" +  row.name;
+         return '<a href='+ params +'>下载</a>';
+    }
+    function format_look(value,row){
+        return '<a onclick="look('+row.id+')">查看</a>';
+    }
+
+    function formatNull(value){
+        if(value == "" || value == null){
+            value = "-";
+        }
+        return value;
+    }
+</script>
+<style>
+    .maincontainer{
+        height:calc(100% - 40px);
+    }
+</style>
+<div class="c-header">
+    <div class="tab-span" onclick="toggleIndex('DistributionUser')">分销用户</div>
+    <div class="tab-span tab-span-on" onclick="toggleIndex('ComBusinessCard')">推广二维码</div>
+    <div class="tab-span" onclick="toggleIndex('DistributionIncome')">佣金明细</div>
+    <div class="tab-span" onclick="toggleIndex('DistributionSetting')">佣金设置</div>
+</div>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html" controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th field="ck" checkbox="true"></th>
+        <th data-options="field:'name',width:180,align:'left'">推广名称</th>
+        <th data-options="field:'contacts',width:180,align:'center',formatter:formatNull">联系电话</th>
+        <th data-options="field:'company_name',width:180,align:'center',formatter:formatNull">公司信息</th>
+        <th data-options="field:'operation',width:110,align:'center',formatter:format_download">推广码下载</th>
+        <th data-options="field:'look',width:110,align:'center',formatter:format_look">查看</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <div id="empty-notice" style="color: rgb(180, 180, 180);display:none;width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 40px;font-size: 20px">暂无数据</div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        re_bind_action_add("{$Think.const.CONTROLLER_NAME}", function () {
+            action_tree_add("{$Think.const.CONTROLLER_NAME}");
+        });
+    });
+    function look(id){
+        createDialog("/ComBusinessCard/showUser/id/"+id,"下级用户");
+    }
+    function toggleIndex(url){
+        if(url != ""){
+            $.get(url, function(result){
+                $("#module-content .content").html("").append(result);
+                $.parser.parse("#module-content .content");
+            });
+        }
+    }
+
+    $(function(){
+        var H1 = $("#ComBusinessCard-toolbar").height();
+        var H2 = $(".c-header").height();
+        $("#empty-notice").css("top",H1+H2+100);
+    });
+
+    $("#ComBusinessCard-datagrid").datagrid({
+        onLoadSuccess:function(data){
+            if(data.total == 0){
+                $("#empty-notice").show();
+            }else{
+                $("#empty-notice").hide();
+            }
+        },
+        fitColumns:true
+    });
+</script>

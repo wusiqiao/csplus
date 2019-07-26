@@ -1,0 +1,60 @@
+<if condition="$companys neq null">
+<div class="common-title">公司信息</div>
+<div class="common-input-wrap">
+    <foreach name="companys" key="k" item="vo">
+        <div class="companys_lists">
+        <div class="row">
+            <span>公司信息{$k + 1}</span>
+        </div>
+        <div class="common-input-two">
+            <span class="label">公司名称：</span>
+            <input readonly id="name{$k+ 1}" class="easyui-validatebox" value="{$vo.name}" />
+            <span class="label">机构代码：</span>
+            <input readonly class="easyui-validatebox" value="{$vo.org_code}" />
+        </div>
+        <div class="common-input-two">
+            <span class="label">法人代表：</span>
+            <input readonly class="easyui-validatebox" value="{$vo.corporation}" />
+            <span class="label">法人身份证：</span>
+            <input readonly class="easyui-validatebox" value="{$vo.corporation_idcard}" />
+        </div>
+        <div class="common-input-two">
+            <span class="label">开户银行：</span>
+            <input readonly class="easyui-validatebox" value="{$vo.bank}" />
+            <span class="label">银行账号：</span>
+            <input readonly class="easyui-validatebox" value="{$vo.bank_account}" />
+        </div>
+        <div class="common-input-two">
+            <span class="label">注册地址：</span>
+            <textarea readonly class="easyui-validatebox"  style="background: #f7f6f6" value="{$vo.reg_address_all}" >{$vo.reg_address_all}</textarea>
+        </div>
+        <div class="common-input-two">
+            <span class="label">联系人：</span>
+            <input readonly class="easyui-validatebox" value="{$vo.linkman}" />
+            <span class="label">传真：</span>
+            <input readonly class="easyui-validatebox" value="{$vo.tax_no}" />
+        </div>
+        <div class="common-input-two">
+            <span class="label">手机：</span>
+            <input readonly class="easyui-validatebox" value="{$vo.contact}" />
+            <span class="label">E-mail：</span>
+            <input readonly class="easyui-validatebox" value="{$vo.email}" />
+        </div>
+        <div class="common-input-two">
+            <span class="label">QQ：</span>
+            <input readonly class="easyui-validatebox" value="{$vo.contact}" />
+
+        </div>
+        <div class="common-input-two">
+            <span class="label">联系地址：</span>
+            <textarea readonly class="easyui-validatebox"  style="background: #f7f6f6" value="{$vo.contact}" >{$vo.contact}</textarea>
+        </div>
+        <div class="common-input-two">
+            <span class="label">解除绑定：</span>
+            <span style="padding: 5px;background-color: #0b95ff;color: #fff;border-radius: 2px"
+                      k={$k+1} data-companyid="{$vo.id}" onclick="unbindCompany(this)">解绑公司</span>
+        </div>
+        </div>
+    </foreach>
+</div>
+</if>

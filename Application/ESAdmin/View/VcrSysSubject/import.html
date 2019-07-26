@@ -1,0 +1,43 @@
+
+<div class="importTax">
+    <form  action="{$Think.const.CONTROLLER_NAME}/import"  id="import-form" method="post" enctype="multipart/form-data" style="width:360px;position: relative">
+        <div  style="padding: 0px 5px 10px 0px;display: flex; flex-direction: row">
+            <span class="easy-file-caption">企业类型：</span>
+            <input  name="ent_type_name" style="flex:1;width: auto" class="easyui-validatebox" type="text"/>
+            <input name="ent_type" type="hidden"/>
+        </div>
+        <input type="file" id="subject-file" name="subject_file" accept="*.xls,*.xlsx,*.csv" class="easyui-file"  title="文件路径："/>
+    </form>
+    <div class="btn-group">
+        <input class="blue-btn" type="button" value="导入" onclick="action_subject_import()"/>
+        <input class="square-btn" type="button" value="取消" onclick="closeDialog()"/>
+    </div>
+</div>
+
+<script>
+    function action_subject_import() {
+        var ent_type =$("#import-form input[name='ent_type']").val();
+        var ent_type_name = $("#import-form input[name='ent_type_name']").val();
+        if (ent_type != "") {
+            action_import("subject-file", "VcrSysSubject/import", "确定导入【"+ ent_type_name +"】标准科目资料？", function () {
+                $(".search-table input[name='q-ent_type_id']").val(ent_type);
+                $(".search-table input[name='ent_type_name']").val(ent_type_name);
+                $(".search-table input[name='ql-name']").val("");
+                doSearchQuery('VcrSysSubject');
+                autocompleteAjaxEx($(".search-table input[name='ent_type_name']"), "/VcrSubject/getEnterpriceTypes", {
+                    onSelected: function(row){
+                        $(".search-table input[name='q-ent_type_id']").val(row.id);
+                        doSearchQuery('VcrSysSubject');
+                    }
+                });
+            })
+        }else{
+            $.dialog.alert("请先选择标准科目对应的企业类型");
+        }
+    }
+    autocompleteAjaxEx($("#import-form input[name='ent_type_name']"), "/VcrSubject/getAllEnterpriceTypes", {
+        onSelected: function(row){
+            $("#import-form input[name='ent_type']").val(row.id);
+        }
+    });
+</script>

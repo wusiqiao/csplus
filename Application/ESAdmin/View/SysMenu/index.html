@@ -1,0 +1,27 @@
+<assign name="action_add_prefix" value="sysMenu_" />
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/tree_header.html"  controller="SysMenu" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:180,align:'left'">{$Think.lang.FLD_NAME}</th>
+        <th data-options="field:'parent_name',width:180,align:'left'">{$Think.lang.FLD_PARENT_ID}</th>
+        <th data-options="field:'url',width:120,align:'left'">{$Think.lang.FLD_URL}</th>
+        <th data-options="field:'is_dac',width:80,align:'left'">{$Think.lang.FLD_IS_DAC}</th>
+        <th data-options="field:'is_show',width:80,align:'left'">{$Think.lang.FLD_IS_SHOW}</th>
+        <th data-options="field:'is_system',width:80,align:'left'">{$Think.lang.FLD_IS_SYSTEM}</th>
+        <th data-options="field:'is_valid',width:60,align:'left',formatter:formatValidState">{$Think.lang.FLD_IS_VALID}</th>
+        <th data-options="field:'sort',width:60,align:'left'">{$Think.lang.FLD_SORT}</th>
+
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="SysMenu" />
+    <script type="text/javascript">
+        $(function () {
+            re_bind_action_add("{$Think.const.CONTROLLER_NAME}", function () {
+                sysMenu_action_add("{$Think.const.CONTROLLER_NAME}");
+            });
+        });
+        function sysMenu_action_add(controllerName) {
+            action_tree_add(controllerName);
+        }
+    </script>
+</div>

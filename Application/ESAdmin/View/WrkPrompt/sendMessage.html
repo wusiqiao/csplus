@@ -1,0 +1,31 @@
+<div class="detailcontainer" style="width:400px;height:220px">
+    <form id="send-form">
+    <div class="row">
+        <input type="hidden" name="id" value="{$model.id}">
+        <input type="hidden" name="prompt_item_id" value="{$model.prompt_item_id}">
+        <p>续费金额：<input type="text" class="easyui-validatebox" name="amount" value="{$model.amount}"></p>
+        <p>续费日期：<input type="text" class="easyui-datebox" name="date" value="{$model.date}"></p>
+        <p>服务期数：<input type="text" class="easyui-validatebox" name="period_number" value="{$model.period_number}" readonly="true"></p>
+        <p><if condition="$model.begin_date neq '' || $model.end_date neq ''">
+        服务期间：<input type="text" class="easyui-datebox" name="begin_date" value="{$model.begin_date}" readonly="true" style="width:150px">-<input type="text" class="easyui-datebox" name="end_date" value="{$model.end_date}" readonly="true" style="width:150px">
+        </if>&nbsp;</p>
+    </div>
+    </form>
+	<div align="center">
+		<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="sendAction()">发送</a>
+		<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>	
+	</div>
+</div>
+<script>
+    function sendAction() {
+        var data = $('#send-form').serialize();
+        showMaskLayer();
+        $.post("/WrkPrompt/sendMessage/id/{$model.id}",data,function(result) {
+            hideMaskLayer();
+            $.dialog.tips(result.message);
+            if (result.code == 0) {
+            	closeDialog("dlg-prompt-message");
+            }
+        }, "json");
+    }
+</script>

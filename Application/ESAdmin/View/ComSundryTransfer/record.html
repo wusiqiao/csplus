@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}Public/css/timeline.css">
+<div class="detailcontainer" id="ComSundry-detailcontainer">
+    <form action="ComSundryOrder/record" id="ComSundryOrder-dataform" method="post" name="ComSundryOrder-dataform">
+        <div class="tableForm">
+            <div class="row time-line-wrap" style="height: 300px">
+                <foreach name="model.records" item="v">
+                    <if condition="$v.type eq 7">
+                        <div class="timeline">
+                            <div class="timeline-item right {$v.active}">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">转交申请</div>
+                                    <div class="timeline-body">
+                                        <span>转交物品：{$v.sundry_names}</span>
+                                    </div>
+                                    <div class="timeline-footer">{$v.user_name}&nbsp;{$v.created_at}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <elseif condition="$v.type eq 8" />
+                        <div class="timeline">
+                            <div class="timeline-item left {$v.active}">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">签收物品</div>
+                                    <div class="timeline-body">
+                                        <span>签收物品：{$v.sundry_names}</span>
+                                    </div>
+                                    <div class="timeline-footer">{$v.user_name}&nbsp;{$v.created_at}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <else/>
+                    </if>
+                </foreach>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='[controller]-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>

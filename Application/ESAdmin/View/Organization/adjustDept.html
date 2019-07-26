@@ -1,0 +1,125 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+                <div class="caption"><span>调整人员：</span></div>
+            <div style="height:250px;margin-bottom:30px">
+                <table id="user-checked-datagrid" class="easyui-datagrid datagrid" data-options="fitColumns:true,pagination:false">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'id',hidden:true"></th>
+                            <th data-options="field:'head_pic',width:60">头像</th>
+                            <th data-options="field:'staff_name',width:100">姓名</th>
+                            <th data-options="field:'name',width:100">昵称</th>
+                            <th data-options="field:'comments',width:100">备注</th>
+                            <th data-options="field:'telephone',width:100">联系电话</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+                <div class="caption"><span>选择新部门：</span></div>
+            <div style="height:200px">
+                <ul style="border: 0px #F2F2F2 solid;height: 99%;overflow-y: auto;" class="department-tree" data-options="animate:true"></ul>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='Organization-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="adjustDept()">保存</a>
+            <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function() {
+    init_tree();
+});
+var user_ids = [];
+setTimeout(function() {
+var data = getData();
+    console.info(data);
+    var html = '';
+    var input = '';
+    var arr = [];
+    for (var i in data.data) {
+        var img = '<img src="' + data.data[i].head_pic + '" width="40px" height="40px">';
+        arr.push({
+            head_pic: img,
+            name: data.data[i].name,
+            id: data.data[i].id,
+            staff_name: data.data[i].staff_name,
+            comments: data.data[i].comments,
+            telephone: data.data[i].telephone
+        });
+        user_ids.push(data.data[i].id);
+    }
+    $('#user-checked-datagrid').datagrid('loadData', arr);
+}, 200)
+
+function getData() {
+    return $.dialog.list["dlg-adjust-deptment"].data;
+}
+var dept_id = '{$dept_id}';
+function init_tree(){
+    var frameId = "{$Think.const.CONTROLLER_NAME}";
+    var action = "Organization/treeList";
+    if (!action){
+        action = frameId + "/tree";
+    }
+
+    var $tree_target = getDetailContainer(frameId).find(".department-tree");
+    if ($tree_target.length > 0){
+        load_branch_tree_another(action, $tree_target);
+        $tree_target.tree({
+            onClick: function (node) {
+                dept_id = node.id;
+                console.log(dept_id);
+            }
+        });
+    }
+}
+
+function load_branch_tree_another(action, $tree_target) {
+    $.getJSON(action, {}, function (result) {
+        $tree_target.tree({
+            data: result,
+            onLoadSuccess: function (node, data) {
+                if (data.length > 0) {
+                    var n = $(this).tree('find', data[0].id);
+                    $(this).tree('select', n.target);
+                    $("span.tree-file").addClass("tree-folder");
+                    $("span.tree-file").removeClass("tree-file");
+                }
+            }
+        })
+    });
+}
+
+function adjustDept() {
+    $.post('/Organization/adjustDept',{user_ids:user_ids,dept_id:dept_id
+}, function(result) {
+        hideMaskLayer();
+        if (result.code == 0) {
+            var selected = $('.department-tree').tree('getSelected');
+            var action = "/Organization/treeList";
+            var $tree_target = getDepartmentTree('{$Think.const.CONTROLLER_NAME}');
+            $.getJSON(action, {}, function(result) {
+                $tree_target.tree({
+                    data: result,
+                    onLoadSuccess: function(node, data) {
+                        if (data.length > 0) {
+                            var n = $('.department-tree').tree('find', selected.id);
+                            $('.department-tree').tree('select', n.target);
+                            getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                            $('#deptment-datagrid').datagrid('reload');
+                        }
+                    }
+                })
+            }); 
+            closeDialog();
+        }
+        $.dialog.tips(result.message);
+    }, 'json')
+}
+</script>

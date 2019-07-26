@@ -1,0 +1,117 @@
+<meta charset="UTF-8">
+<title>Title</title>
+<style>
+    .tableForm .row .caption{
+        width:135px;
+    }
+    /* 保存(确认)按钮 */
+    .btn_save_blue{
+        display: inline-block;
+        width: 84px;
+        height:34px;
+        line-height: 34px;
+        text-align: center;
+        background-color: #529bfd;
+        color: #fff;
+        padding: 0px 10px;
+        margin: 5px 10px;
+        cursor: pointer;
+    }
+    .btn_save_blue:hover{
+        background-color: #6eacfe;
+    }
+    /* 关闭(取消)按钮 */
+    .btn_close_gray{
+        display: inline-block;
+        width: 84px;
+        height:34px;
+        line-height: 34px;
+        text-align: center;
+        padding: 0px 10px;
+        margin: 5px 10px;
+        color: #333;
+        border:1px solid #d3d3d3;
+        cursor: pointer;
+    }
+    .btn_close_gray:hover{
+        border:1px solid #6eacfe;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<form action="">
+    <div class="tableForm" style="width:400px;">
+        <p style="margin-left: 30px">
+            <span style="float: left;position: relative;left:-15px" class="tips-danger"><img src="../../Application/ESAdmin/Public/images/img/danger.png"></span>
+            <span style="color:grey">该员工已设置为负责人，请选择交接人员。</span>
+        </p>
+        <div class="row" style="margin-top: 20px">
+            <div class="caption" style="width: 80px"><span><span style="color:#FF0000">*</span>员工：</span></div>
+            <div class="inputbox">
+                <!--<select id="role_select" name="role_ids" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization/roleList/'" data-placeholder="请选择一个角色">
+                    <option value=""></option>
+                </select>
+                <input type="hidden" name="role_ids_changed" value="1">-->
+                <input name="staff_name" class="easyui-validatebox" placeholder="请选择员工" required style="width: 280px">
+                <input name="staff_id" type="hidden">
+            </div>
+        </div>
+        <!--<div class="row" style="margin-left: 50px;margin-top: 20px">
+            <div class="caption"><span><span style="color:#FF0000">*</span>员工：</span></div>
+            <div class="inputbox">
+                <input name="role_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')"
+                      placeholder="请输入角色名(最多10个字)" value="" title="" required>
+            </div>
+        </div>-->
+    </div>
+    <div class="form-actions" id='Organization-form-actions' style="margin-top: 20px;margin-bottom: 10px;height: auto;">
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="replaceStaff()">保存</a>
+            <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()" style="margin-left: 20px">关闭</a>
+        </div>
+    </div>
+</form>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script>
+    function replaceStaff(){
+        var replace_id = $("input[name='staff_id']").val();
+        var user_ids = [];
+        user_ids.push("{$id}");
+        if(replace_id != ""){
+            $.post("Organization/handlerReplaceStaff",{replace_id:replace_id,user_ids:user_ids},function(result){
+                if(result.code == 0){
+                    //$('#role-datagrid').datagrid("reload");
+                    $("#Organization-datagrid").datagrid("reload");
+                    getTrees();
+                    closeDialog();
+                }
+                console.log(111);
+                $.dialog.tips(result.message);
+            },'json')
+        }else{
+            $.dialog.tips("请选择一个角色！");
+        }
+    }
+
+    $(function(){
+        autocompleteAjaxEx($("input[name='staff_name']").eq(0),"WrkAgreement/service_manList/",{
+            formatItem(row){
+                var mobile = row['mobile'];
+                var item_text = $.format(
+                    "<div style='display: flex;flex-direction: row;font-size: 13px;padding: 5px'>" +
+                    "<div style='flex: 1'>姓名：<span style='color:#368bfe'>{0}</span></div>"+
+                    "<div style='flex: 1'>部门：<span style='color:#368bfe'>{1}</span></div>"+
+                    "</div>",
+                    [padLeft(row.name,8," "),row.branch_name]);
+                return item_text;
+            },
+            onSelected:function(row){
+                $("input[name='staff_id']").eq(0).val(row.id);
+            }
+        });
+        $("input[name='staff_name']").on("change",function(){
+            if($("input[name='staff_name']").length > 0 && $("input[name='staff_name']").val() == ""){
+                $("input[name='staff_id']").val("");
+            }
+        })
+    })
+</script>

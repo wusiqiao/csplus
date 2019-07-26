@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文章预览</title>
+    <style>
+        p{
+            width: 100%;
+            word-wrap:break-word;
+            word-break:break-all;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body style="margin: 0;padding: 20px 16px 12px;">
+    <div style="max-width: 677px;margin: 0 auto;">
+        <h2 id="preview-title" style="margin-bottom: 22px;font-size: 22px;"></h2>
+        <div style="margin-bottom: 22px;">
+            <span id="preview-author" style="color:#576b95;margin: 0 10px 10px 0;font-size: 15px;"></span>
+            <span id="preview-create_time" style="color:rgba(0,0,0,0.3);margin: 0 10px 10px 0;font-size: 15px;"></span>
+        </div>
+        <div id="preview-content"></div>
+    </div>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.js"></script>
+    <script>
+        var id = location.href.split("/").pop();
+        (function(){
+            $.get("/MaterialCenter/getDetail?id=" + id, function(data){
+                console.log(data);
+                var ary = data.message;
+                //var author = ary.author || "";
+                var create_time = formatterCreateTime(ary.create_time);
+
+                $("#preview-title").text(ary.title);
+                $("#preview-author").text(ary.author);
+                $("#preview-create_time").text(create_time);
+                $("#preview-content").html(ary.content);
+            }, 'json')
+            function formatterCreateTime (val) {
+                val = parseInt(val) * 1000;
+                var date = new Date(val);
+                var Y = date.getFullYear() + '-';
+                var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+                var D = date.getDate() < 10 ? '0' + date.getDate() + ' ' : date.getDate() + ' ';
+                var h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
+                var m = date.getMinutes() < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
+                var s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+                return Y + M + D + h + m + s;
+            }
+        })()
+    </script>
+</body>
+</html>

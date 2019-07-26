@@ -1,0 +1,487 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .grey{
+        background: grey;
+    }
+    .search-panel{
+        display: block !important;
+    }
+    .datagrid-body::-webkit-scrollbar {
+        display: none;
+    }
+    .button-btn{
+        padding: 8px 40px;
+        background-color: #368BFE;
+        color: #fff ;
+        border-radius: 4px;
+        border: 0;
+        margin: 0 2px;
+    }
+    input[readonly]{
+        background-color: rgb(221, 221, 221) !important;
+    }
+
+</style>
+<script>
+    function formatRemark(value, row, index) {
+    var btnHtml = `<a onclick="
+        openAttachmentForm('备注附件', [{text:'备注附件',attach_group:'`+value+`'}])
+    ">查看</a>`;
+    return btnHtml;
+
+}
+</script>
+<div class="detailcontainer" id="WrkReceivablesAccount-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="WrkReceivablesAccount-dataform" method="post" name="WrkReceivablesAccount-dataform">
+        <div class="tableForm"  style="width:1000px;">
+            <empty name="model.id">
+                <input name="id"  type="hidden" value="{$model.id}">
+                <div class="row">
+                    <div class="caption"><span><span style="color:#FF0000">*</span>{$Think.lang.RECEIVABLES_ACCOUNT_NAME}：</span></div>
+                    <div class="inputbox">
+                        <input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" />
+                    </div>
+                    <div class="caption"><span><span style="color:#FF0000">*</span>{$Think.lang.RECEIVABLES_ACCOUNT_ACCOUNT}：</span></div>
+                    <div class="inputbox">
+                        <input name="account" class="easyui-validatebox" data-options="required:true" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" value="{$model.account}" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.RECEIVABLES_ACCOUNT_INITIAL_BALANCE}：</span></div>
+                    <div class="inputbox">
+                        <input name="initial_balance" class="easyui-validatebox" value="{$model.initial_balance}" />
+                    </div>
+                </div>
+            </empty>
+            <notempty name="model.id">
+                <if condition="$model.is_view eq 1">
+                <else/>
+                <div style="height:500px;overflow-y:auto;">
+                <div class="details-section">
+                    <div class="details-content">
+                        <p class="line">
+                            <span class="txt">账户明细</span>
+                            <span class="drop-down"></span>
+                        </p>
+                    </div>
+                </div>
+                <div style="padding-left:30px;">
+                    <table class="search-table">
+                        <tbody>
+                        <tr>
+                            <th >收款期间：</th>
+                            <td>
+                                <div class="indexes-start-up indexes" data-toggle="mold">
+                                    <input class="easyui-datebox" name="begin_date" id="begin_date" data-options="onSelect:searchAction" placeholder="选择日期">-
+                                    <input class="easyui-datebox" name="end_date" id="end_date" data-options="onSelect:searchAction" placeholder="选择日期">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th >明细类型：</th>
+                            <td>
+                                <div class="indexes-start-up indexes" data-toggle="mold">
+                                    <div class="btn-screening btn-screening-on"  data-status="0">全部</div>
+                                    <div class="btn-screening" data-status="1">收入</div>
+                                    <div class="btn-screening" data-status="2">支出</div>
+                                    <input type="hidden" name="mold" value="0" class="filter-field">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>收入类型：</th>
+                            <td>
+                                <div class="indexes-start-up indexes" data-toggle="income">
+                                    <div class="btn-screening btn-screening-disable"  data-status="0">全部</div>
+                                    <div class="btn-screening btn-screening-disable" data-status="1">充值</div>
+                                    <div class="btn-screening btn-screening-disable" data-status="2">入款</div>
+                                    <input type="hidden" name="income" value="0" class="filter-field">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>支出类型：</th>
+                            <td>
+                                <div class="indexes-start-up indexes" data-toggle="pay">
+                                    <div class="btn-screening btn-screening-disable"  data-status="0">全部</div>
+                                    <div class="btn-screening btn-screening-disable" data-status="1">提现</div>
+                                    <div class="btn-screening btn-screening-disable" data-status="2">出款</div>
+                                    <input type="hidden" name="pay" value="0" class="filter-field">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="text-align: right">公司：</th>
+                            <td>
+                                <div style="">
+                                    <input type="text" name="company" class="easyui-validatebox filter-field" placeholder="请输入公司名称" style="margin-left: 8px">
+                                    <input type="hidden" name="company_id" class="easyui-validatebox filter-field">
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="padding-left:30px;margin-bottom: 20px">
+                    <p>
+                        <a class="common-blue-btn" href="javascript:void(0)" onclick="paymentAction()">收款账户出款</a>
+                        <a class="common-blue-btn" href="javascript:void(0)" onclick="incomeAction()">收款账户入款</a>
+                        <!-- <a class="common-blue-btn" href="javascript:void(0)" onclick="deleteAction()">删除到款记录</a> -->
+                    </p>
+                    <div style="width:100%;overflow-x:auto;">                        
+                    <div style="width:1800px;height:400px;">
+                    <table id="finance-datagrid" class="easyui-datagrid datagrid" data-options="url:'WrkReceivablesAccount/finance/id/{$model.id}',
+                    pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+                    pageSize:<empty name='pagesize'>50<else/>{$pagesize}</empty>,singleSelect: true">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'id',hidden:true"></th>
+                                <th data-options="field:'customer_name',width:140,align:'left'">账户客户负责人</th>
+                                <th data-options="field:'company_name',width:200,align:'left'">公司</th>
+                                <th data-options="field:'leader',width:140,align:'left'">账户商户负责人</th>
+                                <th data-options="field:'fina_time',width:140,align:'left',formatter:formatDateTime">发生日期</th>
+                                <th data-options="field:'detail_type',width:80,align:'left'">明细类型</th>
+                                <th data-options="field:'income_amount',width:100,align:'left'">收入金额</th>
+                                <th data-options="field:'income_type',width:80,align:'left'">收入类型</th>
+                                <th data-options="field:'pay_amount',width:100,align:'left'">支出金额</th>
+                                <th data-options="field:'pay_type',width:80,align:'left'">支出类型</th>
+                                <th data-options="field:'recharge_poundage',width:100,align:'left'">充值手续费</th>
+                                <th data-options="field:'cash_poundage',width:100,align:'left'">提现手续费</th>
+                                <th data-options="field:'actual_in',width:100,align:'left'">实入金额</th>
+                                <th data-options="field:'actual_out',width:100,align:'left'">实出金额</th>
+                                <th data-options="field:'balance',width:100,align:'left'">账户余额</th>
+                                <th data-options="field:'attach_group',width:80,align:'left',formatter:formatRemark">备注附件</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    </div>
+                    </div>
+                </div>
+                <div id="statistics">
+<!--                     <div  class="details-section">
+                        <div class="details-content">
+                            <p class="line">
+                                <span style="float:left;">《充值实收总额(充值总额-充值手续费总额):</span>
+                                <span style="float:left;width:120px;">{{recharge_amount}}</span>
+                                <span style="float:left;">》+《入款总额:</span>
+                                <span style="float:left;width:120px;">{{in_amount}}</span>
+                                <span style="float:left;">》=《实入总额:</span>
+                                <span style="float:left;width:120px;">{{actual_in}}</span>
+                                <span style="float:left;">》</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="details-section">
+                        <div class="details-content">
+                            <p class="line">
+                                <span style="float:left;"> 《提现实付总额(提现总额-提现手续费总额):</span>
+                                <span style="float:left;width:120px;">{{cash_amount}}</span>
+                                <span style="float:left;">》+《出款总额:</span>
+                                <span style="float:left;width:120px;">{{out_amount}}</span>
+                                <span style="float:left;">》=《实出总额:</span>
+                                <span style="float:left;width:120px;">{{actual_out}}</span>
+                                <span style="float:left;">》</span>
+                            </p>
+                        </div>
+                    </div> -->
+                    <!--<div class="details-section" style="margin-top:50px;display: none">
+                        <div class="details-content">
+                            <p class="line">
+                                <span class="txt">付款总额:{{statistics.total_pay}}</span>
+                                <span class="drop-down"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div style="width:700px;height:300px;padding-left:30px;display: none">
+                        <table id="pay-datagrid" class="easyui-datagrid datagrid" data-options="url:'WrkReceivablesAccount/payList/id/{$model.id}',pagination:false">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'id',hidden:true"></th>
+                                <th data-options="field:'company_name',width:100,align:'left'">公司</th>
+                                <th data-options="field:'customer_leader',width:100,align:'left'">收款客户负责人</th>
+                                <th data-options="field:'contract_name',width:100,align:'left'">合同名称</th>
+                                <th data-options="field:'leader',width:100,align:'left'">收款商户负责人</th>
+                                <th data-options="field:'pay_date',width:100,align:'left',formatter:formatDate">发生日期</th>
+                                <th data-options="field:'pay_amount',width:100,align:'left'">收入金额</th>
+                                <th data-options="field:'attach_group',width:100,align:'left',formatter:formatRemark">备注附件</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div class="details-section" style="display: none">
+                        <div class="details-content">
+                            <p class="line">
+                                <span class="txt">退款总额:{{statistics.total_refund}}</span>
+                                <span class="drop-down"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div style="width:700px;height:300px;padding-left:30px;display: none">
+                        <table id="refund-datagrid" class="easyui-datagrid datagrid" data-options="url:'WrkReceivablesAccount/refundList/id/{$model.id}',pagination:false">
+                            <thead>
+                                <tr>
+                                    <th data-options="field:'id',hidden:true"></th>
+                                    <th data-options="field:'company_name',width:100,align:'left'">公司</th>
+                                    <th data-options="field:'customer_leader',width:100,align:'left'">收款客户负责人</th>
+                                    <th data-options="field:'contract_name',width:100,align:'left'">合同名称</th>
+                                    <th data-options="field:'leader',width:100,align:'left'">收款商户负责人</th>
+                                    <th data-options="field:'refund_date',width:100,align:'left',formatter:formatDate">发生日期</th>
+                                    <th data-options="field:'refund_amount',width:100,align:'left'">支出金额</th>
+                                    <th data-options="field:'attach_group',width:100,align:'left',formatter:formatRemark">备注附件</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>-->
+                </div>
+                </if>
+            </notempty>
+            </div>
+        </div>
+    </form>
+    <empty name="model.id">
+    
+    <div class="form-actions" id='WrkReceivablesAccount-form-actions'>
+    <div class='actions-sysdefault'>
+        <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+        <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="action_update('WrkReceivablesAccount')">保存</a>
+        </if>
+        <!-- <notempty name="model.id"> -->
+        <!-- <if condition="($permissions.delete eq 1) "> -->
+            <!-- <a href="javascript:void(0)" class="modal-close-btn" style="width:auto" plain="true" onclick="another_delete()">删除</a> -->
+        <!-- </if> -->
+        <!-- </notempty> -->
+        <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+     </div>
+     </empty>
+ </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+    $(function() {
+        var $custom_actions = $('#WrkReceivablesAccount-actions-custom');
+        if ($custom_actions.length > 0){
+            $custom_actions.appendTo($('#WrkReceivablesAccount-form-actions')).show();
+        }
+    });
+
+    $('div.indexes-start-up > .btn-screening').on('click','',function(){
+        if (!$(this).hasClass('btn-screening-on')) {
+            var toggle = $(this).parent('div').data('toggle');
+            var status = $(this).data('status');
+            if(toggle != 'mold'){
+                var mold_status = $(".indexes[data-toggle=mold]").find(".btn-screening-on").data("status");
+                if(mold_status == 0){
+                    return false;
+                }
+            }
+            if (toggle == 'mold'){
+                if (status == 2) {
+                    $('.indexes[data-toggle=income]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+                    $('.indexes[data-toggle=pay]').addClass('indexes-start-up').find('div:first').addClass('btn-screening-on');
+
+                    $('.indexes[data-toggle=income]').find('div').addClass("btn-screening-disable");
+                    $('.indexes[data-toggle=pay]').find('div').removeClass("btn-screening-disable");
+
+                    $('input[name=income]').val('');
+                } else if(status == 1) {
+                    $('.indexes[data-toggle=pay]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+                    $('.indexes[data-toggle=income]').addClass('indexes-start-up').find('div:first').addClass('btn-screening-on');
+                    
+                    $('.indexes[data-toggle=pay]').find('div').addClass("btn-screening-disable");
+                    $('.indexes[data-toggle=income]').find('div').removeClass("btn-screening-disable");
+
+                    $('input[name=pay]').val('');
+                } else {
+                    $('.indexes[data-toggle=pay]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+                    $('.indexes[data-toggle=income]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+
+                    $('.indexes[data-toggle=pay]').find('div').addClass("btn-screening-disable");
+                    $('.indexes[data-toggle=income]').find('div').addClass("btn-screening-disable");
+
+                    $('input[name=pay]').val('');
+                }
+            }
+            /*if (toggle == 'mold'){
+                var status_old;
+                status_old = $(this).siblings('.btn-screening-on').data('status');
+                if (status_old == 2) {
+                    $('input[name=income]').val(0);
+                    $('.indexes[data-toggle=income]').addClass('indexes-start-up').find('div:first').addClass('btn-screening-on');
+                } else if (status_old == 1) {
+                    $('input[name=pay]').val(0);
+                    $('.indexes[data-toggle=pay]').addClass('indexes-start-up').find('div:first').addClass('btn-screening-on');
+                }
+            }*/
+            if ($(this).parent('div').hasClass('indexes-start-up')) {
+                $(this).addClass('btn-screening-on').siblings('.btn-screening').removeClass('btn-screening-on');
+                $(this).siblings('input').val(status);
+                searchAction();
+            }
+        }
+    })
+
+    function searchAction(){
+        var begin_date = $('#begin_date').datebox('getValue');
+        var end_date = $('#end_date').datebox('getValue');
+        var detail_type = $('input[name=mold]').val();
+        var income_type = $('input[name=income]').val();
+        var pay_type = $('input[name=pay]').val();
+        var company_id = $('input[name=company_id]').val();
+        $('#finance-datagrid').datagrid('load',{
+            account_id:account_id,
+            begin_date:begin_date,
+            end_date:end_date,
+            detail_type:detail_type,
+            income_type:income_type,
+            pay_type:pay_type,
+            company_id:company_id
+        });
+    }
+
+    var vue = new Vue({
+        el:"#statistics",
+        data:{
+            recharge_amount:0,
+            in_amount:0,
+            actual_in:0,
+            cash_amount:0,
+            out_amount:0,
+            actual_out:0,
+            total_pay:0,
+            total_refund:0,
+            statistics:{
+                total_pay:0,
+                total_refund:0
+            }
+        }
+    });
+
+// recharge_amount
+// in_amount
+// actual_in
+// cash_amount
+// out_amount
+// actual_out
+// total_pay
+// total_refund
+
+    $('#finance-datagrid').datagrid({
+        onLoadSuccess: function(data) {
+            var recharge_amount = 0;
+            var in_amount = 0;
+            var actual_in = 0;
+            var cash_amount = 0;
+            var out_amount = 0;
+            var actual_out = 0;
+            $(data.rows).each(function(index,val){
+                if (val.income_type=="充值") {
+                    recharge_amount = mathAdd(recharge_amount,val.actual_in);
+                    actual_in = mathAdd(actual_in,val.actual_in);
+                } else if (val.income_type=="入款") {
+                    in_amount = mathAdd(in_amount,val.actual_in);
+                    actual_in = mathAdd(actual_in,val.actual_in);
+                } else if (val.pay_type=="提现") {
+                    cash_amount = mathAdd(cash_amount,val.actual_out);
+                    actual_out = mathAdd(actual_out,val.actual_out);
+                } else if (val.pay_type=="出款") {
+                    out_amount = mathAdd(out_amount,val.actual_out);
+                    actual_out = mathAdd(actual_out,val.actual_out);
+                } 
+            });
+            vue.recharge_amount = recharge_amount;
+            vue.in_amount = in_amount;
+            vue.actual_in = actual_in;
+            vue.cash_amount = cash_amount;
+            vue.out_amount = out_amount;
+            vue.actual_out = actual_out;
+        }
+    });
+
+    function mathAdd(a,b) {
+       var sum = (a*100 + b*100)/100;
+       return sum.toFixed(2);
+    }
+
+    $('#pay-datagrid').datagrid({
+        onLoadSuccess: function(data) {
+            var sum = 0;
+            $(data.rows).each(function(index,val){
+               sum = mathAdd(sum,val.pay_amount);
+            });
+            vue.$nextTick(function() {
+                vue.statistics.total_pay = sum;
+            });
+        }
+    });
+    $('#refund-datagrid').datagrid({
+        onLoadSuccess: function(data) {
+            var sum = 0;
+            $(data.rows).each(function(index,val){
+               sum = mathAdd(sum,val.refund_amount);
+            });
+            vue.$nextTick(function() {
+                vue.statistics.total_refund = sum;
+            });
+        }
+    });
+
+    function paymentAction() {
+        createDialog("{$Think.const.CONTROLLER_NAME}/payment/id/{$model.id}", '收款账户出款', 'dlg-payment');
+    }
+
+    function incomeAction() {
+        createDialog("{$Think.const.CONTROLLER_NAME}/income/id/{$model.id}", '收款账户入款', 'dlg-income');
+    }
+    // function deleteAction() {
+    //     var row = $("#contract-datagrid").datagrid("getSelected");
+    //     console.info(row);
+    //     if (row) {
+    //         var str = '此合同收款未结束,系统将删除收款明细中的记录。';
+    //         if (row.end_status==1) {
+    //             str = '此合同收款已结束,系统将重新激活收款工作，请根据实际情况作收款工作或坏账处理。';
+    //         }
+    //         $.dialog.confirm(str, function () {
+    //             showMaskLayer();
+    //             $.post('/{$Think.const.CONTROLLER_NAME}/deleteRecord/id/'+row.receivables_id, function(result) {
+    //                 hideMaskLayer();
+    //                 $.dialog.tips(result.message);
+    //                 if (result.code==0) {
+    //                     searchAction();
+    //                 }
+    //             }, 'json')
+    //         });
+    //     } else {
+    //         $.dialog.tips("请先选择合同");
+    //     }
+    // }
+
+    autocompleteAjax($("input[name='company']"), "WrkAgreement/companyList", function (item) {
+        $("input[name='company_id']").val(item.id);
+        searchAction();
+    });
+
+    $("input[name='company']").on("change",function(){
+        if($("input[name='company']").length > 0 && $("input[name='company']").val() == ""){
+            $("input[name='company_id']").val("");
+            searchAction();
+        }
+    })
+
+    $("#finance-datagrid").datagrid({
+        onLoadSuccess:function(data){
+            if(data.total == 0){
+                var body = $(this).data().datagrid.dc.body2;
+                var width = body.width();
+                body.find('table tbody').append('<tr>center><td width = '+width+' style="color: rgb(180, 180, 180);width:80%;height:40px;text-align:center;min-width: 580px;line-height: 40px;font-size:18px" colspan='+9+'>暂无数据!</td></center></tr>');
+            }
+        }
+    })
+
+</script>

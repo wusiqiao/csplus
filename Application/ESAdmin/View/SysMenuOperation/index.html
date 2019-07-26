@@ -1,0 +1,57 @@
+<style>
+    .detailcontainer{
+        height: calc(100% - 10px);
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <div style="width:99%;border: 1px #ccc solid;margin: 0 0 0 5px;max-height: 100%;overflow-y: auto;">
+    <input type="hidden" name="menu_operation_changed" value="0" />
+    <div style="border-bottom: 1px #ccc solid;background: #F5F5F5; position:absolute; width: 99%; text-align: right;padding: 5px 0 5px 0px; height: 35px; overflow: hidden">
+        <div style="width:99%">
+        <a href="javascript:void(0)" class="common-blue-btn" plain="true" onclick="action_update_sys_menu_operation()">保存</a>
+        <a href="javascript:void(0)" class="common-blue-btn" plain="true" onclick="load_sys_menu_operation()">取消</a>
+        </div>
+    </div>
+    <div style="width: 99%; height: 100%;margin: 45px 0px 0px 5px;" >
+        <ul style="border: 0px #F2F2F2 solid;height: 99%" id="tree_menu_operation" class="easyui_tree" data-options="animate:true,checkbox:true,cascadeCheck:true"></ul>
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        load_sys_menu_operation();
+    });
+    function check_treeItem(node, checked) {
+        var prefix = "menu_operation";
+        data_changed(prefix + "_changed");
+    }
+
+    function action_update_sys_menu_operation() {
+        var changed = parseInt($("input[name=menu_operation_changed").val());
+        if (changed === 1) {
+            var data_list = new Array();
+            var nodes = $('#tree_menu_operation').tree('getChecked');
+            $(nodes).each(function (index, element) {
+                if (element.leaf && element.parent_id) {
+                    data_list.push(element.parent_id + "_" + element.id);
+                }
+            });
+            $.post("SysMenuOperation/update", {data: data_list}, function (result) {
+                if (result.code === 0) {
+                    $.dialog.tips("更新成功！");
+                }
+            },'json')
+        }
+
+    }
+
+    function load_sys_menu_operation() {
+        $.getJSON("SysMenuOperation/list", {}, function (data) {
+            $("#tree_menu_operation").tree({
+                onCheck: check_treeItem,
+                data: data
+            });
+        })
+    }
+    ;
+</script>

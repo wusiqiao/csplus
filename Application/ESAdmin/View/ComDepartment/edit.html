@@ -1,0 +1,64 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" /></div>                
+                <div class="caption"><span>{$Think.lang.FLD_DEPT_NO}：</span></div>
+                <div class="inputbox"><input name="querykey" class="easyui-validatebox" data-options="required:true" value="{$model.querykey}" /></div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_DIRCTOR}：</span></div>
+                <div class="inputbox">
+                    <select name="director_id" class="chosen-select" data-options="search_async:true,value:'{$model.director_id}',search_key_url:'SysUser/keyNameList/'">
+                    </select>
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_PARENT_ID}：</span></div>
+                <div class="inputbox">
+                    <select name="parent_id" class="chosen-select" data-options="all:true,value:'{$model.parent_id}',search_key_url:'ComProject/keyNameList/'">
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_LEADER}：</span></div>
+                <div class="inputbox_x2">
+                    <select name="leaders[]" class="chosen-select"  data-options="search_async:true,value:'{$model.leaders}',search_key_url:'SysUser/keyNameList/'" multiple>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_ADDRESS}：</span></div>
+                <div class="inputbox_x2"><input name="address" class="easyui-validatebox" value="{$model.address}" /></div>                           
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_CONTACT}：</span></div>
+                <div class="inputbox"><input name="contact" class="easyui-validatebox"  value="{$model.contact}" /></div>
+                <div class="caption"><span>{$Think.lang.FLD_PHONE}：</span></div>
+                <div class="inputbox"><input name="phone" class="easyui-validatebox"  value="{$model.phone}" /></div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_FAX}：</span></div>
+                <div class="inputbox"><input name="fax" class="easyui-validatebox"  value="{$model.fax}" /></div>
+                <div class="caption"><span>{$Think.lang.FLD_IS_VALID}：</span></div>
+                <div class="inputbox"><input type="hidden" name="is_valid" value="0" />
+                    <input name="is_valid" class="easyui-validatebox"  type="checkbox" value="1" <eq name="model.is_valid" value="1">checked</eq> /></div>               
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_SORT}：</span></div>
+                <div class="inputbox"><input name="sort" class="easyui-numberbox easyui-validatebox"  value="{$model.sort}" /></div>
+            </div>
+            <div class="row">
+                <div class="caption block"><span>{$Think.lang.FLD_COMMENTS}：</span></div>
+                <div class="inputbox_x2"><textarea name="comments" class="easyui-validatebox">{$model.comments}</textarea></div>
+            </div>
+
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script type="text/javascript">
+    $("#{$Think.const.CONTROLLER_NAME}-dataform").bind("afterUpdate", function(){
+        initial_branch_tree("{$Think.const.CONTROLLER_NAME}");  
+    });
+</script>

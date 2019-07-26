@@ -1,0 +1,55 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/updateRelation" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_NO}：</span></div>
+                <div class="inputbox"><input name="no" class="easyui-validatebox" readonly value="{$model.no}" /></div>
+                <div class="caption"><span>系统科目：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox" readonly value="{$model.name}" /></div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_FULL_NAME}：</span></div>
+                <div class="inputbox_x2"><input name="full_name" class="easyui-validatebox" readonly value="{$model.full_name}" /></div>
+            </div> 
+            <div class="row">
+                <div class="caption"><span>对应科目：</span></div>
+                <div class="inputbox_x2">
+                    <select name="user_subject_id" class="chosen-select" data-options="search_async:true,value:'{$model.user_subject_id}',search_key_url:'VcrSubject/keyNameList/'">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div> 
+        </div>
+    </form>
+    <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="action_relative()">确定</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog('{$Think.const.CONTROLLER_NAME}')">关闭</a>
+        </div>
+    </div>
+</div>
+<script>
+    function action_relative() {
+        var frameId = "{$Think.const.CONTROLLER_NAME}";
+        var $dataform = $("#{$Think.const.CONTROLLER_NAME}-dataform");
+        var url = $dataform.attr("action");
+        $.post(url, $dataform.serialize(), 
+            function(ret){
+            var pattern = /^\{.*code.*\}$/gi;
+            if (!pattern.test(ret)){
+                $.dialog.alert("映射错误！");
+                return false;
+            }
+            var result = $.parseJSON(removeJsonQuote(ret));
+            if (result.code === 0) {
+                $.dialog.tips("映射成功！");                
+                $.dialog({id: frameId}).close();
+                refreshGrid(frameId, result.message, "update");                
+            } else {
+                $.dialog.tips(result.message);
+            }
+        });
+
+}
+</script>

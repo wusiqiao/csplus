@@ -1,0 +1,140 @@
+<style>
+    td[field='error']{color:red;}
+</style>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th data-options="field:'ck',checkbox:true"></th>
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'accounting_section',width:100,align:'left'">会计期间</th>
+        <th data-options="field:'bill_date',width:100,align:'left',formatter:formatDate">录入日期</th>
+        <th data-options="field:'bill_no',width:100,align:'left'">录入单号</th>
+        <th data-options="field:'bill_type_text',width:100,align:'left'">单证类型</th>
+        <th data-options="field:'total_amount',width:100,align:'left'">金额</th>
+        <th data-options="field:'total_tax',width:100,align:'left'">税额</th>
+        <th data-options="field:'total_sum',width:100,align:'left'">总额</th>
+        <th data-options="field:'image_id',width:100,align:'center'">影像</th>
+        <th data-options="field:'creator',width:80,align:'left'">{$Think.lang.FLD_CREATOR}</th>
+        <th data-options="field:'memo',width:160,align:'left'">备注</th>
+        <th data-options="field:'error',width:160,align:'left'">错误原因</th>
+        <!--<th data-options="field:'detail',width:80,align:'center',formatter:formatBillUnCheckDetail">详情</th>-->
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<div id="BillUnCheck-action-extend">
+    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:auto" icon="fa fa-newspaper-o fa-lg" plain="true" onclick="action_show_draftdlg()">生成凭证草稿</a><div class="btn-separator"></div>
+</div>
+
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table">
+        <tr>
+            <th>单号：</th>
+            <td>
+                <input name="q-bill_no"  class="easyui-validatebox filter-field" value="" />
+            </td>
+            <th>会计期间</th>
+            <td>
+                <select class="chosen-select  filter-field" style="width:120px;" name="q-accounting_section">
+                    <option value="">所有月份</option>
+                </select>
+            </td>
+            <th>票证类型：</th>
+            <td>
+                <select name="q-bill_flag" class="chosen-select filter-field">
+                    <option value="">所有类型</option>
+                    <option value="{$Think.const.FLAG_BILL_TAX_PAY}">外取票</option>
+                    <option value="{$Think.const.FLAG_BILL_TAX_INCOME}">自开票</option>
+                    <option value="{$Think.const.FLAG_BILL_SALARY}">工资册</option>
+                    <option value="{$Think.const.FLAG_BILL_BANK}">银行类</option>
+                </select>
+            </td>
+            <th>总额：</th>
+            <td>
+                <input type="text" class="easyui-validatebox filter-field" name="q-total_sum" data-options="validType:'number'">
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    create_ccounting_section($("select[name='q-accounting_section']"));
+    function action_show_draftdlg() {
+        var rows = getDataGrid("BillUnCheck").datagrid('getChecked');
+        if ($("select[name='q-accounting_section']").val() == "" && rows.length == 0) {
+            $.dialog.tips("请选择要生成的会计期间");
+            return;
+        }
+        var filter_target = getGridToolbar("BillUnCheck").find(".filter-field");
+        var query_result = getQueryParams(filter_target);
+        var last_query = getSearchPanel("BillUnCheck").data("query");
+        if (last_query == undefined || (JSON.stringify(last_query) !== JSON.stringify(query_result))) {
+            doSearchQuery('BillUnCheck');
+        }
+        var has_warning = ($("body").data("has_warning") == 1);
+        if (!has_warning){
+            $("body").data("has_warning", 1);
+            $.dialog.confirm("请确认科目已经映射完成，且已经导入银行对账单", function(){
+                start_build_draf(rows);
+            });
+        }else{
+            start_build_draf(rows);
+        }
+    }
+
+    function start_build_draf(rows) {
+        $.post("/BillUnCheck/getVoucherSubject", function(result){
+            if (result.code == 0){
+                var data = {};
+                var customer = $("#customer-info").text();
+                var gen_all = $(".datagrid-header-check input[type=checkbox]").prop("checked"); //全选
+                if (gen_all && rows.length > 0) {
+                    var options = getDataGrid("BillUnCheck").datagrid('getPager').data("pagination").options;
+                    if (options.total == 0) {
+                        $.dialog.tips("没有需要生成的记录");
+                        return false;
+                    }
+                    data = getSearchPanel("BillUnCheck").data("query");
+                }else{
+                    if (rows.length > 0) {
+                        data.id = [];
+                        $(rows).each(function () {
+                            data.id .push(this.id);
+                        });
+                    }else{
+                        $.dialog.tips("请勾选要生成的记录");
+                        return false;
+                    }
+                }
+                var text = gen_all?" 全部记录 ":"所选的"+rows.length+"条记录"
+                if (customer !== "") {
+                    $.dialog.confirm("确定开始生成客户【" + customer + "】"+ text +"到凭证草稿？",
+                        function () {
+                            $(".mask-layer").addClass("mask-layer-half-transparent").show();
+                            $.post("/VcrVoucherDraf/genDraf", data,
+                                function (result) {
+                                    $(".mask-layer").hide();
+                                    if(result.code == 0){
+                                        $.dialog.tips(result.message);
+                                        setTimeout('getDataGrid("BillUnCheck").datagrid("reload")', 2000);
+                                    }else{
+                                        if (result.code == 2){
+                                            getDataGrid("BillUnCheck").datagrid("reload");
+                                            $.dialog.alert(result.message+",详细查看错误原因");
+                                        }else{
+                                            $.dialog.tips(result.message);
+                                        }
+                                    }
+                                }, "json")
+                                .error(function (event, xhr) {
+                                    $.dialog.tips("生成错误:" + xhr.statusText);
+                                    $(".mask-layer").hide();
+                                });
+                        });
+                } else {
+                    alert("请选择客户套账！");
+                }
+            }else{
+                $.dialog.alert(result.message);
+            }
+        },"json");
+    }
+</script>

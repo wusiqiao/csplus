@@ -1,0 +1,753 @@
+<style type="text/css">
+.pay_content_bankinfo {
+    width: 80%;
+    height: 200px;
+    background:#f6f9fe;
+    padding: 2%;
+    margin: 0 auto;
+}
+.pay_content_bankinfo h3 {
+    background:url("{$Think.MODULE_PATH}Public/images/icon/bankcard.png") no-repeat 2% 50%;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 55px;
+    font-size: 14px;
+    color:#3f3f4c;
+    border-bottom: 1px solid #9e938b;
+}
+.pay_content_bank {
+    margin-top: 18px;
+}
+.pay_content_bank li {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 36px;
+}
+.pay_content_bank li span {
+    display:inline-block;
+    width: 100px;
+}
+.on {
+    color:#368BFE;
+}
+.pay_way{
+    padding-left: 30px;
+    margin: 0px 0px 75px 0;
+}
+.pay_way span{
+    display: inline-block;
+    width: 140px;
+    height: 50px;
+    background-size: 100% 100%;
+    margin: 0 10px;
+}
+.offline_pay{
+    background-image: url("{$Think.MODULE_PATH}Public/images/icon/icon-offline.png");
+}
+.offline_pay_uncheck{
+    background-image: url("{$Think.MODULE_PATH}Public/images/icon/icon-offline-uncheck.png");
+}
+.weixin_pay{
+    background-image: url("{$Think.MODULE_PATH}Public/images/icon/icon-wx.png");
+}
+.weixin_pay_uncheck{
+    background-image: url("{$Think.MODULE_PATH}Public/images/icon/icon-wx-uncheck.png");
+}
+.weixin_pay_disable{
+    background-image: url("{$Think.MODULE_PATH}Public/images/icon/icon-weixin.png");
+}
+.numberbox{
+    border-radius: 0px !important;
+}
+
+.table_hd,.table_bd,.table_bd_right{
+    display: inline-block;
+    height: 34px;
+    line-height: 34px;
+}
+.table_hd{
+    width: 130px;
+    text-align: right;
+}
+.table_bd{
+    width: 210px;
+    text-align: left;
+}
+.table_bd_check{
+    width: 34px;
+    text-align: center;
+}
+.table_bd_right{
+    float: right;
+    height: 34px;
+    line-height: 34px;
+    font-size: 16px;
+    margin-right:50px;
+}
+.use_coupons{
+    display: inline-block;
+    height: 34px;
+    line-height: 34px;
+    width: 100px;
+    text-align: center;
+    border: 1px solid #529bfd;
+    color: #529bfd;
+    cursor: pointer;
+}
+.use_coupons:hover{
+    border: 1px solid #6eacfe;
+    color: #6eacfe;
+}
+/* 优惠券 */
+#show_0_selectCoupons{
+    width: 100%;
+    height: 580px;
+    overflow-y: auto;
+}
+.selectcoupon-box{
+    width: 345px;
+    margin: 0px auto;
+}
+#show_0_selectCoupons::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+}
+#show_0_selectCoupons::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #d3d3d3;
+}
+#show_0_selectCoupons::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    background: #ededed;
+}
+.selectcoupon-item{
+    width: 100%;
+    height: 94px;
+    margin: 30px 0;
+}
+.selectcoupon-item-left,.selectcoupon-item-right{
+    float: left;
+	height: 94px;
+    background-color: #fdfdfc;
+    border-radius: 15px;
+}
+.selectcoupon-item-left{    
+    width: 247px;
+    box-shadow: -1px 2px 5px #d3d3d3;
+    position: relative;
+}
+.icon-coupon{
+    position: absolute;
+    width: 24px;
+	height: 32px;
+    top: -3px;
+    left: 14px;
+    background-image: url("{$Think.MODULE_PATH}Public/images/icon/icon-red.png");
+    background-size: 100% 100%;
+    font-size: 15px;
+    line-height: 32px;
+    text-align: center;
+    color: #fefcfc;
+}
+.selectcoupon-text-left{
+    width: 200px;
+	height: 66px;
+    margin: 15px 71px 15px 51px;
+}
+.selectcoupon-item-right{
+    width: 98px;
+    box-shadow: 2px 2px 5px #d3d3d3;
+}
+.selectcoupon-text-right{
+    width: 64px;
+	height: 74px;
+    margin: 10px 16px 10px 18px;
+}
+.selectcoupon-useType{
+    font-size: 12px;
+    margin-bottom: 10px;
+    color: #e11636;
+}
+.selectcoupon-val{
+    width:100%;
+    text-align:center;
+    font-size:26px;
+    font-weight: 700;
+    color: #e11636;
+}
+.selectcoupon-use{
+    width: 64px;
+	height: 21px;
+    line-height: 21px;
+    margin:0 auto;
+    text-align:center;
+    color: #fffefe;
+    font-size: 12px;
+    cursor: pointer;
+    background-color:#e11636;
+}
+.table_hd_coupons{
+    line-height: 34px;
+    color: #e91835;
+}
+.coupon-back{
+    width: 103px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background-color:#368bfe; 
+    color: #fff;
+    margin: 20px auto;
+    cursor: pointer;
+}
+.chosen-container{
+    position: absolute;
+    left:145px;
+}
+.chosen-container span{
+    color:#368bfe
+}
+</style>
+<div class="detailcontainer" style="width:700px;">
+    <form id="pay-form">
+        <div id="show_0" class="row">
+            <input type="hidden" name="id" value="{$model.id}">
+            <input type="hidden" name="company_id" value="{$model.company_id}">
+            <input type="hidden" name="order_sn" value="{$model.order_sn}">
+            <input type="hidden" name="attach_group" value="{$model.attach_group}">
+            <input type="hidden" id="sp_ticket_stock_id" name="sp_ticket_stock_id" >
+            <input type="hidden" id="reduce_cost" name="reduce_cost" value="0">
+            <div>
+                <div>
+                    <p>
+                        <span class="table_hd">公司名称：</span>
+                        <span class="table_bd"><input type="hidden" style="width:200px" class="easyui-validatebox" readonly="true" name="company_name" value="{$model.company_name}">{$model.company_name}</span>
+                    </p>
+                    <p>
+                        <span class="table_hd">合同名称：</span>
+                        <span class="table_bd"><input type="hidden" style="width:200px" class="easyui-validatebox" readonly="true" name="agreement_name" value="{$model.agreement_name}">{$model.agreement_name}</span>
+                    </p>
+                    <p>
+                        <span class="table_hd">合同金额：</span>
+                        <span class="table_bd"><input type="hidden" style="width:200px" class="easyui-validatebox" name="pay_amount" value="{$model.amount}" readonly="true">{$model.amount}</span>
+                    </p>
+                </div>
+                <hr style=" margin-top:15px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+                <div>
+                    <p style="margin: 30px 0;overflow: hidden;">
+                        <span class="table_hd">优惠券：</span>
+                        <span class="table_hd_coupons" style="display:none;" title="优惠券元（满即可使用）">优惠券元（满即可使用）</span>
+                        <span class="use_coupons" onclick="selectCoupons()">选择优惠券</span>
+                        <span class="table_bd_right" style="display: none;color:#666;"><span id="use_able"></span>个优惠券可用</span>
+                        
+                    </p>
+                    <p style="position:relative;margin: 30px 0;overflow: hidden;" class="balance_area">
+                        <span class="table_hd">余额付款：</span>
+                        <span class="table_bd"><input type="text" id="balance_amount" style="width:200px;margin-left: 5px;" class="easyui-numberbox" data-options="min:0,precision:2,max:{$model.balance_max},onChange:changeAmount,disabled:true" name="balance_amount" value="0" ></span>
+                        <span class="table_bd_check"><input type="checkbox" name="is_balance" value="0"></td></span>
+                        <span class="table_bd_right">可使用余额：{$model.balance_amount}</span>
+                    </p>
+                    <p style="margin: 30px 0;overflow: hidden;">
+                        <span class="table_hd">其他支付：</span>
+                        <span>
+                            <select class="table_bd chosen-select" name="pay_way" id="pay_way" >
+                                <if condition="$model.pay_status neq 30">
+                                    <option value="1">线下支付</option>
+                                </if>
+                                <if condition="$model.wxpay_open neq 30">
+                                    <option value="2">微信支付</option>
+                                </if>
+                            </select>
+                        </span>
+                        <span id="textTotal" class="table_bd_right">实际应付：<span style="color:#529bfd;font-size: 16px;">{$model.amount}</span></span>
+                    </p>
+                </div>
+            </div>
+            <div>
+                <hr style=" margin-top:15px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+                <div>
+                    <p style="margin: 30px 0;overflow: hidden;">
+                        <span class="table_bd_right" >支付总额：<span id="total_amount">{$model.amount}</span></span>
+                    </p>
+                </div>
+                <!-- <div align="right" style="margin: 20px 0;height: 30px;">
+                    <span id="textTotal" style="margin-right:50px;line-height: 30px;font-size: 16px;">实际应付：<span style="color:#529bfd;font-size: 16px;">{$model.amount}</span></span>
+                </div> -->
+
+                <!-- <div class="pay_way">
+                    <if condition="$model.pay_status neq 30">
+                        <if condition="$model.wxpay_open neq 10">
+                            <span id="offlineBtn" class="offline_pay" style="cursor: pointer;" onclick="offlineShow(this)"></span>
+                        <else/>
+                            <span id="offlineBtn" class="offline_pay_uncheck" style="cursor: pointer;" onclick="offlineShow(this)"></span>
+                        </if>
+                    </if>
+                    <if condition="$model.wxpay_open neq 30">
+                        <if condition="$model.wxpay_open eq 10 || $model.pay_status eq 30">
+                            <span id="wxBtn" class="weixin_pay" style="cursor: pointer;" onclick="wxShow(this)"></span>
+                        <else/>
+                            <span id="wxBtn" class="weixin_pay_uncheck" style="cursor: pointer;" onclick="wxShow(this)"></span>
+                        </if>
+                    </if> -->
+                    <!-- <if condition="$model.has_wx == 1">
+                    <else/>
+                        <span class="weixin_pay_disable" ></span>
+                    </if> -->
+                <!-- </div> -->
+            </div>
+            <div align="center" style="padding-bottom:40px;">
+                <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="nextStep()">立即支付</a>
+                <!-- <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>	 -->
+            </div>
+            <!-- <div class="easyui-tabs" style="margin:15px">
+                <div title="线下支付" style="height:700px;padding:20px;">
+                    <div class="pay_content_wrap">
+                        <div class="pay_content_bankinfo">
+                            <h3>银行账户信息</h3>
+                            <div class="pay_content_bank">
+                                <ul>
+                                    <li><span>收款人</span> {$model.unline_payee}</li>
+                                    <li><span>开户行</span> {$model.unline_bank_account}</li>
+                                    <li><span>卡&nbsp;&nbsp;&nbsp;&nbsp;号</span>
+                                        {$model.unline_card_number}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div title="微信支付" style="overflow:auto;padding:20px">
+                    <div class="pay_ma"><img src="data:image/png;base64,{$model.code}" alt=""></div>
+                    <div style="text-align: center;"><img width="175" src="{$Think.MODULE_PATH}Public/images/icon/message.png" alt=""></div>
+                    <p class="pay_txt5">请使用微信扫描二维码已完成支付</p>
+                    <p class="pay_txt5">二维码2小时内有效，请尽快支付</p>
+                </div>
+            </div> -->
+        </div>
+        <div id="show_0_selectCoupons" style="display: none;">
+            <!-- 优惠券容器 -->
+            <div class="selectcoupon-box">
+                <!-- 优惠券模板(可用) -->
+                <div class="selectcoupon-item" v-for="(item,index) in datas">
+                    <div class="selectcoupon-item-left">
+                        <span class="icon-coupon">券</span>
+                        <div class="selectcoupon-text-left">
+                            <div style="font-size: 16px;color: #040202;margin-bottom: 3px;">满{{item.least_cost}}元即可使用</div>
+                            <div class="selectcoupon-useType">店铺通用</div>
+                            <div style="font-size: 12px;color: #8b8888;">{{item.ticket_end_date}}到期</div>
+                        </div>
+                    </div>
+                    <div class="selectcoupon-item-right">
+                        <div class="selectcoupon-text-right">
+                            <div  class="selectcoupon-val">{{item.reduce_cost}}</div>
+                            <div style="width:100%;text-align:center;font-size:10px;color: #8b8888;">优惠券</div>
+                            <div class="selectcoupon-use" @click="useCoupon(item.id,item.reduce_cost,item.least_cost)">立即使用</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p>
+                <div class="coupon-back" onclick="cancelCoupon()">取消</div>
+            </p>
+        </div>
+        <div id="show_1" style="display: none;">
+            <div id="offline"
+                <if condition="$model.wxpay_open eq 10">
+                    style="padding-bottom:120px;display:none"
+                <else/>
+                    style="padding-bottom:120px"
+                </if>
+           >
+                <div style="margin: 40px 0;">
+                    <p style="text-align:center;font-size: 18px;">应付金额</p>
+                    <p id="offlineTotal" style="color:#529bfd;text-align:center;font-size: 18px;">{$model.amount}</p>
+                </div>
+                <div class="pay_content_wrap">
+                    <div class="pay_content_bankinfo">
+                        <h3>银行账户信息</h3>
+                        <div class="pay_content_bank">
+                            <ul>
+                                <li><span>收款人</span> {$model.unline_payee}</li>
+                                <li><span>开户行</span> {$model.unline_bank_account}</li>
+                                <li><span>卡&nbsp;&nbsp;&nbsp;&nbsp;号</span>
+                                    {$model.unline_card_number}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <p onclick="showAttachment()" style="color:#368BFE;cursor:pointer;padding-left: 60px">
+                    <img src="{$Think.MODULE_PATH}Public/images/icon/attachment.png" style="height:17px;width:17px">付款说明
+                </p>
+                <div align="center" style="padding-bottom:40px;">
+                    <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="previousStep()">返回</a>
+                    <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="customerPay()">支付完成</a>
+                </div>
+            </div>
+            <div id="wx" 
+                <if condition="$model.wxpay_open eq 10">
+                    style="padding-bottom:120px;"
+                <else/>
+                    style="padding-bottom:120px;display:none"
+                </if> 
+             >
+                <div align="center">
+                    <img id="payCode" src="data:image/png;base64,{$model.code}" alt="">
+                </div>
+                <div align="center">请使用微信扫描二维码已完成支付</div>
+                <div align="center">二维码2小时内有效，请尽快支付</div>
+                <!-- <div style="text-align: center;"><img width="175" src="{$Think.MODULE_PATH}Public/images/icon/message.png" alt=""></div> -->
+                <div align="center" style="padding-bottom:40px;">
+                    <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="previousStep()">返回</a>
+                </div>
+            </div>
+        </div>
+        <div id="show_1_true" style="display: none;padding-bottom: 360px;">
+            <div style="width:130px;height: 130px;margin: 75px auto 20px;"><img style="width:100%;" src="{$Think.MODULE_PATH}Public/images/icon/icon-pay-true.png" alt=""></div>
+            <p style="text-align:center;font-size: 18px;font-weight: 700;">支付成功!</p>
+        </div>
+        <div id="show_1_falst" style="display: none;padding-bottom: 360px;">
+            <div style="width:130px;height: 130px;margin: 75px auto 20px;"><img style="width:100%;" src="{$Think.MODULE_PATH}Public/images/icon/icon-pay-falst.png" alt=""></div>
+            <p style="text-align:center;font-size: 18px;font-weight: 700;">支付失败!</p>
+        </div>
+    </form>
+</div>
+<script>
+    var coupon = new Vue({
+        el:".selectcoupon-box",
+        data:{
+            datas:[],
+            balance_max:0,
+            use_able_count:0
+        },
+        methods:{
+            useCoupon:function(sp_ticket_stock_id,reduce_cost,least_cost){
+                $("#sp_ticket_stock_id").val(sp_ticket_stock_id);
+                $("#reduce_cost").val(reduce_cost);
+                $("#show_0_selectCoupons").hide();
+                $("#show_0").show();
+
+                var balance_amount = '{$model.balance_amount}';
+                var total = mathSub('{$model.amount}',reduce_cost);
+                if (balance_amount > total) {
+                    balance_amount  = total;
+                }
+                // console.log(total);
+                // $('#balance_amount').numberbox('setValue',0);
+                $('#balance_amount').numberbox({
+                    max:parseFloat(balance_amount)
+                });
+                $.parser.parse('.balance_area');
+                var balance = $('#balance_amount').numberbox('getValue');
+                if(balance != 0){
+                    $('#balance_amount').numberbox('setValue',mathSub(balance,reduce_cost));
+                }
+                changeAmount();
+                $(".table_hd_coupons").show();
+                $(".table_hd_coupons").css('title',`优惠券${reduce_cost}元（满${least_cost}即可使用）`);
+                $(".table_hd_coupons").text(`优惠券${reduce_cost}元（满${least_cost}即可使用）`);
+            }   
+        }     
+    });
+
+    function cancelCoupon(){
+        $("#sp_ticket_stock_id").val("");
+        $("#reduce_cost").val(0);
+        $("#show_0_selectCoupons").hide();
+        $("#show_0").show();
+
+        var balance_amount = '{$model.balance_amount}';
+        var total = '{$model.amount}';
+        if (balance_amount > total) {
+            balance_amount  = total;
+        }
+        $('#balance_amount').numberbox({
+            max:parseFloat(balance_amount)
+        });
+        $.parser.parse('.balance_area');
+        changeAmount();
+        $(".table_hd_coupons").hide();
+        $(".table_hd_coupons").css('title',`优惠券元（满即可使用）`);
+        $(".table_hd_coupons").text(`优惠券元（满即可使用）`);  
+    }
+
+    function mathAdd(a,b) {
+       var sum = (a*100 + b*100)/100;
+       return sum.toFixed(2);
+    }
+
+    function mathSub(a,b) {
+       var sum = (a*100 - b*100)/100;
+       return sum.toFixed(2);
+    }
+
+    function queryCoupon() {
+        coupon.datas = [];
+        $.post("/WrkReceivables/ticketList/least_cost/{$model.amount}", function(result) {
+            coupon.datas = result;
+            coupon.use_able_count = result.length;
+            $("#use_able").html(result.length);
+        }, "json");
+    }
+    // 选择优惠券功能
+    function selectCoupons(){
+        if(coupon.use_able_count == 0){
+            $.dialog.tips('无优惠券可选');
+            return false;
+        }
+        $("#show_0").hide();
+        queryCoupon();
+        $("#show_0_selectCoupons").show();
+    }
+
+    $("input[name='is_balance']").on("change",function(){
+        if ($(this).is(':checked')) {
+            $('#balance_amount').numberbox('enable');
+            $('#balance_amount').numberbox('setValue',mathSub('{$model.balance_max}',$("#reduce_cost").val()));
+        } else {
+            $('#balance_amount').numberbox('setValue',0);
+            $('#balance_amount').numberbox('disable');
+        }
+        // $('#balance_amount').numberbox('getValue');
+    });
+    //付款日期
+    //已付金额
+    //服务期间
+    //账户余额
+    // var is_pay = 0;
+    function customerPay() {
+        var company_id = $("input[name='company_id']").val();
+        var pay_amount = $("input[name='pay_amount']").val();
+        var order_sn = $("input[name='order_sn']").val();
+        var attach_group = $("input[name='attach_group']").val();
+        var balance_amount = $("input[name='balance_amount']").val();
+        var sp_ticket_stock_id = $("#sp_ticket_stock_id").val();
+        var reduce_cost = $("#reduce_cost").val();
+        var is_balance = 0;
+        $("input[name='is_balance']:checked").each(function(){
+            is_balance = 1;
+        });
+        showMaskLayer();
+        $.post("/WrkReceivables/customerPay/id/{$model.id}",
+            {
+                company_id:company_id,
+                pay_amount:pay_amount,
+                order_sn:order_sn,attach_group:attach_group,
+                is_balance:is_balance,
+                balance_amount:balance_amount,
+                sp_ticket_stock_id:sp_ticket_stock_id,
+                reduce_cost:reduce_cost,
+            },function(result) {
+            // hideMaskLayer();
+            // $.dialog.tips(result.message);
+
+            // $("#show_1").hide();
+            // if (result.code == 0) {
+            //     $("#show_1_true").show();
+            //     queryReceivablesItem();
+            // }else{
+            //     $("#show_1_falst").show();
+            // }
+        }, "json");
+
+        // 切换显示内容
+        // $(this).html("完成支付");
+        // if($(this).text() == "立即支付"){
+        //     $(this).html("完成支付");
+        //     $("#show_0").hide();
+        //     $("#show_1").show();
+        // }
+    }
+    // function payDetection(){
+        
+    //     $.post("/WrkReceivables/payDetection",
+    //         {order_sn:order_sn},function(result) {
+
+    //     }, "json");
+    // }
+
+    var isLoaded = false;
+    function reqs(opts) {
+        var order_sn = $("input[name='order_sn']").val();
+        if (order_sn == undefined) {
+            clearInterval(interval);
+            return false;
+        }
+        $.ajax({
+            type: 'get',
+            url: '/WrkReceivables/payDetection/order_sn/'+order_sn,
+            dataType: 'json',
+            beforeSend: function() {
+                isLoaded = false;
+            },
+            success: function(result) {
+                
+                if (result.code == 0) {
+                    queryAdvance();
+                    queryReceivablesItem();
+                    statistics();
+                    hideMaskLayer();
+                    $("#show_0").hide();
+                    $("#show_1").hide();
+                    $("#show_1_true").show();
+                    setTimeout(function(){
+                        clearInterval(interval);
+                    }, 3000);
+                }else if(result.code == 1){
+                    queryAdvance();
+                    queryReceivablesItem();
+                    statistics();
+                    hideMaskLayer();
+                    $("#show_1").hide();
+                    $("#show_1_falst").show();
+                    setTimeout(function(){
+                        clearInterval(interval);
+                    }, 3000);
+                }
+            },
+            complete: function() {
+                isLoaded = true;
+            },
+            error: function() {
+                console.log('请求失败~');
+            }
+        });
+    }
+    reqs({"init": 1});
+    var interval = null;
+    function nextStep(){
+        var actual_amount = parseFloat($("#textTotal").find("span").html());
+        if(actual_amount == 0){
+            customerPay();
+            interval = setInterval(function() {
+                // console.log(isLoaded);
+                if(isLoaded) reqs({"init": 0});
+            }, 3000);
+            return false;
+        }
+        $("#show_1").show();
+        $("#show_0").hide();
+        interval = setInterval(function() {
+            // console.log(isLoaded);
+            if(isLoaded) reqs({"init": 0});
+        }, 3000);
+        updateCode();
+    }
+    function previousStep(){
+        $("#show_0").show();
+        $("#show_1").hide();
+        clearInterval(interval);
+    } 
+
+    function changeAmount(){
+        var sum = "{$model.amount}";
+        var reduce_cost = $('#reduce_cost').val();
+         sum = mathSub(sum,reduce_cost);
+         sum = mathSub(sum,$('#balance_amount').numberbox('getValue'));
+         if(sum < 0){
+             sum = '0.00';
+         }
+        $("#textTotal").html(`实际应付：<span style="color:#529bfd;font-size: 16px;">${sum}</span>`);
+        $("#offlineTotal").text(`￥`+sum);
+        var total_amount = "{$model.amount}";//支付总额
+        $("#total_amount").html(total_amount);
+    }
+
+    function offlineShow(e) {
+        $("#offline").show();
+        $("#wx").hide();
+        $("#offlineBtn").addClass('offline_pay');
+        $("#offlineBtn").removeClass('offline_pay_uncheck');
+        $("#wxBtn").addClass('weixin_pay_uncheck');
+        $("#wxBtn").removeClass('weixin_pay');
+        // $(e).addClass("on");
+        // $(e).addClass('on').siblings().removeClass('on');
+    }
+
+    function wxShow(e) {
+        $("#offline").hide();
+        $("#wx").show();
+        $("#offlineBtn").addClass('offline_pay_uncheck');
+        $("#offlineBtn").removeClass('offline_pay');
+        $("#wxBtn").addClass('weixin_pay');
+        $("#wxBtn").removeClass('weixin_pay_uncheck');
+        // $(e).addClass("on");
+        // $(e).addClass('on').siblings().removeClass('on');
+    }
+
+
+    function showAttachment(){
+        openAttachmentForm('备注附件 - 付款', [{text:'付款附件',attach_group:'{$model.attach_group}'}]);
+    }
+
+    function updateCode(){
+        var order_sn = '{$model.order_sn}';
+        var contract_id = '{$model.contract_id}';
+        var sp_ticket_stock_id = $("#sp_ticket_stock_id").val();
+        var reduce_cost = $("#reduce_cost").val();
+        var receivables_id = '{$model.id}';
+        var sum = "{$model.amount}";
+        sum = sum - $('#balance_amount').numberbox('getValue');
+        var balance_amount = $("input[name='balance_amount']").val();
+        var data = {
+            order_sn:order_sn,
+            amount:sum,
+            balance_amount:balance_amount,
+            contract_id:contract_id,
+            sp_ticket_stock_id:sp_ticket_stock_id,
+            reduce_cost:reduce_cost,
+            receivables_id:receivables_id
+        };
+        $.post('/WrkReceivables/WxPayCode',data,function(result){
+            $('#payCode').attr('src','data:image/png;base64,'+result.code);
+        },'JSON')
+    }
+
+    function getTicketUseAble(){
+        $.post("/WrkReceivables/ticketList/least_cost/{$model.amount}", function(result) {
+            coupon.use_able_count = result.length;
+            $("#use_able").html(coupon.use_able_count).parent().show();
+        }, "json");
+    }
+
+    /*
+    * <if condition="$model.pay_status neq 30">
+                        <if condition="$model.wxpay_open neq 10">
+                            <span id="offlineBtn" class="offline_pay" style="cursor: pointer;" onclick="offlineShow(this)"></span>
+                        <else/>
+                            <span id="offlineBtn" class="offline_pay_uncheck" style="cursor: pointer;" onclick="offlineShow(this)"></span>
+                        </if>
+                    </if>
+                    <if condition="$model.wxpay_open neq 30">
+                        <if condition="$model.wxpay_open eq 10 || $model.pay_status eq 30">
+                            <span id="wxBtn" class="weixin_pay" style="cursor: pointer;" onclick="wxShow(this)"></span>
+                        <else/>
+                            <span id="wxBtn" class="weixin_pay_uncheck" style="cursor: pointer;" onclick="wxShow(this)"></span>
+                        </if>
+                    </if> -->
+                    */
+
+    $(function(){
+        getTicketUseAble();
+        var wx_pay_open = "{$model.wxpay_open}";
+        var pay_status = "{$model.pay_status}";
+        if(wx_pay_open != 10){
+            $("#pay_way").val("1");
+        }else if(wx_pay_open == 10 || pay_status == 30){
+            $("#pay_way").val("2");
+        }
+        console.log("{$model.code}");
+    });
+
+    $("#pay_way").on("change",function(){
+        if($(this).val() == 1){
+            offlineShow();
+        }else{
+            wxShow();
+        }
+    })
+
+
+</script>

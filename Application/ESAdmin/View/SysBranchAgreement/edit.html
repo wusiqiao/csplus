@@ -1,0 +1,501 @@
+<style>
+	input[name=agreement_no]{border-radius: 0px; border: none; border-bottom: 1px solid #ccc;text-indent: 10px;padding-bottom: 0px}
+	.common-input-two .btn-edit{cursor: pointer; width: 5%;  border: 1px solid #ccc;  border-radius: 5px;  height: 28px; line-height: 28px;text-align: center;margin-left: 2px}
+	.dlg-bundle-container{text-align: center;width:50vh; margin: 10px auto}
+	.dlg-bundle-container ul{display: flex;flex-direction: row; margin-top: 20px; }
+	.dlg-bundle-container li{flex: 1; text-align: center}
+	#service-records{position: relative;}
+	#service-records table{width: 100%;border-right:1px solid #ccc;border-bottom:1px solid #ccc}
+	#service-records table tr td{border-left:1px solid #ccc;border-top:1px solid #ccc;text-align: center;height: 32px; line-height: 32px}
+	.btn-add-communication{position: absolute; right:20px; padding:5px;color:#0b95ff}
+	#service-records span{cursor: pointer}
+	#service-records span.active{font-weight:bold}
+	.attachments img{width:32px; height:32px}
+    ::-webkit-scrollbar
+    {
+        width:0px;
+        height:0px;
+        background-color:#F5F5F5;
+    }
+    .readonly{
+        background-color: rgb(221, 221, 221);
+    }
+    .required:before{ content: '*  ';color: red;}
+    .datebox  .textbox-text-readonly{background-color: rgb(235, 235, 228)}
+    table td.content{width:50%;overflow-x: auto}
+</style>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css"/>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer"  style="width: 60vw;max-height: 75vh;overflow-y: auto">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform" style="min-height: 160px">
+		<input name="id" type="hidden" value="{$model.id}">
+		<input name="is_valid" type="hidden" value="{$model.is_valid}">
+		<div class="common-title">服务信息</div>
+		<div class="common-input-wrap">
+			<div class="common-input-two">
+				<span class="label required">合同编号：</span>
+				<input class="easyui-validatebox readonly"  name="agreement_no" data-options="required:true" value="{$model.agreement_no}" readonly/>
+                <span class="label required">主管理员：</span>
+                <empty name="model.id">
+                    <span class="inviter-name" style="height: 32px; line-height: 32px;border-bottom: 1px solid #ccc;">{$branch.leader_name}</span>
+                <else/>
+                    <span class="inviter-name" style="height: 32px; line-height: 32px;border-bottom: 1px solid #ccc;width:25%">{$branch.leader_name}</span>
+                    <span class="btn-edit" style="width:5%" onclick="invite_leader()">邀请</span>
+                    <span class="btn-edit btn-reset" style="width:5%;color:red" onclick="reset_leader()">重置</span>
+                </empty>
+			</div>
+			<div class="common-input-two">
+				<span class="label required">服务类型：</span>
+				<select name="bundles[]" id="agreement-bundle" class="select-input" data-options="required:true" multiple style="{$edit_style.input}">
+					<option value="gzh" {$model.bundles.gzh}>公众号</option>
+					<option value="xcx" {$model.bundles.xcx}>小程序</option>
+					<option value="pc" {$model.bundles.pc}>PC商城</option>
+					<option value="dyy" {$model.bundles.dyy}>代运营</option>
+				</select>
+				<span class="btn-edit btn-edit-bundle" style="{$edit_style.btn}">修改</span>
+				<span class="label required">服务价格：</span>
+				<input suffix="元" name="price" id="agreement-price" data-options="required:true" value="{$model.price|default=1}" style="{$edit_style.input}"/>
+				<span class="btn-edit btn-edit-price" style="{$edit_style.btn}">修改</span>
+			</div>
+			<div class="common-input-two">
+				<span class="label required">服务期限：</span>
+				<input suffix="个月" id="agreement-months" name="months" value="{$model.months|default=12}" data-options="required:true,min:6" style="{$edit_style.input}" />
+				<span class="btn-edit btn-edit-months" style="{$edit_style.btn}">修改</span>
+				<span class="label required">服务时间：</span>
+				<input name="start_date" id="start-date"  data-options="required:true" style="width: 17%" value="{$model.start_date}"/>
+				<span style="display: inline-block; height: 32px;line-height: 32px">至</span>
+				<input name="end_date" id="end-date"  data-options="required:true" style="width: 17%" value="{$model.end_date}" />
+			</div>
+			<div class="common-input-two">
+				<span class="label required">服务状态：</span>
+				<span class="btn-edit btn-service-status" style="margin-right: 10px"></span>
+                <a href="javascript:void(0)" @click="changeStatus()" class="common-blue-btn">切换</a>
+                <span class="label required" style="margin-left: 19%">登陆账号：</span>
+                <input name="account" class="easyui-validatebox" value="{$branch.mobile}" style="background-color: rgb(235, 235, 228);" readonly/>
+                <!--<span class="label required" style="margin-left: 30%">登陆账号：</span>-->
+                <!--<input name="account" class="easyui-validatebox" value="{$model.account}" style="background-color: rgb(235, 235, 228);" readonly/>-->
+            </div>
+			<div class="common-input-two">
+				<span class="label">其他备注：</span>
+				<input name="comments" class="easyui-validatebox" style="width:84%" value="{$model.comments}"/>
+			</div>
+		</div>
+		<div class="common-title">公司信息</div>
+		<div class="common-input-wrap">
+			<div class="common-input-two">
+                <input type="hidden" value="{$model.branch_id}" name="branch_id">
+				<span class="label required">公司名称：</span>
+                <if condition="$model.id neq ''">
+                    <input name="" class="easyui-validatebox readonly" value="{$branch.name}" data-options="required:true" placeholder="请输入公司名称" readonly/>
+                    <else/>
+                    <input name="branch" class="easyui-validatebox" value="{$branch.name}" data-options="required:true" placeholder="请输入公司名称"/>
+                </if>
+
+				<span class="label">公司地址：</span>
+				<input name="address" class="easyui-validatebox" value="{$branch.address}" placeholder="请输入详细地址"/>
+			</div>
+			<div class="common-input-two">
+				<span class="label">联系人：</span>
+				<input name="linkman" class="easyui-validatebox" value="{$branch.linkman}" placeholder="请输入联系人姓名"/>
+				<span class="label">手机号码：</span>
+				<input name="contact" class="easyui-validatebox" value="{$branch.contact}" placeholder="请输入手机号码"/>
+			</div>
+		</div>
+        <div class="common-title" style="position: relative">
+            <span>公众号信息</span>
+            <a href="javascript:void(0)" class="" onclick="changeShow(this)" style="margin-left: 10px;color:#0b95ff">显示</a>
+            <notempty name="model.id">
+            <a class="btn-add-communication" onclick="syncFans()" href="javascript:void(0);">同步粉丝</a>
+            </notempty>
+        </div>
+        <div class="common-input-wrap" style="display:none" id="gzh-div">
+            <div class="common-input-two">
+                <span class="label">开发者ID：</span>
+                <input name="appid" placeholder="" class="easyui-validatebox" value="{$wc.appid}" data-options="" />
+                <span class="label">开发者密码：</span>
+                <input name="appsecret" placeholder="" class="easyui-validatebox" value="{$wc.appsecret}" data-options="" />
+            </div>
+            <div class="common-input-two">
+                <span class="label">令牌：</span>
+                <input name="token" placeholder="" class="easyui-validatebox readonly" value="{$wc.token}" readonly/>
+                <span class="label">消息密钥：</span>
+                <input name="encoding_aeskey" placeholder="" class="easyui-validatebox" value="{$wc.encoding_aeskey}" />
+            </div>
+            <div class="common-input-two">
+            <span class="label">URL：</span>
+                <span style="height: 32px; line-height: 32px;border-bottom: 1px solid #ccc" class="readonly">{$wc.url}</span>
+            </div>
+
+        </div>
+	</form>
+	<!--<include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="SysBranch" />-->
+    <div id="service-records">
+        <div class="common-title">
+            <span @click="setCurrent(0)" :class="current==0?'active':''">沟通记录</span>&nbsp;|&nbsp;
+            <span @click="setCurrent(1)" :class="current==1?'active':''">操作日志</span>
+            <notempty name="branch.attach_group">
+                <span class="btn-add-communication" @click="addCommunication()">添加沟通记录</span>
+            </notempty>
+        </div>
+        <table class="communication-logs"  border="0" cellspacing="0" cellpadding="0" v-show="current==0">
+            <tr>
+                <td class="index">序号</td>
+                <td class="log-time">时间</td>
+                <td class="content">记录内容</td>
+                <td class="attachment">附件</td>
+                <td class="operater">操作人</td>
+            </tr>
+            <tr v-for="(item,index) in communication_logs">
+                <td>{{index+1}}</td>
+                <td> {{item.create_time_fmt}}</td>
+                <td>{{item.content}}</td>
+                <td><a style="color:#0b95ff" href="javascript:;" @click="showAttachments(item)" v-show="item.images!='[]'">查看</a></td>
+                <td>{{item.user_name}}</td>
+            </tr>
+        </table>
+        <table class="operation-logs"  border="0" cellspacing="0" cellpadding="0" v-show="current==1">
+            <tr>
+                <td class="index">序号</td>
+                <td class="log-time">时间</td>
+                <td class="content">日志内容</td>
+                <td class="operater">操作人</td>
+            </tr>
+            <tr v-for="(item,index) in operation_logs">
+                <td>{{index+1}}</td>
+                <td>{{item.log_time}}</td>
+                <td>{{item.content}}</td>
+                <td>{{item.user_name}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="form-actions" id='SysBranch-form-actions'>
+    <div class='actions-sysdefault'>
+        <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+            <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="branch_update('SysBranchAgreement')">保存</a>
+        </if>
+        <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+    </div>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+	var vue = new Vue({
+		el:"#SysBranchAgreement-detailcontainer",
+		data:{
+            operation_logs:[],
+            communication_logs:[],
+			current:0,
+            status:"{$model.is_valid}",
+            modelId:"{$model.id}"
+		},
+        methods:{
+		    changeStatus:function(){
+		        if (vue.modelId) {
+		            if($(".btn-service-status").text() == "到期"){
+		                $.dialog.tips("当前状态无法切换！请修改到期时间");
+		                return false;
+                    }
+                    if(vue.status == 1){
+                        var content = "暂停服务可能导致客户系统无法访问，<br>您确定要继续执行此操作吗？";
+                    }else{
+                        var content = "是否切换服务状态为正常？";
+                    }
+                    if ($.dialog.confirm(content, function () {
+                        $.post("/SysBranchAgreement/updateAgreementValidState", {id: vue.modelId}, function (result) {
+                            if (result.code == 0) {
+                                vue.status = (1 - vue.status);
+                                $("input[name='is_valid']").val(vue.status);
+                                refreshDatagrid(getDataGrid("SysBranchAgreement"), {is_valid: vue.status}, "edit");
+                                changeStatus();
+                                $.dialog.tips("修改成功！");
+                            }else{
+                                $.dialog.tips("修改失败！");
+                            }
+                        }, "json");
+                    })) ;
+                }
+            },
+            setCurrent:function(current){
+              this.current = current;
+			},
+            addCommunication:function(){
+                $.get("/Index/attachment/simple/1",
+                    function (result, status) {
+                        var data = {
+                            attach_group:"{$branch.attach_group}",
+							callback: function(result){
+                                vue.communication_logs.unshift(result);
+							}
+                        };
+                        var options = {id: "attachment_dialog",title: "沟通记录", content:result, autoSize: true,data: data,lock: true,max: false,min: false};
+                        $.dialog(options);
+                    }
+                );
+			},
+            showAttachments:function(item){
+                createDialog("/Index/showAttachment/attach/"+item.group+"_"+item.id,"查看附件");
+            }
+		}
+	});
+	$(function () {
+		setEditStateView();
+        getOperationLogs();
+        getCommunicationLogs();
+        changeStatus();
+        /*autocompleteAjaxEx($("input[name='name']"),"SysBranch/autocomplete/search/name/result/name+linkman+contact+address",{
+            formatItem(row){
+                return row.name;
+            },
+            onSelected:function(row){
+                $("input[name=id]").val(row.id);
+                $("input[name=name]").val(row.name);
+                $("input[name=linkman]").val(row.linkman);
+                $("input[name=contact]").val(row.contact);
+                $("input[name=address]").val(row.address);
+            }
+        });*/
+        autocompleteAjax($("input[name='branch']"),"SysBranch/autocomplete/search/name/result/name+linkman+contact+address",function(row){
+            //$("input[name=id]").val(row.id);
+            $("input[name=name]").val(row.name);
+            $("input[name=linkman]").val(row.linkman);
+            $("input[name=contact]").val(row.contact);
+            $("input[name=address]").val(row.address);
+        });
+        /*//特殊处理新增状态如果公司存在，变成编辑
+        getDataForm("SysBranch").bind("beforeUpdate", function(){
+            if ($(this).find("input[name=id]").val()) {
+                $(this).attr("action", "/SysBranch/update");
+                formCache["SysBranch"].action = "edit"
+            }
+        });*/
+        $("input[name='branch']").on("change",function(){
+            if($("input[nmae='branch']").length > 0 && $("input[name='branch']").val()){
+                $("input[name='branch_id']").val("");
+            }
+        })
+    });
+
+	function changeStatus() {
+        var now = new Date();
+        var end = new Date($("#end-date").datebox("getValue"));
+        if (end > now) {
+            if (vue.status == 0) {
+                $(".btn-service-status").text("暂停");
+            } else {
+                $(".btn-service-status").text("正常");
+            }
+        }else{
+            $(".btn-service-status").text("到期");
+        }
+    }
+
+	function getCommunicationLogs(){
+        var attach_group = "{$branch.attach_group}";
+        /*var attach_group = "{$model.attach_group}";*/
+        $.post("/ComAttachment/list", {"group": attach_group}, function(result){
+            vue.communication_logs = result.rows;
+        },"json");
+	}
+
+	function getOperationLogs(){
+        var model_id = '{$model.id}';
+        $.post("/SysBranchAgreement/agreementLog", {agreement_id: model_id}, function (result) {
+            vue.operation_logs = result;
+        }, "json");
+	}
+	function monthsChanged(newValue){
+        var start_date_str = $("#start-date").datebox("getValue");
+        var start_date = new Date(start_date_str);
+        start_date.addMonths(newValue);
+        start_date.decDays(1);
+        $("#end-date").datebox("setValue", start_date.toString("yyyy-mm-dd"));
+        changeStatus();
+	}
+
+	function setEditStateView() {
+        var hasAgreement = ('{$model.id}' != "" && '{$model.id}' != "0");
+        var options = {disabled: hasAgreement?true:false};
+        $("input[name=price]").numberbox(options);
+        $("#agreement-bundle").combobox(options);
+        $("input[name=months]").numberspinner({
+            onChange: function(newValue){
+                monthsChanged(newValue);
+            },
+            disabled: hasAgreement?true:false
+        });
+        $("#start-date").datebox({
+            onSelect: function(newValue){
+                var months = $("#agreement-months").numberspinner("getValue");
+                newValue.addMonths(months);
+                newValue.decDays(1);
+                $("#end-date").datebox("setValue", newValue.toString("yyyy-mm-dd"));
+                changeStatus();
+            }
+        });
+
+        Date.prototype.decDays = function(d) {
+            this.setDate(this.getDate() - d);
+        };
+
+        $("#end-date").datebox({readonly:true});
+        var model_id = '{$model.id}';
+        if (model_id) {
+            $(".btn-edit-bundle").click(function () {
+                var bundles_html = $("#agreement-bundle").prop("outerHTML").replace("agreement-bundle", "agreement-bundle-clone");
+                var container = "<div class='dlg-bundle-container'>类型修改为：" + bundles_html + "</div>";
+                var $dlg = createDialogWithButtons(container, "修改服务类型", "dlg-bundle", function () {
+                    var oldVal = $("#agreement-bundle").combobox("getValues");
+                    var newVal = $("#agreement-bundle-clone").combobox("getValues");
+                    if (newVal.length > 0) {
+                        if (oldVal.join(",") !== newVal.join(",")) {
+                            var update_datas = [{field: "bundles", value: newVal.join(","), name: "服务类型"}];
+                            updateAgreement(update_datas,newVal);
+                        }
+                        return true;
+                    }
+                });
+                $dlg.DOM.content.find("#agreement-bundle-clone").css("width", "70%");
+                $("#agreement-bundle-clone").combobox({disabled: false});
+                $("#agreement-bundle-clone").combobox("setValues", $("#agreement-bundle").combobox("getValues"));
+            });
+            $(".btn-edit-price").click(function () {
+                var input = '<input class="easyui-numberbox" id="agreement-price-clone" data-options="required:true" value="{$model.price}" style="width:70%"/>';
+                var container = "<div class='dlg-bundle-container'>价格修改为：" + input + "</div>";
+                var $dlg = createDialogWithButtons(container, "修改服务价格", "dlg-bundle", function () {
+                    var oldVal = $("#agreement-price").numberbox("getValue");
+                    var newVal = $("#agreement-price-clone").numberbox("getValue");
+                    if (oldVal != newVal) {
+                        $("#agreement-price").numberbox("setValue", newVal);
+                        var update_datas = [{field: "price", value: newVal, name: "服务价格"}];
+                        updateAgreement(update_datas);
+                    }
+                    return true;
+                });
+                $dlg.DOM.content.find("#agreement-bundle-clone").css("width", "70%");
+            });
+            $(".btn-edit-months").click(function () {
+                var months = $("input[name='months']").val();
+                var input = '<input suffix="个月" class="easyui-numberspinner" id="agreement-months-clone" value="'+months+'" data-options="required:true,min:6" style="width:70%" />';
+                var container = "<div class='dlg-bundle-container'>服务期限修改为：" + input + "</div>";
+                var $dlg = createDialogWithButtons(container, "修改服务期限", "dlg-bundle", function () {
+                    var newVal = $("#agreement-months-clone").numberspinner("getValue");
+                    if(newVal == ""){
+                        $.dialog.tips("请输入正确的服务期限！");
+                        return false;
+                    }
+                    // var oldVal = "{$agreement.months}";
+                    // if (newVal <= oldVal) {
+                    //     $.dialog.alert("服务期限不能小于等于当前值");
+                    //     return false;
+                    // }
+                    $("#agreement-months").numberspinner("setValue", newVal);
+                    var end_date = $("#end-date").datebox("getValue");
+                    var update_datas = [{field: "months", value: newVal, name: "服务期限"}, {
+                        field: "end_date",
+                        value: end_date,
+                        name: "到期时间"
+                    }];
+                    updateAgreement(update_datas);
+                    return true;
+                });
+                $dlg.DOM.content.find("#agreement-bundle-clone").css("width", "70%");
+            });
+        }
+    }
+	function updateAgreement(data_array,newVal){
+        var branch_id = '{$branch.id}';
+	    $.post("/SysBranchAgreement/updateAgreement", {branch_id: branch_id, datas: data_array,agreement_id:"{$model.id}"}, function(result){
+	        if (result.code == 0){
+	            vue.operation_logs.unshift(result.message);
+                $.dialog.tips("修改成功！");
+                refreshDatagrid(getDataGrid("SysBranchAgreement"));
+                if(newVal != undefined){
+                    $("#agreement-bundle").combobox("setValues", newVal);
+                }
+			}else {
+                $.dialog.tips(result.message);
+            }
+		},"json");
+	}
+	function invite_leader(){
+	    if($("input[name='account']").val() != ""){
+	        $.dialog.tips("当前已有管理员，请先重置后再邀请");
+	        return false;
+        }
+        var branch_id = '{$branch.id}';
+        var mobile = $("input[name=contact]").val();
+        if(mobile == ""){
+            $.dialog.tips("请先填写手机号码！");
+            return false;
+        }
+        var url = $.format("/SysBranch/inviteLeader/branch_id/{0}/mobile/{1}", [branch_id, mobile]);
+        createDialog(url, "邀请管理人员");
+    }
+    function reset_leader(){
+        var branch_id = '{$branch.id}';
+        $.post("/SysBranch/resetLeader", {branch_id: branch_id}, function () {
+            $.dialog.tips("重置成功，可以重新设置管理人员了！");
+            $("span.inviter-name").text("");
+            $("input[name='account']").val("");
+        });
+    }
+
+    function changeShow(obj){
+	    if($("#gzh-div").is(":hidden")){
+            $("#gzh-div").show();
+            $(obj).html("隐藏");
+        }else{
+            $("#gzh-div").hide();
+            $(obj).html("显示");
+        }
+    }
+
+    function branch_update(controller){
+	    showMaskLayer();
+        var validate = $("#SysBranchAgreement-dataform").form('validate');
+        if (!validate){
+            hideMaskLayer();
+            return validate;
+        }
+	    var data = $("#SysBranchAgreement-dataform").serializeArray();
+	    var bundles = '';
+        $("input[name='bundles[]']").each(function(){
+            bundles = bundles == "" ? $(this).val() : bundles+","+ $(this).val();
+        });
+	    $.post("SysBranchAgreement/addAgreement",{data:data,bundles:bundles},function(result){
+            hideMaskLayer();
+	        if(result.code == 0){
+	            closeDialog();
+            }
+            $.dialog.tips(result.message);
+	        refreshDatagrid(getDataGrid("SysBranchAgreement"));
+        },'json');
+    }
+
+    function syncFans(){
+        var model_id = '{$model.branch_id}';
+        var appid = $("input[name=appid]").val();
+        if (appid == ""){
+            $.dialog.tips("开发者ID不能为空!");
+            return false;
+        }
+        var appsecret = $("input[name=appsecret]").val();
+        if (appsecret == ""){
+            $.dialog.tips("开发者密码不能为空!");
+            return false;
+        }
+        showMaskLayer();
+        shuntSyncFans(appid,appsecret,model_id,'')
+    }
+    function shuntSyncFans(appid,appsecret,model_id,token){
+        $.post("/SysBranch/syncFans", {appid: appid, appsecret: appsecret, branch_id: model_id,token:token}, function(result){
+            if (result.code == 2) {
+                shuntSyncFans(appid,appsecret,model_id,result.token)
+                $.dialog.tips(result.message);
+            } else {
+                $.dialog.alert(result.message);
+                hideMaskLayer();
+            }
+        },"json");
+    }
+</script>

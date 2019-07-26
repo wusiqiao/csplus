@@ -1,0 +1,149 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm" width="1000px">
+            <if condition="$model.status neq 1">
+                <input name="id" type="hidden" value="{$model.id}">
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.SUNDRY_TRANSFER_NO}：</span></div>
+                    <div class="inputbox">
+                        <input name="no" class="easyui-validatebox" data-options="required:true" value="{$model.no}" />
+                    </div>
+                    <div class="caption"><span>{$Think.lang.SUNDRY_TRANSFER_LENDER}：</span></div>
+                    <div class="inputbox">
+                        <select name="lender" class="chosen-select" data-options="all:true,value:'{$model.lender}',search_key_url:'ComSundryOrder/UserList/'"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.SUNDRY_TRANSFER_BORROWER}：</span></div>
+                    <div class="inputbox">
+                        <select name="borrower" class="chosen-select" data-options="all:true,value:'{$model.borrower}',search_key_url:'ComSundryOrder/UserList/'"></select>
+                    </div>
+                    <div class="caption"><span>{$Think.lang.SUNDRY_TRANSFER_COMPANY_CC_RECIPIENT}：</span></div>
+                    <div class="inputbox">
+                        <select name="company_cc_recipient[]" class="chosen-select" data-options="all:true,value:'{$model.company_cc_recipient}',search_key_url:'ComSundryOrder/UserList/'" multiple></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>备注:</span></div>
+                    <div class="inputbox">
+                        <textarea name="remarks" rows="3" cols="40">{$model.remarks}</textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <table id="sundry-items" style="margin-left:14%">
+                        <thead>
+                            <tr>
+                                <div class="caption">
+                                    <th width="240px"><span style="color: red;font-size: 21px;padding: 5px">*</span>借出物品</th>
+                                </div>
+                                <th width="120px">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <foreach name="model.items" item="v">
+                                <tr class="row">
+                                    <td>
+                                        <select name="sundry_ids[]" class="chosen-select" data-options="all:true,value:'{$v.id}',search_key_url:'ComSundry/KeyNameList1/status/0'">
+                                            <option value="0">--选择物品--</option>
+                                        </select>
+                                    </td>
+                                    <td><a class="easyui-linkbutton fontawesome-icon-button" onclick="removeSundryItem(this)">删除</a>
+                                    </td>
+                                </tr>
+                            </foreach>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <a style="margin-left:14%" id="add-sundry-item" href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="addSundryItem(this)">添加物品</a>
+                </div>
+                <else/>
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.SUNDRY_TRANSFER_NO}：</span></div>
+                    <div class="inputbox">
+                        <input readonly="true" name="no" class="easyui-validatebox" data-options="required:true" value="{$model.no}" />
+                    </div>
+                    <div class="caption"><span>{$Think.lang.SUNDRY_TRANSFER_LENDER}：</span></div>
+                    <div class="inputbox">
+                        <select name="lender" class="chosen-select" data-options="all:true,value:'{$model.lender}',search_key_url:'ComSundryOrder/UserList/'" disabled></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.SUNDRY_TRANSFER_BORROWER}：</span></div>
+                    <div class="inputbox">
+                        <select name="borrower" class="chosen-select" data-options="all:true,value:'{$model.borrower}',search_key_url:'ComSundryOrder/UserList/'" disabled></select>
+                    </div>
+                    <div class="caption"><span>{$Think.lang.SUNDRY_TRANSFER_COMPANY_CC_RECIPIENT}：</span></div>
+                    <div class="inputbox">
+                        <select name="company_cc_recipient[]" class="chosen-select" data-options="all:true,value:'{$model.company_cc_recipient}',search_key_url:'ComSundryOrder/UserList/'" multiple disabled></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>备注:</span></div>
+                    <div class="inputbox">
+                        <textarea name="remarks" readonly="true" rows="3" cols="40">{$model.remarks}</textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <table id="sundry-items" style="margin-left:14%">
+                        <thead>
+                            <tr>
+                                <div class="caption">
+                                    <th width="240px">借出物品</th>
+                                </div>
+                                <!-- <th width="120px">操作</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <foreach name="model.items" item="v">
+                                <tr class="row">
+                                    <td>{$v.name}
+                                        <!--                                        <select name="sundry_ids[]" class="chosen-select" data-options="all:true,value:'{$v.id}',search_key_url:'ComSundry/KeyNameList1/id/0'">
+                                            <option value="0">--选择物品--</option>
+                                        </select> -->
+                                    </td>
+                                    <!-- </td> -->
+                                </tr>
+                            </foreach>
+                        </tbody>
+                    </table>
+                </div>
+            </if>
+        </div>
+    </form>
+    <if condition="$model.status neq 1">
+        <include file="./Application/Common/Layout/Default/detail_toolbar.html" controller="ComSundryTransfer" />
+    </if>
+</div>
+<script type="text/javascript">
+function addSundryItem(e) {
+    $("#sundry-items").find("tbody").append(
+        '<tr class="row">' +
+        '<td><select name="sundry_ids[]" class="chosen-select" data-options="all:true,search_key_url:\'ComSundry/keyNameList1/status/0\'"><option value="0">--选择物品--</option></select></td>' +
+        '<td><a class="easyui-linkbutton fontawesome-icon-button" onclick="removeSundryItem(this)">删除</a></td>' +
+        '</tr>');
+
+    parseForm($("#sundry-items"));
+}
+
+function removeSundryItem(e) {
+    div = $(e).parents('tr.row');
+    div.remove();
+}
+// $(document).ready(function() {
+//     if ("" == "{$model.no}") {
+//         $("input[name='no']").val(_getRandomString(24));
+//     }
+// });
+// //生成随机字符串
+// function _getRandomString(len) {
+//     len = len || 32;
+//     var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'; // 默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1
+//     var maxPos = $chars.length;
+//     var pwd = '';
+//     for (i = 0; i < len; i++) {
+//         pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+//     }
+//     return pwd;
+// }
+</script>

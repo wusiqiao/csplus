@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>编辑器</title>
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/common.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/index.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/editor-min.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/guoyoo.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/jquery.jgrowl.css">
+    <link rel="stylesheet" type="text/css" media="all" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/emoji.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/lrtk.css"/>
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/ueditor.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/codemirror.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/jquery.range.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/set-width.css">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/jquery.jcrop.css">
+    <style>
+        #right-fix-tab{width:32px;position:absolute;right:0px;}
+        #right-fix-tab li{width:30px;background:rgba(58,51,50,0.5);border:0 none;color:#FFF;width:30px;font-size:14px;}
+        #color-plan .nav-tabs > li > a{padding:5px;color: #efefef;border: 0 none;}
+        #color-plan .nav-tabs > li > a:hover{background:transparent;color:#FFF;}
+        #color-plan .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {background-color: #000;color: #FFF;border: 0 none;}
+        #more-popover-content .btn-xs{font-size:12px;padding:2px 2px;width:64px;margin:2px;height:20px;margin:1px auto;border: 0 none;background: transparent;color: #FFF;border: 1px solid #FFF;}
+        #more-popover-content .btn-xs:hover{ background-color:rgb(213,149,69);color:#FFF;}
+        table#xtbn{width:386px}
+        table#xtbn tr{line-height:2}
+        .span-hot{position: absolute;background-color: #ed603a;color: #ffffff;top: 420px;font-size: 12px;border-radius: 5px;padding: 1px;}
+        .span-hot2{position: absolute;background-color: #ed603a;color: #ffffff;top: 100px;font-size: 12px;border-radius: 5px;padding: 1px;}
+    </style>
+    <style id="edui-customize-v3BgDialog-style">.edui-default .edui-for-v3BgDialog .edui-dialog-content  {width:600px;height:300px;}</style>
+    <style id="edui-customize-v3BdBgDialog-style">.edui-default .edui-for-v3BdBgDialog .edui-dialog-content  {width:800px;height:400px;}</style>
+    <style>
+        #GraphicCenter {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            padding: 20px 0 0 18px;
+        }
+        /* 预览 */
+        #Previewbox{
+            height: 684px;
+            overflow-y: auto;
+            margin-right: 10px;
+            border: 1px solid #e7e7eb;
+            background-color: #fff;
+        }
+        .previewList{
+            padding: 2px 10px;
+        }
+        /* 预览文章列表项 */
+        .previewList-item{
+            position: relative;
+            background-color: #eee;
+            border-bottom: 1px solid #d3d3d3;
+        }
+        /* 底部操作栏 */
+        .previewList-item-tool{
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 30px;
+            width: 100%;
+            background-color: rgba(58,51,50,0.4);
+            padding: 0 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+        }
+        .previewList-remove{
+            cursor: pointer;
+        }
+        .previewList-moveup{
+            cursor: pointer;
+        }
+        .previewList-movedown{
+            cursor: pointer;
+        }
+        /* 首个文章 */
+        .previewList-item-img-first{
+            width: 300px;
+            height: 130px;
+            padding-bottom: 5px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .previewList-item-img-first img{
+            width: 100%;
+        }
+        .previewList-item-title-first{
+            width: 100%;
+            position: absolute;
+            left: 0;
+            bottom: 0px;
+            text-indent: 10px;
+            background-color: rgba(200,200,200,0.2);
+        }
+        /* 非首个文章 */
+        .previewList-item-flex{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        .previewList-item-title{
+            flex: 1;
+            height: 64px;
+            margin: 10px;
+            color: #35323b;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .previewList-item-img{
+
+        }
+        .previewList-item-img img{
+            width: 64px;
+            height: 64px;
+            background-color: #fdfdfd;
+        }
+        /* 选中文章 */
+        .previewList-item-cover,.previewList-item-cover-first{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 30px);
+            text-align: center;
+            z-index: 8;
+            color: #fff;
+            line-height: 54px;
+            font-size: 20px;
+            background-color: rgba(50,50,50,0.5);
+        }
+        .previewList-item-cover-first{
+            line-height: 100px;
+        }
+        /* 新增文章 */
+        .previewList-add{
+            width: 300px;
+            height: 90px;
+            border: 1px solid #d3d3d3;
+            position: relative;
+        }
+        .previewList-add img{
+            width: 35px;
+            height: 35px;
+        }
+        /* 图文信息 */
+        #Graphic-info {
+            width: 415px;
+            height: 685px;
+            background-color: #f7f8fa;
+            padding: 0 18px;
+            position: relative;
+        }
+        /* 编辑器 */
+        #full-page {
+            flex: 1;
+            overflow: hidden;
+        }
+        #edui12{
+            /* height: 685px; */
+        }
+        #edui12_iframeholder{
+            /* height: 620px !important; */
+        }
+        /* 表单 */
+        .Graphic-info-form {
+            width: 100%;
+        }
+
+        .info-line {
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+        }
+
+        .info-label {
+            width: 70px;
+            height: 32px;
+            line-height: 32px;
+            text-align: right;
+            color: #666666;
+            margin-right: 18px;
+        }
+        .info-content{
+            width: 100%;
+        }
+        .info-content>textarea {     
+            width: 270px;
+            height: 96px;
+            overflow-y: auto;
+            resize: none;
+            border: 1px solid #d3d3d3;
+        }
+
+        .info-content>input {
+            width: 270px;
+            outline: none;
+            border: 1px solid #d3d3d3;
+            box-sizing: border-box;
+            height: 32px;
+            text-indent: 13px;
+        }
+        .info-tip{
+            display: flex;
+            align-items: center;
+        }
+        .Graphic-cover {
+            width: 270px;
+            height: 96px;
+            background-color: #e8e8e8;
+            overflow: hidden;
+            position: relative;
+        }
+        .Graphic-cover img{
+            width: 100%;
+        }
+        /* 5.不定宽功能按钮 */
+        .btn-speed{
+            display: inline-block;
+            width: auto;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            font-size: 14px;
+            color: #ffffff;
+            background-color: #368bfe;
+            margin: 11px 8px;
+            padding: 0 20px;
+            cursor: pointer;
+        }
+        .btn-speed:hover{
+            background-color: #529bfd;
+        }
+        .btn-speed-disable{
+            display: inline-block;
+            width: auto;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            font-size: 14px;
+            color: #ffffff;
+            background-color: #bfbfbf;
+            margin: 11px 8px;
+            padding: 0 20px;
+            cursor: not-allowed;
+        }
+        /* 延时遮罩 */
+        #editor-mask{
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            background: rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+<div id="GraphicCenter" style="overflow: hidden;">
+<!-- 预览展示 -->
+<div id="Previewbox">
+    <div class="previewList">
+        <div class="previewList-item">
+            <div class="previewList-item-img-first">
+                <img :src="'/../../' + previewObj.local_thumb_url" alt="">
+            </div>
+            <div class="previewList-item-title-first">{{previewObj.title}}</div>
+        </div>
+    </div>
+</div>
+<!-- 图文信息 -->
+<div id="Graphic-info">
+    <form class="Graphic-info-form" action="">
+        <div class="info-line">
+            <div class="info-label"><span style="color:red;">*</span>标题</div>
+            <div class="info-content">
+                <textarea name="" id="" v-model="previewObj.title" placeholder="请输入标题，标题不超过64个字" maxlength="64" required></textarea>
+            </div>
+        </div>
+        <div class="info-line">
+            <div class="info-label">摘要</div>
+            <div class="info-content">
+                <textarea name="" id="" v-model="previewObj.digest" placeholder="请输入摘要，摘要不超过120个字" maxlength="120"></textarea>
+            </div>
+        </div>
+        <div class="info-line" style="margin:0;">
+            <div class="info-label" style="height:auto;"></div>
+            <div class="info-content">
+                <div style="color: #666666;opacity: 0.45;">（建议尺寸900*383像素）</div>
+            </div>
+        </div>
+        <div class="info-line" style="margin-top:0;">
+            <div class="info-label">封面</div>
+            <div class="info-content" style="position:relative;">
+                <div class="Graphic-cover" onclick="allPicSelect()">
+                    <img v-if="imgSrc" :src="imgSrc" alt="">
+                    <img v-else style="position: absolute;width: 32px;height: 32px;top:32px;left:119px; " src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addnew.png" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- <div class="info-line">
+            <div class="info-label">
+
+            </div>
+            <div class="info-content" style=" display: flex;justify-content: space-between;align-items: flex-start;">
+                <div class="info-tip"><input @change="isSeenTop_change" v-model="isSeenTop" type="checkbox" style="margin: 0 5px 0 0;">封面展示在正文顶部</div>
+            </div>
+        </div> -->
+        <div class="info-line">
+            <div class="info-label">作者</div>
+            <div class="info-content">
+                <input type="text" v-model="previewObj.author" placeholder="请输入作者">
+            </div>
+        </div>
+        <div class="info-line">
+            <div class="info-label">原文链接</div>
+            <div class="info-content">
+                <input type="text" v-model="previewObj.content_source_url" placeholder="请输入原文链接">
+            </div>
+        </div>
+    </form>
+    <div style="width:calc(100% - 20px);text-align:center;position: absolute;bottom:0;margin: 20px 0;">
+        <!-- <div v-if="previewList.length < 8" class="btn-speed" @click="previewList_add">添加文章</div> -->
+        <!-- <div v-if="wtSelect != -1 && previewList.length == 1" class="btn-speed" @click="previewList_upset">保存修改</div> -->
+    </div>
+</div>
+<!-- 编辑器 -->
+<div id="full-page" class="small-height">
+    <div class="box p-r">
+        <div class="fl p-r">
+            <!-- 编辑器 -->
+            <div class="editor2 p-r fl">
+                <!--editor2 start-->
+                <menu id="set-imgwidth" class="set-imgwidth" style="height: 40px;">
+                    <li>
+                        <span class="prop-name">宽度</span>
+                        <div id="fill-item" class="fill-item">
+                            <input class="bubble-slider" type="number" min="0" max="640" data-color="#fff" value="">
+                            <div class="bubble-slider-wrap">
+                                <div class="demo">
+                                    <input type="hidden" class="single-slider" value="100"/>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </menu>
+                <div id="editor" class="edui-default" style="width: 498px; height: 685px;"></div>
+                <div class="menu">
+                    <div id="cancel" class="menu-item" title="撤销" onclick="cancel_edit()">撤销</div>
+                    <div id="clear-editor" class="menu-item" title="清空编辑器内容">清空</div>
+                    <!-- <div id="html-see" class="menu-item" data-toggle="modal" data-target="#myModalsee" title="模拟预览">预览</div> -->
+                    <!-- <div id="btn-fullpage" class="menu-item edit-fullpage">全屏</div> -->
+                </div>
+            </div>
+        </div>
+    </div><!--box end-->
+</div>
+
+<div id="bccg" class="modal fade" tabindex="9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">保存草稿</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form-save" method="post">
+                    <div class="form-group">
+                        <input type="hidden" value="" name="id">
+                        <label for="message-text" class="control-label">内容:</label>
+                        <div style="border:1px solid #ccc;padding:20px;">
+                            <div id="tbcov" style="height:320px;overflow-y:scroll;"></div>
+                            <textarea id="savecontent1" name="content1" style="display:none"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="savewx">保存</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--预览框  -->
+<!-- Modal -->
+<!-- sample modal content -->
+<div id="myModal" class="modal fade" tabindex="9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">保存编辑内容</h4>
+                <div>
+                    <em style="color:#8c8c8c;font-style:normal;font-size:12px;">2015-08-10</em>
+                    <a style="font-size:12px;color:#607fa6" href="javascript:void(0);" id="post-user"></a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="paragraph-setting" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width:600px;margin-top:20px;">
+        <div class="modal-content">
+            <div class="modal-header" style="border:0 none">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">关闭</span>
+                </button>
+                <h4 class="modal-title">段落设置</h4>
+            </div>
+            <div class="modal-body" style="overflow: hidden;padding: 0;margin: 10px;">
+                <form class="form-horizontal">
+                    <div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">行高</label>
+                                <div class="col-sm-7 controls">
+                                    <input class="form-control" value="1.5em" id="paragraph-lineHeight" type="text">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">字体</label>
+                                <div class="col-sm-7 controls">
+                                    <select class="form-control" id="paragraph-fontFamily">
+                                        <option value="微软雅黑">微软雅黑</option>
+                                        <option value="宋体">宋体</option>
+                                        <option value="楷体">楷体</option>
+                                        <option value="黑体">黑体</option>
+                                        <option value="隶书,SimLi">隶书</option>
+                                        <option value="arial">arial</option>
+                                        <option value="sans-serif">sans-serif</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">字号</label>
+                                <div class="col-sm-7 controls">
+                                    <input class="form-control" placeholder="字号" value="14px" id="paragraph-fontSize" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">首行缩进</label>
+                                <div class="col-sm-7 controls">
+                                    <input class="form-control" id="paragraph-textIndent" value="2em" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">段前距</label>
+                                <div class="col-sm-7 controls">
+                                    <input class="form-control" id="paragraph-paddingTop" value="5px" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">段后距</label>
+                                <div class="col-sm-7 controls">
+                                    <input class="form-control" id="paragraph-paddingBottom" value="5px" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer text-right">
+                <button type="button" onclick="applyParagraph('active');" class="btn btn-primary" data-dismiss="modal">
+                    应用本样式
+                </button>
+                <button type="button" onclick="applyParagraph('all');" class="btn btn-warning" data-dismiss="modal">
+                    应用全文
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- sample modal content -->
+<div id="myModalsee" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     data-backdrop="static" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">预览（提示：如文章太长，请按下鼠标滚轮，上下拉动预览）</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div style="border:0px solid #ccc;padding:20px;">
+                        <div id="previews">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!--adend-->
+<!--//存储源编辑内容-->
+<div id="source-content" style="display: none"></div> 
+</div>
+<!-- 延时加载遮罩 -->
+<div id="editor-mask" style="display: none;">
+    <img src="__ROOT__/{$Think.APP_PATH}/Public/images/loading-0.gif" style="position: absolute;top:50%;left:50%">
+</div>
+<script type="text/javascript" src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var BASEURL = "";
+    var current_active_v3item = null;
+    var isout = "false";
+    var isnew = "";
+</script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery-1.10.2.min.js"></script>
+<script src="__ROOT__/{$Think.APP_PATH}/Public/lhgdialog/lhgdialog.js?skin=idialog"></script>
+<script type="text/javascript" charset="utf-8" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/bootstrap.min.js"></script>
+<script type="text/javascript" defer="defer" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/codemirror.js"></script>
+
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/ueditor.config.js"></script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/ueditor.all.js"></script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/gjs02.js"></script>
+<script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery.jcrop.js"></script>
+
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/gjs01.js"></script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/less-1.7.0.min.js"></script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/clipboard.min.js"></script>
+
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/instoo.js"></script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery.range.js"></script>
+
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/su.js"></script>
+
+<script>
+    $('#btn-fullpage').on('click', function () {
+        $('#edui14_body').click();
+    })
+    function cancel_edit() {
+        UE.getEditor('editor').execCommand("undo");
+    }
+    // 渲染编辑器的草稿、预览、内容
+    function initialEditor() {
+        var source_content = $("#source-content").html();
+        var current_editor = UE.getEditor('editor');
+        current_editor.setContent(source_content);
+        current_editor.addListener('contentChange', function () {
+            $("#previews").html(current_editor.getContent());
+            $("#tbcov").html(current_editor.getContent());
+        });
+        $("#previews").html(current_editor.getContent());
+        $("#tbcov").html(current_editor.getContent());
+    }
+
+    function getPercent() {
+        if (current_active_v3item) {
+            var oWidth = current_active_v3item.width();
+        } else {
+            alert('请选择图片');
+        }
+        var per = (oWidth / 460).toFixed(2);
+        if (per === 1) {
+            $('.pointer-label').css('left', 130 + 'px');
+            $('.pointer-label').html(100);
+            $('.pointer').css('left', 144 + 'px');
+        } else {
+            $('.pointer-label').css('left', 144 * per + 'px');
+            $('.pointer-label').html(100 * per);
+            $('.pointer').css('left', 144 * per);
+        }
+        $('.single-slider').val(per);
+    }
+
+    function setImgWidth(e) {
+        var oWidtWrap = $('#set-imgwidth');
+        var a = 1;
+        var imgWidth = 460;
+        getPercent();
+        $('#set-imgwidth').toggle();
+        $(document).on('click', function (e) {
+            if (a) {
+                oWidtWrap.offset({top: e.pageY + 20, left: e.pageX - 250});
+                a = 0;
+            }
+        });
+    }
+
+    $(function () {
+        $('.single-slider').jRange({
+            from: 0,
+            to: 100,
+            step: 1,
+            scale: [0, 25, 50, 75, 100],
+            format: '%s',
+            width: 150,
+            showLabels: true,
+            showScale: false
+        });
+    });
+
+    var previewObj = {:json_encode($model)};
+    console.log(previewObj);
+    var GraphicCenter = new Vue({
+        el: '#GraphicCenter',
+        data: {
+            // 文章所有的数据
+            previewObj:previewObj,
+            //封面是否展示在文章顶部
+            // isSeenTop:"",
+        },
+        computed :{
+            imgSrc:function(){
+                var url = false;
+                var local_thumb_url = this.previewObj.local_thumb_url;
+                if(local_thumb_url){
+                    url = '/../../' + local_thumb_url;
+                }
+                this.previewObj.imgSrc = url;
+                return url
+            }
+        },
+        mounted() {
+            $("#source-content").html(this.previewObj.content);
+            UE.getEditor('editor').ready(function () {
+                setTimeout("initialEditor()", 500);
+            });
+        },
+        methods: {
+            getInput : function(){
+                return this.previewObj;
+            },
+            setImg : function(data){
+                this.previewObj.local_thumb_url = data.local_thumb_url;
+                this.previewObj.thumb_media_id  = data.media_id
+                this.previewObj.thumb_url = data.url;
+            },
+           // 文章修改
+           previewObj_upset(){
+                GraphicCenter.previewObj.content = UE.getEditor('editor').getContent();
+                console.log(GraphicCenter.previewObj)       
+            },
+            //封面是否展示在文章顶部
+            // isSeenTop_change(){
+            //     if(this.imgSrc == ""){
+            //         this.isSeenTop = false;
+            //         $.dialog.alert("请上传封面图片");
+            //         return;
+            //     }  
+            // }
+        },
+    });
+
+    //图片选择
+    function allPicSelect() {
+        parent.createDialog(`ComMaterialLibrary/query/material/image`, '图片选择', 'material-dialog');
+    }
+
+    function getMaterial(data){
+        console.log(data)
+    }
+</script>
+
+</body> 
+</html>

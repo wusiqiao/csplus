@@ -1,0 +1,234 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<script>
+    setMainContainerConfig("{$Think.const.CONTROLLER_NAME}", {
+        onDblClickRow: function(){
+            action_show_capital();
+        }
+    })
+    function formatACCOUNT(value){
+        return `<div style="width:150px;overflow:hidden; text-overflow: ellipsis;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function formatACCOUNTLEADER(value){
+        return `<div style="width:100px;overflow:hidden; text-overflow: ellipsis;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function formatMoneyShow(value, row, index)
+    {
+        if (value === 'hide') {
+            return '';
+        } else {
+            return value != '' ? "¥"+value:'-';
+        }
+    }
+    function formatOperation(value, row, index)
+    {
+        var operation = '';
+        if (row.status == 0) {
+            operation += '<div style="margin: 0 2px;" class="btn-speed detail-edit" onclick="action_detail_simple(\'{$Think.const.CONTROLLER_NAME}\','+row.id+',\'提现确认\')">提现确认</div>';
+           
+        } else if (row.status == 1) {
+            operation += '<div style="margin: 0 2px;" class="btn-speed-disable">提现成功</div>';
+        } else {
+            operation += '<div style="margin: 0 2px;" class="btn-speed-disable">提现失败</div>';
+        }
+        operation += '<div style="margin: 0 2px;" class="btn-speed" onclick="actionAppendFolder(\''+row.attach_group+'\',\''+row.id+'\')">备注附件</div>';
+        return operation;
+    }
+</script>
+<style>
+    .recharge-btn{
+        padding: 8px 13.5px;
+        background-color: #368BFE;
+        color: #fff ;
+        border-radius: 4px;
+        border: 0;
+        margin: 0 2px;
+    }
+    .search-action-panel{
+        display: none;
+    }
+    input[readonly],input:disabled,select:disabled,.chosen-disabled .chosen-choices{
+        background: initial !important;
+        background-color: #f7f5f5 !important;
+        border: 1px solid #d3d3d3;
+        -webkit-transition:initial;
+        box-shadow:initial;
+        -webkit-box-shadow:initial;
+    }
+    .datebox input[readonly] {
+        background: initial !important;
+        background-color: initial !important;
+        border: initial;
+        -webkit-transition:initial;
+        box-shadow:initial;
+        -webkit-box-shadow:initial;
+    }
+    .chosen-disabled{
+        opacity: initial !important;
+    }
+    th{
+        text-align: right;
+    }
+    .search-table{
+        width: 900px;
+    }
+    .chosen-container-multi .chosen-choices {
+        width: 270px !important;
+        height: 30px !important;
+    }
+    .maincontainer {
+        height: 100%;
+    }
+</style>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'capital_account',width:160,align:'left',formatter:formatACCOUNT">{$Think.lang.CAPITAL_ACCOUNT}</th>
+        <th data-options="field:'create_time',width:200,align:'left',formatter:formatDateTime">提现申请日期</th>
+        <th data-options="field:'money',width:120,align:'left',formatter:formatMoneyShow">提现申请金额</th>
+        <th data-options="field:'handle_time',width:200,align:'left',formatter:formatDateTime">{$Think.lang.WITHDRAWAL_COMPLETE_DATE}</th>
+        <th data-options="field:'fee',width:120,align:'left',formatter:formatMoneyShow">{$Think.lang.WITHDRAWAL_FEE}</th>
+        <th data-options="field:'actual_money',width:120,align:'left',formatter:formatMoneyShow">{$Think.lang.WITHDRAWAL_ACTUAL_MONEY}</th>
+        <th data-options="field:'receivable_name',width:120,align:'left'">{$Think.lang.WITHDRAWAL_ACCOUNT}</th>
+        <th data-options="field:'withdrawal_leader_view',width:120,align:'left',formatter:formatACCOUNTLEADER">{$Think.lang.WITHDRAWAL_ACCOUNT_LEADER}</th>
+        <th data-options="field:'operation',width:220,align:'center',formatter:formatOperation">{$Think.lang.OPERATION}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<div id="actions-{$Think.const.CONTROLLER_NAME}">
+    <div class="extend-nav-menu" style="margin: 10px;">
+
+    </div>
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table target">
+        <tr class="groups">
+            <th>提现状态：</th>
+            <td colspan="6">
+                <div style="margin:0 8px;" class="btn-screening btn-screening-on" data-status="">全部</div>
+                <div style="margin:0 8px;" class="btn-screening" data-status="0">未确认</div>
+                <div style="margin:0 8px;" class="btn-screening" data-status="1">已确认</div>
+                <input type="hidden" name="q-status" value="" class="filter-field">
+            </td>
+        </tr>
+        <tr class="tags" v-bind="0">
+            <th>提现期间：</th>
+            <td colspan="5">
+                <input name="qdr-create_time[]" id="day_start" style="border: solid 0px #368bfe;" class="easyui-datebox filter-field" data-options="editable:false,prompt:'选择时间'" value="" />－
+                <input name="qdr-create_time[]" id="day_end" style="border: solid 0px #368bfe;"  class="easyui-datebox filter-field" data-options="editable:false,prompt:'选择时间'" value=""  />
+            </td>
+        </tr>
+        <tr class="tags" v-bind="0">
+            <th>资金账户名称：</th>
+            <td colspan="10">
+                <input name="capital_name" class="easyui-validatebox filter-field" value="" data-name="q-capital_account_id" placeholder="请输入资金账户名称" />            </td>
+        </tr>
+        <tr class="tags" v-bind="0">
+            <th>资金客户负责人：</th>
+            <td colspan="5">
+                <input name="customer_leader"  class="easyui-validatebox" value="" disabled />
+            </td>
+            <th>资金客户可见人：</th>
+            <td colspan="5" style="width: 100%">
+                <select name="customer_visiblers_inputs[]" class="chosen-select" disabled id="customer_visiblers_select"   multiple style="width:100%">
+
+                </select>
+            </td>
+        </tr>
+        <tr class="tags" v-bind="0">
+            <th>提现商户负责人：</th>
+            <td colspan="5">
+                <input name="withdrawal_leader"  class="easyui-validatebox " value="" disabled/>
+            </td>
+            <th>提现商户可见人：</th>
+            <td colspan="5" style="width: 100%">
+                <select name="withdrawal_visiblers_inputs[]" class="chosen-select" disabled id="withdrawal_visiblers_select"   multiple style="width:100%">
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+
+<script>
+    autocompleteAjax($("input[name='capital_name']"),"ComRecharge/capitalAccountList/v/w", function(item) {doSearchQuery("{$Think.const.CONTROLLER_NAME}");getAccountSystemData(true);});
+    $("input[name='capital_name']").on('change', function() {
+        if ($('input[name="capital_name"]').length > 0 && $("input[name='capital_name']").val()=="") {
+            $('input[name="q-capital_account_id"]').val("");
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+            getAccountSystemData(false);
+        }
+    });
+    $('.btn-screening').click(function(){
+        if (!$(this).hasClass('btn-screening-on')) {
+            $(this).addClass('btn-screening-on').siblings('.btn-screening').removeClass('btn-screening-on');
+            var status = $(this).data('status');
+            $('input[name=q-status]').val(status);
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+        }
+    })
+    $('#day_start,#day_end').datebox({
+        onSelect: function(){
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+        }
+    });
+    function action_show_capital(){
+        var rows = getGridSelections("{$Think.const.CONTROLLER_NAME}");
+        if (rows[0].object_type == 'u') {
+            createDialog('ComCapitalDetails/detail/id/'+rows[0].object_type+rows[0].user_id,'账户明细','ComCapitalDetails')
+        } else {
+            createDialog('ComCapitalDetails/detail/id/'+rows[0].object_type+rows[0].company_id,'账户明细','ComCapitalDetails')
+        }
+    }
+    function getAccountSystemData(toggle)
+    {
+        if (toggle) {
+            var id = $('input[name=q-capital_account_id]').val();
+            $.post('/ComCapitalDetails/getAccountSystemData',{id:id},function (result) {
+                $('input[name=withdrawal_leader]').val(result.withdrawal_leader_view);
+                $('input[name=customer_leader]').val(result.customer_capital_leader_view);
+                var option_customer = '';
+                var option_withdrawal = '';
+                if (result.withdrawal_visiblers_view) {
+                    for (var i = 0;i < result.withdrawal_visiblers_view.length;i++ ){
+                        option_withdrawal += '<option value='+result.withdrawal_visiblers_view[i].id+' selected>';
+                        option_withdrawal += result.withdrawal_visiblers_view[i].name;
+                        option_withdrawal += '</option>';
+                    }
+                }
+                if (result.customer_capital_visiblers_view) {
+                    for (var i = 0;i < result.customer_capital_visiblers_view.length;i++ ){
+                        option_customer += '<option value='+result.customer_capital_visiblers_view[i].id+' selected>';
+                        option_customer += result.customer_capital_visiblers_view[i].name;
+                        option_customer += '</option>';
+                    }
+                }
+                $('#customer_visiblers_select').html(option_customer);
+                $('#withdrawal_visiblers_select').html(option_withdrawal);
+                $('#customer_visiblers_select').trigger("chosen:updated");
+                $('#withdrawal_visiblers_select').trigger("chosen:updated");
+            },'json')
+        } else {
+            $('input[name=withdrawal_leader]').val('');
+            $('select[name=customer_leader]').val('');
+            $('#customer_visiblers_select').html('');
+            $('#withdrawal_visiblers_select').html('');
+            $('#customer_visiblers_select').trigger("chosen:updated");
+            $('#withdrawal_visiblers_select').trigger("chosen:updated");
+        }
+    }
+    var row;
+    function callHandlerWithdrawal() {
+        doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+    }
+    function actionAppendFolder(attach_group,id) {
+        openAttachmentForm("附件备注", [{text:"类型1",attach_group:attach_group}],function(result){
+            if (attach_group == '') {
+                $.post('/{$Think.const.CONTROLLER_NAME}/setAttachGroup',{id:id,attach_group:result.group},function(){
+
+                },'json')
+                refreshGrid("{$Think.const.CONTROLLER_NAME}", {id:id,attach_group:result.group}, 'edit');
+            }
+        });
+    }
+</script>

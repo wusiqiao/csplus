@@ -1,0 +1,556 @@
+<style>
+    .ClearNotice {
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+    }
+
+    .Notice-template {
+        margin: 4px 18px 0;
+        width: calc(100% - 36px);
+        /* height:295px; */
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .Notice-template-tit {
+        margin: 22px auto 22px 48px;
+        color: #000000;
+        font-weight: 700;
+        font-size: 28px;
+        width: 170px;
+        height: 28px;
+        line-height: 28px;
+        text-align: left;
+        overflow: hidden;
+    }
+
+    .icon-editor {
+        float: right;
+        font-weight: 400;
+        line-height: 14px;
+        margin: 7px 0;
+        color: #368bfe;
+        cursor: pointer;
+    }
+
+    .Notice-template-txt {
+        margin: 8px 48px 3px 48px;
+        width: calc(100% - 96px);
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .Notice-template-txt input {
+        width: calc(100% - 100px);
+        height: 18px;
+        line-height: 18px;
+        /* text-indent:8px; */
+        border: none;
+        box-sizing: border-box;
+    }
+    .Notice-template-txt textarea {
+        outline: none;
+        resize: none;
+        border: none;
+        height: 38px;
+    }
+    .Notice-template-info {
+        float: left;
+        line-height: 14px;
+        color: #666666;
+    }
+
+    .Notice-template-tip {
+        float: left;
+        margin: 0 18px;
+        width: 14px;
+        height: 14px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_query_new.png");
+        background-size: 100% 100%;
+    }
+
+    .btn-screening-label {
+        float: left;
+        width: 92px;
+        height: 54px;
+        line-height: 54px;
+        text-align: right;
+    }
+
+    #user-defined-time {
+        height: 54px;
+        line-height: 54px;
+        min-width: 271px;
+        position: absolute;
+        left: 430px;
+        top: 0px;
+    }
+
+    #backUp {
+        width: 48px;
+        height: 48px;
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_tobackup.png');
+        background-size: 100% 100%;
+        position: fixed;
+        z-index: 9999;
+        bottom: 80px;
+        right: 80px;
+    }
+
+    #backUp:hover {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_tobackup_hover.png');
+    }
+
+    .datagrid-cell-check input[type='checkbox']:disabled {
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-disablecheck.png') !important;
+    }
+
+    .icon-down{
+        position: absolute;
+        right: 0px;
+        top: 0;
+        width: 16px;
+        height: 10px;
+        margin: 7px 10px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png");
+        background-size: 100% 100%;
+        transform: rotate(180deg);
+    }
+    .detailcontainer{
+        position: fixed;
+        bottom: 0px;
+        z-index: 88;
+    }
+    .combo-panel.panel-body{
+        box-shadow: 0 0 1px 0;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<div class="ClearNotice" id="append">
+    <div id="scroll-top">
+        <!-- 分页栏 -->
+        <div class="c-header" id="topZero">
+            <!--<span class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}')">概述</span>-->
+            <!--<span class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/plan')">发送计划</span>-->
+            <!--<span class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/history')">发送记录</span>-->
+            <span class="tab-span on" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/clear_notice')">清卡通知</span>
+        </div>
+        <!-- 通知样板 -->
+        <div class="Notice-template">
+            <form method="post" id="{$Think.const.CONTROLLER_NAME}-dataform" class="content-wrap"
+                style="padding: 0px;background-color: #fff;position: relative;">
+                <div class="icon-down" data-show="1" title="点击收起"></div>
+                <input name="id" type="hidden" v-model="tlinfo.notice_id" />
+                <input name="template_id" type="hidden" v-model="tlinfo.template_id" />
+                <div class="Notice-template-tit">清卡通知 <span class="icon-editor" id="icon-editor" onclick="editnoticremark(this);">编辑</span></div>
+                <div class="Notice-template-txt" v-for="(info, index) in tlinfo.content">
+                    <span v-if="info.key">{{info.key}}：</span>
+                    <input v-if="info.key" type="hidden" :name="'content['+index+'][key]'" v-model="info.key" />
+                    <input type="hidden" :name="'content['+index+'][field]'" v-model="info.field" />
+                    <textarea v-if="info.field == 'remark'" :name="'content['+index+'][value]'" v-model="info.value" class="change-value" readonly cols="80" rows="3"></textarea>
+                    <textarea v-else-if="info.field == 'keyword2'" :name="'content['+index+'][value]'" v-model="info.value" class="change-value"  readonly cols="80" rows="3"></textarea>
+                    <!-- <input v-if="info.field == 'remark'" :name="'content['+index+'][value]'" type="text" v-model="info.value" class="change-value"  readonly> -->
+                    <!-- <input v-else-if="info.field == 'keyword2'" :name="'content['+index+'][value]'" type="text" v-model="info.value" class="change-value"  readonly> -->
+                    <input v-else :name="'content['+index+'][value]'" type="text" v-model="info.value" readonly>
+                </div>
+            </form>
+        </div>
+        <!-- 查询按钮 -->
+        <div class="search-table" id="searchform">
+            <div class="search-state" style="width:800px;height:54px;line-height: 54px;position: relative;">
+                <div class="btn-screening-label">选择时间：</div>
+                <div style="float: left; margin-left:8px;">
+                    <input class="easyui-combobox" id="year" name="year" value="{:date('Y')}" style="width:85px" data-options="valueField: 'value', textField: 'name',url:'{$Think.const.CONTROLLER_NAME}/getYear',onSelect:function(){doSelectCompanyList();}">
+                    <input class="easyui-combobox" id="month" name="month" value="{:date('m')}" style="width:85px" data-options="valueField: 'value', textField: 'name',url:'{$Think.const.CONTROLLER_NAME}/getMonth',onSelect:function(){doSelectCompanyList();}">
+                </div>
+            </div>
+            <div class="search-state" style="width:800px;height:54px;line-height: 54px;position: relative;">
+                <div class="btn-screening-label">发送状态：</div>
+                <span class="btn-screening btn-screening-on">全部</span>
+                <span class="btn-screening" data-name="state" data-value="0">未发送</span>
+                <span class="btn-screening" data-name="state" data-value="1">已发送</span>
+                <span class="btn-screening" data-name="state" data-value="2">发送失败</span>
+            </div>
+            <div class="search-state" style="width:800px;height:54px;line-height: 54px;position: relative;">
+                <div class="btn-screening-label">消息状态：</div>
+                <span class="btn-screening btn-screening-on">全部</span>
+                <span class="btn-screening" data-name="message_state" data-value="0">未确认</span>
+                <!-- <span class="btn-screening" data-name="message_state" data-value="1">已查看</span> -->
+                <span class="btn-screening" data-name="message_state" data-value="2">已确认</span>
+                <!-- <span class="btn-screening" data-name="message_state" data-value="3">已取消</span> -->
+            </div>
+            <div class="search-state" style="width:100%;height:54px;line-height: 54px;position: relative;">
+                <div class="btn-screening-label">关注状态：</div>
+                <span class="btn-screening btn-screening-on">全部</span>
+                <span class="btn-screening" data-name="is_follow" data-value="0">未关注</span>
+                <span class="btn-screening" data-name="is_follow" data-value="1">已关注</span>
+                <div style="float:right;" class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                    <input type="text" placeholder="请输入公司名称或者商户负责人" oninput="doSelectCompanyList()" style="width:300px;"
+                        class="filter-field" id="keyword" name="keyword"><img
+                        src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt=""
+                        onclick="doSelectCompanyList()">
+                </div>
+            </div>
+        </div>
+        <!-- 明细 -->
+        <div style="overflow:hidden;border-top: 1px solid #d3d3d3;padding: 4px 0 0;margin: 0 18px;">
+            <div class="Notice-template-info">总计服务公司 {{staticInfo.allCompanyNumber}}家，已发送通知 {{staticInfo.isSendNumber}}家，未发送
+                {{staticInfo.unSendNumber}}家，发送失败 {{staticInfo.sendFailureNumber}}家，已确认 {{staticInfo.confirmedNumber}}家
+            </div>
+            <div class="Notice-template-tip" title="*若未找到您负责的公司，请前往公司档案中查看清卡负责人的设置是否正确"></div>
+        </div>
+    </div>
+    
+    <!-- 表格 -->
+    <div style="width:100%;overflow-y: auto;margin-bottom: 11px;" id="table-area">
+        <table id="ComPotential-datagrid" class="easyui-datagrid datagrid" data-options="
+           url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/noticeCompanyList',
+           checkOnSelect:true,
+           singleSelect:false,
+           queryParams:{
+			    template_id:{$template_id}
+           },
+           onClickRow: function (rowIndex, rowData) {
+                if(rowData['is_follow'] =='未关注') {
+                    $(this).datagrid('unselectRow', rowIndex);
+                }
+           },
+           onCheck: function (rowIndex, rowData) {
+               if(rowData['is_follow'] =='未关注') {
+                    $(this).datagrid('unselectRow', rowIndex);
+                }
+           },
+           onSelectAll: function (rows) {
+              var obj = $(this);
+              for(var i = 0; i < rows.length ;i++ ) {
+                    if(rows[i]['is_follow'] =='未关注') {
+                        obj.datagrid('uncheckRow', i);
+                    }
+              }
+           },
+           onLoadSuccess: function(data){
+                $('#ComPotential-datagrid').datagrid('clearSelections');
+                for (var i = 0; i < data.rows.length; i++) {
+                    if (data.rows[i].is_follow == '未关注' || data.rows[i].send_able == 0) {
+                        $('input[type=\'checkbox\']')[i + 1].disabled = true;
+                        $('input[type=\'checkbox\']')[i + 1]
+                    }
+                }
+                var selections = $('#ComPotential-datagrid').datagrid('getSelections');
+                var arr = [];
+                for (var i = 0;i < selections.length; i++) {
+                    if (selections[i].is_follow == '未关注') {
+                        arr.push(selections[i]);
+                    }
+                }
+                if (arr.length > 0) {
+                    $('.ck').addClass('btn-speed');
+                    $('.ck').removeClass('btn-speed-disable');
+                }else{
+                    $('.ck').addClass('btn-speed-disable');
+                    $('.ck').removeClass('btn-speed');
+                }
+            },
+           " fit="true" fitColumns="true">
+            <thead>
+                <tr>
+                    <th data-options="field:'company_id',hidden:true"></th>
+                    <th data-options="field:'ck',checkbox:true"></th>
+                    <th data-options="field:'company_name',width:180,align:'left',formatter:formatName">公司名称</th>
+                    <th data-options="field:'user_name',width:160,align:'center',formatter:formatUserName">客户负责人</th>
+                    <th data-options="field:'mobile',width:130,align:'left',formatter:formatMobile">客户手机号</th>
+                    <th data-options="field:'is_follow',width:100,align:'center',formatter:formatFollowStatus">关注状态</th>
+                    <th data-options="field:'state',width:100,align:'center'">发送状态</th>
+                    <th data-options="field:'message_num',width:100,align:'center'">发送次数</th>
+                    <th data-options="field:'wnru_created_at',width:120,align:'center',formatter:formatTime">最新发送时间</th>
+                    <th data-options="field:'message_state',width:100,align:'center',formatter:formatMessageStatus">消息状态</th>
+                    <th data-options="field:'sure_time',width:120,align:'center',formatter:formatTime">确认时间</th>
+                    <th data-options="field:'su_user_name',width:100,align:'center',formatter:formatName">商户负责人</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+            <!--<div onclick="toggleType('{$Think.const.CONTROLLER_NAME}/plan')" class="btn-speed" style="margin-left:18px;">返回上级</div>-->
+            <div onclick="sendWxTemplate()" class="btn-speed" style="margin-top:0;margin-left: 18px;">微信模板发送</div>
+        </div>
+    </div>
+    <!-- 返回顶部 -->
+    <!-- <a id="backUp" href="#topZero"></a> -->
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.js"></script>
+<script type='text/javascript'
+    src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+
+<script>
+
+
+    function formatFollowStatus(value, row) {
+        if (row.is_follow == '已关注'){
+            return `<div>已关注</div>`;
+        } else {
+            return `<div>未关注</div>`;
+        }
+
+    }
+
+    function formatMessageStatus(value, row) {
+        if (row.state == '已发送'){
+            return `<div>${value}</div>`;
+        } else {
+            return `-`;
+        }
+    }
+
+    function formatTime(value,row) {
+        if (row.state == '已发送' && value != null){
+            return `<div>${value}</div>`;
+        } else {
+            return `-`;
+        }
+    }
+
+    function formatMobileStatus(value, row) {
+        return `<div title="${value}">${value}</div>`;
+    }
+
+    function formatName(value, row) {
+        if (value){
+            return `<div>${value}</div>`;
+        } else {
+            return `-`;
+        }
+    }
+    function formatMobile(value, row) {
+        if (row.mobile){
+            return "<div style=\"text-align:left;height:auto;\" class=\"datagrid-cell datagrid-cell-c47-mobile\">"+value+"</div>";
+        } else {
+            return "<div style=\"text-align:center;height:auto;\" class=\"datagrid-cell datagrid-cell-c47-mobile\">-</div>";
+        }
+
+    }
+    function formatUserName(value, row) {
+        if (row.user_name === ''){
+            return `-`;
+        } else if (row.head_pic) {
+            return `<div style="width:80%;height:35px;display:flex;">
+                    <img src="`+ row.head_pic + `" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;" onerror="this.onerror=null;this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                    <div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">` + value + `</div>
+                </div>`;
+        } else {
+            return `<div style="width:80%;height:35px;display:flex;">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;">
+                    <div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">` + value + `</div>
+                </div>`;
+        }
+    }
+
+    function doSelectCompanyList() {
+        var jsonData = {};
+        $(".btn-screening-on").each(function () {
+
+            if ($(this).data("name") != undefined) {
+
+                if ($(this).data("name") == "date_view" && $(this).data("value") == 3) {
+                    if ($("#day_start").datebox("getValue") != undefined) {
+                        jsonData["day_start"] = $("#day_start").datebox("getValue");
+                    }
+                    if ($("#day_end").datebox("getValue") != undefined) {
+                        jsonData["day_end"] = $("#day_end").datebox("getValue");
+                    }
+                } else {
+                    jsonData[$(this).data("name")] = $(this).data("value");
+                }
+            }
+        });
+        if ($('#keyword').val() != '') {
+            jsonData["keyword"] = $('#keyword').val();
+        }
+
+        jsonData["template_id"] = $('input[name=template_id]').val();
+        jsonData["year"] = $('input[name=year]').val();
+        jsonData["month"] = $('input[name=month]').val();
+
+
+
+        $("#ComPotential-datagrid").datagrid({
+            url: '{$Think.const.CONTROLLER_NAME}/noticeCompanyList',
+            queryParams: jsonData,
+            onLoadSuccess: function (data) {
+                $("#ComPotential-datagrid").datagrid("clearSelections");
+                console.log(data);
+                for (var i = 0; i < data.rows.length; i++) {
+                    if (data.rows[i].is_follow == '未关注' || data.rows[i].send_able == 0) {
+                        $("input[type='checkbox']")[i + 1].disabled = true;
+                        $("input[type='checkbox']")[i + 1]
+                    }
+                }
+                var selections = $('#ComPotential-datagrid').datagrid("getSelections");
+                var arr = [];
+                for (var i = 0; i < selections.length; i++) {
+                    if (selections[i].is_follow == '未关注') {
+                        arr.push(selections[i]);
+                    }
+                }
+                if (arr.length > 0) {
+                    $('.ck').addClass('btn-speed');
+                    $('.ck').removeClass('btn-speed-disable');
+                } else {
+                    $('.ck').addClass('btn-speed-disable');
+                    $('.ck').removeClass('btn-speed');
+                }
+            },
+            onClickRow: function (rowIndex, rowData) {
+                $("input[type='checkbox']").each(function (index, el) {
+                    if (el.disabled == true) {
+                        $('#dg').datagrid('unselectRow', index - 1);
+                    }
+                })
+            }
+        });
+    }
+
+    var vue = new Vue({
+        el: '#append',
+        data: {
+            tlinfo: {$libraryinfo},
+            staticInfo: {$staticInfo},
+        },
+    });
+
+    $.parser.parse("#table-area");
+    // 自动计算表格高
+    function autoHeight(){
+        $("#table-area").height(`calc( 100% - ${$("#scroll-top").height()}px - 11px)`);
+    }
+    autoHeight();
+    function editnoticremark(obj) {
+        if ($(obj).html() == "编辑") {
+            $(obj).html("保存");
+            $.dialog.tips("请填写修改内容，并点击保存");
+            $(".change-value").removeAttr("readonly").css('border', '1px solid #d3d3d3');
+        } else if ($(obj).html() == "保存") {
+            $(obj).html("编辑");
+            $(".change-value").attr("readonly", "readonly").css('border', 'none');
+            var validate = $("#{$Think.const.CONTROLLER_NAME}-dataform").serialize();
+            $.post('/{$Think.const.CONTROLLER_NAME}/edit_notic_remark', validate, function (result) {
+                $('input[name=id]').val(result.notice_id);
+                $.dialog.tips(result.message);
+            }, 'json')
+        }
+    }
+
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+
+    $('#search-date .btn-screening').click(function () {
+        if ($(this).text() == "自定义") {
+            $(`#user-defined-time`).show();
+        } else {
+            $(`#user-defined-time`).hide();
+        }
+        $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+        doSelectCompanyList();
+    })
+    $('.search-state .btn-screening').click(function () {
+        $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+        doSelectCompanyList();
+    })
+
+
+    function sendWxTemplate() {
+        if ($("#icon-editor").html() == "保存"){
+            $.dialog.tips('请保存发送内容!');
+            return
+        }
+        var id = $('input[name=id]').val();
+        var template_id = $('input[name=template_id]').val();
+        var list = new Array();
+        var rows = $("#ComPotential-datagrid").datagrid("getSelections");
+        if (rows.length === 0) {
+            $.dialog.tips('请选择要发送的公司!');
+            return false;
+        } else {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                if (row.is_follow != '未关注') {
+                    list.push(row.company_id);
+                }
+
+            }
+        }
+        showMaskLayer();
+        $.post('/{$Think.const.CONTROLLER_NAME}/sendNotice', { companys: list, id: id, template_id: template_id, }, function (result) {
+            if (result.error == 0) {
+                hasSendIng(list);
+            } else {
+                $.dialog.tips(result.message);
+                hideMaskLayer();
+            }
+        }, 'json')
+
+    }
+
+    function hasSendIng(list) {
+        var id = $('input[name=id]').val();
+        $.post('/{$Think.const.CONTROLLER_NAME}/hasSendIng', { companys: list, id: id }, function (result) {
+            if (result.error == 0) {
+                $.dialog.tips('发送成功');
+                hideMaskLayer();
+                doSelectCompanyList();
+                // doSearchQuery1("{$Think.const.CONTROLLER_NAME}", { type: $('input[name=is_valid]').val() })
+            } else {
+                setTimeout(function () {
+                    hasSendIng(list)
+                }, 500)
+            }
+        }, 'json')
+
+    }
+
+    function doSearchQuery1(frameId, data) {
+        var target = getGridToolbar(frameId).find(".filter-field");
+        var queryParams = data;
+        var _grid = getDataGrid(frameId);
+        if (_grid.hasClass("datagrid")) {
+            _grid.datagrid("load", queryParams);
+        } else {
+            _grid.treegrid("load", queryParams);
+        }
+        getSearchPanel(frameId).data("query", queryParams);//保存查询条件，导出时使用
+    }
+
+    // 通知模板伸缩功能
+    $(".icon-down").on("click",function(){
+        if($(".icon-down").attr("data-show") == 1){
+            $(".Notice-template").height(59);
+            $(".icon-down").attr("title","点击展示");
+            $(".icon-down").css("transform","rotate(0deg)");
+            $(".icon-down").attr("data-show","0");
+        }else{
+            $(".Notice-template").height("auto");
+            $(".icon-down").attr("title","点击收起");
+            $(".icon-down").css("transform","rotate(180deg)");
+            $(".icon-down").attr("data-show","1");
+        }
+        autoHeight();
+        $.parser.parse("#table-area");
+    })
+
+    function toggleType(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+
+
+</script>

@@ -1,0 +1,27 @@
+<script type="text/javascript">
+function formatStatus(value,row){
+    var scale_text = ["借出中","已归还","未借出"];
+    return scale_text[parseInt(value)];
+}
+
+</script>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="ComSundry" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'no',width:120,align:'left'">{$Think.lang.SUNDRY_NO}</th>
+        <th data-options="field:'name',width:120,align:'left'">{$Think.lang.SUNDRY_NAME}</th>
+        <th data-options="field:'company_name',width:120,align:'left'">{$Think.lang.SUNDRY_COMPANY}</th>
+        <th data-options="field:'position',width:240,align:'left'">{$Think.lang.SUNDRY_POSITION}</th>
+        <th data-options="field:'status',width:120,align:'left',formatter:formatStatus">{$Think.lang.SUNDRY_STATUS}</th>
+        <th data-options="field:'user_name',width:120,align:'left'">{$Think.lang.SUNDRY_USER}</th>
+        <th data-options="field:'last_borrow_date',width:120,align:'left',formatter:formatDate">{$Think.lang.LAST_BORROW_DATE}</th>
+        <th data-options="field:'last_return_date',width:120,align:'left',formatter:formatDate">{$Think.lang.LAST_RETURN_DATE}</th>
+        <th data-options="field:'created_at',width:120,align:'left',formatter:formatDate">{$Think.lang.SUNDRY_CREATED_AT}</th>
+    </tr>
+   <include file="./Application/Common/Layout/Default/list_footer.html"  controller="ComSundry" />
+</div>
+<script type="text/javascript">
+
+
+</script>

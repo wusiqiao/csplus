@@ -1,0 +1,43 @@
+<script>
+    function format_title(value){
+        return `<div style="max-width: 290px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function format_open(value, row){
+        var scale_text = ["关闭","开启"];
+        return scale_text[parseInt(value)];
+    }
+    function format_unit(value){
+        return value + '次';
+    }
+    function format_time(value){
+        return timestampToTime(value,'Y年m月d日 H:i');
+    }
+    function timestampToTime(timestamp,str) {
+        var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        Y = date.getFullYear();
+        m = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1);
+        d = date.getDate();
+        H = date.getHours();
+        i = date.getMinutes();
+        return `<div title="${str.replace('Y',Y).replace('m',m).replace('d',d).replace('H',H).replace('i',i)}">${str.replace('Y',Y).replace('m',m).replace('d',d).replace('H',H).replace('i',i)}</div>`;
+    }
+</script>
+<style>
+    .maincontainer{
+        height: 100%;
+    }
+</style>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header_auto.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'title',width:300,align:'left',formatter:format_title">{$Think.lang.TWEETS_TITLE}</th>
+        <th data-options="field:'share_count',width:120,align:'left',formatter:format_unit">{$Think.lang.TWEETS_SHARE_COUNT}</th>
+        <th data-options="field:'browse_count',width:120,align:'left',formatter:format_unit">{$Think.lang.TWEETS_BROWSE_COUNT}</th>
+        <th data-options="field:'base_count',width:120,align:'left',formatter:format_unit">{$Think.lang.TWEETS_BASE_COUNT}</th>
+        <th data-options="field:'is_open',width:120,align:'left',formatter:format_open">{$Think.lang.TWEETS_OPEN}</th>
+        <th data-options="field:'created_at',width:120,align:'left',formatter:format_time">{$Think.lang.TWEETS_CREATED_AT}</th>
+        <th data-options="field:'updated_at',width:120,align:'left',formatter:format_time">{$Think.lang.TWEETS_UPDATED_AT}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>

@@ -1,0 +1,17 @@
+ 
+@model IEnumerable<Xditi.Inspection.Model.SysOperation>
+@Html.Partial("_SelectHeaderPartial")
+                <tr>                
+                <th field="ck" checkbox="false"></th>
+                    <th data-options="field:'id',width:120,align:'left',hidden:true">@Html.DisplayNameFor(m => m.ID )</th>                    
+                    <th data-options="field:'name',width:120,align:'left'">@Html.DisplayNameFor(m => m.Name )</th>                    
+                    <th data-options="field:'Action',width:120,align:'left'">@Html.DisplayNameFor(m => m.Action )</th>                    
+                                        
+                    <th data-options="field:'Sort',width:120,align:'left'">@Html.DisplayNameFor(m => m.Sort )</th>                    
+                    <th data-options="field:'querykey',width:120,align:'left'">@Html.DisplayNameFor(m => m.querykey )</th>                    
+                                        
+                                        
+                                        
+                                        
+                </tr>
+@Html.Partial("_SelectFooterPartial")

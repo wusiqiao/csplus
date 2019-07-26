@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>选择公司</title>
+        <script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.js"></script>
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/css/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/css/login.css" rel="stylesheet" />        
+        <link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/style.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/login.css" rel="stylesheet" />
+        <style>
+            .login{
+                z-index:2000;
+            }
+            .login-form-body span{color: #000}
+            .gridtable td{cursor: pointer;font-size: 1.2em; height: 30px}
+            .gridtable td:hover{color: #FFFFFF; font-weight: 600; background: #B5B5B5;}
+            td{padding:8px 20px;}
+        </style>
+    </head>
+    <body>
+        <div class="login">
+            <div style="overflow-y: auto;padding:10px;border-radius: 5px;border: 1px #ffffff solid;background-color: whitesmoke">
+                <table class="gridtable detail-table" style="margin-left: 0px">
+                    <thead style="margin-bottom: 10px">
+                    <tr><th style="width:50%;font-size: 1.3em;">请选择要进入的公司</th></tr>
+                    </thead>
+                    <tbody>
+                    <volist name="branchs" id="vo">
+                        <tr>
+                            <td id="{$vo.id}" colspan="2" class="company-item" data-value="{$vo.id}" onclick="select_branchs('{$vo.id}')" style="margin-bottom: 20%">{$vo.name}</td>
+                        </tr>
+                    </volist>
+                    <tr></tr>
+                    </tbody>
+                </table>
+                <span id="message"></span>
+            </div>
+        </div>
+        <div class="login-wrap">
+            <div class="top-bar">
+                <div class="logo-part">
+
+                    <div class="logo">
+                        <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/logo/logo.png">
+                    </div>
+                    <div>最懂财务公司的营销管理系统</div>
+                </div>
+                <div class="telephone">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/telephone.png" alt="" />
+                </div>
+            </div>
+            <div class="heart">
+                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/animate.png" alt="" />
+            </div>
+        </div>
+        <script type="text/javascript">
+            function select_branchs(branch_id) {
+                $.post("{:U('Login/choise_branch')}", {branch_id: branch_id},
+                        function (ret) {
+                            if (ret.code === 1) {
+                                $("#message").html(ret.message);
+                            } else {
+                                window.location.href = "__MODULE__/Index";
+                            }
+                        }, "json")
+            }
+        </script>        
+    </body>
+</html>

@@ -1,0 +1,673 @@
+<script>
+function formatStatus(value,row){
+    var scale_text = ["未收","部分已收","已收","逾期"];
+    return scale_text[parseInt(value)];
+}
+function formatAllStatus(value,row){
+    var scale_text = ["未结束","已结束","已结束"];
+    return scale_text[parseInt(value)];
+}
+function formatBalanceStatus(value,row){
+    var scale_text = ["否","是"];
+    return scale_text[parseInt(value)];
+}
+
+function formatComCompanyName(value, row) {
+    if(value == null||value == ""){
+        return "-"
+    }else{
+        return `<div style="width:182px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+    }
+}
+function formatAgreementNum(value, row) {
+    if(value == null||value == ""){
+        return "-"
+    }else{
+        return `<div style="width:80px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+    }
+}
+function formatCustomer(value) {
+    if(value == null||value == ""){
+        return "-"
+    }else{
+        return `<div style="width:80px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+    }
+}
+function formatAgreementName(value) {
+    if(value == null||value == ""){
+        return "-"
+    }else{
+        return `<div style="width:150px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+    }
+}
+
+</script>
+
+<link rel="stylesheet" type="text/css"
+    href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .btnOn {
+        color: #ffffff !important;
+        background-color: #529bfd !important;
+        border: 1px solid #529bfd !important;
+    }
+
+    .btnOn:hover {
+        background-color: #6eacfe !important;
+    }
+
+    .spanBtn {
+        border-radius: 0px !important;
+        border: 1px solid #d3d3d3;
+        margin: 11px 8px;
+    }
+
+    .bgWhite {
+        background-color: #ffffff;
+        width: auto;
+    }
+
+    .btn-screening-label {
+        float: left;
+        width: 98px;
+        height: 54px;
+        line-height: 54px;
+        text-align: right;
+    }
+
+    .btn-screening-input {
+        float: left;
+        height: 32px;
+        margin: 11px 0px 11px 0px;
+    }
+
+    #user-defined-time {
+        height: 54px;
+        line-height: 54px;
+        min-width: 271px;
+        position: absolute;
+        right: 0px;
+        top: 0px;
+    }
+
+    @media screen and (max-width:1920px) {
+        .btn-screening-input input {
+            width: 270px !important;
+        }
+    }
+
+    @media screen and (max-width:1680px) {
+        .btn-screening-input input {
+            width: 240px !important;
+        }
+    }
+
+    @media screen and (max-width:1580px) {
+        .btn-screening-input input {
+            width: 210px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    @media screen and (max-width:1470px) {
+        .btn-screening-input input {
+            width: 190px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    @media screen and (max-width:1400px) {
+        .btn-screening-input input {
+            width: 170px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    @media screen and (max-width:1330px) {
+        .btn-screening-input input {
+            width: 150px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+</style>
+<div class="maincontainer" id="WrkReceivables-maincontainer" style="overflow: unset;">
+    <!--<include file="./Application/Common/Layout/Default/list_header.html"  controller="WrkReceivables" />-->
+    <div class="content-wrap" style="padding-left:0px;">
+        <div class="bgWhite">
+            <div class="c-header">
+                <div class="tab-span tab-span-on" onclick="receivablesAllShow(this)" data-id='0'>全部</div>
+                <div class="tab-span" data-id='1' onclick="receivablesShow(this)" data-id='1'>收款列表</div>
+                <if condition="$show_notice eq 1">
+                    <div class="tab-span" data-id='2' onclick="noticeShow(this)" data-id='2'>
+                        付款通知<div class='red-point' style="height:6px;
+        width:6px;
+        border-radius:50%;
+        color:#fff;
+        background:red;
+        display: inline-block;
+        position: relative;
+        top: -5px;
+        right: -2px;
+        -webkit-animation: twinkling 1s infinite ease-in-out;"></div>
+                    </div>
+                    <else/>
+                    <div class="tab-span" data-id='2' onclick="noticeShow(this)" data-id='2'>付款通知</div>
+                </if>
+
+                <!-- <div class="tab-span" data-id='3'>已收</div> -->
+            </div>
+            <div class="c-select" style="margin: 17px 0 0 0;">
+                <?php 
+                    $now = date('Y-m-d');
+                    $all_begin = date('1990-1-1');
+                    $week_begin = date('Y-m-d',time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600);
+                    $week_end = date('Y-m-d',time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600);
+                    $mounth_begin = date('Y-m-1');
+                    $mounth_end = date('Y-m-t');
+                ?>
+                <div class="search-table">
+                    <div style="width:900px;height:54px;line-height: 54px;position: relative;">
+                        <div class="btn-screening-label">查看时间：</div>
+                        <span class="btn-screening btn-screening-on" data-id='0'>全部</span>
+                        <span class="btn-screening" data-id='1'>今日</span>
+                        <span class="btn-screening" data-id='2'>本周</span>
+                        <span class="btn-screening" data-id='3'>本月</span>
+                        <span class="btn-screening" data-id='4'>自定义</span>
+                        <div id="user-defined-time" style="display: none;">
+                            <input style="width: 122px;" id="day_start"
+                                class="easyui-datebox filter-field datebox-f combo-f textbox-f" 
+                                textboxname="qdr-create_time" style="display: none;" comboname="qdr-create_time"
+                                data-options="prompt:'选择日期'">－
+                            <input style="width: 122px;" id="day_end"
+                                class="easyui-datebox filter-field datebox-f combo-f textbox-f" 
+                                textboxname="qdr-create_time" style="display: none;" comboname="qdr-create_time"
+                                data-options="prompt:'选择日期'">
+                        </div>
+                    </div>
+                    <div class="all_status" style="width:800px;height:54px;line-height: 54px;position: relative;">
+                        <div class="btn-screening-label">收款状态(总)：</div>
+                        <span class="btn-screening btn-screening-on" >全部</span>
+                        <span class="btn-screening" data-id='1'>未结束</span>
+                        <span class="btn-screening" data-id='2'>已结束</span>
+                    </div>
+                    <div class="period_status" style="width:800px;height:54px;line-height: 54px;position: relative;display:none;">
+                        <div class="btn-screening-label">收款状态(期)：</div>
+                        <span class="btn-screening btn-screening-on" >全部</span>
+                        <span class="btn-screening" data-id='1'>逾期</span>
+                        <span class="btn-screening" data-id='2'>未收</span>
+                        <span class="btn-screening" data-id='3'>已收</span>
+                    </div>
+                    <div style="height:54px;line-height: 54px;position: relative;">
+                        <div class="btn-screening-label">公司名称：</div>
+                        <div class="btn-screening-input">
+                            <input name="company_name" data-name="company_id" class="easyui-validatebox filter-field"
+                                value="" placeholder="请输入公司名称" />
+                        </div>
+                        <div class="btn-screening-label">合同名称：</div>
+                        <div class="btn-screening-input">
+                            <input name="contract_name" class="easyui-validatebox filter-field" data-name="contract_id" value=""
+                                placeholder="请输入合同名称" />
+                        </div>
+                        <div style="width: 160px;" class="btn-screening-label">收款商户负责人：</div>
+                        <div class="btn-screening-input">
+                            <input name="leader_name" data-name="leader_id" class="easyui-validatebox filter-field"
+                                value="" placeholder="请输入收款商户负责人" />
+                        </div>
+                    </div>
+                    <!-- <span onclick="paymentDetails(53)">缴费清单</span> -->
+                </div>
+            </div>
+        </div>
+        <div style="height:calc(100% - 250px);width:100%;position:relative;" id="receivablesAll">
+            <!--<table id="WrkReceivablesAll-datagrid" class="easyui-datagrid datagrid" data-options="-->
+            <table id="WrkReceivablesAll-datagrid" class="datagrid" fit="false" data-options="
+                url:'WrkReceivables/listAll',
+                pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+                pageSize:<empty name='pagesize'>10<else/>{$pagesize}</empty>,
+                toolbar:'#WrkReceivables-toolbar',
+                pageNumber:1,
+                checkOnSelect:true,
+                singleSelect:false,
+                border:true,
+                onRowContextMenu: function (e, rowIndex, rowData) {
+                    $(this).datagrid('clearSelections');
+                    $(this).datagrid('selectRow', rowIndex);
+                e.preventDefault();
+                    $('#box_WrkReceivables').menu('show', {
+                        left: e.pageX,
+                        top: e.pageY
+                    });
+                }">
+                <thead>
+                    <tr>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'contract_no',width:180,align:'left',formatter:formatAgreementNum">
+                            {$Think.lang.RECEIVABLES_CONTRACT_NO}</th>
+                        <th data-options="field:'company_name',width:280,align:'left',formatter:formatComCompanyName">
+                            {$Think.lang.RECEIVABLES_COMPANY}</th>
+                        <th data-options="field:'customer_leader_name',width:170,align:'left',formatter:formatCustomer">
+                            {$Think.lang.RECEIVABLES_CUSTOMER_PRINCIPAL}</th>
+                        <th data-options="field:'contract_name',width:240,align:'left',formatter:formatAgreementName">
+                            {$Think.lang.RECEIVABLES_CONTRACT_NAME}</th>
+                        <th data-options="field:'leader_id',width:170,align:'left',formatter:formatCustomer">
+                            {$Think.lang.RECEIVABLES_MERCHANT_PRINCIPAL}</th>
+                        <th data-options="field:'start_time',width:160,align:'left',formatter:formatDate">合同开始时间</th>
+                        <th data-options="field:'agreement_money',width:160,align:'left'">合同金额</th>
+                        <th data-options="field:'actual_amount',width:160,align:'left'">已收金额</th>
+                        <th data-options="field:'bad_dept_amount',width:160,align:'left'">坏账金额</th>
+                        <th data-options="field:'status',width:120,align:'left',formatter:formatAllStatus">
+                            {$Think.lang.RECEIVABLES_STATUS}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                </thead>
+            </table>
+            <div id="receivables-all-empty-notice" style="color: rgb(180, 180, 180);display:none;width:100%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 40px;font-size: 20px">暂无数据</div>
+        </div>
+        <div style="height:calc(100% - 250px);width:100%;position:relative;display:none" id="receivablesList">
+            <table id="WrkReceivables-datagrid" class="easyui-datagrid datagrid" data-options="
+                url:'WrkReceivables/list',
+                checkOnSelect:true,
+                singleSelect:false,
+                border:true">
+                <thead>
+                    <tr>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'contract_no',width:180,align:'left',formatter:formatAgreementNum">
+                            {$Think.lang.RECEIVABLES_CONTRACT_NO}</th>
+                        <th data-options="field:'company_name',width:280,align:'left',formatter:formatComCompanyName">
+                            {$Think.lang.RECEIVABLES_COMPANY}</th>
+                        <th data-options="field:'customer_leader_name',width:170,align:'left',formatter:formatCustomer">
+                            {$Think.lang.RECEIVABLES_CUSTOMER_PRINCIPAL}</th>
+                        <th data-options="field:'contract_name',width:240,align:'left',formatter:formatAgreementName">
+                            {$Think.lang.RECEIVABLES_CONTRACT_NAME}</th>
+                        <th data-options="field:'leader_id',width:170,align:'left',formatter:formatCustomer">
+                            {$Think.lang.RECEIVABLES_MERCHANT_PRINCIPAL}</th>
+                        <th data-options="field:'receivables_amount',width:160,align:'left'">
+                            {$Think.lang.RECEIVABLES_AMOUNT}</th>
+                        <th data-options="field:'receivable_date',width:160,align:'left',formatter:formatDate">
+                            {$Think.lang.RECEIVABLES_DATE}</th>
+                        <th data-options="field:'actual_amount',width:160,align:'left'">总金额</th>
+                        <th data-options="field:'offline_amount',width:160,align:'left'">线下付款</th>
+                        <th data-options="field:'balance_amount',width:160,align:'left'">余额付款</th>
+                        <th data-options="field:'wechat_amount',width:160,align:'left'">微信付款</th>
+                        <th data-options="field:'coupon_amount',width:160,align:'left'">优惠卷付款</th>
+                        <th data-options="field:'actual_date',width:160,align:'left',formatter:formatDate">
+                            {$Think.lang.RECEIVABLES_ACTUAL_DATE}</th>
+                        <th data-options="field:'status',width:160,align:'left',formatter:formatStatus">
+                            {$Think.lang.RECEIVABLES_STATUS}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                </thead>
+            </table>
+            <div id="receivables-empty-notice" style="color: rgb(180, 180, 180);display:none;width:100%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 40px;font-size: 20px">暂无数据</div>
+        </div>
+        <div style="height:calc(100% - 250px);width:99%;display:none;" id="noticeList">
+            <table id="WrkReceivablesNotice-datagrid" class="easyui-datagrid datagrid"
+                data-options="url:'WrkReceivables/noticeList',
+                singleSelect:false,onLoadSuccess:handlerHideRedDot,onDblClickRow:noticeDblClick">
+                <thead>
+                    <tr>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'pay_date',width:90,align:'left',formatter:formatDate">付款日期</th>
+                        <th data-options="field:'contract_no',width:90,align:'left',formatter:formatAgreementNum">合同编号
+                        </th>
+                        <th data-options="field:'company_name',width:180,align:'left',formatter:formatComCompanyName">公司
+                        </th>
+                        <th data-options="field:'customer_leader_name',width:110,align:'left',formatter:formatCustomer">
+                            {$Think.lang.RECEIVABLES_CUSTOMER_PRINCIPAL}</th>
+                        <th data-options="field:'contract_name',width:160,align:'left',formatter:formatAgreementName">
+                            {$Think.lang.RECEIVABLES_CONTRACT_NAME}</th>
+                        <th data-options="field:'leader_name',width:150,align:'left',formatter:formatCustomer">
+                            {$Think.lang.RECEIVABLES_MERCHANT_PRINCIPAL}</th>
+                        <th data-options="field:'offline_amount',width:90,align:'left'">线下付款</th>
+                        <th data-options="field:'balance_amount',width:90,align:'left'">余额付款</th>
+                        <th data-options="field:'wechat_amount',width:90,align:'left'">微信付款</th>
+                        <th data-options="field:'coupon_amount',width:90,align:'left'">优惠券付款</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<script type='text/javascript'
+    src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+
+    $(function () {
+        // calculateH();
+        autocompleteAjax($("input[name='company_name']"), "WrkReceivables/companyList", function (item) {
+            $("#customer_leader").load('WrkReceivables/ajax/branch_id/' + item.id);
+            queryReceivablesData();
+            // queryReceivablesAll();
+            // queryReceivables();
+        });
+        autocompleteAjax($("input[name='contract_name']"), "WrkReceivables/agreementList", function (item) {
+            queryReceivablesData();
+            // var html = "";
+            // html += '<input name="q-contract_id" class="easyui-validatebox filter-field" type="hidden" value="' + item.id + '">';
+            // $("#receivablesList").html(html);
+            // $("#noticeList").html(html);
+            // queryReceivablesAll();
+            // queryReceivables();
+        });
+        autocompleteAjax($("input[name='leader_name']"), "WrkReceivables/staffList", function (item) {
+            queryReceivablesData();
+                // queryReceivablesAll();
+                // queryReceivables();
+        });
+
+        $("input[name='contract_name']").on("change", function () {
+            if ($("input[name='contract_name']").length > 0 && $("input[name='contract_name']").val() == "") {
+                $("input[name='contract_id']").val("");
+                queryReceivablesData();
+            }
+        });
+        $("input[name='company_name']").on("change", function () {
+            if ($("input[name='company_name']").length > 0 && $("input[name='company_name']").val() == "") {
+                $("input[name='company_id']").val("");
+                queryReceivablesData();
+            }
+        });
+        $("input[name='leader_name']").on("change", function () {
+            if ($("input[name='leader_name']").length > 0 && $("input[name='leader_name']").val() == "") {
+                $("input[name='leader_id']").val("");
+                queryReceivablesData();
+            }
+        })
+    });
+
+    function queryReceivablesData() {
+        var id = $('.c-header .tab-span-on').attr("data-id");
+        if (id == 0) {
+            queryReceivablesAll();
+        }else if(id == 1){
+            queryReceivables();
+        }else{
+            queryReceivablesNotice();        
+        }
+    }
+
+    $(function () {
+        initial_easyui_grid("WrkReceivables", "{$title}");
+    });
+
+    // function calculateH() {
+    //     var winH = $('.maincontainer').height();
+    //     var H = $(".bgWhite").height();
+    //     var rst = winH - H;
+    //     $('#noticeList').css('height', rst);
+    //     $('#receivablesList').css('height', rst);
+    //     $('#receivablesAll').css('height', rst);
+    // }
+
+    function receivablesAllShow(e) {
+        // $(e).addClass('btnOn').siblings().removeClass('btnOn');
+        queryReceivablesAll();
+        $(".all_status").show();
+        $(".period_status").hide();
+        $("#receivablesAll").show();
+        $("#receivablesList").hide();
+        $("#noticeList").hide();
+        // calculateH();
+        $.parser.parse("#receivablesAll");
+    }
+
+    function receivablesShow(e) {
+        // $(e).addClass('btnOn').siblings().removeClass('btnOn');
+        queryReceivables();
+        $(".period_status").show();
+        $(".all_status").hide();
+        $("#receivablesList").show();
+        $("#receivablesAll").hide();
+        $("#noticeList").hide();
+        // calculateH();
+        $.parser.parse("#receivablesList");
+    }
+
+    function noticeShow(e) {
+        // $(e).addClass('btnOn').siblings().removeClass('btnOn');
+        // $('#WrkReceivablesNotice-datagrid').datagrid('reload');
+        queryReceivablesNotice();
+        $(".period_status").show();
+        $(".all_status").hide();
+        $("#noticeList").show();
+        $("#receivablesAll").hide();
+        $("#receivablesList").hide();
+        // calculateH();
+        $.parser.parse("#noticeList");
+    }
+
+    $('.c-header .tab-span').click(function () {
+        $(this).addClass('tab-span-on').siblings().removeClass('tab-span-on');
+        // queryReceivablesAll();
+        // queryReceivables();
+    });
+    $('.c-select .btn-screening').click(function () {
+        if ($(this).text() == "自定义") {
+            $(`#user-defined-time`).show();
+        } else {
+            $(`#user-defined-time`).hide();
+        }
+        $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+        var id = $('.c-select .btn-screening-on').attr("data-id");
+        if (id == 1) {
+            $('#day_start').datebox('setValue', '{$now}');
+            $('#day_end').datebox('setValue', '{$now}');
+        } else if (id == 2) {
+            $('#day_start').datebox('setValue', '{$week_begin}');
+            $('#day_end').datebox('setValue', '{$week_end}');
+        } else if (id == 3) {
+            $('#day_start').datebox('setValue', '{$mounth_begin}');
+            $('#day_end').datebox('setValue', '{$mounth_end}');
+        } else if (id == 4 || id == 0) {
+            $('#day_start').datebox('setValue', '');
+            $('#day_end').datebox('setValue', '');
+        }
+        queryReceivablesData();
+        // queryReceivablesAll();
+        // queryReceivables();
+    });
+
+    function queryReceivablesAll() {
+        var company_id = '';
+        var leader_id = '';
+        var customer_leader_id = '';
+        var contract_id = '';
+        if ($("input[name='company_name']").val() != '') {
+            company_id = $("input[name='company_id']").val();
+        }
+        if ($("input[name='leader_name']").val() != '') {
+            leader_id = $("input[name='leader_id']").val();
+        }
+        if ($("input[name='customer_leader_name']").val() != '') {
+            customer_leader_id = $("input[name='customer_leader_id']").val();
+        }
+        if ($("input[name='contract_name']").val() != '') {
+            contract_id = $("input[name='contract_id']").val();
+        }
+
+        var status = $('.all_status .btn-screening-on').attr("data-id");
+        
+        var begin_date = $('#day_start').datebox('getValue');
+        var end_date = $('#day_end').datebox('getValue');
+        $('#WrkReceivablesAll-datagrid').datagrid('load', {
+            company_id: company_id,
+            leader_id: leader_id,
+            customer_leader_id: customer_leader_id,
+            status: status,
+            begin_date: begin_date,
+            end_date: end_date,
+            contract_id: contract_id
+        });
+    }
+
+    function queryReceivables() {
+        var company_id = '';
+        var leader_id = '';
+        var customer_leader_id = '';
+        var contract_id = '';
+        if ($("input[name='company_name']").val() != '') {
+            company_id = $("input[name='company_id']").val();
+        }
+        if ($("input[name='leader_name']").val() != '') {
+            leader_id = $("input[name='leader_id']").val();
+        }
+        if ($("input[name='customer_leader_name']").val() != '') {
+            customer_leader_id = $("input[name='customer_leader_id']").val();
+        }
+        if ($("input[name='contract_name']").val() != '') {
+            contract_id = $("input[name='contract_id']").val();
+        }
+
+        var status = $('.period_status .btn-screening-on').attr("data-id");
+        
+        var begin_date = $('#day_start').datebox('getValue');
+        var end_date = $('#day_end').datebox('getValue');
+        $('#WrkReceivables-datagrid').datagrid('load', {
+            company_id: company_id,
+            leader_id: leader_id,
+            customer_leader_id: customer_leader_id,
+            status: status,
+            begin_date: begin_date,
+            end_date: end_date,
+            contract_id: contract_id
+        });
+    }
+
+    function queryReceivablesNotice() {
+        var company_id = '';
+        var leader_id = '';
+        var contract_id = '';
+        if ($("input[name='company_name']").val() != '') {
+            company_id = $("input[name='company_id']").val();
+        }
+        if ($("input[name='leader_name']").val() != '') {
+            leader_id = $("input[name='leader_id']").val();
+        }
+        if ($("input[name='contract_name']").val() != '') {
+            contract_id = $("input[name='contract_id']").val();
+        }
+        var begin_date = $('#day_start').datebox('getValue');
+        var end_date = $('#day_end').datebox('getValue');
+        $('#WrkReceivablesNotice-datagrid').datagrid('load', {
+            company_id: company_id,
+            leader_id: leader_id,
+            begin_date: begin_date,
+            end_date: end_date,
+            contract_id: contract_id
+        });
+    }
+
+    $('#day_start').datebox({
+        onSelect: function () {
+            // queryReceivables();
+            // queryReceivablesAll();
+            queryReceivablesData();
+        }
+    });
+    $('#day_end').datebox({
+        onSelect: function () {
+            // queryReceivables();
+            // queryReceivablesAll();
+            queryReceivablesData();
+        }
+    });
+
+
+
+    $('#WrkReceivables-datagrid').bind("onLoadSuccess",function(event,data){
+        if (data.total == 0) {
+            $('#receivables-empty-notice').show();
+        }else{
+            $('#receivables-empty-notice').hide();
+
+        }
+    });
+
+    $("#WrkReceivablesAll-datagrid").datagrid({
+        onDblClickRow: function (index, row) {
+            $.get("WrkReceivables/detail/id/" + row.id,
+                function (data, status) {
+                    var dlg = $.dialog({
+                        id: 'dlg-edit-receivables',
+                        title: '编辑收款计划',
+                        autoSize: true,
+                        content: data,
+                        lock: false,
+                        max: false,
+                        min: false,
+                        parent: this
+                    });
+                    parseForm();
+                }
+            );
+        }
+    })
+
+    function noticeDblClick(index,row){
+        $.get("WrkReceivables/detail/id/" + row.id + "/notice_id/" + row.notice_id,
+            function (data, status) {
+                var dlg = $.dialog({
+                    id: 'dlg-edit-receivables',
+                    title: '编辑收款计划',
+                    autoSize: true,
+                    content: data,
+                    lock: false,
+                    max: false,
+                    min: false,
+                    parent: this
+                });
+                parseForm();
+            }
+        );
+    }
+
+    /*$("#WrkReceivablesNotice-datagrid").datagrid({
+        onDblClickRow: function (index, row) {
+            $.get("WrkReceivables/detail/id/" + row.id + "/notice_id/" + row.notice_id,
+                function (data, status) {
+                    var dlg = $.dialog({
+                        id: 'dlg-edit-receivables',
+                        title: '编辑收款计划',
+                        autoSize: true,
+                        content: data,
+                        lock: false,
+                        max: false,
+                        min: false,
+                        parent: this
+                    });
+                    parseForm();
+                }
+            );
+        }
+    })*/
+
+    function addReceivables(id) {
+        createDialog("{$Think.const.CONTROLLER_NAME}/addReceivables/contract_id/" + id, '新增收款计划', 'dlg-edit-receivables');
+    }
+    function paymentDetails(id) {
+        createDialog("{$Think.const.CONTROLLER_NAME}/paymentDetails/id/" + id, '缴费清单', 'dlg-payment-details');
+    }
+
+    function handlerHideRedDot(data){
+        if(data.total == 0 && $('#day_start').datebox('getValue') == ''){
+            $(".red-point").hide();
+        }
+    }
+
+
+</script>

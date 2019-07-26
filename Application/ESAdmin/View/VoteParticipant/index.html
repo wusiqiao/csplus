@@ -1,0 +1,93 @@
+<script>
+    function templateStatus(status){
+        if(status == 10){
+            return '待审核';
+        }
+
+        return '已通过';
+    }
+    function templateButton(id, obj){
+        if(obj.status == 10){
+            return `<div class="btn-speed" style="margin:0;" onclick="reviewStatus(${id}, this)">通过审核</div>`;
+        }
+    }
+</script>
+<style>
+    .search-panel{
+        display: block !important;
+        position: absolute !important;
+        top: 5px;
+        right: 0;
+        width: auto !important;
+    }
+    .page{
+        width: 1000px;
+    }
+    .search-panel .search-table {
+        max-width: unset;
+    }
+</style>
+<script>
+    function branchTemplate(branch_id, data, index) {
+        if (branch_id == 0) {
+            return '系统模板';
+        }
+
+        return '自定义';
+    }
+</script>
+<div class="search-panel page" id="{$Think.const.CONTROLLER_NAME}-search-panel">
+    <div class="search-table">
+        <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+            <input onkeyup="doSearchQuery('{$Think.const.CONTROLLER_NAME}')" type="text" placeholder="请输入标题"
+                   style="width:300px;" class="easyui-validatebox validatebox-text filter-field" name="name">
+            <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="">
+        </div>
+    </div>
+</div>
+<div class="maincontainer page" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="height: 500px">
+         <include file="./Application/Common/Layout/Default/list_header_auto.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+        <tr>
+            <th data-options="field:'name',width:80,align:'center'">报名名称</th>
+            <th data-options="field:'contact_name',width:80,align:'center'">联系人</th>
+            <th data-options="field:'contact_tel',width:80,align:'center'">联系电话</th>
+            <th data-options="field:'create_date',width:80,align:'center'">报名时间</th>
+            <th data-options="field:'status',width:80,align:'center',formatter:templateStatus">报名状态</th>
+            <th data-options="field:'vote_taotal',width:80,align:'center'">票数</th>
+            <th data-options="field:'id',width:80,align:'center', formatter:templateButton">操作</th>
+        </tr>
+        <include file="./Application/Common/Layout/Default/list_footer.html"
+                 controller="{$Think.const.CONTROLLER_NAME}"/>
+</div>
+<script>
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+    $(".common-blue-btn").hide();
+</script>
+<script>
+    (function(){
+        $("#VoteParticipant-toolbar  .actions  a").each(function(){
+            if($(this).text() == '新增'){
+                $(this).attr('onclick', "action_add('VoteParticipant','报名名单（{$activity['name']}）')");
+            }
+            if($(this).text() == '修改'){
+                $(this).attr('onclick', "action_detail('VoteParticipant','报名名单（{$activity['name']}）')");
+            }
+        })
+    })()
+
+    function reviewStatus(id, obj){
+        $.post('{$Think.const.CONTROLLER_NAME}/reviewStatus',{id : id}, function(res){
+            if(res.code == 0){
+                $(obj).remove();
+                $.dialog.alert('审核通过');
+                $("#VoteParticipant-datagrid").datagrid('reload');
+            }
+        }, 'json')
+    }
+</script>

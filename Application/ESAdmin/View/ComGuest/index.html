@@ -1,0 +1,251 @@
+<style>
+    .icon-add,.icon-del{
+        background-color: #0b95ff;
+        border-color: #0b95ff;
+        color: #fff;
+        margin: initial;
+        padding: 5px 6px 3px;
+        border-radius: 5px;
+        top: 8px;
+        position: absolute;
+    }
+    .icon-del{
+        margin-left: 40px;
+    }
+    .search-table tr td span{
+        padding: 5px 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        color:#000;
+        border: 1px solid #9f9f9f;
+        margin: 5px 2px;
+        display: -webkit-inline-box;
+        float: left;
+    }
+    .search-table tr td .checked{
+        background-color: #0b95ff;
+        color:#fff;
+        border: 1px solid #0b95ff;
+
+    }
+
+</style>
+<script>
+    function format_head_pic(value, row){
+        return '<img src="'+value+'" width="40px" height="40px">';
+    }
+    function formatValidGroup(value) {
+        return value ? value : '未分组';
+    }
+</script>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <div class="easyui-layout" data-options="fit:true,border: true" >
+        <if condition="($permissions._IS_ADMIN_ eq 1)">
+            <div data-options="region:'west',split:false,border:true" style="width: 20%; height: 100%" >
+                <div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+                    <ul style="border: 0px #F2F2F2 solid;height: 99%" class="department-tree" data-options="animate:true"></ul>
+                </div>
+            </div>
+        </if>
+        <div data-options="region:'center',border:false" style="width: auto; height: 100%">
+            <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+            <tr>
+                <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+                <th data-options="field:'head_pic',width:200,align:'left',formatter:format_head_pic"">{$Think.lang.FLD_HEAD_PIC}</th>
+                <th data-options="field:'name',width:200,align:'left'">{$Think.lang.FLD_LINKNAME}</th>
+                <th data-options="field:'last_time',width:200,align:'left',formatter:formatDateTime">{$Think.lang.FLD_LAST_LOGIN_TIME}</th>
+                <!--<th data-options="field:'resetpwd',width:120,align:'center',formatter:formatsetUserPwd">重置密码</th>-->
+            </tr>
+            <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+        </div>
+    </div>
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <!--<table class="search-table target">-->
+        <!--<tr class="groups">-->
+            <!--<th>分组：</th>-->
+            <!--<td colspan="6">-->
+                <!--<volist name="groups" id="vo">-->
+                    <!--<span data-id="{$vo.id}">{$vo.value}</span>-->
+                <!--</volist>-->
+            <!--</td>-->
+        <!--</tr>-->
+        <!--<tr class="tags" v-bind="0">-->
+            <!--<th>标签：</th>-->
+            <!--<td colspan="5">-->
+                <!--<volist name="tags" id="vo">-->
+                    <!--<span data-id="{$vo.id}">{$vo.value}</span>-->
+                <!--</volist>-->
+            <!--</td>-->
+            <!--<td style="position: relative"><label class="l-btn-icon fa-plus fa-lg icon-add"></label></td>-->
+        <!--</tr>-->
+    <!--</table>-->
+    <!--<table class="search-table"  id="inputs">-->
+        <!--<tr id="groups-input" style="display: none">-->
+
+        <!--</tr>-->
+        <!--<tr id="tags-input" style="display: none">-->
+
+        <!--</tr>-->
+    <!--</table>-->
+    <table class="search-table">
+        <tr>
+            <th>昵称：</th>
+            <td>
+                <input name="ql-branch_id" type="hidden" class="easyui-validatebox filter-field user-branch-id" value="" />
+                <input name="ql-name"  class="easyui-validatebox filter-field" value="" placeholder="请输入昵称" />
+            </td>
+<!--             <th>{$Think.lang.FLD_USER_TYPE}：</th>
+            <td>
+                <select  name="q-user_type" class="easyui-validatebox filter-field" >
+                    <option value="" selected>  </option>
+                    <option value="{$Think.const.USER_TYPE_COMPANY_SALES}">财务人员</option>
+                    <option value="{$Think.const.USER_TYPE_CUSTOMER}">代账客户</option>
+                    <option value="{$Think.const.USER_TYPE_PROSPECTIVE}">潜在客户</option>
+                </select>
+            </td> -->
+        </tr>
+    </table>
+</div>
+<!--<div id="{$Think.const.CONTROLLER_NAME}-action-extend" style="height:0">-->
+    <!--<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:auto" icon="fa fa-tags fa-lg" plain="true" onclick="actionTarget('{$Think.const.CONTROLLER_NAME}')">分组标签</a>-->
+    <!--&lt;!&ndash;<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:auto;margin-left: 10px" icon="fa fa-bell-o fa-lg" plain="true" onclick="actionBindNotice('{$Think.const.CONTROLLER_NAME}')">绑定通知</a>&ndash;&gt;-->
+    <!--<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:auto;margin-left: 10px" icon="fa fa-users fa-lg" plain="true" onclick="actionIndexesCompany('{$Think.const.CONTROLLER_NAME}')">匹配公司</a>-->
+<!--</div>-->
+
+<script type="text/javascript">
+    function actionIndexesCompany(frameId){
+        var rows = getGridSelections(frameId);
+        if (rows.length !== 1) {
+            $.dialog.tips('请选择一条记录');
+            return false;
+        }
+        createDialog("{$Think.const.CONTROLLER_NAME}/indexesCompany/id/"+rows[0].id, rows[0].name+'-匹配公司','dlg-company-select');
+    }
+    function actionTarget(frameId)
+    {
+        var data = new Array();
+        var ids = new Array();
+        var rows = getGridSelections(frameId);
+        if (rows.length === 0) {
+            $.dialog.tips('请选择要处理的客户!');
+        } else {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                console.log(row)
+                data.push({id:row.id,name:row.name});
+                ids.push(row.id)
+            }
+        }
+        if (ids.length > 0) {
+            createDialog("{$Think.const.CONTROLLER_NAME}/targetUpdates/", '分组标签','dlg-company-select', {data:data,ids:ids});
+        }
+    }
+
+    $(function () {
+        initial_branch_tree("{$Think.const.CONTROLLER_NAME}", "ComDepartment/tree", getUserQueryParams);
+        re_bind_action_add("{$Think.const.CONTROLLER_NAME}", function () {
+            user_action_add("{$Think.const.CONTROLLER_NAME}");
+        });
+    });
+    function getUserQueryParams(node){
+        $(".user-branch-id").val(node.id);
+        var inputParams = getQueryParams($(".filter-field"));
+        return inputParams;
+    }
+    function user_action_add() {
+        add_branch_x(255, "branch_id", "{$Think.const.CONTROLLER_NAME}");
+    }
+    $('.target').on('click','.groups > td > span,.tags > td > span',function(){
+        $(this).toggleClass('checked')
+        console.log($(this).parents('tr').hasClass('tags'));
+        if ($(this).parents('tr').hasClass('tags')) {
+            handlerTargetInput()
+        }else {
+            handlerTargetInput('groups')
+        }
+    })
+    $('.target').on('click','.tags > td > .icon-add',function(){
+        var tdDoms = $(this).parent('td').prev('td');
+        if (tdDoms.find('.checked').length == 0) {
+            $.dialog.tips('元素不足，无法继续筛选！');
+            return false;
+        }
+        if (tdDoms.find('span:not(.checked)').length == 0) {
+            $.dialog.tips('元素不足，无法继续筛选！');
+            return false;
+        }
+        var bindNumber = $(this).parents('.tags').attr('v-bind');
+        var html = '';
+        bindNumber = parseInt(bindNumber)+1;
+        html+= '<tr class="tags" v-bind="'+bindNumber+'">';
+        html+= '<th>标签：</th>';
+        html+= '<td colspan="5">';
+        html+= '</td>';
+        html+= '<td style="position: relative"><label class="l-btn-icon fa-plus fa-lg icon-add"></label><label class="l-btn-icon fa-minus fa-lg icon-del"></label></td>';
+        html+= '</tr>';
+        $('.target').append(html);
+        $('.target ').find('.tags[v-bind='+bindNumber+'] > td:first').append(tdDoms.find('span:not(.checked)').clone(true));
+        tdDoms.find('span:not(.checked)').remove();
+        $(this).parent('td').hide();
+    })
+    $('.target').on('click','.tags > td > .icon-del',function(){
+        var tdDoms = $(this).parent('td').prev('td');
+        var bindNumber = $(this).parents('.tags').attr('v-bind');
+        bindNumber = parseInt(bindNumber)-1;
+        tdDoms.find('span').removeClass('checked');
+        $('.target ').find('.tags[v-bind='+bindNumber+'] > td:first').append(tdDoms.find('span').clone(true));
+        $(this).parents('.tags').remove();
+        $('.target ').find('.tags[v-bind='+bindNumber+'] > td:last').show()
+        handlerTargetInput();
+    })
+    function handlerTargetInput($type = 'tags'){
+        var html = '';
+        if ($type == 'tags') {
+            $('.target').find('.tags > td > .checked').each(function(){
+                var bindValue = $(this).parents('tr').attr('v-bind');
+                html += '<input name="tags['+bindValue+'][]" class="easyui-validatebox filter-field" value="'+$(this).data("id")+'">';
+            })
+            $('#inputs').find('#tags-input').html(html)
+        } else {
+            $('.target').find('.groups > td >  .checked').each(function(){
+                html += '<input name="groups[]" class="easyui-validatebox filter-field" value="'+$(this).data("id")+'">';
+            })
+            $('#inputs').find('#groups-input').html(html)
+        }
+    }
+    function actionBindNotice(frameId) {
+        var list = new Array();
+        var rows = getGridSelections(frameId);
+        if (rows.length === 0) {
+            $.dialog.tips('请选择绑定通知项!');
+        } else {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                list.push(row.id);
+            }
+        }
+        if (list.length > 0) {
+            $.dialog.confirm('确定要绑定通知项？', function () {
+                    var controller = getController(frameId);
+                    $.post(controller + '/bindNotice',
+                        {id: list},
+                        function (result) {
+                            if (result.code === 0) {
+                                $.dialog.tips("通知成功！");
+                            } else {
+                                $.dialog.alert(result.message);
+                            }
+                        },
+                        "json"
+                    )
+                        .error(
+                            function(XMLHttpRequest, textStatus, errorThrown){
+                                $.dialog.alert("通知错误！");
+                            }
+                        );
+                }
+            );
+        }
+    }
+</script>

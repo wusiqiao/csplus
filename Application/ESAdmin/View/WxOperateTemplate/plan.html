@@ -1,0 +1,177 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/flatfoot.css?version={$version}" rel="stylesheet" />
+<style>
+    .whole-substance{
+        flex:1;
+    }
+    .whole-message{
+        flex:0.8;
+    }
+
+    .ipt_new{
+        width: 300px;
+    }
+
+</style>
+<script>
+    function fixWidth(percent)
+    {
+        return document.body.clientWidth * percent ;
+    }
+    function formatOperation(value, row, index)
+    {
+        var operation = '';
+        if (row.has_current == 1) {
+            operation += "<a style='color: #368BFE;margin-right: 10px' onclick=\"editAndSend("+row.id+")\">编辑发送</a><a style='color: #368BFE' onclick=\"deletePlan("+row.id+")\">删除计划</a>";
+        } else {
+            operation += "<a style='color: #368BFE' onclick=\"editAndSend("+row.id+")\">查看计划</a>";
+        }
+        return operation;
+    }
+    setMainContainerConfig("{$Think.const.CONTROLLER_NAME}", {
+        onDblClickRow: function(){
+            return false;
+        }
+    })
+</script>
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+    <div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="height: 100%;">
+        <div class="content-wrap">
+            <div class="c-select">
+                <div id="{$Think.const.CONTROLLER_NAME}-toolbar">
+                    <div class="c-header" style="margin:0 15px;padding-top:5px ">
+                        <span class="tab-span " onclick="toggleType('{$Think.const.CONTROLLER_NAME}')">概述</span>
+                        <span class="tab-span on" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/plan')">发送计划</span>
+                        <span class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/history')">发送记录</span>
+                        <span class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/clear_notice')">清卡通知</span>
+                    </div>
+                    <div class="c-select">
+                        <div class="search-table" style="font-weight: 600;margin: 15px 15px 0px 15px;width: 100%;display: flex">
+                            <div style="flex: 1;">
+                                <input id="life" class="easyui-datebox filter-field datebox-f combo-f textbox-f" value="{$the_current_time}" textboxname="q-life" style="display: none;" data-options="prompt:'选择时间',editable:false">
+                            </div>
+                            <div style="flex: .26;text-align: right">
+                                <div class="search_ipt" style="width: 300px;margin-left: auto;margin-right: 30px;" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                                    <input type="text" v-model="keyword" value="" placeholder="计划名称" class="filter-field ipt_new" name="ql-name"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="getCompanySelect()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-table">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+               data-options="
+           url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/plan_list',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:false,
+           border:true">
+            <thead>
+        <tr>
+            <th data-options="field:'id',hidden:true">ID</th>
+            <th data-options="field:'name',width:fixWidth(0.21),align:'left'">{$Think.lang.POT_PLAN_NAME}</th>
+            <th data-options="field:'not_yet_count',width:fixWidth(0.21),align:'left'">{$Think.lang.POT_NOT_SERVICE_COUNT}</th>
+            <th data-options="field:'created_at',width:fixWidth(0.21),align:'left',formatter:formatDateTime">{$Think.lang.POT_CREATER_AT}</th>
+            <th data-options="field:'operation',width:fixWidth(0.21),align:'left',formatter:formatOperation">{$Think.lang.POT_OPERATION}</th>
+        </tr>
+        <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+
+    </div>
+
+<script type="text/javascript">
+    setTimeout(function(){
+        $(".search_ipt input").keyup(function(){
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}")
+        });
+        $("input[name=qdr-life]").change(function(){
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}")
+        });
+    },200)
+    $(function () {
+        setDateToMonth('life');
+        function setDateToMonth(mthid) {
+            var db = $('#'+mthid);
+            db.datebox({
+                onShowPanel: function () {
+                    p.find('div.calendar-title span').trigger('click');
+                    p.find('.datebox-button').hide();
+                    p.find('.calendar-header').hide();
+                    if (!tds) setTimeout(function () {
+                        tds = p.find('div.calendar-menu-month-inner td');
+                        tds.click(function (e) {
+                            e.stopPropagation();
+                            var year = /\d{4}/.exec(p.find('div.calendar-title span').html())[0]
+                                , month = parseInt($(this).attr('abbr'), 10);
+                            db.datebox('hidePanel')
+                                .datebox('setValue', year + '-' + month);
+                            doSearchQuery("{$Think.const.CONTROLLER_NAME}")
+                        });
+                    }, 0);
+                    yearIpt.unbind();
+                },
+                parser: function (s) {
+                    if (!s) return new Date();
+                    var arr = s.split('-');
+                    return new Date(parseInt(arr[0], 10), parseInt(arr[1], 10) - 1, 1);
+                },
+                formatter: function (d) {
+                    var m =parseInt(d.getMonth())+1;
+                    if(m>9){
+                        return d.getFullYear() + '-' + (parseInt(d.getMonth())+1);
+                    }else{
+                        return d.getFullYear() + '-0' + (parseInt(d.getMonth())+1);
+                    }
+                }
+            });
+            var p = db.datebox('panel'),
+                tds = false
+        }
+    })
+    //设置默认时间，默认为当月
+    function editAndSend(id) {
+        toggleType('{$Think.const.CONTROLLER_NAME}/send_premise/id/'+id);
+    }
+    function deletePlan(id) {
+        $.dialog.confirm('是否确认删除此发送计划?', function () {
+                var controller = getController('{$Think.const.CONTROLLER_NAME}');
+                $.post(controller + '/deletePlan',
+                    {id: id},
+                    function (result) {
+                        if (result.code === 0) {
+                            var list = new Array();
+                            list.push(id);
+                            // datagrid.trigger("afterDelete", list);
+                            refreshGrid('{$Think.const.CONTROLLER_NAME}', list, "delete");
+                            $.dialog.tips("删除成功！");
+                        } else {
+                            $.dialog.alert(result.message);
+                        }
+                    },
+                    "json"
+
+                )
+                    .error(
+                        function(XMLHttpRequest, textStatus, errorThrown){
+                            $.dialog.alert("删除错误！");
+                        }
+                    );
+            }
+        );
+    }
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+</script>
+<script>
+
+</script>

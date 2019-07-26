@@ -1,0 +1,1233 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/summary.css" rel="stylesheet" />
+<style>
+    .NewCustomer-from,.NewCustomer-info{
+        width: 770px;
+        min-height: 43px;
+        height: auto;
+        margin: 40px auto;
+        position: relative;
+    }
+    .NewCustomer-from-title{
+        width: 250px;
+        height: 15px;
+        margin: 0 auto 28px 0;
+        line-height: 15px;
+    }
+    .NewCustomer-info input{
+        width: 270px;
+        height: 32px !important;
+        line-height: 32px;
+        border: 1px solid #d3d3d3;
+        color: #666666;
+        text-indent: 13px;
+        outline: none;
+        margin: 0 !important;
+    }
+    .NewCustomer-txt{
+        float: left;
+        height: 15px;
+        color: #666666;
+        font-size: 14px;
+        text-align: center;
+        line-height: 15px;
+        font-weight: 700;
+    }
+    .icon-down{
+        float: left;
+        width: 15px;
+        height: 11px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png");
+        background-size: 100% 100%;
+        margin-right:5px;
+        transition: transform .5s;
+    }
+    .icon-down.active {
+        transform: rotate(-90deg);
+    }
+    .NewCustomer-steps div.active{
+        border-bottom:2px solid #368bfe;
+    }
+    select{
+        width: 270px;
+        height: 32px;
+        color: #676767;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        outline: none;
+        text-indent: 13px;
+    }
+    .row select{
+        float: left;
+        width:99px !important;
+        box-sizing: border-box;
+    }
+    .chosen-container-single /*.chosen-single*/{
+        margin-right:8px;
+        height: 32px !important;
+        line-height: 32px !important;
+    }
+    #details-edit{
+        width: 853px;
+        background-color: #ffffff;
+    }
+    #details-0,#details-1,#details-2{
+        padding: 0 15px;
+    }
+    .del{
+        display: inline-block;
+        padding:6px 0;
+        margin-left:8px; 
+        width:20px;
+        height:20px;
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c11.png')0 8px no-repeat;
+        cursor: pointer;
+    }
+    .attachment-container{
+        width: auto !important;
+    }
+    #downloadAttr-edit{
+        width: 853px;
+        height: 661px;
+        background-color: #ffffff;
+        position: fixed;
+        top: calc(50% - 330.5px);
+        left: calc(50% - 426.5px);
+        z-index: 99;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, .3);
+    }
+    .downloadAttr-edit-hd{
+        width: 100%;
+        height: 50px;
+        background-color: #f9fafb;
+        color: #35323b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: move;
+    }
+    .content-box{
+        float: left;
+        width: 248px;
+        height: 182px;
+        margin: 17px 8px;
+        border: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+    .content-box-img{
+        width: 90px;
+        height: 90px;
+        margin: 30px auto;
+        background-color: #e7e7eb;
+        border: solid 1px #e7e7eb;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+    }
+    .content-box-ft{
+        width: 227px;
+        height: 18px;
+        margin: 10px auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .content-box-title{
+        width: 100%;
+        height: 18px;
+        line-height: 18px;
+        font-size: 16px;
+        color: #ffffff;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        position: absolute;
+        bottom: 0;
+        opacity: 0.4;
+        background-color: #000000;
+    }
+    /* 未点击 */
+    .content-box-op{
+        width: 18px;
+        height: 18px;
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-uncheck.png');
+        background-size: 100% 100%;
+    }
+    input[type=checkbox].css-checkbox + label.css-label{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-uncheck.png');
+    }
+    input[type=checkbox].css-checkbox:checked + label.css-label{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-checked.png');
+    }
+    /* 已点击 */
+    .content-box-opchecked{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-checked.png');
+    }
+    .content-box-paging{
+        width: 230px;
+        height: 32px;
+        margin: 0 30px 0 auto;
+    }
+    .changePage-leftest,.changePage-left,.changePage-content,.changePage-right,.changePage-rightest{
+        float: left;
+        height: 30px;
+    }
+    .changePage-leftest,.changePage-left,.changePage-right,.changePage-rightest{
+        width: 30px;
+        border: 1px solid #dedede;
+        line-height: 30px;
+        text-align: center;
+        color: #dedede;
+        cursor: pointer;
+    }
+    .changePage-leftest,.changePage-right{
+        border-right:none; 
+    }
+    .changePage-content{
+        width: 90px;
+        line-height: 32px;
+    }
+    .pagingNum{
+        display: inline-block;
+        width: 26px;
+        height: 28px;
+        line-height: 28px;
+        border: 1px solid #D4D4D4;
+        box-sizing: border-box;
+        margin: 2px 0;
+        padding-left: 2px;
+    }
+    .textbox .textbox-text{
+        padding: 0!important;
+    }
+    .tip-div {
+        top: -20px !important;
+        right: 20px !important;  
+    }
+    .dialog-box{
+        width: 100%;
+        height: 403px;
+        background-color: #f6f7fb;
+        border: solid 1px #ebebeb;
+        box-sizing: border-box;
+        margin-top: 19px;
+        overflow: hidden;
+        position: relative;
+        margin-bottom: 10px;
+    }
+    .dialog-box-hd{
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        color: #ffffff;
+        background-color: #368bfe;
+        text-indent: 16px;
+    }
+    .dialog-box-bd{
+        width: 100%;
+        height: 363px;
+        overflow-y: auto;
+        padding-right: 35px;
+    }
+    .dialog-left,.dialog-right{
+        width: 100%;
+        margin-bottom: 26px;
+        overflow: hidden;
+    }
+    .dialog-left-img,.dialog-right-img{
+        width: 37px;
+        height: 37px;
+        border-radius:50%;
+        background-color: #666666; 
+        margin: 0 15px;
+        overflow: hidden;
+    }
+    .dialog-left-img,.dialog-left-txt{
+        float: left;
+    }
+    .dialog-right-img,.dialog-right-txt{
+        float: right;
+    }
+    .dialog-left-txt,.dialog-right-txt{
+        border: 1px solid #bed6ee;
+        color: #191f25;
+        box-sizing: border-box;
+        min-width: 300px;
+    }
+    .dialog-time{
+        width: 100%;
+        text-align: center;
+        height: 12px;
+        line-height: 12px;
+        font-size: 12px;
+        color: #808080;
+        margin: 14px 0;
+    }
+    #input-upload-attach{
+        width: 120px !important;
+        height: 32px !important;
+        left: 0 !important;
+    }
+    .tip-div{
+        position: absolute;
+        top: -20px;
+        right: 20px;
+        height: 45px;
+        line-height: 45px;
+    }
+    .tip-div .tip-msg{
+        width: 28px;
+        height: 45px;
+        font-size: 14px;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 45px;
+        letter-spacing: 0px;
+        color: #676767;
+        display: -webkit-box;
+        float: right;
+    }
+    .tip-div .tip-icon{
+        font-size: 26px;
+        color: #e91835;
+        line-height: 45px;
+        display: inline-block;
+        width: 25px;
+        height: 45px;
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/img/tip-help.png') no-repeat;
+        background-size: 25px;
+        background-position-y: 10px;
+        margin-right: 5px;
+    }
+</style>
+<script>
+
+</script>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" >
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <!-- 查看详情弹窗 -->
+        <div id="details-edit" class="tableForm">
+            <section class="c-header" >
+                <div class="tab-span tab-span-on" data-id="0">档案详情</div>
+                <div class="tab-span" data-id="1">客户权限</div>
+                <div class="tab-span" data-id="2">沟通记录</div>
+            </section>
+            <div style="margin: 0 20px;width: 813px;height: 481px;overflow-y: auto;">
+                <!-- 档案详情 -->
+                <div id="details-0">
+                    <div class="NewCustomer-from">
+                        <div class="NewCustomer-from-title" onclick="toggleDivActive(this)"><i class="icon-down"></i><span class="NewCustomer-txt">客户来源</span></div>
+                        <div style="width:100%;height: 32px;line-height: 32px;display: flex;">
+                            <div style="flex: 1;white-space: nowrap;">
+                                <input type="hidden" name="id" value="{$model.id}">
+                                <label style="float: left;width:90px;text-align: right;margin-right:5px;color:#666666;" for="" class="required">客户类型：</label>
+                                <select name="tag_type" id="tag_type_select" class="chosen-select filter-field" data-value="{$model.tag_type}" >
+                                    <volist name="tag_type" id="vo">
+                                        <option value="{$vo.value}">{$vo.text}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                            <div style="flex: 1;white-space: nowrap;">
+                                <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;" for="" class="required">客户来源：</label>
+                                <select name="tag_origin" id="tag_origin_select" class="chosen-select filter-field" data-value="{$model.tag_origin}">
+                                    <volist name="tag_origin" id="vo">
+                                        <option value="{$vo.value}">{$vo.text}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin: 0 20px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+                    <div class="NewCustomer-info">
+                        <div class="NewCustomer-from-title" onclick="toggleDivActive(this)"><i class="icon-down"></i><span class="NewCustomer-txt">客户公司信息</span></div>
+                        <div style="width:100%;height: 32px;line-height: 32px;display: flex;">
+                            <div style="flex: 1;white-space: nowrap;">
+                                <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;" for="">客户微信：</label>
+                                <span class="selected_user" style="float: left;">
+                                    <if condition="$model.customer_leader_id gt 0">
+                                        <div style="width:80%;height:35px;display:flex;">
+                                            <img src="{$model.customer_leader_head_pic}" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;" onerror="this.onerror=null;this.src='/Application/ESAdmin//Public/images/icon/user_pic_none.jpg'">
+                                            <div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="{$model.customer_leader_name}">{$model.customer_leader_name}</div>
+                                        </div>
+                                        <else/>
+                                        <div style="width:80%;height:35px;display:flex;">
+                                            <img src="/Application/ESAdmin//Public/images/icon/user_pic_none.jpg" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;" onerror="this.onerror=null;this.src='/Application/ESAdmin//Public/images/icon/user_pic_none.jpg'">
+                                            <div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="未设置">未设置</div>
+                                        </div>
+                                    </if>
+                                </span>
+                                <if condition="$instance_permit egt 4">
+                                    <span style="margin:0 15px 0 0;float: right;" class="btn-speed" onclick="bindWeiXin()" id="toSelectUser">
+                                        <if condition="($model.customer_leader_id gt 0) ">
+                                            更换微信
+                                            <else/>
+                                            绑定微信用户
+                                        </if>
+                                    </span>
+                                    <else/>
+                                    <span style="margin:0 15px 0 0;float: right;" class="btn-speed-disable" title="您没有权限更新此记录">
+                                        <if condition="($model.customer_leader_id gt 0) ">
+                                            更换微信
+                                            <else/>
+                                            绑定微信用户
+                                        </if>
+                                    </span>
+                                </if>
+                                <input type="hidden" name="customer_leader_id" value="{$model.customer_leader_id}">
+                            </div>
+                            <div style="flex: 1;white-space: nowrap;"></div>
+                        </div>
+                        <div style="width:100%;height: 32px;line-height: 32px;display: flex;margin-top: 22px">
+                            <div style="flex: 1;white-space: nowrap;">
+                                <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;" for="" class="required">公司名称：</label>
+                                <input type="text" name="name" value="{$model.name}" placeholder="请输入公司名称">
+                            </div>
+                            <div style="flex: 1;white-space: nowrap;">
+                                <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;" for="" class="required">联系电话：</label>
+                                <input type="text" name="contact" value="{$model.contact}" placeholder="请输入手机号码">
+                            </div>
+                        </div>
+                        <div style="width:100%;height: 32px;line-height: 32px;display: flex;margin-top: 22px;">
+                            <div style="flex: 1;white-space: nowrap;">
+                                <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;" for="" class="required">联系人：</label>
+                                <input type="text" name="linkman" value="{$model.linkman}" placeholder="请输入联系人姓名">
+                            </div>
+                        </div>
+                        <div class="row" style="width:100%;height: 32px;line-height: 32px;display: flex;margin-top: 22px;">
+                            <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;" for="">联系地址：</label>
+                            <!--<select name="province" class="chosen-select province" data-value="{$model.province}" data-options="required:true" style="width:100%;">
+                                <volist name="province_lists" id="vo">
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                </volist>
+                            </select>
+                            <select name="city" class="chosen-select city" data-value="{$model.city}" data-options="required:true" style="width:100%;">
+                                <volist name="city_lists" id="vo">
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                </volist>
+                            </select>
+                            <select name="district" class="chosen-select district" data-value="{$model.district}" data-options="required:true" style="width:100%;">
+                                <volist name="district_lists" id="vo">
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                </volist>
+                            </select>-->
+                            <input style="height:32px !important;width: 650px !important;" name="address" placeholder="详细地址" value="{$model.address}" class="easyui-validatebox"/>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 0 20px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+                    <div class="NewCustomer-info">
+                        <div class="NewCustomer-from-title" onclick="toggleDivActive(this)"><i class="icon-down"></i><span class="NewCustomer-txt">客户社保信息</span></div>
+                        <div>
+                            <div style="width:100%;height: 32px;line-height: 32px;display: flex;margin-top: 22px;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">参保人员数：</label>
+                                    <input type="number" name="insured_number" value="{$model.insured_number}" placeholder="请输入参保人员数" class="easyui-validatebox">
+                                </div>
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">应缴社保金额：</label>
+                                    <input type="number" name="insurance_amount" value="{$model.insurance_amount}" placeholder="请输入应缴社保金额" class="easyui-validatebox">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 0 20px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+                    <div class="NewCustomer-info">
+                        <div class="NewCustomer-from-title" onclick="toggleDivActive(this)"><i class="icon-down"></i><span class="NewCustomer-txt">客户开票信息</span></div>
+                        <div>
+                            <div style="width:100%;height: 32px;line-height: 32px;display: flex;margin-top: 22px;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">发票抬头名称：</label>
+                                    <input type="text" name="invoice_title" value="{$model.invoice_title}" placeholder="请输入发票抬头名称" class="easyui-validatebox">
+                                </div>
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">纳税人识别号：</label>
+                                    <input type="text" name="taxpayer_identification" value="{$model.taxpayer_identification}" placeholder="请输入纳税人识别号" class="easyui-validatebox">
+                                </div>
+
+                            </div>
+                            <div style="width:100%;height: 32px;line-height: 32px;display: flex;margin-top: 22px;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">开户银行：</label>
+                                    <input type="text" value="{$model.bank}" name="bank" placeholder="请输入开户银行">
+                                </div>
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">银行账号：</label>
+                                    <input type="text" value="{$model.bank_account}" name="bank_account" placeholder="请输入银行账号">
+                                </div>
+                            </div>
+                            <div style="width:100%;height: 32px;line-height: 32px;display: flex;margin-top: 22px;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">注册电话：</label>
+                                    <input type="text" value="{$model.telephone}" name="telephone" placeholder="请输入电话号码">
+                                </div>
+                            </div>
+                            <!-- 地址 -->
+                            <div class="row" style="width:100%;height: 32px;line-height: 32px;display: flex;margin-top: 22px;">
+                                <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">{$Think.lang.FLD_REG_ADDRESS}：</label>
+                                <!--<select name="reg_province" class="chosen-select province" data-options="required:true" data-value="{$model.reg_province}" style="width:100%">
+                                    <volist name="province_lists" id="vo">
+                                        <option value="{$vo.id}">{$vo.name}</option>
+                                    </volist>
+                                </select>
+                                <select name="reg_city" class="chosen-select city" data-options="required:true" data-value="{$model.reg_city}" style="width:100%">
+                                    <volist name="reg_city_lists" id="vo">
+                                        <option value="{$vo.id}">{$vo.name}</option>
+                                    </volist>
+                                </select>
+                                <select name="reg_district" class="chosen-select district" data-options="required:true" data-value="{$model.reg_district}" style="width:100%">
+                                    <volist name="reg_district_lists" id="vo">
+                                        <option value="{$vo.id}">{$vo.name}</option>
+                                    </volist>
+                                </select>-->
+                                <input style="height:32px !important;width: 650px !important;" name="reg_address" placeholder="详细地址" value="{$model.reg_address}" class="easyui-validatebox"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 0 20px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+                    <div class="NewCustomer-info">
+                        <div class="NewCustomer-from-title" onclick="toggleDivActive(this)"><i class="icon-down"></i><span class="NewCustomer-txt">客户其他信息</span></div>
+                        <div>
+                            <div style="width:100%;height: 32px;line-height: 32px;display: flex;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;" for="">法人代表：</label>
+                                    <input type="text" name="corporation" value="{$model.corporation}" placeholder="请输入法人姓名">
+                                </div>
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;" for="">法人身份证：</label>
+                                    <input type="text" name="corporate_idcard" value="{$model.corporate_idcard}" placeholder="请输入法人身份证">
+                                </div>
+                            </div>
+                            <!-- 自定义字段容器 -->
+                            <div id="addDefaultWord-box" class="tableForm" style="width:100%;margin-top: 22px;">
+                                <volist name="customers" id="v">
+                                    <div style="width:100%;display: flex;margin-top: 22px;">
+                                        <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;line-height: 32px;" for="">{$v.title}：</label>
+                                        <if condition="$v.type eq 0">
+                                            <input name="information[value][{$v.id}]" value="{$v.value}" class="easyui-validatebox" />
+                                            <else />
+                                            <input name="information[value][{$v.id}]" value="{$v.value}" class="easyui-datebox"/>
+                                        </if>
+                                        <input name="information[type][{$v.id}]" value="{$v.type}" type="hidden" />
+                                        <input name="information[title][{$v.id}]" value="{$v.title}" type="hidden" />
+                                        <if condition="$instance_permit egt 4">
+                                            <i class="del" onclick="removeCustomAttr(this);"></i>
+                                        </if>
+                                    </div>
+                                </volist>
+                            </div>
+
+                            <!-- 自定义 -->
+                            <div style="width:100%;height: 32px;line-height: 32px;display: flex;margin-top: 22px;">
+                                <label style="float: left;width: 94px;text-align: right;color:#666666;" for=""></label>
+                                <select style="width: 99px;height: 32px;margin-right: 16px;" name="add-custom-type" class="chosen-select filter-field">
+                                    <option selected value=0 >文本</option>
+                                    <option value=1 >日期</option>
+                                </select>
+                                <input style="width: 387px;height: 32px;background-color: #ffffff;border: solid 1px #d3d3d3;margin-right: 16px;outline: none;" type="text" name="add-custom-title" placeholder="请输入文本内容，最多不超5个字">
+                                <if condition="$instance_permit egt 4">
+                                    <span style="margin:1px 0 1px 10px;" class="btn-speed" onclick="addCustomAttr()">添加自定义字段</span>
+                                    <else/>
+                                    <span style="margin:1px 0 1px 10px;" class="btn-speed-disable" title="您没有权限更新此记录">添加自定义字段</span>
+                                </if>
+                            </div>
+                            <!-- 备注 -->
+                            <div style="width:100%;display: flex;margin-top: 22px;">
+                                <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;line-height: 32px;" for="">备注：</label>
+                                <textarea style="width: 650px;height: 80px;background-color: #ffffff;border: solid 1px #d3d3d3;resize: none;outline: none;" name="comments" cols="30" rows="10">{$model.comments}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin: 0 20px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+                    <div class="NewCustomer-info">
+                        <div class="NewCustomer-from-title" onclick="toggleDivActive(this)"><i class="icon-down"></i><span class="NewCustomer-txt">档案操作日志</span></div>
+                        <div>
+                            <table id="log_table" class="c-table  fl" border="1" bordercolor="#ccc" border-collaspe="collaspe" style="width: 95%;margin-bottom: 10px;">
+                                <thead>
+                                    <td>序号</td>
+                                    <td>时间</td>
+                                    <td>操作人</td>
+                                    <td>操作记录</td>
+                                </thead>
+                                <volist name="logs" id="vo" key="index">
+                                    <tr>
+                                        <td>{$index}</td>
+                                        <td>{$vo.create_time}</td>
+                                        <td>{$vo.user_name}</td>
+                                        <td>{$vo.func_name}</td>
+                                    </tr>
+                                </volist>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- 客户权限 -->
+                <div id="details-1" style="display:none;">
+                    <div style="color:red;text-align: center;margin-top: 15px;">客户权限：设置商户员工对此客户的工作权限</div>
+                    <div class="NewCustomer-info" style="margin-top: 6px">
+                        <div href="javascript:void(0)" class="tip-div" style="z-index: 9999" onclick="ComCompanyFunctions.showTip()">
+                            <span class="tip-icon"></span>
+                            <span class="tip-msg">帮助</span>
+                        </div>
+                        <div class="NewCustomer-from-title" onclick="toggleDivActive(this)"><i class="icon-down"></i><span class="NewCustomer-txt">档案权限</span></div>
+                        <div>
+                            <div style="width:100%;line-height: 32px;display: flex;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="" class="required">档案负责人：</label>
+                                    <if condition="$instance_permit lt 8">
+                                        <input type="text" name="" placeholder="请输入档案负责人姓名" class="easyui-validatebox readonly" value="{$model.leader_staff_name}" readonly>
+                                        <else/>
+                                        <input type="text" name="leader" placeholder="请输入档案负责人姓名" required class="easyui-validatebox" value="{$model.leader_staff_name}">
+                                    </if>
+                                    <input type="hidden" name="leader_id" value="{$model.leader_id}">
+                                </div>
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">档案协作人：</label>
+                                    <select name="collaborators[]" class="chosen-select" data-placeholder="请选择档案协作人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/ComCompany',value:'{$model.collaborators}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="width:100%;line-height: 32px;display: flex;margin-top: 22px;">
+                                <div style="flex: 0.5">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">档案可见人：</label>
+                                    <select name="visiblers[]" class="chosen-select" data-placeholder="请选择档案可见人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/ComCompany',value:'{$model.visiblers}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin: 0 20px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+                    <div class="NewCustomer-info">
+                        <div class="NewCustomer-from-title" onclick="toggleDivActive(this)"><i class="icon-down"></i><span class="NewCustomer-txt">文件权限</span></div>
+                        <div>
+                            <div style="width:100%;line-height: 32px;display: flex;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="" class="required">文件负责人：</label>
+                                    <input type="text" name="SysDocument_leader" placeholder="请输入文件负责人姓名" class="easyui-validatebox" required value="{$model.SysDocument_leader}">
+                                    <input type="hidden" name="SysDocument_leader_id" value="{$model.SysDocument_leader_id}">
+                                </div>
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">文件协作人：</label>
+                                    <select name="SysDocument_collaborators[]" class="chosen-select" data-placeholder="请选择文件协作人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/SysDocument',value:'{$model.SysDocument_collaborators}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin: 0 20px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+                    <div class="NewCustomer-info">
+                        <div class="NewCustomer-from-title" onclick="toggleDivActive(this)"><i class="icon-down"></i><span class="NewCustomer-txt">群发通知设置</span></div>
+                        <div>
+                            <div style="width:100%;line-height: 32px;display: flex;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">清卡负责人：</label>
+                                    <input type="text" value="{$model.WxOperateTemplate_leader}" name="WxOperateTemplate_leader" placeholder="请输入清卡负责人姓名">
+                                    <input type="hidden" name="WxOperateTemplate_leader_id" value="{$model.WxOperateTemplate_leader_id}">
+                                </div>
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">清卡协作人：</label>
+                                    <select name="WxOperateTemplate_collaborators[]" class="chosen-select" data-placeholder="请选择清卡协作人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/WxOperateTemplate',value:'{$model.WxOperateTemplate_collaborators}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="width:100%;line-height: 32px;display: flex;margin-top: 22px;">
+                                <div style="flex: 0.5">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">清卡通知人：</label>
+                                    <select name="WxOperateTemplate_notifiers[]" class="chosen-select" data-placeholder="请选择清卡通知人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/WxOperateTemplate',value:'{$model.WxOperateTemplate_notifiers}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 22px;">
+                            <div style="width:100%;line-height: 32px;display: flex;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">社保负责人：</label>
+                                    <input type="text" value="{$model.SocialSecurityNotice_leader}" name="SocialSecurityNotice_leader" placeholder="请输入社保负责人姓名">
+                                    <input type="hidden" name="SocialSecurityNotice_leader_id" value="{$model.SocialSecurityNotice_leader_id}">
+                                </div>
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">社保协作人：</label>
+                                    <select name="SocialSecurityNotice_collaborators[]" class="chosen-select" data-placeholder="请选择社保协作人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/SocialSecurityNotice',value:'{$model.SocialSecurityNotice_collaborators}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="width:100%;line-height: 32px;display: flex;margin-top: 22px;">
+                                <div style="flex: 0.5">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">社保通知人：</label>
+                                    <select name="SocialSecurityNotice_notifiers[]" class="chosen-select" data-placeholder="请选择社保通知人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/SocialSecurityNotice',value:'{$model.SocialSecurityNotice_notifiers}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin: 0 20px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+                    <div class="NewCustomer-info">
+                        <div class="NewCustomer-from-title" onclick="toggleDivActive(this)"><i class="icon-down"></i><span class="NewCustomer-txt">工作模块通知人设置</span></div>
+                        <div>
+                            <div style="width:100%;line-height: 32px;display: flex;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">合同通知人：</label>
+                                    <select name="WrkAgreement_notifiers[]" class="chosen-select" data-placeholder="请选择合同通知人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/WrkAgreement',value:'{$model.WrkAgreement_notifiers}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                                <div style="flex: 1;height: auto">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">开票通知人：</label>
+                                    <select name="WrkInvoicePlan_notifiers[]" class="chosen-select" data-placeholder="请选择开票通知人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/WrkInvoicePlan',value:'{$model.WrkInvoicePlan_notifiers}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="width:100%;line-height: 32px;display: flex;margin-top: 22px;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">收款通知人：</label>
+                                    <select name="WrkReceivables_notifiers[]" class="chosen-select" data-placeholder="请选择收款通知人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/WrkReceivables',value:'{$model.WrkReceivables_notifiers}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                                <div style="flex: 1;white-space: nowrap;" class="inputbox">
+                                    <label style="float: left;width: 108px;text-align: right;margin-right:5px;color:#666666;" for="">催款通知人：</label>
+                                    <select name="WrkPrompt_notifiers[]" class="chosen-select" data-placeholder="请选择催款通知人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/WrkPrompt',value:'{$model.WrkPrompt_notifiers}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="width:100%;line-height: 32px;display: flex;margin-top: 22px;">
+                                <div style="flex: 1;white-space: nowrap;">
+                                    <label style="float: left;width: 100px;text-align: right;margin-right:10px;color:#666666;" for="">任务通知人：</label>
+                                    <select name="WrkTaskPlan_notifiers[]" class="chosen-select" data-placeholder="请选择任务通知人"
+                                            data-options="all:true,search_key_url:'ComCompany/queryModuleUsers/module/WrkTaskPlan',value:'{$model.WrkTaskPlan_notifiers}'" multiple style="width:268px">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 沟通记录 -->
+                <div id="details-2" style="display:none;margin-bottom: 48px;" class="attachment-container">
+                    <!-- 查看、下载附件弹窗 -->
+                    <div id="downloadAttr-edit" style="display:none;">
+                        <div class="downloadAttr-edit-hd">
+                            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">选择附件</span>
+                            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                                onclick="$(`#downloadAttr-edit`).hide();attachmentVue.historyShow = [];">X</span>
+                        </div>
+                        <!-- 列表渲染 -->
+                        <div style="width: 795px;height: 425px;margin: 35px auto;overflow:hidden;">
+                            <div v-for="(item,index) in historyShow.slice(pageNum*6-6,pageNum*6)" class="content-box">
+                                <div class="content-box-img">
+                                    <img style="width:100%;" :src="item.url" alt="" v-if="item.type == 'image'">
+                                    <div :class="'img-wrap attachment-icon attachment-icon-'+ item.type" v-else style="width:100%;height:100%;background-color: white;border: none;"></div>
+                                    <!-- <div class="content-box-title" :title="item.name">{{item.name}}</div>-->
+                                </div>
+                                <div class="content-box-ft">
+                                    <div style="padding-left: 8px;line-height: 16px;width: 200px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" :title="item.name">{{item.name}}</div>
+                                    <!--<div class="content-box-op" @click="checkThis(item,index,this)" ></div>-->
+                                    <!--<div class="content-box-op" onclick="checkThis(this)" :data-url="item.url"></div>-->
+                                    <input type="checkbox" class="css-checkbox" :id="'check-'+pageNum+index" :checked="item.checked">
+                                    <label :for="'check-'+pageNum+index" class="css-label" @click="checkThis(item)"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 分页功能 -->
+                        <div class="content-box-paging">
+                            <div class="changePage-leftest" @click="pageNum=1">&lt;&lt;</div>
+                            <div class="changePage-left" @click="pageNum>1?pageNum=pageNum-1:pageNum=1">&lt;</div>
+                            <div class="changePage-content">第<div class="pagingNum">{{pageNum}}</div>共{{allPageNum}}页</div>
+                            <div class="changePage-right" @click="allPageNum>pageNum?pageNum=pageNum+1:pageNum=allPageNum">&gt;</div>
+                            <div class="changePage-rightest" @click="pageNum=allPageNum">&gt;&gt;</div>
+                        </div>
+                        <div style="float: right;margin: 0 35px 15px 0">
+                            <input type="checkbox" class="css-checkbox" id="checkAllAttr">
+                            <label for="checkAllAttr" class="css-label">全选</label>
+                            <a href="javascript:void(0)" id="save_attr" class="btn-speed" onclick="downAttachment()">下载</a>
+                        </div>
+                    </div>
+                    <!-- content -->
+                    <!-- 沟通记录对话展示框 -->
+                    <div class="dialog-box">
+                        <div class="dialog-box-hd">沟通记录</div>
+                        <div id="dialog-box-bd" class="dialog-box-bd">
+                            <!-- 沟通记录（左） -->
+                            <!-- <div>
+                                <div class="dialog-time">2018/11/30   11:15:56</div>
+                                <div class="dialog-left">
+                                    <div class="dialog-left-img"><img src="" alt="" style="width: 100%;height: 100%;"></div>
+                                    <div class="dialog-left-txt">
+                                        <div style="padding:19px 27px;max-width: 570px;line-height: 26px;">
+                                            
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div> -->
+                            <!-- 沟通记录（右） -->
+                            <div v-if="historys.length > seenNum" style="text-align:center;color: #368bfe; margin: 20px 0;" @click="seenNum = historys.length">点击查看所有记录</div>
+                            <div v-for="(item,index) in historys.slice(historys.length>seenNum?historys.length-seenNum:0,historys.length)">
+                            <!--<div v-for="(item,index) in historys">-->
+                                <div class="dialog-time">{{item.create_time_fmt}}</div>
+                                <div class="dialog-right">
+                                    <div class="dialog-right-img">
+                                        <img :src="item.user_head_pic" alt="" style="width: 100%;height: 100%;">
+                                    </div>
+                                    <div class="dialog-right-txt">
+                                        <div style="padding:19px 27px;max-width: 570px;line-height: 26px;">
+                                            {{item.content}}
+                                        </div>
+                                        <p style="text-align:right;">
+                                            <span v-if="item.images.length >2" style="color: #0b95ff;margin: 0 10px;cursor: pointer;" @click="showAttachment(item)">查看附件 </span>
+                                            <if condition="$instance_permit egt 4">
+                                                <span style="color: red;cursor: pointer;margin: 0 10px;" @click="removeRemoteItem(item,index)">删除</span>
+                                            </if>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-left: 23px;position: absolute;overflow: hidden;bottom: 0;left: 0;">
+                            <div class="btn-attachment-add" style="float:left;width: 110px;">
+                                <span style="color:#368bfe;">点击添加附件</span>
+                                <input type="file" accept="image/*,application/msword,application/vnd.ms-powerpoint" id="input-upload-attach" multiple="multiple">
+                            </div>
+                        </div>
+                    </div>
+         
+                    <div style="padding:11px 0 0 16px;border: solid 1px #d3d3d3;position: relative;"> 
+                        <ul class="attachments">
+                            <li style="float: left" v-for="(item,index) in attachments" @click="removeAttachment(index)" :title="item.file_name">
+                                <div v-if="item.type=='image'" class="img-wrap">
+                                    <span class="btn-item-remove"></span>
+                                    <img :src="item.src" alt=""/>
+                                </div>
+                                <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type">
+                                    <span class="btn-item-remove"></span>
+                                </div>
+                            </li>
+                        </ul>
+                        <textarea style="width: 100%;height: 124px;background-color: #ffffff;border: none;margin:0 auto;resize: none;outline: none;box-sizing: border-box;color: #666666;" v-model="content" name="content" id="" cols="30" rows="10" placeholder="请输入沟通内容"></textarea>
+                        <if condition="$instance_permit egt 4">
+                            <div style="margin:11px 18px 11px auto;display: block;" class="btn-confirm" @click="postAttachmentData()">增加记录</div>
+                            <else/>
+                            <div style="margin:11px 18px 11px auto;display: block;" class="btn-speed-disable" title="您没有权限更新此记录">增加记录</div>
+                        </if>
+                    </div>
+                    <input type="hidden" name="attach_group" value="{$model.attach_group}">
+                </div>
+            </div>
+            <div style="width: 100%;text-align: center;padding: 30px 0;border-top: 1px solid #d3d3d3;">
+                <if condition="$instance_permit egt 4">
+                    <span style="margin:0;" class="btn-confirm" onclick="edit_company()">保存</span>
+                    <if condition="$model.is_valid eq 0">
+                        <span style="margin:0;" class="btn_bg_blue" onclick="reValid(this)">还原</span>
+                    </if>
+                    <input type="hidden" value="{$instance_permit}">
+                    <else/>
+                    <span style="margin:0;" class="btn-speed-disable" title="您没有权限更新此记录">保存</span>
+                </if>
+            </div>
+        </div>
+    </form>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var attachmentVue = new Vue({
+        el:".attachment-container",
+        data:{
+            title:"",
+            attachments:[],
+            tabs:[],
+            historys:[],
+            historyShow:[],
+            pageNum:1,//当前页数
+            allPageNum: 1,//总页数
+            current:0,
+            content: "",
+            callback:null,
+            seenNum:3
+        },
+        methods:{
+            checkThis:function(item,index,obj){
+                item.checked = item.checked == true ? false:true;
+            },
+            showAttachment:function(item){
+                $("#downloadAttr-edit").show();
+                var images = $.parseJSON(item.images);
+                //if(this.historyShow.length == 0){
+                    this.historyShow = [];
+                    for(var i = 0;i<images.length;i++){
+                        var ary = images[i];
+                        var obj = {};
+                        //obj.content = this.historys[i].content || "未输入文本内容";
+                        if(ary){
+                            obj.name = ary.name;
+                            obj.url = ary.url;
+                            obj.type = ary.type;
+                            obj.checked = false;
+                        }else{
+                            obj.name = "未上传图片";
+                            obj.url = null
+                        }
+                        this.historyShow.push(obj)
+                    }
+                //}
+                $("#checkAllAttr").removeAttr("checked");
+                this.pageNum = 1;
+                this.allPageNum = Math.ceil(this.historyShow.length/6);
+            },
+            removeAttachment:function(index){
+                this.attachments.splice(index,1);
+            },
+            removeRemoteItem:function(item, index){
+                if(this.historys.length > 3){
+                    var index1 = index + this.historys.length - this.seenNum;
+                }else{
+                    var index1 = index;
+                }
+                if ($.dialog.confirm("确认删除？", function(){
+                    $.post("/ComAttachment/remove", {item_id: item.id}, function(result){
+                        if(result.code == 0){
+                            attachmentVue.historys.splice(index1, 1);
+                        }
+                        $.dialog.tips(result.message);
+                    },"json");
+                }));
+            },
+            postAttachmentData:function(){
+                if (this.attachments.length == 0 && this.content == ""){
+                    return;
+                }
+                var formData = new FormData();
+                var attach_group = $("input[name='attach_group']").val();
+                if (attach_group != undefined && attach_group != "") {
+                    formData.append("attach_group", attach_group);
+                }
+                formData.append("title", "");
+                formData.append("content", this.content == "" ? "-":this.content);
+                var files = this.attachments;
+                $(files).each(function (index) {
+                    formData.append(this.type+"-file-"+index, this.file);
+                });
+                $.ajax({
+                    url: "/ComAttachment/append",
+                    type: 'POST',
+                    data: formData,
+                    dataType:'json',
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        showMaskLayer();
+                    },
+                    success: function (response) {
+                        hideMaskLayer();
+                        if (response.code == 0) {
+                            $.dialog.tips("上传完成");
+                            var history = response.message;
+                            attachmentVue.historys.push(history);
+                            //attachmentVue.tabs[attachmentVue.current].attach_group = history["group"];
+                            if (attachmentVue.callback != undefined){
+                                attachmentVue.callback.call(this, history);
+                            }
+                            attachmentVue.attachments = [];
+                            attachmentVue.content = "";
+                        }else{
+                            $.dialog.alert("上传失败");
+                        }
+                    },
+                    error:function () {
+                        hideMaskLayer();
+                        $.dialog.alert("上传失败");
+                    }
+                });
+            }
+        }
+    });
+</script>
+<script>
+
+    function removeCustomAttr(e) {
+        $(e).parent().remove();
+    }
+    function addCustomAttr(e) {
+        var custom_type = $('select[name="add-custom-type"]').val();
+        var str;
+        var date = new Date();
+        if (custom_type == 0) {
+            str = "easyui-validatebox";
+        } else {
+            str = "easyui-datebox";
+        }
+        var custom_title = $.trim($('input[name="add-custom-title"]').val());
+        if (custom_title === undefined || custom_title == null || custom_title == '') {
+            $.dialog.tips('自定义属性名称不能为空');
+        } else {
+            custom_title = $.trim(custom_title);
+            if (custom_title.length > 4){
+                $.dialog.tips('自定义属性名称不能大于4个字');
+                return false;
+            }
+            //判断是否重复
+            var isRepeat = 0;
+            var valueTitles = $('#addDefaultWord-box').find('div > input[name*=title]');
+            if (valueTitles.length > 0) {
+                valueTitles.each(function(){
+                    if ($(this).val() == custom_title) {
+                        isRepeat = 1;
+                    }
+                })
+            }
+            if (isRepeat) {
+                $.dialog.tips('输入的类型名称已存在');
+                return false;
+            }
+            $('input[name="add-custom-title"]').val('');
+            //var html = '<tr class="row"><td Align="right"><span>' + custom_title + '：</span></td><td><input name="information[value][d-'+date.getTime()+']" value="" class="' + str + '" /><input name="information[type][d-'+date.getTime()+']" value="' + custom_type + '" type="hidden" /><input name="information[title][d-'+date.getTime()+']" value="' + custom_title + '" type="hidden" /></td><td><span  class="customer-del" onclick="removeCustomAttr(this);">删除</a></td></tr>'
+            var html = '<div style="width:100%;display: flex;margin-top: 22px;">\n' +
+                '      <label style="float: left;width: 90px;text-align: right;margin-right:5px;color:#666666;line-height: 32px;" for="">'+custom_title+'：</label>\n' +
+                '       <input name="information[value][d-'+date.getTime()+']" value="" class="' + str + '" /><input name="information[type][d-'+date.getTime()+']" value="' + custom_type + '" type="hidden" /><input name="information[title][d-'+date.getTime()+']" value="' + custom_title + '" type="hidden" />\n' +
+                '      <i class="del" onclick="removeCustomAttr(this);"></i></div>';
+            $("#addDefaultWord-box").append(html);
+        }
+        parseForm("#addDefaultWord-box");
+    }
+</script>
+<script>
+    $('.tab-span').on('click', function () {
+        $(this).siblings().removeClass("tab-span-on");
+        $(this).addClass("tab-span-on");
+        $(`#details-${$(this).attr("data-id")}`).show().siblings("div").hide();
+    });
+
+    $(function(){
+        $.post("ComAttachment/list",{group:$("input[name='attach_group']").val()},function(data){
+            if(data.rows){
+                var result = data.rows;
+                for(var i in result){
+                    result[i].create_time_fmt = formatDateTime(result[i].create_time);
+                    //attachmentVue.historys.unshift(result[i]);
+                    attachmentVue.historys.push(result[i]);
+                }
+            }
+        },'json')
+    });
+
+    $(".btn-attachment-add #input-upload-attach").change(function(){
+        var oFiles = $(this).get(0).files;
+        $(oFiles).each(function () {
+            var _file = this;
+            //var rFilter = /^(image\/jpeg|image\/png)$/i;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(this);
+                reader.onload = function () {
+                    attachmentVue.attachments.push({type:"image",src: reader.result, file: _file, file_name: _file.name})
+                }
+            }else{
+                var type = "unknown";
+                if (/(\.xls|\.xlsx)$/i.test(this.name)) {
+                    type = "excel";
+                }else{
+                    if (/(\.doc|.\.docx)$/i.test(this.name)) {
+                        type = "word";
+                    }else{
+                        if (/(\.txt)$/i.test(this.name)) {
+                            type = "txt";
+                        }
+                    }
+                }
+                attachmentVue.attachments.push({type:type,src: "", file: _file, file_name: _file.name})
+            }
+        });
+    });
+
+    //绑定微信
+    function bindWeiXin(){
+        /*$("#NewCustomer-edit-1").hide();
+        $("#bindWeiXin-edit").show();
+        $.parser.parse("#table-area");*/
+        showMaskLayer();
+        createDialog("ComCompany/bind_user","绑定微信用户","bind_user");
+    }
+
+    $(function(){
+        autocompleteAjax($("input[name='leader']"),"/ComCompany/queryModuleUsers/module/ComCompany",function(result){
+            $("select[name='collaborators[]'] option[value='"+result.id+"']").attr("selected", false);//可见人
+            $("select[name='collaborators[]']").trigger("chosen:updated");
+            $("select[name='visiblers[]'] option[value='"+result.id+"']").attr("selected", false);//可见人
+            $("select[name='visiblers[]']").trigger("chosen:updated");
+        });
+        autocompleteAjax($("input[name='SysDocument_leader']"),"/ComCompany/queryModuleUsers/module/SysDocument",function(result){
+            $("select[name='SysDocument_collaborators[]'] option[value='"+result.id+"']").attr("selected", false);//可见人
+            $("select[name='SysDocument_collaborators[]']").trigger("chosen:updated");
+        });
+        autocompleteAjax($("input[name='WxOperateTemplate_leader']"),"/ComCompany/queryModuleUsers/module/WxOperateTemplate",function(result){
+            $("select[name='WxOperateTemplate_collaborators[]'] option[value='"+result.id+"']").attr("selected", false);//可见人
+            $("select[name='WxOperateTemplate_collaborators[]']").trigger("chosen:updated");
+        });
+        autocompleteAjax($("input[name='SocialSecurityNotice_leader']"),"/ComCompany/queryModuleUsers/module/SocialSecurityNotice",function(result){
+            $("select[name='SocialSecurityNotice_collaborators[]'] option[value='"+result.id+"']").attr("selected", false);//可见人
+            $("select[name='SocialSecurityNotice_collaborators[]']").trigger("chosen:updated");
+        });
+        $("input[name='SocialSecurityNotice_leader']").on('change',function(){
+            if($('input[name="SocialSecurityNotice_leader"]').length > 0 && $("input[name='SocialSecurityNotice_leader']").val() == ""){
+                $("input[name='SocialSecurityNotice_leader_id']").val("");
+            }
+        });
+        $("input[name='leader']").on('change',function(){
+            if($('input[name="leader"]').length > 0 && $("input[name='leader']").val() == ""){
+                $("input[name='leader_id']").val("");
+            }
+        });
+        $("input[name='SysDocument_leader']").on('change',function(){
+            if($('input[name="SysDocument_leader"]').length > 0 && $("input[name='SysDocument_leader']").val() == ""){
+                $("input[name='SysDocument_leader_id']").val("");
+            }
+        });
+        $("input[name='WxOperateTemplate_leader']").on('change',function(){
+            if($('input[name="WxOperateTemplate_leader"]').length > 0 && $("input[name='WxOperateTemplate_leader']").val() == ""){
+                $("input[name='WxOperateTemplate_leader_id']").val("");
+            }
+        })
+    });
+
+    function edit_company(){
+        var validate = $("#ComCompany-dataform").form("validate");
+        if(!validate){
+            $.dialog.tips("请输入必填项！");
+            return validate;
+        }
+        action_update('ComCompany');
+        $('#mask').hide();
+    }
+
+    function checkThis(obj){
+        if($(obj).hasClass("content-box-opchecked")){
+            $(obj).removeClass("content-box-opchecked");
+        }else{
+            $(obj).addClass("content-box-opchecked");
+        }
+    }
+
+    $(function(){
+       $("#checkAllAttr").on('change',function(){
+           //$("#downloadAttr-edit input:checkbox").attr("checked",true);
+           for(var i in attachmentVue.historyShow){
+                if($(this).is(":checked")){
+                    attachmentVue.historyShow[i].checked = true;
+                }else{
+                    attachmentVue.historyShow[i].checked = false;
+                }
+            }
+       })
+    });
+
+    $("select[name='collaborators[]']").bind("chosen:beforeSelected",function(event, selected){
+        var leader_id = $("input[name='leader_id']").val();
+        var visiblers = $("select[name='visiblers[]']").val();
+        if(selected.value == leader_id){
+            $.dialog.tips("协作人不能和负责人重复！");
+            selected.cancel = true;
+        }else if(visiblers != null && visiblers.indexOf(selected.value) != -1){
+            $.dialog.tips("协作人不能和可见人重复！");
+            selected.cancel = true;
+        }
+        /*$("select[name='visiblers[]'] option[value='"+selected.value+"']").attr("selected", false);//可见人
+        $("select[name='visiblers[]']").trigger("chosen:updated");*/
+    });
+
+    $("select[name='visiblers[]']").bind("chosen:beforeSelected", function(event, selected){
+        var leader_id = $("input[name='leader_id']").val();
+        var collaborators = $("select[name='collaborators[]']").val();
+        if (selected.value == leader_id) {
+            $.dialog.tips("可见人不能和负责人重复！");
+            selected.cancel = true;
+        }else if(collaborators != null && collaborators.indexOf(selected.value) != -1){
+            $.dialog.tips("可见人不能和协作人重复！");
+            selected.cancel = true;
+        }
+    });
+
+    $("select[name='SysDocument_collaborators[]']").bind("chosen:beforeSelected",function(event, selected){
+        var leader_id = $("input[name='SysDocument_leader_id']").val();
+        if(selected.value == leader_id){
+            $.dialog.tips("文件协作人不能和文件负责人重复！");
+            selected.cancel = true;
+        }
+    });
+
+    $("select[name='WxOperateTemplate_collaborators[]']").bind("chosen:beforeSelected",function(event, selected){
+        var leader_id = $("input[name='WxOperateTemplate_leader_id']").val();
+        if(selected.value == leader_id){
+            $.dialog.tips("清卡协作人不能和清卡负责人重复！");
+            selected.cancel = true;
+        }
+    });
+
+    $("select[name='SocialSecurityNotice_collaborators[]']").bind("chosen:beforeSelected",function(event, selected){
+        var leader_id = $("input[name='SocialSecurityNotice_leader_id']").val();
+        if(selected.value == leader_id){
+            $.dialog.tips("社保协作人不能和社保负责人重复！");
+            selected.cancel = true;
+        }
+    });
+
+
+    function downAttachment(){
+        var attachment = [];
+        for(var i in attachmentVue.historyShow){
+            if(attachmentVue.historyShow[i].checked){
+                attachment.push(attachmentVue.historyShow[i].url+"?attname="+attachmentVue.historyShow[i].name);
+            }
+        }
+        if(attachment.length > 0){
+            download(attachment,0);
+        }else{
+            $.dialog.tips("请选择下载项！");
+        }
+    }
+
+    function download(data,i) {
+        setTimeout(function(){
+            location.href = data[i];
+            i++;
+            if (data[i]){
+                download(data,i);
+            }
+        },500);
+    }
+
+    function toggleDivActive(obj){
+        $(obj).find("i").toggleClass("active");
+        $(obj).nextAll().fadeToggle();
+    }
+
+    $(function(){
+        if("{$model.is_valid}" == 0){
+            $(".btn-attachment-add").hide();
+            $("#{$Think.const.CONTROLLER_NAME}-detailcontainer").find(".btn-speed").hide();
+            $("#{$Think.const.CONTROLLER_NAME}-detailcontainer").find(".btn-confirm").hide();
+        }
+    })
+
+    function reValid(obj){
+        $.dialog.confirm("确认还原？<br>还原后该客户档案的状态将变为未归档",function(){
+            $.post("/ComCompany/reValid",{id:$("input[name='id']").val()},function(result){
+                if(result.code == 0){
+                    doSearchQuery("ComCompany");
+                    $(obj).hide();
+                }
+                $.dialog.tips(result.message);
+                $(".btn-attachment-add").show();
+                $("#{$Think.const.CONTROLLER_NAME}-detailcontainer").find(".btn-speed").show();
+                $("#{$Think.const.CONTROLLER_NAME}-detailcontainer").find(".btn-confirm").show();
+            },'json')
+        })
+    }
+
+</script>

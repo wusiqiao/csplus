@@ -1,0 +1,214 @@
+<style>
+    .key-reply-operation-tab {
+        width: 100%;
+        height: 45px;
+        background-color: #f6f8f9;
+    }
+
+    .key-reply-operation-item {
+        float: left;
+        height: 45px;
+        line-height: 45px;
+        margin: 0 21px;
+        cursor: pointer;
+    }
+
+    #key-reply-allText,
+    #key-reply-picText,
+    #key-reply-allPic {
+        width: 100%;
+        height: 253px;
+        background-color: #ffffff;
+    }
+
+    #key-reply-picText,
+    #key-reply-allPic {
+        position: relative;
+    }
+
+    .label-keyword {
+        float: left;
+        width: 70px;
+        text-align: right;
+        height: 32px;
+        line-height: 32px;
+    }
+
+    #ipt-keyword {
+        float: left;
+        width: 270px;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        height: 32px;
+        margin-left: 16px;
+        text-indent: 13px;
+    }
+
+    .txt-keyword {
+        float: left;
+        height: 32px;
+        line-height: 32px;
+        margin-left: 16px;
+    }
+
+    .matching-select {
+        float: left;
+    }
+
+    .matching-select-txt {
+        float: left;
+        line-height: 32px;
+        margin-left: 16px;
+    }
+
+    .action-select-icon {
+        float: left;
+        width: 14px;
+        height: 14px;
+        margin: 9px 0;
+        margin-right: 13px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-one-select.png");
+        background-size: 100% 100%;
+    }
+
+    .action-select-icon-checked {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-one-select-checked.png");
+    }
+
+</style>
+<div style="width: 800px;">
+    <input type="hidden" name="id" id="wx_reply_id" value="{$model.id}">
+    <div style="width:calc(100% - 16px);height: 32px;white-space: nowrap;margin: 22px 8px;">
+        <div class="label-keyword">关键词：</div>
+        <input id="ipt-keyword" name="" type="text" value="{$model.keyword}">
+        <div class="txt-keyword">关键词尽量简洁，最多不超过30个字符。</div>
+    </div>
+    <div style="width:calc(100% - 16px);margin: 22px 8px;height: 64px;">
+        <div class="label-keyword">匹配程度：</div>
+        <div class="matching-select">
+            <div id="send-msg"
+                 style="width: 100%;height: 32px;cursor: pointer;margin-left: 16px;white-space: nowrap;text-align: left;overflow: hidden;">
+                <i class="action-select-icon action-select-icon-checked" matchType="20"></i><span
+                    style="float: left;line-height: 32px;color:rgb(54, 139, 254);">完全匹配</span>
+                <div class="matching-select-txt">当消息内容与关键词完全一致才触发消息回复</div>
+            </div>
+            <div id="jump-page"
+                 style="width: 100%;height: 32px;cursor: pointer;margin-left: 16px;white-space: nowrap;text-align: left;overflow: hidden;">
+                <i class="action-select-icon"></i><span style="float: left;line-height: 32px;"
+                                                        matchType="30">模糊匹配</span>
+                <div class="matching-select-txt">当消息内容包含关键词才触发消息回复</div>
+            </div>
+        </div>
+    </div>
+    <div style="width:calc(100% - 16px);margin: 22px 8px;overflow: hidden;">
+        <div class="label-keyword">回复内容：</div>
+        <div class="key-reply-operation"
+             style="width:calc(100% - 86px);margin:0;float:left;margin-left:16px;border: 1px solid #d3d3d3;box-sizing: border-box;">
+            <!-- tab切换 -->
+            <div class="key-reply-operation-tab">
+                <div id="key-reply-operation-tab-0" data-id="click" class="key-reply-operation-item"
+                     onclick="checkAllText('key')">
+                    <span class="allText-icon"></span>
+                    <span style="color: #368bfe;font-size:14px;">纯文本</span>
+                </div>
+                <div id="key-reply-operation-tab-1" data-id="view_limited" class="key-reply-operation-item"
+                     onclick="checkPicText('key')">
+                    <span class="picText-icon"></span>
+                    <span style="color: #8d8d8d;font-size:14px;">图文信息</span>
+                </div>
+                <div id="key-reply-operation-tab-2" data-id="media_id" class="key-reply-operation-item"
+                     onclick="checkAllPic('key')">
+                    <span class="allPic-icon"></span>
+                    <span style="color: #8d8d8d;font-size:14px;">图片</span>
+                </div>
+            </div>
+            <div>
+                <!-- 纯文本 -->
+                <div id="key-reply-allText">
+                    <textarea name="" id="textarea-allText" placeholder="请在此输入文字内容"><if condition="$model['reply_type'] eq 10">{$model['content']}</if></textarea>
+                </div>
+                <!-- 图文 -->
+                <div id="key-reply-picText" style="display:none;" <if condition="$model['reply_type'] eq 20">  materialId="{$model['content']}"</if>>
+                    <div class="add-picText" onclick="picTextSelect('key-reply')">
+                        <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                            从素材库中选择
+                        </div>
+                        <div class="img-add"></div>
+                    </div>
+                </div>
+                <!-- 图片 -->
+                <div id="key-reply-allPic" style="display:none;" <if condition="$model['reply_type'] eq 30">  materialId="{$model['content']}"</if>>
+                    <div class="add-allPic" onclick="allPicSelect('key-reply')">
+                        <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                            从素材库中选择
+                        </div>
+                        <div class="img-add"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width:calc(100% - 16px);margin: 30px 8px;height: 32px;text-align: center;">
+        <div class="btn-confirm" onclick="saveKeyWord()">保存</div>
+    </div>
+</div>
+<script>
+    var matchType = 20;
+    // 匹配切换功能
+    $("#send-msg").on("click", function () {
+        matchType = 20;
+        // 按钮样式切换
+        $("#send-msg").find(".action-select-icon").addClass("action-select-icon-checked");
+        $("#send-msg").find("span").css("color", "#368bfe");
+        $("#jump-page").find(".action-select-icon").removeClass("action-select-icon-checked");
+        $("#jump-page").find("span").css("color", "#666666");
+    });
+    $("#jump-page").on("click", function () {
+        matchType = 30;
+        // 按钮样式切换
+        $("#jump-page").find(".action-select-icon").addClass("action-select-icon-checked");
+        $("#jump-page").find("span").css("color", "#368bfe");
+        $("#send-msg").find(".action-select-icon").removeClass("action-select-icon-checked");
+        $("#send-msg").find("span").css("color", "#666666");
+    });
+
+    <if condition="$model['match_type'] eq 30"> $("#jump-page").click(); </if>
+    <if condition="$model['reply_type'] eq 20"> $("#key-reply-operation-tab-1").click(); </if>
+    <if condition="$model['reply_type'] eq 30"> $("#key-reply-operation-tab-2").click(); </if>
+
+
+    function saveKeyWord() {
+        submitForm(getKeyWordInput());
+        closeDialog('WxReply')
+    }
+
+    function getKeyWordInput() {
+        var reply_type = replyType[2];
+        var keyword = $("#ipt-keyword").val();
+        if (reply_type == 10) {
+            var content = $("#key-reply-allText > textarea").val();
+        } else if(reply_type == 20){
+            var content = $("#key-reply-picText").attr('materialId');
+        }else if(reply_type == 30){
+            var content = $("#key-reply-allPic").attr('materialId');
+        }
+
+        var eventType = 20;
+        var id = parseInt($("#wx_reply_id").val());
+        id = isNaN(id) ? 0 : id;
+
+        var data = {
+            id: id,
+            content: content,
+            match_type: matchType,
+            event_type: eventType,
+            reply_type: reply_type,
+            keyword : keyword
+        }
+        console.log(data);
+        return data;
+    }
+
+    <if condition="$model['reply_type'] eq 20">checkPicText('key');showPicText('key-reply',"{$model['child_title']}", "{$model['child_local_thumb_url']}", "{:date('Y-m-d H:i:s', $model['father_update_time'])}");</if>
+    <if condition="$model['reply_type'] eq 30">checkAllPic('key');showImageAll('key-reply', "{$model['father_name']}", "{$model['father_local_thumb_url']}");</if>
+</script>

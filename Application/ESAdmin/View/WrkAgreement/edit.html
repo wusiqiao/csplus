@@ -1,0 +1,997 @@
+<style>
+    .red_required {
+        color: red;
+        font-size: 21px;
+        padding: 0 2.5px
+    }
+    .options-table {
+        border-collapse: collapse;
+        margin: 0 0;
+        text-align: center;
+    }
+
+    .options-table td,
+    .options-table th {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+
+    .options-table thead,
+    .options-table th {
+        background-color: #f6f7fa;
+    }
+
+    .options-table tr:nth-child(even) {
+        background: #fbfafa;
+    }
+
+    hr {
+        height: 1px;
+        border: none;
+        border-top: 1px solid #d3d3d3;
+    }
+
+    .edit-tips {
+        color: #e91835;
+        font-size: 14px;
+    }
+
+    .triangle {
+        position: relative;
+        width: 15px;
+        height: 10px;
+        left: 3px;
+        transition: transform .5s;
+    }
+
+    .triangle.active {
+        transform: rotate(180deg);
+    }
+
+    textarea {
+        width: 95%;
+        border-radius: 1px;
+        border: 1px solid #ddd;
+    }
+
+    .plan-tips {
+        position: relative;
+        top: 8px;
+        left: 15px;
+        color: #e91835;
+        display: inline-block;
+        width: 400px;
+        margin-bottom: 20px;
+    }
+
+    .readonly {
+        background-color: #f7f5f5 !important;
+        cursor: not-allowed;
+    }
+
+    .caption {
+        color: #676767;
+        white-space: nowrap;
+        width: 15% !important;
+    }
+
+    .chosen-container-single .chosen-single {
+        border-radius: 0;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .tableForm .row .inputbox input {
+        width: 270px;
+    }
+
+    .easyui-validatebox {
+        margin: 0px;
+    }
+    .tableForm .row{
+        margin: 20px 0;
+        white-space: nowrap;
+    }
+    #mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 88;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+
+    #closeAgreement-edit {
+        width: 552px;
+        height: 300px;
+        background-color: #ffffff;
+        position: fixed;
+        top: calc(50% - 150px);
+        left: calc(50% - 276px);
+        z-index: 99;
+    }
+
+    .closeAgreement-edit-hd {
+        width: 100%;
+        height: 50px;
+        background-color: #f9fafb;
+        color: #35323b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: move;
+    }
+</style>
+<div class="detailcontainer" id="WrkAgreement-detailcontainer" style="width: 850px;height: auto;">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="WrkAgreement-dataform" method="post"
+        name="WrkAgreement-dataform">
+        <div class="tableForm" style="width: 100%;overflow-y: auto;overflow-x: hidden;height: 457px;padding-right: 30px;"
+            id="WrkAgreement-div">
+            <input name="id" type="hidden" value="{$model.id}">
+            <input name="ctrlShow" type="hidden" value="{$model.state}">
+            <input name="formAction" type="hidden" value="{$Think.__FORM_ACTION__}">
+            <input name="attach_group" type="hidden" value="{$model.attach_group}">
+            <input name="state" type="hidden" value="{$model.state}">
+            <h3 style="text-align: center;font-size: 16px;margin: 20px 0 38px 0;">合同基本信息</h3>
+            <div class="row">
+                <div class="caption"><span>合同来源：</span></div>
+                <div class="inputbox" style="width: 270px;">
+                    <select name="origin" class="easyui-validatebox chosen-select" id="origin" <if
+                        condition="$model.state != 0">disabled</if>>
+                        <option value="0" <if condition="$model.origin eq 0">selected</if>>商城订单</option>
+                        <option value="1" <if condition="$model.origin eq 1">selected</if>>线下导入</option>
+                    </select>
+                </div>
+                <span id="orderSn_div" <if condition="$model.origin eq 1">style="display:none"</if>>
+                    <div class="caption"><span><span class="red_required">*</span>商城订单编号：</span></div>
+                    <div class="inputbox">
+                        <if condition="$model.state != 0">
+                            <input name="order_sn" class="easyui-validatebox readonly" value="{$model.order_sn}"
+                                data-name="q-order_sn" placeholder="输入订单编号将自动搜索，请选择搜索结果" disabled />
+                            <else/>
+                            <input name="order_sn" class="easyui-validatebox" value="{$model.order_sn}"
+                                data-name="q-order_sn" placeholder="输入订单编号将自动搜索，请选择搜索结果" />
+                        </if>
+                    </div>
+                </span>
+            </div>
+            <hr style="margin: 34px 0 10px 0;" />
+            <div class="row">
+                <div class="caption"><span><span class="red_required">*</span>公司：</span></div>
+                <div class="inputbox" style="display:none" id="double-company-div">
+                    <select class=" chosen-select" id="double-company"></select>
+                </div>
+                <div class="inputbox" id="simple-company-div">
+                    <if condition="$model.state != 0">
+                        <input name="customer_branch_name" value="{$model.customer_branch_name}"
+                            class="easyui-validatebox readonly" data-name="customer_branch_id"
+                            placeholder="输入公司名将自动搜索，请选择搜索结果" disabled>
+                        <else />
+                        <input name="customer_branch_name" value="{$model.customer_branch_name}"
+                            class="easyui-validatebox" data-name="customer_branch_id" required
+                            placeholder="输入公司名将自动搜索，请选择搜索结果">
+                    </if>
+                    <input name="company_id" value="{$model.company_id}" type="hidden">
+                </div>
+                <a href="javascript:void(0);"
+                    class="<if condition='($model.state eq 3) or (($instance_permit lt 4) and ($instance_permit neq ""))'>btn-speed-disable<else/>btn-speed</if>"
+                    style="margin: 0;margin-left: 15px;" onclick="toAddCom(this)">新增公司</a>
+                <span class="edit-tips"
+                    style="display: inline-block;width: 260px;top: 10px;position: relative;margin-left: 10px;white-space: normal;">*合同必须选择公司，建立公司后物品管理、文件管理等方可使用</span>
+            </div>
+            <div class="row" id="by_company">
+                <div class="caption">
+                    <span><!--<span class="red_required">*</span>-->合同客户负责人：</span>
+                </div>
+                <div class="inputbox">
+                    <input name="customer_name" class="easyui-validatebox readonly" value="{$model.customer_name}" readonly />
+                    <!--<input name="customer_leader_id" value="{$model.customer_leader_id}" type="hidden">-->
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>合同编号：</span></div>
+                <div class="inputbox">
+                    <input name="agreement_sn" class="easyui-validatebox" value="{$model.agreement_sn}"
+                        placeholder="请输入合同编号" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" />
+                </div>
+                <!--<div class="caption"><span>合同系统编号：</span></div>
+                <div class="inputbox">
+                    <input name="sys_sn" class="easyui-validatebox readonly"  value="{$model.sys_sn}" readonly/>
+                </div>-->
+            </div>
+            <div class="row">
+                <div class="caption"><span><span class="red_required">*</span>合同名称：</span></soan>
+                </div>
+                <div class="inputbox">
+                    <input name="name" class="easyui-validatebox" value="{$model.name}" required
+                        placeholder="请输入合同名称" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span><span class="red_required">*</span>合同金额：</span></soan>
+                </div>
+                <div class="inputbox">
+                    <if condition="$model.id neq ''">
+                        <input name="agreement_money" type="number" class="easyui-validatebox readonly"
+                            value="{$model.agreement_money}" required placeholder="请输入合同金额" readonly />
+                        <else />
+                        <input name="agreement_money" type="number" class="easyui-validatebox"
+                            value="{$model.agreement_money}" required placeholder="请输入合同金额" />
+                    </if>
+
+                </div>
+                <a href="javascript:void(0)" id="update_money_btn"
+                    class="<if condition='($model.id eq "") or ($model.state eq 3) or ($instance_permit lt 4)'>btn-speed-disable<else/>btn-speed</if>"
+                    style="margin-left: 15px" onclick="updateMoney(this)">修改合同金额</a>
+            </div>
+            <div class="row">
+                <div class="caption"><span><span class="red_required">*</span>合同发票：</span>
+                </div>
+                <div class="inputbox" style="width: 270px;">
+                    <select class="easyui-validatebox chosen-select" name="invoice_type">
+                        <option value="0" <if condition="$model.invoice_type eq 0">selected</if>>不开票</option>
+                        <option value="1" <if condition="$model.invoice_type neq 0">selected</if>>开票</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span><span class="red_required">*</span>合同任务：</span>
+                </div>
+                <div class="inputbox" style="width: 270px;">
+                    <select class="easyui-validatebox chosen-select" name="is_task_plan">
+                        <option value="0" <if condition="$model.is_task_plan eq 0">selected</if>>关闭任务进度功能</option>
+                        <option value="1" <if condition="$model.is_task_plan eq 1">selected</if>>开启任务进度功能</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span class="red_required">*</span><span>合同开始日期：</span></div>
+                <div class="inputbox" style="width:268px;">
+                    <input name="start_time" class="easyui-datebox" value="{$model.start_time}" required
+                        data-options="prompt:'请选择时间',editable:false" style="width: 100%">
+                </div>
+                <div class="caption" style="margin-left: 20px"><span>合同结束日期：</span></div>
+                <div class="inputbox" style="width:268px;">
+                    <input name="finish_time" class="easyui-datebox" value="{$model.finish_time}"
+                        data-options="editable:false,prompt:'如要自动续费需要填写'">
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span class="red_required">*</span><span>合同服务明细：</span></div>
+                <a href="javascript:void(0)"
+                    class="<if condition='($model.state eq 3) or ($model.origin eq 0) or ($instance_permit lt 4)'>btn-speed-disable<else/>btn-speed</if>"
+                    onclick="addOptions(this)" style="margin-left: 0px" id="add-options">新增服务明细</a>
+                <span class="edit-tips">*选择商城订单自动导入服务属性，线下导入需人工选择</span>
+            </div>
+
+            <table class="options-table" id="product_options" style="width: 95%;margin-left: 35px;margin-bottom: 10px">
+                <thead>
+                    <tr>
+                        <td>序号</td>
+                        <td>服务类型1</td>
+                        <td>服务类型2</td>
+                        <td>服务选项1</td>
+                        <td>服务选项2</td>
+                        <td>服务选项3</td>
+                        <!--<td>订单备注</td>-->
+                        <td>操作</td>
+                        <td style="border-style:none"></td>
+                    </tr>
+                </thead>
+                <tr v-for="(item,index) in items">
+                    <td>{{item.id}}</td>
+                    <td>{{item.type1}}</td>
+                    <td>{{item.type2}}</td>
+                    <td>{{item.attributes1}}</td>
+                    <td>{{item.attributes2}}</td>
+                    <td>{{item.attributes3}}</td>
+                    <td>
+                        <template v-if="item.deleteAble != 0">
+                            <span class="active-not-show" style='color: red'
+                                onclick='delRow(this)'>删除{{item.delete}}</span>
+                        </template>
+                    </td>
+                    <td style="border-style: none">
+                        <input type='hidden' name='type1[]' :value='item.type1'>
+                        <input type='hidden' name='type2[]' :value='item.type2'>
+                        <input type='hidden' name='attributes1[]' :value='item.attributes1'>
+                        <input type='hidden' name='attributes2[]' :value='item.attributes2'>
+                        <input type='hidden' name='attributes3[]' :value='item.attributes3'>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="common-input-two" id="order_desc" <if condition="$model.origin eq 1">style="display:none"</if>>
+                <span class="label">订单备注：</span>
+                <textarea rows="5" name="order_desc"
+                    style="resize:none;outline:none;margin-left: 15px;width: 700px;background-color: rgb(221, 221, 221)"
+                    readonly>{$model.order_desc}</textarea>
+            </div>
+
+            <!--<hr/>-->
+            <div class="common-input-two" style="width: 100%">
+                <span class="label">合同备注：</span>
+                <textarea rows="5" placeholder="请输入合同备注" name="comments"
+                    style="resize:none;outline:none;margin-left: 15px;width: 700px">{$model.comments}</textarea>
+            </div>
+            <hr style="border-top:1px solid #d3d3d3;" />
+            <!--<div class="common-title" style="height: 80px;padding-top: 15px">
+                <div style="text-align: center;">
+                    <a href="javascript:void(0)" class="btn-speed" onclick="" style="margin-left: 50px">生成电子合同</a>
+                </div>
+                <span class="edit-tips" style="padding-left:38%">*根据以上内容生成可下载的合同范本</span>
+            </div>
+            <hr/>-->
+            <div class="row">
+                <div class="caption"><span>合同附件：</span></div>
+                <if condition="($model.state eq 3)or (($instance_permit lt 4)) and ($instance_permit neq '')">
+                    <a href="javascript:void(0)" class="btn-speed-disable" style="margin-left: 0px">上传</a>
+                    <else />
+                    <a href="javascript:void(0)" class="btn-speed upload-btn" onclick="uploadAttachment(this)"
+                        style="margin-left: 0px">上传</a>
+                </if>
+            </div>
+            <div class="row" style="margin: 20px 0">
+                <div class="caption"><span class="red_required">*</span><span>合同商户负责人：</span></div>
+                <div class="inputbox">
+                    <if condition="($instance_permit eq 8) or ($model.id eq '')">
+                        <input name="service_man_name" value="{$model.service_man_name}" class="easyui-validatebox"
+                               data-name="q-service_man" placeholder="请选择负责该合同的员工" required>
+                        <else/>
+                        <input name="" value="{$model.service_man_name}" class="easyui-validatebox"
+                               data-name="q-service_man" placeholder="请选择负责该合同的员工" readonly>
+                    </if>
+                    <input type="hidden" name="leader_id" value="{$model.leader_id}">
+                </div>
+                <div class="caption"><span>合同商户协作人：</span></div>
+                <div class="inputbox" style="width: 270px;">
+                    <select name="collaborators[]" class="chosen-select" data-placeholder=" " id="service_collaborators_select"
+                        data-options="all:true,value:'{$model.collaborators}',search_key_url:'ComCompany/queryModuleUsers/module/WrkAgreement'" multiple style="width:100%">
+                        <option value="" disabled>请选择商户协作人</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="margin: 20px 0">
+                <div class="caption"><span>合同商户可见人：</span></div>
+                <div class="inputbox" style="width: 270px;">
+                    <select name="visiblers[]" class="chosen-select" data-placeholder=" " id="service_leader_select"
+                            data-options="all:true,value:'{$model.visiblers}',search_key_url:'ComCompany/queryModuleUsers/module/WrkAgreement'" multiple style="width:100%">
+                        <option value="" disabled>请选择商户可见人</option>
+                    </select>
+                </div>
+            </div>
+            <if condition="$model.id neq ''">
+                <div class="row" style="margin-bottom: 20px">
+                    <div class="caption" onclick="toggleTable(this)" style="padding-right: 10px"><span>合同日志</span>
+                        <img src="{$Think.MODULE_PATH}/Public/images/icon/triangle.png" class="triangle" /></div>
+                </div>
+                <!--日志-->
+                <table id="log_table" class="options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px">
+                    <thead><td>序号</td><td>操作人</td><td>操作</td><td>时间</td></thead>
+                </table>
+            </if>
+    </form>
+</div>
+<div class="form-actions" id='WrkAgreement-form-actions1'
+    style="padding:0;height: auto;border-top: 1px solid #d3d3d3;">
+    <div class='actions-sysdefault' style="padding: 20px 0;">
+        <!--<if condition="($permissions.add eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+            <a href="javascript:void(0)" id="saveto_btn" class="modal-save btn-update" plain="true" onclick="saveTo()">另存</a>
+        </if>-->
+        <if condition="(($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1)) AND ($instance_permit egt 4)">
+            <a href="javascript:void(0)" id="save" class="modal-save btn-update btn-confirm" plain="true"
+               onclick="agreementSave()">保存</a>
+            <else/>
+            <a href="javascript:void(0)" class="btn-speed-disable" title="您没有权限更新此记录">保存</a>
+        </if>
+        <a href="javascript:void(0)" class="btn-cancel" id="cancel" plain="true" onclick="closeDialog()">关闭</a>
+        <if condition="$instance_permit egt 4">
+            <a href="javascript:void(0)" id="freeze" class="btn-update btn-confirm" plain="true" style="display: none"
+                onclick="operateState(this)">冻结</a>
+            <a href="javascript:void(0)" id="active" class="btn-update btn-confirm" plain="true" style="display: none"
+                onclick="operateState(this)">激活</a>
+            <a href="javascript:void(0)" id="unfreeze" class="btn-update btn-confirm" plain="true" style="display: none"
+               onclick="operateState(this)">解冻</a>
+            <if condition="($model.state eq 0) and ($instance_permit eq 8)">
+                <a href="javascript:void(0)" id="delete_btn" class="common-red-btn btn-update" plain="true"
+                   onclick="deleteAgreement()">删除</a>
+            </if>
+            <a href="javascript:void(0)" id="finish" class="btn-update btn-confirm" plain="true"
+                onclick="operateState(this)">结束</a>
+        </if>
+    </div>
+</div>
+<div id="middle-actions">
+    <div class="form-actions" id='WrkAgreement-form-actions' style="padding:0;height: auto;border-top: 1px solid #d3d3d3;">
+        <div class='actions-sysdefault' style="padding: 20px 0 5px 0;">
+            <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+                <a href="javascript:void(0)" class="modal-save btn-update btn-confirm" plain="true"
+                    onclick="agreementSave()">保存</a>
+            </if>
+            <a href="javascript:void(0)" class="btn-cancel" plain="true" onclick="closeDialog()">取消</a>
+            <!-- <a href="javascript:void(0)" class="btn-confirm" plain="true" style="margin-left: 8%"
+                title="保存后可激活">激活</a> -->
+        </div>
+    </div>
+    <div class="common-title">
+        <div class="row">
+            <div style="text-align: center;color: #e91835; width: 100%;">*合同基本信息保存后，才能设置合同相关收款、催款、开票、任务等计划及激活操作</div>
+        </div>
+    </div>
+</div>
+
+<!-- bw -->
+<div id="mask" style="display:none;"></div>
+<div id="closeAgreement-edit" style="display:none;">
+    <div class="closeAgreement-edit-hd">
+        <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+        <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+            onclick="$(`#closeAgreement-edit`).hide(); $(`#mask`).hide();">X</span>
+    </div>
+    <div style="width: 330px;height: 40px;margin: 40px auto 15px 74px;font-size: 14px;color: #666666;">
+        该合同有尚未完成的工作事项,是否确认结束该合同
+    </div>
+    <div style="margin-bottom: 40px;margin-left:75px;">
+        <div style="font-size:14px;color:#666666;display:none" id="invoice_finish_tip"></div>
+        <div style="font-size:14px;color:#666666;display:none" id="receivables_finish_tip"></div>
+        <div style="font-size:14px;color:#666666;display:none" id="assignment_finish_tip"></div>
+    </div>
+    <div style="width: 106px;margin: 0 17px 0 auto;">
+        <span class="btn-confirm" style="display: inline-block;width: 84px;height: 34px;
+        line-height: 32px;text-align: center;font-size: 14px;color: #ffffff;
+        background-color: #368bfe;margin: 0 8px;cursor: pointer;position: absolute;
+        bottom: 30px" id="confirm-finish">确定</span>
+    </div>
+    <input type="hidden" name="delete_confirm" value="">
+</div>
+<script type='text/javascript'
+    src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript" src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var OptionsVue = new Vue({
+        el: "#product_options",
+        data: {
+            items: [],
+            company: [],
+            visiblers: []
+        },
+        method: {
+            removeItem: function (data, index) {
+                items.splice(index, 1);
+            }
+        }
+    });
+
+    $(function () {
+        var is_visibler = "{$model.is_visibler}";
+        if (is_visibler) {
+            /*$(".btn-speed").addClass("btn-speed-disable");
+            $(".btn-speed").removeClass("btn-speed");
+            $(".btn-update").hide();*/
+            $("#middle-actions").hide();
+        } else {
+            handlerShow();
+        }
+    });
+
+    function toAddCom(obj) {
+        if (!$(obj).hasClass("btn-speed-disable")) {
+            //createDialog('/ComCompany/add', '新增公司', 'addCompany');
+            action_add("ComCompany","");
+        }
+    }
+    function addComCall(event, data) {
+        closeDialog("addCompany");
+        $.post("WrkAgreement/getCompanyName", { id: data }, function (result) {
+            $("input[name='customer_branch_name']").val(result);
+            $("input[name='company_id']").val(data);
+        }, 'json')
+    }
+
+    $(function () {
+        if ($("input[name='id']").val() != "") {
+            //获取服务明细
+            $.post("WrkAgreement/getOptions", { id: $("input[name='id']").val() }, function (result) {
+                $("textarea[name='order_desc']").val(result[result.length - 1]);
+                result.pop();
+                var origin = $("#origin :checked").val();
+                if (origin == 0 || "{$model.state}" != 0) {
+                    for (var i in result) {
+                        result[i]['deleteAble'] = 0;
+                    }
+                }
+                OptionsVue.items = result;
+            }, 'json');
+        }
+        getCompanyCustomer($("input[name='company_id']").val());
+    });
+
+    $(function () {
+        autocompleteAjax($("input[name='customer_branch_name']"), "WrkAgreement/companyList", function (item) {
+            $("input[name='company_id']").eq(0).val(item.id);
+            /*var selected = $("#origin option:selected").val();
+            if (selected != 0) {
+                $("input[name='customer_leader_id']").eq(0).val(item.user_id);
+            }*/
+            getCompanyCustomer(item.id);
+        });
+        $("input[name='customer_branch_name']").on('input', function () {
+            if ($('input[name="customer_branch_name"]').length > 0 && $("input[name='customer_branch_name']").val() == "") {
+                $('input[name="company_id"]').eq(0).val("");
+            }
+        });
+
+        autocompleteAjaxEx($("input[name='service_man_name']").eq(0), "/ComCompany/queryModuleUsers/module/WrkAgreement", {
+            formatItem(row) {
+                var mobile = row['mobile'];
+                var item_text = $.format(
+                    `<div style='font-size: 13px; line-height: 15px;'>
+                        <div style='float: left;margin:1px 2.5px;'>姓名：<span style='color:#368bfe'>{0}</span></div>
+                        <div style='float: right;margin:1px 2.5px;'>部门：<span style='color:#368bfe'>{1}</span></div>
+                    </div>`,
+                    [padLeft(row.name, 8, " "), row.branch_name]);
+                return item_text;
+            },
+            onSelected: function (row) {
+                $("input[name='leader_id']").eq(0).val(row.id);
+                $("#service_collaborators_select option[value='"+row.id+"']").attr("selected", false);
+                $("#service_leader_select option[value='"+row.id+"']").attr("selected", false);//可见人
+                $("#service_collaborators_select").trigger("chosen:updated");
+                $("#service_leader_select").trigger("chosen:updated");
+            }
+        });
+
+        $("input[name='service_man_name']").on('change', function () {
+            if ($('input[name="service_man_name"]').length > 0 && $("input[name='service_man_name']").val() == "") {
+                $('input[name="leader_id"]').eq(0).val("");
+            }
+        });
+        autocompleteAjax($("input[name='order_sn']"), "WrkAgreement/order_snList", function (item) {
+            $("input[name='agreement_money']").eq(0).val(item.real_cash);
+            //合同服务明细
+            $("#product_options tbody").html("");
+            var options = [];
+            options['id'] = $("#product_options tr").length;
+            options['type1'] = item['product_category'][0];
+            options['type2'] = item['product_category'][1];
+            options['attributes1'] = item['product_attributes'][0];
+            options['attributes2'] = item['product_attributes'][1];
+            options['attributes3'] = item['product_attributes'][2];
+            var origin = $("#origin :checked").val();
+            if (origin == 0) {
+                options['deleteAble'] = 0;
+            }
+            OptionsVue.items.push(options);
+            $("textarea[name='order_desc']").val(item['order_desc']);
+            //带出绑定公司
+            if (item.branch_info.length > 1) {
+                //如果超过一家公司，则将autoComplete切换为select
+                $("#double-company-div").show();
+                $("#simple-company-div").hide();
+                var html = "";
+                for (var i in item['branch_info']) {
+                    html += "<option value='" + item['branch_info'][i].branch_id + "' data-user='"+item['branch_info'][i]['customer_user']+"'>" + item.branch_info[i].name + "</option>"
+                }
+                $("#double-company").html(html).trigger("chosen:updated");
+                //带出第一家公司的信息
+                $("input[name='company_id']").eq(0).val(item['branch_info'][0].branch_id);
+                $("input[name='customer_branch_name']").eq(0).val(item['branch_info'][0].name);
+                getCompanyCustomer(item['branch_info'][0].branch_id);
+            } else {
+                $("#simple-company-div").show();
+                $("#double-company-div").hide();
+                if (item['branch_info'].length == 1) {
+                    $("input[name='customer_branch_name']").eq(0).val(item['branch_info'][0].name);
+                    $("input[name='company_id']").eq(0).val(item['branch_info'][0].branch_id);
+                    getCompanyCustomer(item['branch_info'][0].branch_id);
+                } else {
+                    $("input[name='customer_branch_name']").val("");
+                    $("input[name='company_id']").val("");
+                    $("input[name='customer_name']").val("");
+                }
+            }
+        });
+        $("input[name='order_sn']").on('change', function () {
+            if ($('input[name="order_sn"]').length > 0 && $("input[name='order_sn']").val() == "") {
+                $("input[name='customer_branch_name']").val("");
+                //将多公司选择框切换为autoComplete输入框
+                $("#double-company-div").hide();
+                $("#simple-company-div").show();
+            }
+        });
+    });
+
+    $(function () {
+        //订单如果带出多家绑定公司 选择框切换时去获取公司的客户设置人员
+        $("#double-company").on("change", function () {
+            $("input[name='company_id']").val($(this).val());
+            getCompanyCustomer($(this).val());
+        })
+    });
+
+    //状态操作
+    function operateState(obj) {
+        if (!$(obj).hasClass("btn-speed-disable")) {
+            var action = obj.getAttribute("id");
+            var url = "WrkAgreement/" + action + "Agreement";
+            var id = $("input[name='id']").val();
+            switch (action) {
+                case "active":
+                    action = "激活";
+                    break;
+                case "freeze":
+                    action = "冻结";
+                    break;
+                case "unfreeze":
+                    action = "解冻";
+                    break;
+                case "finish":
+                    if ($("input[name='delete_confirm']").val() == 1) {
+                        $("#mask").show();
+                        $("#closeAgreement-edit").show();
+                        return false;
+                    }
+                    action = "结束";
+                    break;
+                default:
+                    break;
+            }
+            $.dialog.confirm("是否确认" + action + "该合同", function () {
+                $.post(url, { id: id, invoice_type: "{$model.invoice_type}" }, function (result) {
+                    if (result.code == 1) {
+                        $.dialog.tips(result.message);
+                        $(obj).hide();
+                        refreshDatagrid(getDataGrid("WrkAgreement"));
+                        if (action == "激活" || action == "解冻") {
+                            $("input[name='state']").val("1");
+                            $("#freeze").show();
+                            $("#finish").show();
+                            $("#delete_btn").hide();
+                        } else if (action == "冻结") {
+                            $("input[name='state']").val("2");
+                            $("#unfreeze").show();
+                        } else {
+                            endFinish();
+                        }
+                        $(".active-not-show").remove();
+                    } else if (result.code == 0) {
+                        $.dialog.tips(result.message);
+                    } else if (result.code == 2) {
+                        $("#mask").show();
+                        $("#closeAgreement-edit").show();
+                        if (result.invoice != undefined) {
+                            $("#invoice_finish_tip").show().html("●" + result.invoice);
+                        }
+                        if (result.receivables != undefined) {
+                            $("#receivables_finish_tip").show().html("●" + result.receivables);
+                        }
+                        $("input[name='delete_confirm']").val(1);
+                    }
+                }, 'json')
+            });
+        }
+    }
+
+    function endFinish() {
+        $("#unfreeze").hide();
+        $("#active").hide();
+        $("#freeze").hide();
+        $(".modal-save").hide();
+        $("#update_money_btn").addClass("btn-speed-disable");
+        $(".upload-btn").addClass("btn-speed-disable");
+        $("#WrkAgreement-detailcontainer .btn-speed").addClass("btn-speed-disable");
+    }
+
+    function deleteAgreement() {
+        $.dialog.confirm("删除该合同将删除与该合同有关的工作计划<br/>是否继续删除？", function () {
+            var id = $("input[name='id']").val();
+            $.post("WrkAgreement/deleteAgreement", { id: id, invoice_type: "{$model.invoice_type}" }, function (result) {
+                if (result.code == 0) {
+                    $.dialog.tips(result.message);
+                    $(".ui_close").eq(1).trigger("click");
+                    refreshDatagrid(getDataGrid("WrkAgreement"), "", "delete");
+                } else if (result.code == 1) {
+                    $.dialog.tips(result.message);
+                } else if (result.code == 2) {
+                    $.dialog.confirm("当前合同含有未结束的工作，是否确认删除合同", function () {
+                        $.post("WrkAgreement/deleteAgreement", { id: id, confirm: 1 }, function (data) {
+                            $.dialog.tips(data.message);
+                            if (data.code == 1) {
+                                $(".ui_close").eq(1).trigger("click");
+                                refreshDatagrid(getDataGrid("WrkAgreement"), "", "delete");
+                            }
+                        }, 'json')
+                    })
+                }
+            }, 'json');
+        })
+    }
+
+    $(function () {
+        $("#origin").on("change", function () {
+            var selected = $("#origin option:selected").val();
+            $("#simple-company-div").show();
+            $("#double-company-div").hide();
+            if (selected != 0) {
+                $("#orderSn_div").hide();
+                $("#order_desc").hide();
+                //服务明细
+                $("#add-options").addClass("btn-speed");
+                $("#add-options").removeClass("btn-speed-disable");
+                OptionsVue.items = [];
+            } else {
+                $("#orderSn_div").show();
+                $("#order_desc").show();
+                $("#add-options").addClass("btn-speed-disable");
+                $("#add-options").removeClass("btn-speed");
+                OptionsVue.items = [];
+            }
+            $("input[name='customer_branch_name']").eq(0).val("");
+            $("input[name='customer_name']").eq(0).val("");
+            $("input[name='order_sn']").eq(0).val("");
+            $("textarea[name='order_desc']").eq(0).val("");
+        })
+    });
+
+    function updateMoney(obj) {
+        if (!$(obj).hasClass("btn-speed-disable")) {
+            $(obj).addClass("btn-speed-disable");
+            var id = $("input[name='id']").val();
+            var money = $("input[name='agreement_money']").val();
+            $.get("/WrkAgreement/updateMoney", { id: id, money: money }, function (result) {
+                var options = { title: "修改合同金额", content: result, autoSize: true, data: { id: id }, lock: true, max: false, min: false };
+                var $dialog = $.dialog(options);
+                if (result) {
+                    $(obj).removeClass("btn-speed-disable");
+                }
+            });
+        }
+    }
+
+    $(function () {
+        //获取合同日志
+        $.post("WrkAgreement/getLog", { id: $("input[name='id']").val() }, function get_log(result) {
+            for (var i = 0; i < result.length; i++) {
+                var html = "<tr><td>" + result[i].id + "</td><td>" + result[i].user_name + "</td><td>" + result[i].operation + "</td><td>" + result[i].create_time + "</td></tr>";
+                $("#log_table").append(html);
+            }
+        }, 'json');
+    });
+
+    //判断action，控制元素切换显示
+    function handlerShow() {
+        var formAction = $("input[name='formAction']").val();
+        if (formAction == "copy" || formAction == "add") {
+            $("input[name='id']").val("");
+            $("input[name='agreement_money']").removeAttr("readonly");
+            $("#update_money_btn").addClass("btn-speed-disable");
+            $("#WrkAgreement-form-actions1").hide();
+            $("#middle-actions").show();
+            $("input[name='sys_sn']").val("");
+            $("#log_table").remove();
+            //plan_disabled();
+        } else {
+            $("#middle-actions").hide();
+        }
+        var state = $("input[name='ctrlShow']").val();
+        if (state == 0) {
+            $("#active").show();
+            $("#finish").hide();
+        } else if (state == 1) {
+            $("#freeze").show();
+        } else if (state == 2) {
+            //$("#active").show();
+            $("#unfreeze").show();
+        } else {
+            $("#save").hide();
+            $("#saveto_btn").hide();
+            $("#finish").hide();
+        }
+    }
+
+
+    //合同日志显示切换
+    function toggleTable() {
+        $("#log_table").fadeToggle();
+        /*var a = $("#log_table").offset().top;
+        $("#WrkAgreement-div").animate({ scrollTop: a }, 'slow');*/
+        $('.triangle').toggleClass('active');
+    }
+
+    function delRow(obj) {
+        $(obj).parent().parent().nextAll().each(function () {
+            var a = $(this).children().eq(0).html() - 1;
+            $(this).children().eq(0).html(a);
+        });
+        $(obj).parent().parent().remove();
+    }
+
+    //另存
+    function saveTo() {
+        $.dialog.confirm("确认进入另存页面吗？", function () {
+            $(".ui_title").html("工作中心 >合同列表_另存");
+            formCache["WrkAgreement"].action = "copy";
+            $("#WrkAgreement-dataform").attr("action", "WrkAgreement/copy");
+            $("input[name='formAction']").val("copy");
+            $("input[name='attach_group']").val("");
+            toggleAction();
+            $.dialog.tips("已进入另存页面", 2);
+        });
+    }
+
+    //保存
+    function agreementSave() {
+        showMaskLayer();
+        var frameId = "WrkAgreement";
+        var dataForm = getDataForm(frameId);
+        var url = dataForm.attr("action");
+        var length = OptionsVue.items.length;
+        var length1 = $("#product_options tr").length - 1;
+        var money = $("input[name='agreement_money']").val();
+        var company_id = $("input[name='company_id']").val();
+        var customer_branch_name = $("input[name='customer_branch_name']").val();
+        dataForm.form('submit', {
+            url: url,
+            onSubmit: function () {
+                var validate = $(this).form('validate');
+                if (!validate) {
+                    hideMaskLayer();
+                    return validate;
+                }
+                if (length == 0 || length1 == 0) {
+                    hideMaskLayer();
+                    $.dialog.tips("请至少添加一项服务明细！");
+                    return false;
+                }
+                if (money <= 0) {
+                    hideMaskLayer();
+                    $.dialog.alert("请输入正确的合同金额！");
+                    return false;
+                }
+                if(company_id == "" && customer_branch_name !=""){
+                    hideMaskLayer();
+                    $.dialog.alert("公司不存在！");
+                    return false;
+                }
+            },
+            success: function (ret) {
+                var pattern = /^\{.*code.*\}$/gi;
+                if (!pattern.test(ret)) {
+                    hideMaskLayer();
+                    $.dialog.alert("保存错误！" + ret);
+                    return false;
+                }
+                var result = $.parseJSON(removeJsonQuote(ret));
+                if (result.code === 0) {
+                    //成功返回的message为本条记录
+                    $.dialog.tips("保存成功！");
+                    /*if(formCache[frameId].action == "edit"){
+                        $.dialog({id: frameId}).close();
+                    }else{
+                        $("input[name='formAction']").val("edit");
+                        toggleAction(result.message.id,result.message.sys_sn);
+                    }*/
+                    $.dialog({ id: frameId }).close();
+                    refreshGrid(frameId);
+                } else {
+                    $.dialog.alert(result.message);
+                }
+                hideMaskLayer();
+            }
+        });
+    }
+
+    //新增复制完成后变编辑
+    function toggleAction(id, sys_sn) {
+        var formAction = $("input[name='formAction']").val();
+        if (formAction == "copy" || formAction == "add") {
+            $("input[name='id']").val("");
+            $("input[name='agreement_money']").removeAttr("readonly");
+            $("#update_money_btn").addClass("btn-speed-disable");
+            $("#WrkAgreement-form-actions1").hide();
+            $("#middle-actions").show();
+            $("input[name='sys_sn']").val("");
+            $("input[name='agreement_sn']").val("");
+            $("input[name='name']").val("");
+            $("#log_table").remove();
+            $("#setPlan :checkbox").each(function () {
+                $(this).removeAttr("checked").attr("disabled", "disabled");
+            });
+            $("#setPlan .btn-speed").each(function () {
+                $(this).addClass("btn-speed-disable");
+            });
+        } else {
+            formCache["WrkAgreement"].action = "edit";
+            $("#WrkAgreement-dataform").attr("action", "/WrkAgreement/update");
+            $("input[name='id']").val(id);
+            $("input[name='agreement_money']").attr("readonly", 'true');
+            $("#update_money_btn").removeClass("btn-speed-disable");
+            $("#middle-actions").hide();
+            $("input[name='sys_sn']").val(sys_sn);
+            $("#WrkAgreement-form-actions1").show();
+            $("#cancel").show();
+            $("#active").show();
+            $("#saveto_btn").show();
+            $("#setPlan :checkbox").each(function () {
+                $(this).removeAttr("disabled");
+            });
+        }
+    }
+
+    //新增服务明细跳转
+    function addOptions(obj) {
+        if (!$(obj).hasClass("btn-speed-disable")) {
+            createDialog("/WrkAgreement/serviceDetail", "新增服务明细", "addOptions");
+        }
+    }
+
+    //上传附件
+    function uploadAttachment(obj) {
+        if (!$(obj).hasClass("btn-speed-disable")) {
+            var attach_group = $("input[name='attach_group']").val();
+            if (attach_group == "") {
+                $.post("ComAttachment/getAttachGroup", function (result) {
+                    $("input[name='attach_group']").val(result);
+                    attach_group = result;
+                }, 'text')
+            }
+            openAttachmentForm("合同附件", [{ text: "合同附件", attach_group: attach_group }], function (id) {
+            });
+        }
+    }
+
+    //确认结束
+    $("#confirm-finish").on("click", function () {
+        $.post("WrkAgreement/finishAgreement", { id: $("input[name='id']").val(), confirm: 1 }, function (data) {
+            $.dialog.tips(data.message);
+            if (data.code == 1) {
+                $("#finish").remove();
+                refreshDatagrid(getDataGrid("WrkAgreement"));
+                endFinish();
+                $(".active-not-show").remove();
+                $("#mask").hide();
+                $("#closeAgreement-edit").hide();
+            }
+        }, 'json')
+    });
+
+    $("select[name='collaborators[]']").bind("chosen:beforeSelected", function(event, selected){
+        var leader_id = $("input[name='leader_id']").val();
+        if (selected.value == leader_id) {
+            $.dialog.tips("协作人不能和负责人重复！");
+            selected.cancel = true;
+        }
+        var visiblers = $("select[name='visiblers[]']").val();
+        if(visiblers != null && visiblers.indexOf(selected.value) != -1){
+            $.dialog.tips("协作人不能和可见人重复！");
+            selected.cancel = true;
+        }
+    });
+
+    $("select[name='visiblers[]']").bind("chosen:beforeSelected", function(event, selected){
+        var leader_id = $("input[name='leader_id']").val();
+        var collaborators = $("select[name='collaborators[]']").val();
+        if (selected.value == leader_id) {
+            $.dialog.tips("可见人不能和负责人重复！");
+            selected.cancel = true;
+        }else if(collaborators != null && collaborators.indexOf(selected.value) != -1){
+            $.dialog.tips("可见人不能和协作人重复！");
+            selected.cancel = true;
+        }
+    });
+
+    //获取公司客户端设置的合同负责人员
+    function getCompanyCustomer(company_id){
+        $.post("/WrkAgreement/getCompanyCustomer",{company_id:company_id},function(result){
+            var html = "";
+            for(var i = 0;i<result.length ;i++){
+                html += (result[i]['staff_name'] == "" || result[i]['staff_name'] == null) ? (result[i]['name']+"；"):(result[i]['staff_name']+"；");
+            }
+            $("input[name=customer_name]").val(html);
+        },'json')
+    }
+
+</script>

@@ -1,0 +1,52 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .selectCompany-label{
+        float: left;
+        width: 81px;
+        height: 32px;
+        line-height: 32px;
+        color: #666666;
+        font-size: 14px;
+        text-align: left;
+    }
+    .selectCompany-input{
+        float: left;
+        width: 270px;
+        height: 32px;
+        line-height: 32px;
+    }
+    .selectCompany-input input{
+        width: 270px !important;
+        height: 32px !important;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+    }
+    .ui_buttons {
+        text-align: right !important;
+        padding: 10px 30px 30px !important;
+    }
+    .ui_border{
+        border-radius: 0px !important;
+    }
+    .ui_title{
+        background-color: #f9fafb !important;
+        color: #676767 !important;
+    }
+</style>
+<div style="width: 554px;background-color: #ffffff;">
+    <div style="width: 351px;height: 32px;margin: 50px auto 60px 69px;">
+        <div class="selectCompany-label">选择公司：</div>
+        <div class="selectCompany-input">
+            <input type="text" class="easyui-validatebox" name="company_name"  style="width: 20vw">
+            <input type="hidden" name="company_selected">
+        </div>
+    </div>
+</div>
+
+
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script>
+    autocompleteAjax($("input[name=company_name]"), "/Login/searchCompanys", function(row){
+        $("input[name=company_selected]").val(row.id);
+    });
+</script>

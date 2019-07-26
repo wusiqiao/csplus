@@ -1,0 +1,239 @@
+<link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}Public/css/timeline.css">
+<div class="detailcontainer" id="ComSundry-detailcontainer">
+    <form action="ComSundryOrder/record" id="ComSundryOrder-dataform" method="post" name="ComSundryOrder-dataform">
+        <div class="tableForm">
+            <div style="border:1px dashed #ABABAB">
+                <div class="row">
+                    <table id="sundry-items" style="margin-left:14%">
+                        <thead>
+                            <tr>
+                                <div class="caption">
+                                    <th width="60px">选择</th>
+                                    <th width="240px">物品名称</th>
+                                    <th width="120px">物品状态</th>
+                                </div>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <foreach name="model.items" item="v">
+                                <tr class="row">
+                                    <td>
+                                        <if condition='$v.status eq 0'>
+                                            <input name="item_id" type="checkbox" value="{$v.id}" />
+                                            <input id="sundry_id-{$v.id}" type="hidden" value="{$v.sundry_id}">
+                                        </if>
+                                    </td>
+                                    <td><span>{$v.sundry_name}</span></td>
+                                    <td><span>{$v.show_status}</span></td>
+                                </tr>
+                            </foreach>
+                        </tbody>
+                    </table>
+                </div>
+                <input name="type" type="hidden" value="1">
+                <input name="no" type="hidden" value="{$model.no}">
+                <input name="lender" type="hidden" value="{$model.lender}">
+                <input name="borrower" type="hidden" value="{$model.borrower}">
+                <input name="customer_leader" type="hidden" value="{$model.customer_leader}">
+                <input name="customer_cc_recipient" type="hidden" value="{$model.customer_cc_recipient}">
+                <input name="company_cc_recipient" type="hidden" value="{$model.company_cc_recipient}">
+                <input name="borrow_date" type="hidden" value="{$model.borrow_date}">
+                <input name="expected_return_date" type="hidden" value="{$model.expected_return_date}">
+<!--                 <div class="row">
+                    <div class="caption"><span>{$Think.lang.SUNDRY_ORDER_RETURNER}：</span></div>
+                    <div class="inputbox">
+                        <select name="returner" class="chosen-select" data-options="all:true,value:'{$model.returner}',search_key_url:'ComSundryorDer/UserList/'"></select>
+                    </div>
+                </div> -->
+                <input name="returner" type="hidden" value="{$model.borrower}">
+                <div class="row">
+                    <div class="caption"><span>归还日期：</span></div>
+                    <div class="inputbox">
+                        <input name="return_date" data-options="required:true" class="easyui-datebox" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>备注：</span></div>
+                    <div class="inputbox">
+                        <textarea name="remarks" rows="3" cols="40"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row time-line-wrap" style="height:280px">
+                <!--<div class="timeline">
+                    <foreach name="model.records" item="v">
+                        <if condition="$v.type eq 0">
+                            <div class="timeline-item left">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">{$v.type}</div>
+                                    <div class="timeline-body">
+                                        <span>借用时间：{$v.date}</span>
+                                        <br>
+                                        <span>出借人：{$v.user_name}</span>
+                                    </div>
+                                    <div class="timeline-footer">{$v.created_at}</div>
+                                </div>
+                            </div>
+                            <else/>
+                            <div class="timeline-item right" style="width:45%">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">
+                                        <h4>{$v.type}</h4>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <span>归还时间：{$v.date}</span>
+                                        <br>
+                                        <span>归还人：{$v.user_name}</span>
+                                    </div>
+                                    <div class="timeline-footer">
+                                        <p class="text-right">{$v.created_at}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </if>
+                    </foreach>
+                </div>-->
+                <foreach name="model.records" item="v">
+                    <if condition="$v.type eq 1">
+                        <div class="timeline">
+                            <div class="timeline-item right {$v.active}">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">借用申请</div>
+                                    <div class="timeline-body">
+                                        <span>借用时间：{$v.date}</span>
+                                        <br>
+                                        <span>借用物品：{$v.sundry_names}</span>
+                                    </div>
+                                    <div class="timeline-footer">{$v.user_name}&nbsp;{$v.created_at}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <elseif condition="$v.type eq 2" />
+                        <div class="timeline">
+                            <div class="timeline-item left {$v.active}">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">借用批准</div>
+                                    <div class="timeline-body">
+                                        <span>借用物品：{$v.sundry_names}</span>
+                                        <br>
+                                        <span>取件时间：{$v.date}</span>
+                                    </div>
+                                    <div class="timeline-footer">{$v.user_name}&nbsp;{$v.created_at}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <elseif condition="$v.type eq 3" />
+                        <div class="timeline">
+                            <div class="timeline-item left {$v.active}">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">借用签收</div>
+                                    <div class="timeline-body">
+                                        <span>借用物品：{$v.sundry_names}</span>
+                                        <br>
+                                        <span>取件时间：{$v.date}</span>
+                                    </div>
+                                    <div class="timeline-footer">{$v.user_name}&nbsp;{$v.created_at}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <elseif condition="$v.type eq 4" />
+                        <div class="timeline">
+                            <div class="timeline-item right {$v.active}">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">归还通知</div>
+                                    <div class="timeline-body">
+                                        <span>归还物品：{$v.sundry_names}</span>
+                                        <br>
+                                        <span>归还时间：{$v.date}</span>
+                                    </div>
+                                    <div class="timeline-footer">{$v.user_name}&nbsp;{$v.created_at}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <elseif condition="$v.type eq 5" />
+                        <div class="timeline">
+                            <div class="timeline-item left {$v.active}">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">归还签收</div>
+                                    <div class="timeline-body">
+                                        <span>归还物品：{$v.sundry_names}</span>
+                                        <br>
+                                        <span>取件时间：{$v.date}</span>
+                                    </div>
+                                    <div class="timeline-footer">{$v.user_name}&nbsp;{$v.created_at}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <elseif condition="$v.type eq 9" />
+                        <div class="timeline">
+                            <div class="timeline-item left {$v.active}">
+                                <div class="timeline-point timeline-point-success">
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="timeline-heading">拒绝借用</div>
+                                    <div class="timeline-body">
+                                        <span>备注：{$v.remarks}</span>
+                                    </div>
+                                    <div class="timeline-footer">{$v.user_name}&nbsp;{$v.created_at}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <else/>
+                    </if>
+                </foreach>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='[controller]-form-actions'>
+        <div class='actions-sysdefault'>
+            <if condition='$model.status eq 3'>
+                <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button btn-update" plain="true" icon="fa-save fa-lg" onclick="add_return_order()">归还</a>
+            </if>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+function add_return_order() {
+    var data = {};
+    var tmp = [];
+    var sundry_ids = [];
+    var t = $('#ComSundryOrder-dataform').serializeArray();
+    $.each(t, function() {
+        if (this.name == "item_id") {
+            tmp.push(this.value);
+
+            sundry_ids.push($("#sundry_id-" + this.value).val());
+        } else {
+            data[this.name] = this.value;
+        }
+    });
+    data["item_ids"] = tmp;
+    data["sundry_ids"] = sundry_ids;
+    if (tmp.length < 1) {
+        alert('请至少勾选一条记录！');
+    }else{
+        // getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid('reload');
+        $.post("ComSundryOrder/return/id/" + "{$model.id}", { data: data }, function(result) {
+            $.dialog.tips(result.message);
+            if (result['error'] == 0) {
+                closeDialog('ComSundryOrder-record');
+            }
+        }, 'JSON')
+    }
+}
+</script>

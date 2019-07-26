@@ -1,0 +1,324 @@
+<script>
+    function formatterTime(val, obj) {
+        if (obj.shelf_status != 20) {
+            return formatterStatus();
+        }
+        return new Date(parseInt(val) * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ');
+    }
+
+    function formatterTitle(val, obj) {
+        var digest = obj.digest ? obj.digest : '';
+        return `<span title="${digest}">${val}</span>`;
+    }
+</script>
+<style>
+    .btn-screening-label {
+        float: left;
+        width: 90px;
+        height: 54px;
+        line-height: 54px;
+        text-align: right;
+    }
+
+    .search_ipt {
+        float: right;
+    }
+
+    .ui_loading {
+        display: none !important;
+    }
+
+    .search-panel {
+        padding: 0;
+        overflow: hidden;
+        display: block;
+    }
+    .txt-item {
+        float: left;
+        position: relative;
+        margin: 5px 10px;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    iframe {
+        width: 100% !important;
+    }
+    .txt-checked-flag{
+        width: 80px;
+        height: 80px;  
+        position: absolute;
+        top:-40px;
+        right: -40px;
+        transform: rotate(45deg)
+    }
+    .txt-checked-flag-notstart{
+        background-color: #ccc;
+    }
+    .txt-checked-flag-start{
+        background-color: #00ca4e;
+    }
+    .txt-checked-flag-end{
+        background-color: red;
+    }
+    .icon-stop{
+        width: 28px;
+        height: 28px;
+        background-size: 100% 100%;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/intelligent/waring.png");
+    }
+</style>
+<div style="width: 100%;height: 100%;background-color: #fff;">
+    <div class="c-header">
+        <div class="tab-span tab-span-on">投票管理</div>
+    </div>
+
+    <div id="{$Think.const.CONTROLLER_NAME}-toolbar">
+        <div class="search-panel" id="MaterialCenter-search-panel">
+            <div class="search-table" style="max-width:100%;">
+                <div style="height:54px;line-height: 54px;position: relative;">
+                    <div class="btn-screening-label">状态：</div>
+                    <div class="btn-screening btn-screening-on" onclick="searchForm(0, this);">全部</div>
+                    <div class="btn-screening" data-shelf_time="1" onclick="searchForm(1, this);">未开始</div>
+                    <div class="btn-screening  data-status" data-shelf_time="3" onclick="searchForm(2, this);">进行中</div>
+                    <div class="btn-screening  data-status" data-shelf_time="7" onclick="searchForm(3, this);">已结束</div>
+                    <input type="hidden" name="status" class="filter-field" id="_status" value=""/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="padding: 0 18px;overflow: hidden;">
+        <div class="btn-speed" onclick="action_add('{$Think.const.CONTROLLER_NAME}','')">新增投票</div>
+        <div style="float: right;" class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+            <input type="text" placeholder="请输入标题" style="width:300px;" class="filter-field" name="ql-name" value="" oninput="searchByKey(event)">
+            <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="">
+        </div>
+    </div>
+    <div id="txtSeenList" class="maincontainer" style="padding-left: 8px;padding-bottom: 35px;height: auto;background-color: #fff;position: relative;overflow-x: hidden;overflow-y: auto;display: flex;flex-wrap: wrap;">
+        <div v-for="(item,index) in votes.slice(0 + (txt_seen_page - 1)*6 ,6 + (txt_seen_page - 1)*6 )" :id="`txt-item-${item.id}`" class="txt-item">
+            <div style="width:325px;position: relative;">
+                <p style="padding: 11px 13px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 0;font-size: 16px;" :title="item.name">
+                    {{item.name}}</p>
+                <div style="padding: 0 13px;position: relative;overflow: hidden;">
+                    <div style="border: 1px solid #d3d3d3;height: 160px;">
+                        <div style="width: 100%;height:30px;display: flex;align-items: center;position: absolute;left: 0;bottom: 0;background-color: rgba(0, 0, 0, 0.3);color: #fff;">
+                            <span style="white-space: nowrap;margin:0 5px;">活动时间：{{item.start_time}}--{{item.end_time}}</span>
+                        </div>
+                        <img style="width: 100%;" :src="item.cover_pic" alt="">
+                    </div>
+                </div>
+                <div style="padding: 5px;display: flex;align-items: center;justify-content: space-between;border-bottom: 1px solid #d3d3d3;">
+                    <div style="flex: 1;margin: 0 10px;text-align: center;">
+                        <div style="color:#FF9800;">{{item.participant_total}}</div>
+                        <div style="color:#666;">报名人数</div>
+                    </div>
+                    <div style="flex: 1;margin: 0 10px;text-align: center;">
+                        <div style="color:#FF9800;">{{item.vote_total}}</div>
+                        <div style="color:#666;">总票数</div>
+                    </div>
+                    <div style="flex: 1;margin: 0 10px;text-align: center;">
+                        <div style="color:#FF9800;">{{item.access_total}}</div>
+                        <div style="color:#666;">浏览量</div>
+                    </div>
+                </div>
+                <div style="padding: 5px;display: flex;align-items: center;justify-content: flex-end;">
+                    <a style="margin: 0 3px;color: #368bfe" :href="'javascript:void(0)'" @click="toQRcode(item.id)">二维码</a>
+                    <a style="margin: 0 3px;color: #368bfe" :href="'javascript:void(0)'" @click="toRoster(item.id, item.name)">名单</a>
+                    <a style="margin: 0 3px;color: #368bfe" :href="'javascript:void(0)'" @click="update(item.id)">编辑</a>
+                    <a style="margin: 0 3px;color: #368bfe" :href="'javascript:void(0)'" @click="toCloseActivity(item.id, index)">{{item.status == 10 ? '暂停' : '开启'}}</a>
+                </div>
+                <div v-if="new Date(item.start_time).getTime() > now_time" class="txt-checked-flag txt-checked-flag-notstart">
+                    <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">未开始</p>
+                </div>
+                <div v-if="new Date(item.start_time).getTime() < now_time && new Date(item.end_time).getTime()+86400000 > now_time" class="txt-checked-flag txt-checked-flag-start">
+                    <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">进行中</p>
+                </div>
+                <div v-if="(new Date(item.end_time).getTime() +86400000) < now_time" class="txt-checked-flag txt-checked-flag-end">
+                    <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">已结束</p>
+                </div>
+                <div v-if="item.status == 20" style="position: absolute;top: 0;left: 0;width: 100%;height: 80px;background-color: rgba(0, 0, 0, 0.3);">
+                    <div style="display: flex;align-items: center;justify-content: center;width: 100%;height: 100%;">
+                        <div class="icon-stop"></div>
+                        <div style="color: #fff;font-size: 18px;margin-left: 10px;">活动暂停服务</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 换页 -->
+        <div style="display: flex;justify-content: space-between;align-items: center;position: fixed;bottom: 3px;right: 3px;">
+            <div style="width: 32px;height: 32px;cursor: pointer;border: 1px solid #d3d3d3;border-right: none;" @click="toFirstPage">
+                <img style="width:12px;height:12px;margin: 10px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/intelligent/pagination-first.png" alt="">
+            </div>
+            <div style="width: 32px;height: 32px;cursor: pointer;border: 1px solid #d3d3d3;" @click="toPrevPage">
+                <img style="width:12px;height:12px;margin: 10px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/intelligent/pagination-prev.png" alt="">
+            </div>
+            <div style="width: 120px;height: 32px;display: flex;justify-content: space-between;align-items: center;">
+                <span style="padding-left:6px;">第</span>
+                <input class="pagination-num" id="pagination-num" v-model="txt_seen_page" type="text" :value="txt_seen_page" size="2">
+                <span style="padding-right:6px;" id="pagination-count">共{{txt_page}}页</span>
+            </div>
+            <div style="width: 32px;height: 32px;cursor: pointer;border: 1px solid #d3d3d3;" @click="toNextPage">
+                <img style="width:12px;height:12px;margin: 10px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/intelligent/pagination-next.png" alt="">
+            </div>
+            <div style="width: 32px;height: 32px;cursor: pointer;border: 1px solid #d3d3d3;border-left: none;" @click="toLastPage">
+                <img style="width:12px;height:12px;margin: 10px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/intelligent/pagination-last.png" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    // 输入框搜索功能
+    function searchByKey(e){
+        var keyword = e.target.value;
+        voteActivity.searchForm(null, keyword);
+    }
+
+    function searchForm(status, obj){
+        $(".btn-screening").removeClass('btn-screening-on');
+        $(obj).addClass('btn-screening-on');
+        voteActivity.searchForm(status, null);
+    }
+
+    // 搜索框悬停效果
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+
+    var voteActivity = new Vue({
+        el: "#txtSeenList",
+        data: {
+            now_time:"",
+            txt_page: "",
+            txt_seen_page: 1,
+            votes : [],
+            search : {
+                status : 0,
+                name : '',
+            }
+        },
+        methods: {
+            toFirstPage : function(){
+                this.txt_seen_page = 1;
+            },
+            toPrevPage : function(){
+                if(this.txt_seen_page > 1){
+                    this.txt_seen_page = this.txt_seen_page - 1;
+                }
+            },
+            toNextPage : function(){
+                if(this.txt_seen_page < this.txt_page){
+                    this.txt_seen_page += 1;
+                }
+            },
+            toLastPage : function(){
+                this.txt_seen_page = this.txt_page;
+            },
+            update : function(id){
+                modifyAc(id)
+            },
+            deleteThat : function(id){
+                $.post('VoteActivity/delete', {id:id}, function(data){
+                    if(data.code == 0){
+                        var votes = this.votes;
+                        for (var index in votes){
+                            if(votes[index].id == id){
+                                delete votes[index];
+                            }
+                        }
+                        this.votes = votes;
+                        $.dialog.alert('删除成功!');
+                    }else{
+                        $.dialog.alert(data.message);
+                    }
+                }, 'json');
+            },
+            searchForm : function(status, name){
+                this.search.status = status === null ?  this.search.status : status;
+                this.search.name   = name === null   ?  this.search.name   : name;
+                this.refreshVotes();
+            },
+            refreshVotes : function(){
+                getVoteActivityLsit(this.search);
+            },
+            // 二维码
+            toQRcode(id){
+                createDialog(`VoteActivity/QRcode/id/${id}`,"营销>投票管理_二维码","QRcode");
+            },
+            // 名单
+            toRoster(id, name){
+                createDialog(` VoteParticipant/index/id/${id}`,`营销>投票管理_${name}_报名名单`,"roster");
+            },
+            // 关闭
+            toCloseActivity(id,index){
+                $.ajax({
+                    url: "VoteActivity/changeStatus",
+                    async: true,
+                    type: 'post',
+                    data: {id : id},
+                    dataType: 'json',
+                    success: function (res) {
+                        if(res.code == 0){
+                            console.log(this.votes);
+                            let  status = voteActivity.votes[index].status;
+                            status = status == 10 ? 20 : 10;
+                            voteActivity.votes[index].status = status;
+                        }
+                        $.dialog.alert(res.message)
+                    },
+                    error : function(){
+                    }
+                });
+            }
+        },
+        mounted() {
+            this.refreshVotes();
+            // 初始化活动状态
+            this.now_time = new Date().getTime();
+        },
+    })
+    // 编辑
+    function modifyAc(id){
+        $.get("VoteActivity/detail/id/" + id,function (data, status) {
+            if (typeof(data) === "object"){
+                $.dialog.alert(data.message);
+            }else{
+                var dlg = $.dialog({
+                    title: '营销>投票管理_修改',
+                    autoSize: true,
+                    content: data,
+                    lock: false,
+                    max: false,
+                    min: false,
+                    parent: this
+                });
+                formCache[`frameId`] = {data:null, action:"edit"};
+            }
+        });
+    }
+    function getVoteActivityLsit(searchForm){
+        searchForm = searchForm ? searchForm : voteActivity.search;
+        $.ajax({
+            url: "VoteActivity/list",
+            async: true,
+            type: 'get',
+            data: searchForm,
+            dataType: 'json',
+            success: function (res) {
+                voteActivity.votes =  res.rows;
+                voteActivity.txt_page = Math.ceil(res.total / 6) > 1 ? Math.ceil(res.total / 6) : 1;
+            },
+            error : function(){
+            }
+        });
+    }
+
+    action_add()
+    function getSearchForm(){
+
+    }
+</script>

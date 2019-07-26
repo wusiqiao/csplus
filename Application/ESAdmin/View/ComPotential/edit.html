@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            width:830px;
+        }
+        .img-lef{
+            width:500px;
+            padding-left:20px;
+            line-height: 30px;
+        }
+        .baseInfo .info-line p{
+            margin-bottom: 0;
+        }
+        .baseInfo .img{
+            width: 200px;
+            text-align: center;
+        }
+        .baseInfo .img img{
+            width:130px;
+            height:130px;
+            border-radius: 50%;
+        }
+        .baseInfo .label-span{
+            display: inline-block;
+            margin-right: 10px;
+            padding:0 15px;
+            border:1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+            user-select: none;
+            height: 30px;
+            line-height: 30px;
+        }
+        .contactInfo .row{
+            margin-bottom: 20px;
+        }
+        .contactInfo .row .caption {
+            width: 14%;
+            display: inline-block;
+            margin-left: 0px;
+            vertical-align: middle;
+            text-align: right;
+        }
+        .contactInfo .row .inputbox {
+            width: 35%;
+            display: inline-block;
+        }
+        .contactInfo .easyui-validatebox{
+            width:85%;
+        }
+        .addword{
+            display: inline-block;
+            padding: 0 15px;
+            height: 25px;
+            user-select: none;
+            cursor: pointer;
+            line-height: 25px;
+            border-radius: 1px;
+            margin: 0px;
+        }
+        .blueBg{
+            margin-left: 48px;
+            border:none;
+            color: #fff;
+        }
+        .tabBox{
+            border:1px solid #ccc;
+            width: 720px;
+            margin:auto;
+            text-align: center;
+        }
+        .tabBox table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .tabBox table tr{
+            border-bottom:1px solid #ccc;
+            height: 42px;
+        }
+        .tabBox table tr:nth-child(odd){
+            background:#f8f6f6;
+        }
+        .tabBox .addword + .addword{
+            margin-left:10px;
+        }
+        .bgGray{
+            height: 32px;
+            line-height: 32px;
+            background: #eee;
+            text-indent: 20px;
+        }
+        .justify{
+            display: inline-block;
+            text-align: justify;
+            width: 65px;
+        }
+        .justify span{
+            display: inline-block;
+            padding-left: 100%;
+        }
+        .quotes{
+            position: relative;
+            top:-4px;
+        }
+        /* 详情页排版 */
+        .baseInfo{
+            position: relative;
+        }
+        .baseInfo .img {
+            width: 200px;
+            text-align: center;
+            position: absolute;
+            right: 80px;
+            top: 20px;
+        }
+        .label_right{
+            display: inline-block;
+            width: 100px;
+            height: 24px;
+            line-height: 24px;
+            text-align: right;
+        }
+        .label_left{
+            display: inline-block;
+            width: 200px;
+            height: 24px;
+            line-height: 24px;
+            text-align: left;
+            overflow:hidden; 
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+        }
+        .label_left input{
+            width: 190px;
+            height: 22px !important;
+            border-radius: 2px;
+        }
+        .select_left{
+            width: 330px;
+            height: auto;
+        }
+        .chosen-choices{
+            border-radius: 2px !important;
+        }
+        li.search-choice{
+            border-radius: 1px !important;
+            background-color: #fff !important;
+            color: #333 !important;
+            border: 1px solid #d3d3d3 !important;
+            margin: 5px !important;
+            width: 84px !important;
+        }
+        .easyui-validatebox{
+            border-radius: 2px;
+        }
+        .chosen-container-single .chosen-single {
+            border-radius: 2px;
+        }
+        .chosen-container-single .chosen-single span {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div style="overflow:hidden;">
+    <div class="wrap" style="overflow-y:auto;height:450px;">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <input name="id" type="hidden" value="{$model.id}">
+        <div class="baseInfo clearFix">
+            <div class="img-lef fl">
+                <div class="info-line clearFix">
+                    <p>
+                        <span class="title label_right">昵称：</span>
+                        <span class="val label_left">{$model.name}</span>
+                    </p>
+                    <p>
+                        <span class="title label_right">备注：</span>
+                        <span class="val label_left"><input class="easyui-validatebox" name="comments" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="{$model.comments}" /></span>
+                    </p>
+                </div>
+                <div class="info-line clearFix">
+                    <p>
+                        <span class="title label_right">绑定手机：</span>
+                        <notempty name="model.mobile">
+                        <span class="val label_left" >{$model.mobile}</span>
+                        <else/>
+                        <span class="val label_left" >未绑定手机</span>
+                        </notempty>
+                    </p>
+                </div>
+                <div class="info-line clearFix">
+                    <p>
+                        <span class="title label_right">客户类型：</span>
+                        <span class="val label_left">{$model.user_type_value}</span>
+                    </p>
+                </div>
+                <div class="info-line clearFix">
+                    <p>
+                        <span class="title label_right">来源渠道：</span>
+                        <span class="val label_left">{$model.subscribe_scene_value}</span>
+                    </p>
+                </div>
+                <div class="info-line clearFix">
+                    <p>
+                        <span class="title label_right">关注时间：</span>
+                        <span class="val label_left">{$model.followed_at}</span>
+                    </p>
+                </div>
+                <div class="info-line clearFix">
+                    <p>
+                        <span class="title label_right">标签：</span>
+                        <select name="tag_ids[]" class="chosen-select select_left" data-options="all:true,value:'{$model.tag_ids}',search_key_url:'ComPotential/tagListForSelect/'" multiple></select>
+                    </p>
+                </div>
+            </div>
+            <input name="user_type" type="hidden" value="{$model.user_type}">
+            <input name="role_ids" type="hidden" value="{$model.role_ids}">
+            <div class="img">
+                <if condition="$model.head_pic neq '' or empty($model.head_pic)">
+                    <img src="{$model.head_pic}" alt="" onerror="this.onerror=null;this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                <else />
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg" alt="">
+                </if>
+                <if condition="$model.user_type_value neq '员工'">
+                    <p style="display:flex;justify-content: center;align-items:center;line-height: 30px;color: #333;" onclick="getAttachGroup({$model.id})"><i class="icon-communication" title="沟通"></i>发起沟通</p>
+                </if>
+            </div>
+        </div>
+        <!-- <div class="contactInfo">
+            <p class="bgGray">用户联系信息</p>
+            <div class="row">
+                <div class="caption"><span class="label_right">姓名：</span></div>
+                <div class="inputbox">
+                    <input name="contacts" class="easyui-validatebox" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="{$model.contacts}" />
+                </div>
+                <div class="caption"><span class="label_right">联系电话：</span></div>
+                <div class="inputbox">
+                     <input name="telephone" class="easyui-validatebox" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="{$model.telephone}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span class="label_right">邮箱：</span></div>
+                <div class="inputbox">
+                    <input name="email" class="easyui-validatebox" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="{$model.email}" />
+                </div>
+                <div class="caption"><span>Q Q</span>：</div>
+                <div class="inputbox">
+                    <input name="qq" class="easyui-validatebox"  onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="{$model.qq}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span class="label_right">详情地址：</span></div>
+                    <div class="select-address address-province">
+                        <select name="province" class="chosen-select province" data-options="required:true" data-value="{$model.province}" style="width:100%">
+                            <volist name="province_lists" id="vo">
+                                <option value="{$vo.id}">{$vo.name}</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="select-address address-city">
+                        <select name="city" class="chosen-select city" data-options="required:true" data-value="{$model.city}" style="width:100%">
+                            <volist name="city_lists" id="vo">
+                                <option value="{$vo.id}">{$vo.name}</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="select-address address-district">
+                        <select name="district" class="chosen-select district" data-options="required:true" data-value="{$model.district}" style="width:100%">
+                            <volist name="district_lists" id="vo">
+                                <option value="{$vo.id}">{$vo.name}</option>
+                            </volist>
+                        </select>
+                    </div>
+                <div class="inputbox_x2" style="margin: 2% 0 2% 14.5%;"><input name="address" placeholder="详细地址" value="{$model.address}" class="easyui-validatebox" style="width:77%"/></div>
+            </div>
+            <div >
+                <div id="custom-attr">
+                    <div class="row">
+                        <div class="caption"><span >自定义标题</span>：</div>
+                        <input name="add-custom-title" class="easyui-validatebox" style="width:30%" placeholder="请输入自定义字段标题" />
+                        <span class="addword btn_bg_blue" onclick="addCustomAttr(this);" style="margin-left:10px;">+ 添加自定义字段</span>
+                    </div>
+                    <foreach name="model.custom" item="v">
+                        <div class="row">
+                            <span  class="caption"><span >{$v.title}</span>：</span>
+                            <input name="custom-value[]" placeholder="请输入{$v.title}" value="{$v.value}" style="width:30%" class="easyui-validatebox" />
+                            <input name="custom-type[]" value="{$v.type}" type="hidden" />
+                            <input name="custom-title[]" value="{$v.title}" type="hidden" />
+                            <a href="javascript:void(0);" class="addword btn_bg_blue" style="margin-left: 10px;" onclick="removeCustomAttr(this);">删除</a>
+                        </div>
+                    </foreach>
+                </div>
+            </div>
+        </div> -->
+        <div class="bindInfo">
+            <p class="bgGray">绑定公司详情</p>
+            <!-- <div class="row" style="margin-bottom:20px;">
+                <notempty name="model.mobile">
+                <if condition="$model.is_follow eq 1">
+                 <span class="addword blueBg btn_bg_blue" onclick="bindSingle()">
+                        绑定新公司
+                    </span>
+                </if>
+                </notempty>
+            </div> -->
+            <div id="company" class="tabBox">
+                <table >
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>绑定公司</th>
+                            <th>人员类型</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item,index) in companyList">
+                            <td>{{index+1}}</td>
+                            <td>{{item.name}}</td>
+                            <td v-if="item.leader_id == '{$model.id}'">管理员</td>
+                            <td v-else>员工</td>
+                            <td style="padding-left:0;text-align:center;">
+                                <span class="addword btn_bg_blue" onclick="companyDetail(this)" :companyid="item.id">查看公司详情</span>
+<!--                                 <span class="addword btn_bg_blue" onclick="unbindCompany(this)" :companyid="item.id">解绑该公司</span> -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="empty-notice" style="background: #fff;display:none;width:100%;height:40px;text-align:center;min-width: 180px;line-height: 40px;">未绑定公司,暂无数据！</div>
+        </div>
+    </form>
+    <div class="form-actions" id='ComPotential-form-actions' style="height:auto;">
+        <div class='actions-sysdefault'>
+            <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+            <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="saveComPotential()">保存</a>
+            </if>
+            <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+<!--     <i—n-clude file="./Application/Common/Layout/Default/detail_toolbar.html" controller="ComPotential" /> -->
+    </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        var $custom_actions = $('#ComPotential-actions-custom');
+        if ($custom_actions.length > 0){
+            $custom_actions.appendTo($('#ComPotential-form-actions')).show();
+        }
+    });
+    var vue = new Vue({
+        el:"#company",
+        data:{
+            companyList:[]
+        },
+        methods:{
+            addLevel:function(){
+            },
+            delLevel:function(){
+            }
+        }
+    });
+    function saveComPotential() {
+        // queryComPotential();
+        action_update('ComPotential');
+        hideMaskLayer();
+        queryTagList();
+    }
+    function queryCompanyData() {
+        $.post("/ComPotential/getCompanyData/id/{$model.id}",function(result) {
+            vue.companyList = result;
+            if(vue.companyList.length == 0){
+                $("#empty-notice").show();
+            }else{
+                $("#empty-notice").hide();
+            }
+        }, "json");
+    }
+    queryCompanyData();
+function addCustomAttr(e) {
+    var custom_type = 0;
+    var str = "easyui-validatebox";
+    var custom_title = $('input[name="add-custom-title"]').val();
+    if (custom_title === undefined || custom_title == null || $.trim(custom_title) == '') {
+        alert('自定义字段标题不能为空');
+    } else {
+    $("#custom-attr").append('<div class="row"><span  class="caption"><span>' + custom_title
+        + '</span>：</span><input name="custom-value[]" value="" class="easyui-validatebox" style="width:30%" placeholder="请输入'+custom_title+'" /><input name="custom-type[]" value="0" type="hidden" /><input name="custom-title[]" value="'
+        + custom_title
+        + '" type="hidden" /><a href="javascript:void(0);" class="addword" style="margin-left: 10px;" onclick="removeCustomAttr(this);">删除</a></div>');
+    }
+    parseForm($(e).parents("div.tab"));
+}
+
+function removeCustomAttr(e) {
+    div = $(e).parents('div.row');
+    div.remove();
+}
+
+$('.address-province .chosen-select').chosen().change(function() {
+    var province = $(this).val();
+    var hanlderDom = $(this).parents('.row');
+    if (province > 0) {
+        $.post('__MODULE__/ComCompany/getLevelLists.html', { level: 2, pid: province }, function(data) {
+            if (data.error == 0) {
+                var html = '<option value="">请选择城市</option>';
+                var view = '';
+                for (var i = 0; i < data.data.length; i++) {
+                    html += '<option value="' + data.data[i]['id'] + '">' + data.data[i]['name'] + '</option>';
+                    // view += '<li class="active-result" data-option-array-index='+i+' style="">'+data.data[i]['name']+'</li>'
+                }
+                // alert($('.city .chosen-select').html());
+                $('.address-city .chosen-select').html(html);
+                $('.address-city .chosen-select').trigger("chosen:updated");
+            } else {
+                $.dialog.tips("数据丢失,请刷新重试");
+            }
+        }, 'JSON')
+    } else {
+        hanlderDom.find('.address-city .chosen-select').html('<option value="">请选择城市</option>');
+        hanlderDom.find('.address-district .chosen-select').html('<option value="">请选择县级市</option>');
+        hanlderDom.find('.address-district .chosen-select').trigger("chosen:updated");
+        hanlderDom.find('.address-city .chosen-select').trigger("chosen:updated");
+    }
+});
+$('.address-city .chosen-select').chosen().change(function() {
+    var city = $(this).val();
+    var hanlderDom = $(this).parents('.row');
+    if (city > 0) {
+        $.post('__MODULE__/ComCompany/getLevelLists.html', { level: 3, pid: city }, function(data) {
+            if (data.error == 0) {
+                var html = '<option value="">请选择县级市</option>';
+                var view = '';
+                for (var i = 0; i < data.data.length; i++) {
+                    html += '<option value="' + data.data[i]['id'] + '">' + data.data[i]['name'] + '</option>';
+                }
+                hanlderDom.find('.address-district .chosen-select').html(html);
+                hanlderDom.find('.address-district .chosen-select').trigger("chosen:updated");
+            } else {
+                $.dialog.tips("数据丢失,请刷新重试");
+            }
+        }, 'JSON')
+    } else {
+        hanlderDom.find('.address-district .chosen-select').html('<option value="">请选择县级市</option>');
+        hanlderDom.find('.address-district .chosen-select').trigger("chosen:updated");
+    }
+});
+
+function bindSingle() {
+    createDialog("ComPotential/bindSingle/id/{$model.id}","单个绑定公司","dlg-bindSingle");
+}
+function companyDetail(obj) {
+    var companyId = $(obj).attr('companyid');
+    $.post('ComPotential/comCompanyValidate/id/'+companyId, function(data) {
+        if(data.code == 1){
+            $.dialog.alert("您没有查看此数据的权限！");
+        }else{
+            showDetailForm("ComCompany", companyId, '', null, "view");
+        }
+    }, 'JSON')
+}
+function unbindCompany(obj) {
+    $.dialog.confirm("请确定是否取消该公司的绑定！", function() {
+        var companyId = $(obj).attr('companyid');
+        var id = '{$model.id}';
+        showMaskLayer();
+        $.post('{$Think.const.CONTROLLER_NAME}/unbindCompany', {id:id,company_id: companyId }, function(data) {
+            hideMaskLayer();
+            $.dialog.tips(data.message);
+            //解绑后删除所在公司中已选择的这个公司
+            if (data.code == 0) {
+                queryCompanyData();
+                getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+            }
+        }, 'JSON')
+    })
+}
+    function getAttachGroup(id){
+        $.post("ComPotential/getAttachGroup/id/"+id,function(result){
+            var group = result.attach_group;
+            openAttachForm("沟通记录", [{text:"沟通记录",attach_group:group}],function(id){
+            },"text")
+        },'json');
+    }
+</script>
+</body>
+</html>

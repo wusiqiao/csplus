@@ -1,0 +1,489 @@
+
+<input name="bill_flag" type="hidden" value="{$model.bill_flag}" />
+<div class="property-content">
+    <ul class="input-contents">
+        <include file="error" />
+        <li class="third-width">
+            <div class="title required">录入日期</div>
+            <div class="input">
+                <input type="text" name="bill_date" style="width:100%" class="easyui-datebox easyui-validatebox"
+                       data-options="required:true,formatter:formatDate" value="{$model.bill_date}">
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title required">录入单号</div>
+            <div class="input">
+                <input type="text" name="bill_no" class="easyui-validatebox"
+                       data-options="required:true,formatter:formatDate" value="{$model.bill_no}">
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title required">会计期间</div>
+            <div class="input">
+                <!--<input type="text" name="source_date" style="width:100%"  class="easyui-datebox easyui-validatebox" data-options="formatter:formatDate" value="{$model.source_date}">-->
+                <select class="chosen-select" style="width:100%;" name="accounting_section"
+                        data-value="{$model.accounting_section}"></select>
+            </div>
+        </li>
+        <li class="half-width" style="display:none">
+            <!--<div class="input">-->
+                <!--<fieldset style="border:1px #ccc solid;margin:0;border-radius:5px">-->
+                    <!--<legend>发票来源</legend>-->
+                    <!--<div style="line-height: 32px;">-->
+                        <!--<label><input name="source_flag" type="radio" value="{$Think.const.FLAG_SOURCE_PAY}"-->
+                                      <!--data-value="{$model.source_flag}">外来（进项）</label><br>-->
+                        <!--<label><input name="source_flag" type="radio" value="{$Think.const.FLAG_SOURCE_INCOME}"-->
+                                      <!--data-value="{$model.source_flag}">自开（销项）</label>-->
+                    <!--</div>-->
+                <!--</fieldset>-->
+            <!--</div>-->
+            <input name="source_flag" value="{$model.source_flag}" />
+        </li>
+        <li class="fee-info third-two-width source-input">
+            <div class="input" style="padding:10px 0px; text-align: left">
+                <label><input name="is_fee" type="checkbox" value="1" data-value="{$model.is_fee}">费用</label>
+                <select class="chosen-select" style="width:120px;" name="fee_department"
+                        data-value="{$model.fee_department}">
+                    <option value="{$Think.const.FEE_DEPATMENT_MANAGE}">管理部门</option>
+                    <option value="{$Think.const.FEE_DEPATMENT_SALES}">销售部门</option>
+                    <option value="{$Think.const.FEE_DEPATMENT_FINANCE}">财务部门</option>
+                    <option value="{$Think.const.FEE_DEPATMENT_PRODUCTION}">生产部门</option>
+                    <option value="{$Think.const.FEE_DEPATMENT_PROJECT}">项目部门</option>
+                </select>
+            </div>
+        </li>
+
+        <li class="pay-type-row source-input">
+            <fieldset style="border:1px #ccc solid;margin:0;border-radius:5px">
+                <legend>付款方式</legend>
+                <div class="input" style="padding:5px 5px 0px;float:left;width:40%">
+                    <label><input name="cashpayed" type="radio" value="1" data-value="{$model.cashpayed}"
+                                  default="true">现金已付</label>
+                    <label><input name="cashpayed" type="radio" value="0" data-value="{$model.cashpayed}">银行转账</label>
+                </div>
+                <div class="input" style="padding:0px 0px;width:50%;float:left">
+                    <select name="bank_subject" style="width: 100%;" class="chosen-select"
+                            data-options="all:true,textField:'name',idField:'id',search_key_url:'VcrSubject/getBankSubject/'">
+                    </select>
+                </div>
+            </fieldset>
+        </li>
+        <li class="third-width tax-type-row fee-disable-row source-input">
+            <div class="input" style="padding:15px 0px 10px; text-align: left">
+                <label><input name="tax_type" type="checkbox" value="{$Think.const.TAX_TYPE_VTX}"
+                              data-value="{$model.tax_type}">专用发票</label>
+            </div>
+        </li>
+
+        <li class="name-row fee-disable-row">
+            <div class="title source_flag_title">收款方单位名称</div>
+            <div class="input">
+                <input type="text" class="easyui-validatebox" name="name" data-options="required:false" placeholder=""
+                       value="{$model.name}">
+            </div>
+        </li>
+        <li class="memo-content">
+            <div class="title">摘要</div>
+            <div class="input">
+                <textarea name="memo" rows="2" placeholder="">{$model.memo}</textarea>
+            </div>
+        </li>
+        <li class="detail-list" style="padding-top: 15px;border-bottom: 1px solid #ccc">
+            <fieldset style="border:1px #ccc solid;margin:0;border-radius:5px">
+                <legend>明细</legend>
+                <div class="contents"></div>
+            </fieldset>
+            <div style="text-align: center;width:100%;position: relative;text-align: center;padding: 10px">
+                <a href="javascript:void(0)" class="easyui-linkbutton" style="padding: 2px;color:blue;border:1px solid blue"  plain="true" icon="fa-plus fa-lg" onclick="action_add_detail()">继续添加明细</a>
+                <div style="position: absolute; top:10px; right:20px;"><span>合计：</span><span class="total-all" style="color:red">0</span>元</div>
+            </div>
+        </li>
+    </ul>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"
+             controller="{$Think.const.CONTROLLER_NAME}"/>
+</div>
+<div id="tv-item-detail-tmp" style="display: none">
+    <div class="content content-{%index%}"
+         style="padding: 5px;background: #F5F5F5;margin-bottom: 5px;border-bottom: 1px #ccc solid;float:left;width:100%">
+        <div style="position: relative">
+            <div class="title required" style="margin-right:20px">{%index%}、<span class="goods-title">货物或劳务、服务名称</span>
+            </div>
+            <div style="position: absolute;right:10px;top:0px;color:red;cursor: pointer"
+                 onclick="$.dialog.confirm('确认删除当前项？', function(){remove_detail_item('{%index%}')})">
+                删除
+            </div>
+            <div class="input">
+                <input type="text" class="easyui-validatebox input-goods" disabled name="goods_name[]"
+                       data-options="required:true" placeholder="" value="{%goods_name%}">
+            </div>
+        </div>
+        <div style="height: 40px;line-height: 40px" class="fee-type fee-able">
+            <div style="float:left">
+                <eq name="model.ent_scale" value="1">
+                <label><input name="fee_type_{%index%}" type="radio" value="3" data-value="{%fee_type%}">专用发票</label>
+                </eq>
+                <label><input name="fee_type_{%index%}" type="radio" value="{$Think.const.RATE_ROAD_BRIDGE}" data-value="{%fee_type%}">过桥过路费</label>
+                <label><input name="fee_type_{%index%}" type="radio" value="{$Think.const.RATE_EXPRESSWAY}" data-value="{%fee_type%}">高速路通行费</label>
+                <label><input name="fee_type_{%index%}" type="radio" value="0" data-value="{%fee_type%}"  default="true">其他</label>
+            </div>
+            <div style="float:left;padding:5px 10px;width:20%;position: relative">
+                <div class="total-amount-pannel" style="width:80%"></div>
+                <span style="position: absolute;top:0px;right:0px">元</span>
+            </div>
+        </div>
+        <div style="height: auto;">
+            <div class="total-amount-row" style="width:22%;float: left;margin-right: 2%">
+                <div class="title total-amount-title required">总额</div>
+                <div class="total-amount-row-inner">
+                    <div class="input">
+                        <input type="text" class="easyui-validatebox input-total-amount" disabled name="total_amount[]"
+                               data-options="precision:2,validType:'number'" placeholder="" value="{%total_amount%}"
+                        >
+                    </div>
+                </div>
+            </div>
+            <div style="width:22%;float: left; margin-right: 2%" class="tax-rate-row tax-row">
+                <div class="title">税率(%)</div>
+                <div class="input">
+                    <input type="text" class="easyui-validatebox input-tax-rate" disabled name="tax_rate[]"
+                           data-options="precision:1,validType:'number'" placeholder="" value="{%tax_rate%}">
+                </div>
+            </div>
+            <div class="tax-amount-row tax-row" style="width:22%;float: left;; margin-right: 2%">
+                <div class="title">税额</div>
+                <div class="input">
+                    <input type="text" class="easyui-validatebox input-tax-amount" disabled name="tax_amount[]"
+                           data-options="precision:2,validType:'number'" placeholder="" value="{%tax_amount%}" readonly>
+                </div>
+            </div>
+            <div class="third-width fee-disable" style="width:22%;float: left; margin-right: 2%">
+                <div class="title">数量</div>
+                <div class="input">
+                    <input type="text" class="easyui-validatebox input-quantity" disabled name="quantity[]"
+                           data-options="validType:'number'" placeholder="" value="{%quantity%}">
+                </div>
+            </div>
+            <div style="width:22%;float: left;; margin-right: 2%" class="fee-disable">
+                <div class="title">单价</div>
+                <div class="input">
+                    <input type="text" class="easyui-validatebox input-price" disabled name="price[]"
+                           data-options="validType:'number'" placeholder="" value="{%price%}">
+                </div>
+            </div>
+            <div class="third-width fee-disable" style="width:22%;float: left; margin-right: 2%">
+                <div class="title">单位</div>
+                <div class="input">
+                    <input type="text" class="easyui-validatebox input-unit" disabled name="unit[]" data-options=""
+                           placeholder="计量单位" value="{%unit%}">
+                </div>
+            </div>
+            <div style="width:22%;float: left; margin-right: 2%" class="amount-row  tax-row">
+                <div class="title  required">金额</div>
+                <div class="amount-row-inner">
+                    <div class="input">
+                        <input type="text" class="easyui-validatebox input-amount" disabled name="amount[]" disabled
+                               data-options="required:true,precision:2,validType:'number'" placeholder=""
+                               value="{%amount%}" readonly>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //var modelData = {is_fee:"{$model.is_fee}",source_flag:"{$model.source_flag}",items:"{$model.items}",ent_scale:"{$model.ent_scale}"};
+    var modelData = {
+        is_fee:'{$model.is_fee}',
+        items:'{$model.items}',
+        ent_scale:'{$model.ent_scale}',
+        is_special_invo:'{$model.tax_type}'=='{$Think.const.TAX_TYPE_VTX}',
+        is_pay:'{$model.bill_flag}'=='{$Think.const.FLAG_BILL_TAX_PAY}',
+        is_scale_small:'{$model.ent_scale}'=='{$Think.const.ENTERPRISE_SCALE_SMALL}',
+        income_taxrate:'{$model.income_taxrate}'
+    };
+    $(function () {
+        $("input[name=is_fee]:checkbox").prop("checked",modelData.is_fee==1?true:false);
+        $("input[name=is_fee]").change(function () {
+            var _this = $(this);
+            var checked = _this.is(":checked");
+            if ($(".detail-list .content").length > 0){
+                $.dialog.confirm("切换类型将删除该单证下的所有明细，确定？",function(){
+                    isfee_change(checked ? 1 : 0);
+                    $(".detail-list .contents").html("");
+                },function(){
+                    _this.prop("checked", !checked);
+                });
+            }
+        });
+        $("input[name=tax_type]:checkbox").change(function () {
+            if ($(this).prop("checked")) {
+                $(".detail-list  .tax-row").show();
+            } else {
+                $(".detail-list  .tax-row").hide();
+            }
+        });
+        initAutoComplete();
+        initView();
+    });
+    function initAutoComplete() {
+        $.post("/VcrBillValueTax/getAutoCompleteDatas", {include: 9, bill_flag:"{$model.bill_flag}"}, function (result) {
+            if (result.code == 0) {
+                autocomplete($("input[name='name']"), result.message.names);
+                $(document).data("unit_name", result.message.unit_names);
+            }
+        }, "json");
+    }
+
+    /*数量单价改变*/
+    function detailQuantityChanged(parent) {
+        var amount = $(parent).find(".input-amount").val();
+        var quantity = parseFloat($(parent).find(".input-quantity").val());
+        if (!isNaN(amount) && !isNaN(quantity) && quantity !=0) {
+            $(parent).find(".input-price").val((amount/quantity).toFixed(2));
+            calcTotalSum(false);
+        }
+    }
+
+    function detailPriceChanged(parent) {
+        var amount = $(parent).find(".input-amount").val();
+        var price = parseFloat($(parent).find(".input-price").val());
+        if (!isNaN(amount) && !isNaN(price) && price !=0) {
+            $(parent).find(".input-quantity").val((amount/price).toFixed(2));
+            calcTotalSum(false);
+        }
+    }
+
+    /*税率改变，反推金额税额和单价*/
+    function detailTaxRateChanged(parent) {
+        var tax_rate = parseFloat($(parent).find(".input-tax-rate").val());
+        if (isNaN(tax_rate)) {
+            tax_rate = 0;
+        }
+        var quantity = parseFloat($(parent).find(".input-quantity").val());
+        if (isNaN(quantity)) {
+            quantity = 1;
+        }
+        var total_amount = parseFloat($(parent).find(".input-total-amount").val());
+        if (!isNaN(total_amount)) {
+            var tax_amount = total_amount/(1+tax_rate/100)*tax_rate/100
+            $(parent).find(".input-tax-amount").val(tax_amount.toFixed(2));
+            $(parent).find(".input-amount").val((total_amount - tax_amount).toFixed(2));
+            $(parent).find(".input-price").val(((total_amount - tax_amount) / quantity).toFixed(2));
+            calcTotalSum(false);
+        }
+    }
+
+    /*价税合计改变*/
+    function detailTotalAmountChanged(parent) {
+        var total_amount = parseFloat($(parent).find(".input-total-amount").val());
+        var tax_rate = parseFloat($(parent).find(".input-tax-rate").val());
+        if (isNaN(tax_rate)) {
+            tax_rate = 0;
+            $(parent).find(".input-tax-rate").val(0);
+        }
+        var quantity = parseFloat($(parent).find(".input-quantity").val());
+        if (isNaN(quantity)) {
+            quantity = 1;
+            $(parent).find(".input-quantity").val(1);
+        }
+        if (!isNaN(total_amount)) {
+            var amount = total_amount/(1+tax_rate/100);
+            $(parent).find(".input-amount").val(amount.toFixed(2));
+            $(parent).find(".input-tax-amount").val((total_amount-amount).toFixed(2));
+            $(parent).find(".input-price").val((amount / quantity).toFixed(2));
+            calcTotalSum(false);
+        }
+    }
+
+    /*统计总计，是否重新计算价税合计*/
+    function calcTotalSum(is_reset_total) {
+        var total = 0;
+        $(".detail-list .content").each(function () {
+            var tax_amount = parseFloat($(this).find(".input-tax-amount").val());
+            var amount = parseFloat($(this).find(".input-amount").val());
+            if (!isNaN(tax_amount) && !isNaN(amount) ) {
+                total = total + tax_amount + amount;
+                if(is_reset_total) {
+                    $(this).find(".input-total-amount").val((tax_amount + amount).toFixed(2));
+                }
+            }
+        });
+        $(".total-all").text(total.toFixed(2));
+    }
+
+    function initView() {
+        if (modelData.is_pay) {              /*外来*/
+            $(".source_flag_title").text("收款方单位名称");
+            $(".source-input").show();
+            if (modelData.is_scale_small) { //小规模
+                $(".tax-type-row").hide();
+            } else {
+                $(".tax-type-row").show();
+            }
+            isfee_change(modelData.is_fee);
+        } else {    /*自开*/
+            $(".source_flag_title").text("付款方单位名称");
+            $(".source-input").hide();
+            if (modelData.is_scale_small) { //小规模
+                $(".tax-type-row").hide();
+            } else {
+                $(".tax-type-row").show();
+            }
+            isfee_change(false);
+        }
+        create_ccounting_section($("select[name=accounting_section]"));
+        appendBillDetail(modelData.items);
+        calcTotalSum();
+    }
+    /*费用切换*/
+    function isfee_change(value) {
+        if (value == "1" || value==true) {
+            $(".memo-content .title").text("开支理由及用途");
+            $(".fee-disable-row").hide();
+            $(".pay-type-row").show();
+            $.post("/BillOther/getFeeAutoCompleteDatas", function (result) {
+                if (result.code == 0) {
+                    autocomplete($("input[name='goods_name[]']"), result.message);
+                    $(document).data("goods_name", result.message);
+                }
+            }, "json");
+        } else {
+            $(".memo-content .title").text("摘要");
+            $(".fee-disable-row").show();
+            $(".pay-type-row").hide();
+            $.post("/VcrBillValueTax/getAutoCompleteDatas", {include: 4, bill_flag:"{$model.bill_flag}"}, function (result) {
+                if (result.code == 0) {
+                    autocomplete($("input[name='goods_name[]']"), result.message.goods_names);
+                    $(document).data("goods_name", result.message.goods_names);
+                }
+            }, "json");
+        }
+    }
+    /*删除明细*/
+    function remove_detail_item(index){
+        $(".detail-list .contents .content-"+index).remove();
+        calcTotalSum();
+    }
+    function reset_detail_components(parent, data, is_fee, is_special_invo) {
+        if (is_fee == 1 || is_fee == true) {
+            $(parent).find(".goods-title").text("费用项目");
+            $(parent).find(".fee-type input[type=radio][default]").prop("checked",true)
+            detail_fee_type_change(parent, data.fee_type, is_fee, is_special_invo);
+        } else {
+            $(parent).find(".goods-title").text("货物或劳务、服务名称");
+            $(parent).find(".fee-able").hide();
+            $(parent).find(".fee-disable").show();
+            toggle_detail_tax_fields(parent, true, is_special_invo);
+        }
+    }
+
+    /*显示税相关字段
+    /*自开：（一般纳税人，不管是否专用发票，都显示，小规模的话，受是否专票影响）*/
+    /* 外来：（都受是否专票影响）*/
+    function toggle_detail_tax_fields(parent, visible, is_special_invo){
+        if (visible){
+            $(parent).find(".tax-row").hide();
+            if (is_special_invo){
+                $(parent).find(".tax-row").show();
+            }
+        }else{
+            $(parent).find(".tax-row").hide();
+        }
+    }
+    /*费用来源类型切换 fee_type:0:其他，1：高速，2：路桥，3增值税*/
+    function detail_fee_type_change(parent, fee_type, is_fee) {
+        if (is_fee == 1 || is_fee == true) {
+            if (fee_type == '3') {/*增值税专票*/
+                toggle_detail_tax_fields(parent, true, true);
+                $(parent).find(".total-amount-row").append($(parent).find(".total-amount-row-inner"));
+                $(parent).find(".total-amount-title").show();
+                $(parent).find(".total-amount-pannel").parent().hide();
+                $(parent).find(".amount-row").show();
+            } else {
+                toggle_detail_tax_fields(parent, false);
+                $(parent).find(".total-amount-pannel").append($(parent).find(".total-amount-row-inner"));
+                $(parent).find(".total-amount-title").hide();
+                $(parent).find(".total-amount-pannel").parent().show();
+                $(parent).find(".amount-row").hide();
+            }
+            $(parent).find(".fee-able").show();
+            $(parent).find(".fee-disable").hide();
+        }
+    }
+
+    function action_add_detail() {
+        appendBillDetail();
+    }
+
+    function appendBillDetail(json) {
+        var items = [];
+        var is_fee = modelData.is_fee;
+        var is_special_invo = modelData.is_special_invo;
+        if (json == '' || json == undefined) {
+            var item = {
+                goods_name: '',
+                price: '',
+                quantity: '',
+                amount: '',
+                tax_amount: '',
+                total_amount: '',
+                fee_type: 0,
+                tax_rate: modelData.income_taxrate
+            };
+            //自开的，默认税率
+            items.push(item);
+            is_fee = $("input[name=is_fee]:checkbox").is(':checked');
+            is_special_invo = $("input[name=tax_type]:checkbox").prop("checked");
+        }else{
+            items = JSON.parse(json);
+        }
+        $(items).each(function (index) {
+            this.index = $(".detail-list .contents .content").length + 1;
+            var $tpl = $(parseTemplate($("#tv-item-detail-tmp .content"), this));
+            $(".detail-list .contents").append($tpl);
+            $(".detail-list .contents").find("input").removeAttr("disabled"); //如果不这样设置，validate的时候会报错
+            $.parser.parse(".detail-list .contents");
+            $tpl.find(".input-price").change(function () {
+                detailPriceChanged($tpl);
+            });
+            $tpl.find(".input-quantity").change(function () {
+                detailQuantityChanged($tpl);
+            });
+            $tpl.find(".input-tax-rate").change(function () {
+                detailTaxRateChanged($tpl);
+            });
+            $tpl.find(".input-total-amount").change(function () {
+                detailTotalAmountChanged($tpl);
+            });
+            $tpl.find(".fee-type input[type=radio]").change(function () {
+                var fee_type = $(this).val();
+                detail_fee_type_change($tpl, fee_type, is_fee);
+                if (fee_type == "{$Think.const.RATE_ROAD_BRIDGE}" || fee_type == "{$Think.const.RATE_EXPRESSWAY}"){
+                    $tpl.find(".input-goods").val(fee_type == "{$Think.const.RATE_ROAD_BRIDGE}"?"过桥过路费":"高速路通行费");
+                }
+            });
+            $tpl.find(".input-goods").focus();
+            reset_detail_components($tpl, this, is_fee, is_special_invo);
+        });
+        autocomplete($(".detail-list .content input[name='goods_name[]']"), $(document).data("goods_name"));
+        if (!is_fee) {
+            autocomplete($(".detail-list .content input[name='unit[]']"), $(document).data("unit_name"));
+        }
+        calcTotalSum(true);
+    }
+    function parseTemplate(target, jsobject){
+        var tpl = $(target).prop("outerHTML").replace("display:none","");
+        var reg = new RegExp("\{%([^%}]*)?%\}", "g");
+        var matchs = tpl.match(reg);
+        for(var i=0;i<matchs.length;i++){
+            var key = matchs[i].replace("{%","").replace("%}", "");
+            var val = jsobject.hasOwnProperty(key)?jsobject[key]: "";
+            tpl = tpl.replace(matchs[i], val);
+        }
+        return tpl;
+    }
+</script>
+

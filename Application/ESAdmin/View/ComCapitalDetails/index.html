@@ -1,0 +1,221 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<script>
+    function formatMoneyShow(value, row, index)
+    {
+        if (value === 'hide') {
+            return '';
+        } else {
+            return value != '' ? "¥"+value:'-';
+        }
+    }
+
+</script>
+<style>
+    .operation-btn{
+        padding: 5px 13.5px;
+        background-color: #368BFE;
+        color: #fff ;
+        border-radius: 4px;
+        border: 0;
+        margin: 0 2px;
+    }
+    .recharge-btn{
+        padding: 8px 13.5px;
+        background-color: #368BFE;
+        color: #fff ;
+        border-radius: 4px;
+        border: 0;
+        margin: 0 2px;
+    }
+    .search-action-panel{
+        display: none;
+    }
+    input[readonly],input:disabled,select:disabled,.chosen-disabled .chosen-choices{
+        background: initial !important;
+        background-color: #f7f5f5 !important;
+        border: 1px solid #d3d3d3;
+        -webkit-transition:initial;
+        box-shadow:initial;
+        -webkit-box-shadow:initial;
+    }
+    .datebox input[readonly] {
+        background: initial !important;
+        background-color: initial !important;
+        border: initial;
+        -webkit-transition:initial;
+        box-shadow:initial;
+        -webkit-box-shadow:initial;
+    }
+    th{
+        text-align: right;
+    }
+    .search-table{
+        width: 900px;
+    }
+    .chosen-disabled{
+        opacity: initial !important;
+    }
+    .chosen-container-multi .chosen-choices {
+        width: 270px !important;
+        height: 30px !important;
+    }
+    .maincontainer {
+        height: 100%;
+    }
+</style>
+
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none;">
+    <table class="search-table target" style="margin-bottom:30px;">
+        <tr class="groups">
+            <th>资金账户：</th>
+            <td colspan="6">
+                <div class="btn-screening btn-screening-on"  data-status="">全部</div>
+                <div class="btn-screening" data-status="1">公司</div>
+                <div class="btn-screening" data-status="2">用户</div>
+                <input type="hidden" name="status" value="" class="filter-field">
+            </td>
+        </tr>
+        <tr class="tags customer" v-bind="0">
+            <th>资金账户名称：</th>
+            <td colspan="5">
+                <input name="capital_name" class="easyui-validatebox filter-field" value="" data-name="capital_account_id" placeholder="请输入资金账户名称" />            </td>
+        </tr>
+        <tr class="tags customer" v-bind="0">
+            <th>资金客户负责人：</th>
+            <td colspan="5">
+                <input name="customer_leader" class="easyui-validatebox " value="" readonly />
+            </td>
+            <th>资金客户可见人：</th>
+            <td colspan="5"  style="width: 100%">
+                <select name="customer_visiblers_inputs[]" class="chosen-select" disabled id="customer_visiblers_select"   multiple style="width:100%">
+
+                </select>
+            </td>
+        </tr>
+        <tr class="tags" v-bind="0">
+            <th>充值商户负责人：</th>
+            <td colspan="5">
+                <input name="recharge_leader" class="easyui-validatebox filter-field" value="" data-name="recharge_leader_id" placeholder="请输入充值商户负责人" />            </td>
+            </td>
+        </tr>
+        <tr class="tags" v-bind="0">
+            <th>提现商户负责人：</th>
+            <td colspan="5">
+                <input name="withdrawal_leader" class="easyui-validatebox filter-field" value="" data-name="withdrawal_leader_id" placeholder="请输入提现商户负责人" />            </td>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <table class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid" fitColumns="true"
+            data-options="
+            url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/list',
+            pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+            pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+            toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+            pageNumber:1,
+            checkOnSelect:true,
+            singleSelect:false,
+            border:true,
+            showFooter: true,
+            onRowContextMenu: function (e, rowIndex, rowData) {
+                $(this).datagrid('clearSelections');
+                $(this).datagrid('selectRow', rowIndex);
+            e.preventDefault();
+            $('#box_{$Think.const.CONTROLLER_NAME}').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+                });
+            }">
+        <thead>    
+        <tr>
+            <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+            <th data-options="field:'capital_account',width:200,align:'left'">{$Think.lang.CAPITAL_ACCOUNT}</th>
+            <th data-options="field:'actual_money',width:200,align:'left',formatter:formatMoneyShow">{$Think.lang.BALANCE_MONEY}</th>
+            <th data-options="field:'total_pay',width:200,align:'left',formatter:formatMoneyShow">付款总额</th>
+            <th data-options="field:'recharge_leader_view',width:200,align:'left'">{$Think.lang.RECHARGE_ACCOUNT_LEADER}</th>
+            <th data-options="field:'withdrawal_leader_view',width:200,align:'left'">{$Think.lang.WITHDRAWAL_ACCOUNT_LEADER}</th>
+        </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<div id="actions-{$Think.const.CONTROLLER_NAME}">
+    <div class="extend-nav-menu">
+
+    </div>
+</div>
+
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+
+<script>
+    autocompleteAjax($("input[name='capital_name']"),"ComRecharge/capitalAccountList", function(item) {doSearchQuery("{$Think.const.CONTROLLER_NAME}");getAccountSystemData(true);});
+    autocompleteAjax($("input[name='recharge_leader']"),"WrkAgreement/service_manList", function(item) {doSearchQuery("{$Think.const.CONTROLLER_NAME}");getAccountSystemData(true);});
+    autocompleteAjax($("input[name='withdrawal_leader']"),"WrkAgreement/service_manList", function(item) {doSearchQuery("{$Think.const.CONTROLLER_NAME}");getAccountSystemData(true);});
+    $("input[name='capital_name']").on('change', function() {
+        if ($('input[name="capital_name"]').length > 0 && $("input[name='capital_name']").val()=="") {
+            $('input[name="capital_account_id"]').val("");
+            getAccountSystemData(false);
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+        }
+    });
+    $("input[name='recharge_leader']").on('change', function() {
+        if ($('input[name="recharge_leader"]').length > 0 && $("input[name='recharge_leader']").val()=="") {
+            $('input[name="recharge_leader_id"]').val("");
+            getAccountSystemData(false);
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+        }
+    });
+    $("input[name='withdrawal_leader']").on('change', function() {
+        if ($('input[name="withdrawal_leader"]').length > 0 && $("input[name='withdrawal_leader']").val()=="") {
+            $('input[name="withdrawal_leader_id"]').val("");
+            getAccountSystemData(false);
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+        }
+    });
+    $('.btn-screening').click(function(){
+        if (!$(this).hasClass('btn-screening-on')) {
+            $(this).addClass('btn-screening-on').siblings('.btn-screening').removeClass('btn-screening-on');
+            var status = $(this).data('status');
+            $('input[name=status]').val(status);
+            if(status == 3){
+                $(".customer").hide();
+            }else{
+                $(".customer").show();
+            }
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+        }
+    })
+    $('#day_start,#day_end').datebox({
+        onSelect: function(){
+            doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+        }
+    });
+    function getCapitalSaveData(id)
+    {
+        $.post('/{$Think.const.CONTROLLER_NAME}/getCapitalSaveData',{id:id},function(result){
+
+            refreshGrid("{$Think.const.CONTROLLER_NAME}", result, 'edit');
+        },'json')
+    }
+    function getAccountSystemData(toggle) {
+        if (toggle) {
+            var id = $('input[name=capital_account_id]').val();
+            $.post('/ComCapitalDetails/getAccountSystemData', {id: id}, function (result) {
+                $('input[name=customer_leader]').val(result.customer_capital_leader_view);
+                var option_customer = '';
+                if (result.customer_capital_visiblers_view) {
+                    for (var i = 0; i < result.customer_capital_visiblers_view.length; i++) {
+                        option_customer += '<option value=' + result.customer_capital_visiblers_view[i].id + ' selected>';
+                        option_customer += result.customer_capital_visiblers_view[i].name;
+                        option_customer += '</option>';
+                    }
+                }
+                $('#customer_visiblers_select').html(option_customer);
+                $('#customer_visiblers_select').trigger("chosen:updated");
+            }, 'json')
+        } else {
+            $('input[name=customer_leader]').val('');
+            $('#customer_visiblers_select').html('');
+            $('#customer_visiblers_select').trigger("chosen:updated");
+        }
+    }
+</script>

@@ -1,0 +1,192 @@
+<style>
+    span.checkbox-label{padding: 0px 20px}
+    .tableForm {width: 700px;margin: 0 auto;}
+    .caption{
+        width:180px !important;
+    }
+    .inputbox_x2{
+        width: 68% !important;
+    }
+    .tableForm .row .inputbox {
+        width: 50%;
+    }
+    span.checkbox-label {
+        padding: 0px 30px 0 0;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer"
+    style="margin: 0 18px;background: #fff;width:(100% - 36px);border:1px solid #ccc;">
+    <form action="{$Think.const.CONTROLLER_NAME}/update" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post"
+          name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-section">
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>基本资料</span></div>
+                <div class="tableForm">
+                    <input name="id" type="hidden" value="{$model.id}">
+                    <input name="vcr_draf_prompt" type="hidden" value="1">
+                    <input name="parent_id" type="hidden" value="{$model.parent_id}">
+                    <input name="reset_mapping_subject" type="hidden" value="0">
+                    <div class="row">
+                        <div class="caption"><span>客户名称：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>企业类型：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="ent_type_id" id="company-ent-type-id" type="hidden" value="{$model.ent_type_id}" />
+                            <input class="easyui-validatebox" name="ent_type_name" value="{$model.ent_type_name}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>企业规模：</span></div>
+                        <div class="inputbox_x2">
+                            <span style="margin: 0 20px 0 0;">
+                                <input name="ent_scale" type="radio" value="{$Think.const.ENTERPRISE_SCALE_SMALL}"
+                                    data-value="{$model.ent_scale}"/>小规模
+                            </span>
+                            <span style="margin: 0 20px 0 0;">
+                                <input name="ent_scale" type="radio" value="{$Think.const.ENTERPRISE_SCALE_GENERAL}"
+                                    data-value="{$model.ent_scale}"/>一般纳税人
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption required"><span>税率：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="tax_rate" class="easyui-validatebox" value="{$model.tax_rate}" placeholder="%"
+                                    style="width:45%"/>
+                            <span>%</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption required scale_small"><span>免税额度：</span></div>
+                        <div class="inputbox_x2 scale_small">
+                            <input name="free_type" id="company-free-type" class="easyui-combobox"  style="width:40%"/>
+                            <input name="free_amount" class="easyui-validatebox" value="{$model.free_amount}"
+                                    placeholder="元" style="width:40%"/>
+                            <span>元</span>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="caption"><span>客户{$Think.lang.FLD_NAME}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}"/>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>财务设置</span></div>
+                <div class="tableForm">
+                    <div class="row" style="display: flex;">
+                        <div class="caption" style=""><span>凭证处理选项（多选）：</span></div>
+                        <div style="padding-left: 20px;">
+                            <!--<span class="checkbox-label">显示选项提示框</span> <input name="vcr_draf_prompt" type="checkbox" data-value="{$cfgData.vcr_draf_prompt}" value="1" default="true"/>-->
+                            <div style="margin: 10px 0;">
+                                <input name="vcr_merge_fee"  type="checkbox" data-value="{$cfgData.vcr_merge_fee}" value="1"/>
+                                <span class="checkbox-label">是否合并费用</span>
+                            </div>
+                            <div style="margin: 10px 0;">
+                                <input name="vcr_merge_receivable"   type="checkbox" data-value="{$cfgData.vcr_merge_receivable}" value="1"/>
+                                <span class="checkbox-label">是否合并应收</span> 
+                            </div>
+                            <div style="margin: 10px 0;">
+                                <input name="vcr_merge_payable"  type="checkbox" data-value="{$cfgData.vcr_merge_payable}" value="1"/>
+                                <span class="checkbox-label">是否合并应付</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>凭证审核选项（二选一）：</span></div>
+                        <div class="inputbox" style="padding-left: 10px">
+                            <span style="margin: 0 20px 0 0;">
+                                <input name="vcr_draf_review" type="radio" value="{$Think.const.VCR_DRAF_REVIEW_ACCOUNTING}"
+                                    data-value="{$cfgData.vcr_draf_review}"/>会计复核
+                            </span>
+                            <span style="margin: 0 20px 0 0;">
+                                <input name="vcr_draf_review" type="radio" value="{$Think.const.VCR_DRAF_REVIEW_SUP}"
+                                    data-value="{$cfgData.vcr_draf_review}"/>会计复核+主管审核
+                            </span>
+
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="easyui-section-item">
+                <div class="tab-header"><span>其他资料</span></div>
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_TAXNO}：</span></div>
+                        <div class="inputbox_x2"><input name="taxpayer_identification" class="easyui-validatebox"
+                            value="{$model.taxpayer_identification}"/></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_BANK}：</span></div>
+                        <div class="inputbox_x2"><input name="bank" class="easyui-validatebox" value="{$model.bank}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_BANK_ACCOUNT}：</span></div>
+                        <div class="inputbox_x2"><input name="bank_account" class="easyui-validatebox"
+                            value="{$model.bank_account}"/></div>
+                    </div>
+                </div>
+            </div>-->
+        </div>
+    </form>
+    <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions' style="padding: 30px 0px;height: auto;">
+        <div class='actions-sysdefault'>
+            <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+                <div class="btn-confirm" onclick="saveSetting()">保存</div>
+            </if>
+            <!--<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog('[controller]')">关闭</a>-->
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    // $("#VcrSetting-dataform").bind("afterUpdate", function () {
+    //     $.dialog.alert("修改成功，系统稍后将重新登录！");
+    //     setTimeout("location.href = '/Login'", 3000);
+    // });
+    $(function(){
+        parseForm($("#{$Think.const.CONTROLLER_NAME}-detailcontainer"));
+        //easyui_combobox("#company-ent-type-id","VcrSubject/getEnterpriceTypes", "{$model.ent_type_id}");//"VcrSubject/getEnterpriceTypes"
+        autocompleteAjaxEx($(".tableForm input[name='ent_type_name']"), "/VcrSubject/getEnterpriceTypes", {
+            onSelected: function(row){
+                $("#company-ent-type-id").val(row.id);
+            }
+        });
+        easyui_combobox("#company-free-type",[{id:0, name:"每月"},{id:1, name:"每季"}] , "{$model.free_type}");
+    });
+
+    $("input[name='ent_scale']").on("change",function(){
+        if($(this).val() == "{$Think.const.ENTERPRISE_SCALE_SMALL}"){
+            $(".scale_small").show();
+        }else{
+            $(".scale_small").hide();
+        }
+    });
+
+    $(function(){
+        if("{$model.ent_scale}" == "{$Think.const.ENTERPRISE_SCALE_SMALL}"){
+            $(".scale_small").show();
+        }else{
+            $(".scale_small").hide();
+        }
+    });
+
+    function saveSetting(){
+        var ent_type_id = $("input[name=ent_type_id]").val();
+        if(ent_type_id != "{$model.ent_type_id}" && "{$model.ent_type_id}" != ""){
+            $.dialog.confirm("修改企业类型将会重新匹配标准科目<br/>是否继续？",function(){
+                $("input[name='reset_mapping_subject']").val(1);
+                action_update('{$Think.const.CONTROLLER_NAME}');
+            });
+            return false;
+        }
+        action_update('{$Think.const.CONTROLLER_NAME}');
+    }
+</script>

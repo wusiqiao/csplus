@@ -1,0 +1,16 @@
+<div class="detailcontainer" id="bill-compare-detailcontainer" style="width:480px; height:150px;">
+    <form  id="import-form" method="post" enctype="multipart/form-data" style="position: relative;">
+        <div style="margin: 10px 0px;float:left;width:100%">
+            <div class="title required">认证明细表</div>
+            <div class="input"   style="position: relative;">
+            <input type="file" id="compare-file" name="compare_file" accept="*.xls,*.xlsx" class="easyui-file"/>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" style="margin-top: 10px">     
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="action_compare_import()">导入</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">取消</a>
+        </div>
+    </div>
+</div>

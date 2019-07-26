@@ -1,0 +1,370 @@
+<style>
+    .ClearNotice {
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        overflow-y: auto;
+    }
+
+    .Notice-template {
+        margin: 4px 18px 0;
+        width: calc(100% - 36px);
+        /* height:295px; */
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .Notice-template-tit {
+        margin: 22px auto 22px 48px;
+        color: #000000;
+        font-weight: 700;
+        font-size: 28px;
+        width: 170px;
+        height: 28px;
+        line-height: 28px;
+        text-align: left;
+        overflow: hidden;
+    }
+
+    .icon-editor {
+        float: right;
+        font-weight: 400;
+        line-height: 14px;
+        margin: 7px 0;
+        color: #368bfe;
+        cursor: pointer;
+    }
+
+    .Notice-template-txt {
+        margin: 8px 48px 3px 48px;
+        width: calc(100% - 96px);
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .Notice-template-txt input {
+        width: calc(100% - 100px);
+        height: 18px;
+        line-height: 18px;
+        /* text-indent:8px; */
+        border: none;
+        box-sizing: border-box;
+    }
+    .Notice-template-txt textarea {
+        outline: none;
+        resize: none;
+        border: none;
+        height: 38px;
+    }
+    .Notice-template-info {
+        float: left;
+        /*line-height: 14px;*/
+        color: #666666;
+    }
+
+    .Notice-template-tip {
+        float: left;
+        margin: 0 18px;
+        width: 14px;
+        height: 14px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_query_new.png");
+        background-size: 100% 100%;
+    }
+
+    .btn-screening-label {
+        float: left;
+        width: 92px;
+        height: 54px;
+        line-height: 54px;
+        text-align: right;
+    }
+
+    #user-defined-time {
+        height: 54px;
+        line-height: 54px;
+        min-width: 271px;
+        position: absolute;
+        left: 430px;
+        top: 0px;
+    }
+
+    #backUp {
+        width: 48px;
+        height: 48px;
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_tobackup.png');
+        background-size: 100% 100%;
+        position: fixed;
+        z-index: 9999;
+        bottom: 80px;
+        right: 90px;
+    }
+
+    #backUp:hover {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_tobackup_hover.png');
+    }
+
+    .datagrid-cell-check input[type='checkbox']:disabled {
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-disablecheck.png') !important;
+    }
+
+    .icon-down{
+        position: absolute;
+        right: 0px;
+        top: 0;
+        width: 16px;
+        height: 10px;
+        margin: 7px 10px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png");
+        background-size: 100% 100%;
+        transform: rotate(180deg);
+    }
+    .detailcontainer{
+        position: fixed;
+        width: calc(100% - 265px);
+        bottom: 0px;
+        right: 0;
+        text-align: center;
+        z-index: 88;
+        background-color: #fff;
+    }
+    .combo-panel.panel-body{
+        box-shadow: 0 0 1px 0;
+    }
+    /*  */
+    .datagrid .datagrid-pager {
+        position: fixed;
+        right: 20px;
+        bottom: 0;
+        z-index: 89;
+    }
+
+    /* 谷歌 */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        appearance: none;
+        margin: 0;
+    }
+    /* 火狐 */
+    input{
+        -moz-appearance:textfield;
+    }
+
+</style>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<div class="ClearNotice" id="append">
+    <div id="scroll-top">
+        <!-- 查询按钮 -->
+        <div class="search-table" id="searchform">
+            <div class="search-state" style="width:800px;height:54px;line-height: 54px;position: relative;">
+                <div class="btn-screening-label">报名状态：</div>
+                <span class="btn-screening btn-screening-on">全部</span>
+                <span class="btn-screening" data-name="state" data-value="1">待审核</span>
+                <span class="btn-screening" data-name="state" data-value="2">已通过</span>
+                <span class="btn-screening" data-name="state" data-value="3">已拒绝</span>
+                <span class="btn-screening" data-name="state" data-value="4">免审核</span>
+            </div>
+            <div style="width:100%;height:54px;line-height: 54px;position: relative;">
+                <span class="btn-screening btn-screening-on to-close-open" onclick="toCloseOpen({$model.id})"><if condition="$model.is_close_apply eq 0">关闭报名<else />开启报名</if></span>
+                <span class="btn-screening btn-screening-on" onclick="batchApproved();">批量通过</span>
+                <span class="btn-screening btn-screening-on" onclick="batchDisApproved();">批量拒绝</span>
+                <span class="btn-screening btn-screening-on" onclick="exportMeeting();">导出名单</span>
+                <span class="btn-screening btn-screening-on" onclick="toggleType('/YhMeeting/applyList/id/7');">刷新</span>
+                <div style="float:right;" class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                    <input type="text" placeholder="请输名字或电话进行查找" oninput="doSelectList()" style="width:300px;" class="filter-field" id="keyword" name="keyword">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="doSelectList()">
+                </div>
+            </div>
+        </div>
+        <!-- 明细 -->
+        <div style="overflow:hidden;border-top: 1px solid #d3d3d3;padding: 4px 0 0;margin: 0 18px;line-height:34px;"></div>
+    </div>
+
+    <!-- 表格 -->
+    <table id="{$Think.const.CONTROLLER_NAME}-datagrid" class="easyui">
+        <thead>
+            <tr>
+                <th data-options="field:'id',hidden:true"></th>
+                <th data-options="field:'ck',checkbox:true"></th>
+                <th data-options="field:'user_name',width:100,align:'center',formatter:formatString">姓名</th>
+                <th data-options="field:'user_mobile',width:130,align:'center',formatter:formatString">手机</th>
+                <th data-options="field:'apply_time',width:120,align:'center',formatter:formatString">报名时间</th>
+                <th data-options="field:'status_name',width:100,align:'center',formatter:formatString"">报名状态</th>
+                <th data-options="field:'update_time',width:120,align:'center',formatter:formatString">审核时间</th>
+                <th data-options="field:'',width:150,align:'center',formatter:formatChange">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <!-- 返回顶部 -->
+    <a id="backUp" href="#topZero"></a>
+</div>
+<script>
+    $('#{$Think.const.CONTROLLER_NAME}-datagrid').datagrid({
+        url:'/YhMeeting/applyList',
+        queryParams: {
+            id: {$_GET['id']},
+        },
+    });
+
+    function reloadData() {
+        $('#{$Think.const.CONTROLLER_NAME}-datagrid').datagrid('reload');
+    }
+    
+    function doSelectList() {
+        $('#{$Think.const.CONTROLLER_NAME}-datagrid').datagrid({
+            queryParams: {
+                status: $('.search-state .btn-screening-on').attr('data-value'),
+                keword: $('#keyword').val()
+            }
+        });
+    }
+
+    var is_close_apply = {$model.is_close_apply};
+
+    function toCloseOpen(id){
+        if (is_close_apply == 0){
+            $.post('YhMeeting/doCloseApply', {id:id}, function(data){
+                if(data.code == 0){
+                    is_close_apply = 1;
+                    $(".to-close-open").html('开启报名');
+                    $.dialog.alert('关闭成功!');
+                }else{
+                    $.dialog.alert(data.message);
+                }
+            }, 'json');
+        } else {
+            $.post('YhMeeting/doOpenApply', {id:id}, function(data){
+                if(data.code == 0){
+                    is_close_apply = 0;
+                    $(".to-close-open").html('关闭报名');
+                    $.dialog.alert('开启成功!');
+                }else{
+                    $.dialog.alert(data.message);
+                }
+            }, 'json');
+        }
+    }
+
+    function batchApproved(){
+        var id = {$model.id};
+        var list = new Array();
+        var rows = $('#{$Think.const.CONTROLLER_NAME}-datagrid').datagrid("getSelections");
+        if (rows.length === 0) {
+            $.dialog.tips('请选择要通过的名单!');
+            return false;
+        } else {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                if (row.status == 0) {
+                    list.push(row.id);
+                }
+            }
+            if(list.length > 0){
+                $.post('/YhMeeting/batchApproved', {meeting_id:id,ids:list}, function(data){
+                    if(data.code == 0){
+                        $.dialog.alert('批量操作成功!');
+                        $('#{$Think.const.CONTROLLER_NAME}-datagrid').datagrid('reload');
+                    }else{
+                        $.dialog.alert(data.message);
+                    }
+                }, 'json');
+            }
+        }
+    }
+
+    function batchDisApproved(){
+        var id = {$model.id};
+        var list = new Array();
+        var rows = $('#{$Think.const.CONTROLLER_NAME}-datagrid').datagrid("getSelections");
+        if (rows.length === 0) {
+            $.dialog.tips('请选择要拒绝的名单!');
+            return false;
+        } else {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                if (row.status == 0) {
+                    list.push(row.id);
+                }
+            }
+            if(list.length > 0){
+                $.post('/YhMeeting/batchDisApproved', {meeting_id:id,ids:list}, function(data){
+                    if(data.code == 0){
+                        $.dialog.alert('批量操作成功!');
+                        $('#{$Think.const.CONTROLLER_NAME}-datagrid').datagrid('reload');
+                    }else{
+                        $.dialog.alert(data.message);
+                    }
+                }, 'json');
+            }
+        }
+    }
+
+    function exportMeeting(){
+        window.location.href = "/YhMeeting/exportMeeting/id/{$model.id}"
+    }
+
+    function formatString(value,row) {
+        if (value){
+            return `<div>${value}</div>`;
+        } else {
+            return `-`;
+        }
+    }
+
+    function formatChange(value,row){
+        if (row.status == 0){
+            return `<a onclick="approved(`+row.id+`)"><span>&nbsp;审核通过&nbsp;</span></a><a onclick="disApproved(`+row.id+`)"><span>&nbsp;拒绝通过&nbsp;</span></a><a onclick="userMeetInfo(`+row.id+`)"><span>&nbsp;查看详情&nbsp;</span></a>`
+        }
+        if (row.status == 1){
+            return `<a><span>&nbsp;审核通过&nbsp;</span></a><a><span>&nbsp;拒绝通过&nbsp;</span></a><a onclick="userMeetInfo(`+row.id+`)"><span>&nbsp;查看详情&nbsp;</span></a>`
+        }
+        if (row.status == 2){
+            return `<a><span>&nbsp;审核通过&nbsp;</span></a><a><span>&nbsp;拒绝通过&nbsp;</span></a><a onclick="userMeetInfo(`+row.id+`)"><span>&nbsp;查看详情&nbsp;</span></a>`
+        }
+        if (row.status == 3){
+            return `<a><span>&nbsp;审核通过&nbsp;</span></a><a><span>&nbsp;拒绝通过&nbsp;</span></a><a onclick="userMeetInfo(`+row.id+`)"><span>&nbsp;查看详情&nbsp;</span></a>`
+        }
+    }
+
+    function approved(id) {
+        $.post('YhMeeting/approved', {id:id}, function(data){
+            if(data.code == 0){
+                $.dialog.alert('操作成功');
+                $('#{$Think.const.CONTROLLER_NAME}-datagrid').datagrid('reload');
+            }else{
+                $.dialog.alert(data.message);
+            }
+        }, 'json');
+    }
+
+    function disApproved(id) {
+        $.post('YhMeeting/disApproved', {id:id}, function(data){
+            if(data.code == 0){
+                $.dialog.alert('操作成功');
+                $('#{$Think.const.CONTROLLER_NAME}-datagrid').datagrid('reload');
+            }else{
+                $.dialog.alert(data.message);
+            }
+        }, 'json');
+    }
+
+    function userMeetInfo(id) {
+        createDialog(`/YhMeeting/userInfo/id/${id}`,"协会活动>报名信息","YhserInfo");
+    }
+
+    $('.search-state .btn-screening').click(function () {
+        $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+        doSelectList();
+    })
+
+    function toggleType(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+
+</script>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            width:830px;
+        }
+        .img-lef{
+            width:420px;
+            padding-left:20px;
+            line-height: 30px;
+        }
+        .baseInfo .lef{
+
+        }
+        .baseInfo .info-line p{
+            margin-bottom: 0;
+        }
+        .baseInfo .img{
+            width: 390px;
+            text-align: center;
+        }
+        .baseInfo .img img{
+            width:130px;
+            height:130px;
+            border-radius: 50%;
+        }
+        .baseInfo .label-span{
+            display: inline-block;
+            margin-right: 10px;
+            padding:0 15px;
+            border:1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+            user-select: none;
+            height: 30px;
+            line-height: 30px;
+        }
+        .contactInfo .row{
+            margin-bottom: 20px;
+        }
+        .contactInfo .row .caption {
+            width: 14%;
+            display: inline-block;
+            margin-left: 0px;
+            vertical-align: middle;
+            text-align: right;
+        }
+        .contactInfo .row .inputbox {
+            width: 35%;
+            display: inline-block;
+        }
+        .contactInfo .easyui-validatebox{
+            width:85%;
+        }
+         .addword{
+            display: inline-block;
+            padding: 0 15px;
+            height: 25px;
+            user-select: none;
+            cursor: pointer;
+            line-height: 25px;
+            border-radius: 2px;
+            border: 1px solid #398bfe;
+            color: #398bfe;
+        }
+        .blueBg{
+            margin-left: 54px;
+            background:#398bfe;
+            border:none;
+            color: #fff;
+        }
+        .tabBox{
+            border:1px solid #ccc;
+            width: 720px;
+            margin:auto;
+            text-align: center;
+        }
+        .tabBox table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .tabBox table tr{
+            border-bottom:1px solid #ccc;
+            height: 42px;
+        }
+        .tabBox table tr:nth-child(odd){
+            background:#f8f6f6;
+        }
+        .tabBox .addword + .addword{
+            margin-left:10px;
+        }
+        .bgGray{
+            height: 32px;
+            line-height: 32px;
+            background: #eee;
+            text-indent: 20px;
+        }
+        .justify{
+            display: inline-block;
+            text-align: justify;
+            width: 65px;
+        }
+        .justify span{
+            display: inline-block;
+            padding-left: 100%;
+        }
+        .quotes{
+            position: relative;
+            top:-4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="baseInfo clearFix">
+            <div class="img-lef fl">
+                <div class="info-line clearFix">
+                    <p class="lef fl">
+                        <span class="title">昵称：</span>
+                        <span class="val">疯狂的石头</span>
+                    </p>
+                    <p class="rig fr">
+                        <span class="title">备注：</span>
+                        <span class="val">李豪</span>
+                    </p>
+                </div>
+                <div class="info-line clearFix">
+                    <p class="lef fl">
+                        <span class="title">绑定手机：</span>
+                        <span class="val">13655954521</span>
+                    </p>
+                </div>
+                <div class="info-line clearFix">
+                    <p class="lef fl">标签：</p>
+                    <p class="rig fl">
+                        <span class="label-span">全部</span>
+                        <span class="label-span">已关注公众号</span>
+                        <span class="label-span">未关注公众号</span>
+                    </p>
+                </div>
+            </div>
+            <div class="img fl">
+                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/picture.png" alt="">
+            </div>
+        </div>
+        <div class="contactInfo">
+            <p class="bgGray">用户联系信息</p>
+            <div class="row">
+                <div class="caption"><span class="justify">姓名<span></span></span><span class="quotes">：</span></div>
+                <div class="inputbox">
+                    <input name="staff_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                </div>
+                <div class="caption"><span class="justify">联系电话<span></span></span><span class="quotes">：</span></div>
+                <div class="inputbox">
+                    <input name="staff_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span class="justify">邮箱<span></span></span><span class="quotes">：</span></div>
+                <div class="inputbox">
+                    <input name="staff_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                </div>
+                <div class="caption"><span>Q Q</span>：</div>
+                <div class="inputbox">
+                    <input name="staff_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span class="justify">详情地址<span></span></span><span class="quotes">：</span></div>
+                <div class="inputbox" style="width:25%">
+                    <select name="reg_province" class="chosen-select province" data-options="required:true" data-value="{$model.reg_province}" style="width:100%">
+                        <volist name="province_lists" id="vo">
+                            <option value="{$vo.id}">{$vo.name}</option>
+                        </volist>
+                    </select>
+                </div>
+                <div class="inputbox" style="width:25%">
+                    <select name="reg_city" class="chosen-select city" data-options="required:true" data-value="{$model.reg_city}" style="width:100%">
+                        <volist name="reg_city_lists" id="vo">
+                            <option value="{$vo.id}">{$vo.name}</option>
+                        </volist>
+                    </select>
+                </div>
+                <div class="inputbox" style="width:25%">
+                    <select name="reg_district" class="chosen-select district" data-options="required:true" data-value="{$model.reg_district}" style="width:100%">
+                        <volist name="reg_district_lists" id="vo">
+                            <option value="{$vo.id}">{$vo.name}</option>
+                        </volist>
+                    </select>
+                </div>
+                <div class="inputbox_x2" style="margin: 2% 0 2% 14.5%;"><input name="reg_address" placeholder="详细地址" value="{$model.reg_address}" class="easyui-validatebox"/></div>
+            </div>
+            <div class="row" style="text-align: center;">
+                <span class="addword">
+                    + 添加自定义字段
+                </span>
+            </div>
+        </div>
+        <div class="bindInfo">
+            <p class="bgGray">绑定公司详情</p>
+            <div class="row" style="margin-bottom:20px;">
+                <span class="addword blueBg">
+                    绑定新公司
+                </span>
+            </div>
+            <div class="tabBox">
+                <table >
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>绑定公司</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>厦门金字一号财务管理有限公司</td>
+                            <td>
+                                <span class="addword">查看公司详情</span>
+                                <span class="addword">解绑该公司</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>厦门金字一号财务管理有限公司</td>
+                            <td>
+                                <span class="addword">查看公司详情</span>
+                                <span class="addword">解绑该公司</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>厦门金字一号财务管理有限公司</td>
+                            <td>
+                                <span class="addword">查看公司详情</span>
+                                <span class="addword">解绑该公司</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="form-actions" id='Organization-form-actions'>
+            <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="adjustDept()">保存</a>
+                <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

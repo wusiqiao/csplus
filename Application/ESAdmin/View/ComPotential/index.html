@@ -1,0 +1,1543 @@
+<script>
+function formatName(value,row){
+    if(row.head_pic){
+        var html = `<div style="width:100%;height:35px;display:flex;">
+                    <img src="`+row.head_pic+`" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;" onerror="this.onerror=null;this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                    <div style="align-self:center;width:135px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">`+value+`</div>`;
+                    
+    }else{
+        var html = `<div style="width:100%;height:35px;display:flex;">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;">
+                    <div style="align-self:center;width:135px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">`+value+`</div>`;
+    }
+    if (row.user_type_value != '员工') {
+        html += `<span onclick="getAttachGroup(`+row.id+`)"><i class="icon-communication" title="沟通"></i></span>`
+    }
+    html += `</div>`;
+    return html;
+}
+
+function formatFollowStatus(value,row){
+    var scale_text = ["未关注","已关注"];
+    return scale_text[parseInt(value)];
+}
+function formatMobileStatus(value,row){
+    if (value==null || value=='') {
+        // if (row.is_follow == 1) {
+            // return `未绑定手机&nbsp;&nbsp;<a style="color:#368bfe;" onclick="singleNotice(`+row.id+`)">邀请绑定</a>`;
+        // } else {
+        // }
+        return `未绑定手机`;
+    }else{
+        return value;
+    }
+}
+function formatSubscribe(value){
+    return `<div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">`+value+`</div>`
+}
+function formatTagName(value,row){
+    var arr = value.split(",");
+    if (value!=null && value!='') {
+        var html = `<span class="lable" title="${arr[0]}">`+arr[0]+`</span>`;
+        // if (arr.length > 1) {
+        //     html = html + `&nbsp;<span class="lable" title="${arr[1]}">`+arr[1]+`</span>`;
+        // }
+        // if (arr.length > 2) {
+        //     html = html + `&nbsp;&nbsp;<span class="txtBlue" data-value="`+value+`" onmouseover="showTags(this)" onmouseout="hideTags()">等共`+arr.length+`个标签</span>`;
+        // }
+
+        for (var i = 0; i < arr.length; i++) {
+            if (i > 0 && i <= 2) {
+                html = html + `<span class="lable" title="${arr[i]}">`+arr[i]+`</span>`;
+            }
+            if (i == 3) {
+                html = html + `<span class="txtBlue" style="margin: 4px 5px;" data-value="`+value+`" onmouseover="showTags(this)" onmouseout="hideTags()">更多</span>`;
+            }
+         }
+        return html;
+    }else{
+        return `<span class="lable">暂无标签</span>`;
+    }
+}
+function formatCompanyName(value,row){
+    var arr = value.split(",");
+    if (value!=null && value!='') {
+        var html = `<span class="lable" style="width:90px;">`+arr[0]+`</span>`;
+        // if (arr.length > 1) {
+        //     html = html + `&nbsp;&nbsp;<span class="txtBlue">等共`+arr.length+`家公司</span>`;
+        // }
+        // var html = `<span class="txtBlue" data-value="`+value+`" onmouseover="showCompany(this)" onmouseout="hideCompany()">共`+arr.length+`家公司</span>`;
+        for (var i = 0; i < arr.length; i++) {
+            if (i > 0 && i <= 2) {
+                html = html + `<span class="lable" style="width:90px;" title="${arr[i]}">`+arr[i]+`</span>`;
+            }
+            if (i == 3) {
+                html = html + `<span class="txtBlue" style="margin: 4px 5px;" data-value="`+value+`" onmouseover="showCompany(this)" onmouseout="hideCompany()">更多</span>`;
+            }
+         }
+        return html;
+    }else{
+        if (row.is_follow == 1 && row.mobile!=null && row.mobile!='') {
+            return `未绑定公司`;
+            // &nbsp;&nbsp;<a onclick="bindSingle(`+row.id+`)">立即绑定</a>
+        }else{
+            return `未绑定公司`;
+        }
+    }
+}
+</script>
+<style>
+    .datagrid-header-rownumber,.datagrid-cell-rownumber{
+        width:40px;
+    }
+    .drop,.txtBlue{
+        color:#398bfe;
+        cursor: pointer;
+    }
+    .drop::after{
+        display: inline-block;
+        content: '';
+        width: 0;
+        height:0;
+        border: 5px solid transparent;
+        border-top:5px solid #A5A4A4;
+        border-bottom: none;
+    }
+    .lable{
+        display: inline-block;
+        height: 20px;
+        line-height: 20px;
+        width:60px; 
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        border: 1px solid #d3d3d3;
+        border-radius: 2px;
+        cursor: pointer;
+        padding: 0 5px;
+    }
+    #com_wrap{
+        position: relative;
+        height:100%;
+    }
+    #app{
+        display:flex;
+        margin-left: -15px;
+        height:100%;
+    }
+    .nav-rig{
+        padding: 24px 0 0 0px;
+        width:100%;
+        height:calc(100% - 20px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        background: #fff;
+    }
+    .clearFix:after{
+        display: block;
+        content: '';
+        clear: both;
+    }
+    .map,.del,.edit,.add,.up,.down,.map_tab{
+        display: inline-block;
+        padding:3px 0;
+        width:20px;
+        height:20px;
+        cursor: pointer;
+    }
+    .tag_count{
+        display: inline-block;
+        vertical-align: top;
+        padding: 3px 0;
+    }
+    .map{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c8_che.png') 0 5px no-repeat;    
+    }
+    .map_tab{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png') 0 10px no-repeat;    
+    }
+    .del{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c11.png') 0 5px no-repeat; 
+    }
+    .edit{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c12.png') 0 5px no-repeat;
+    }
+    .add{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new.png');
+        background-size: 100% 100%;
+        padding: 0px !important;
+        margin: 3.5px 0px;
+    }
+    .add:hover{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new_hover.png');
+    }
+    .up{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c14.png') 0 5px no-repeat;
+    }
+    .down{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c9.png') 0 5px no-repeat;
+    }
+    .tab-con{
+        padding:30px 25px;
+        background: #fff;
+    }
+    .addPeople{
+        display: inline;
+        padding: 10px 25px;
+        background: #398bfe;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+    }
+    .selectList{
+        padding-left:0;
+    }
+    .nav-rig .selectList li::after{
+        content: '';
+        display: block;
+        clear: both;
+    }
+    .nav-rig .selectList .lef{
+        float:left;
+        line-height:34px;
+    }
+    .nav-rig .selectList .spanBox{
+        float:left;
+        margin:0;
+        width: calc(100% - 100px);
+    }
+    .nav-rig .selectList .spanBox span{
+        float:left;
+        user-select: none;
+    }
+    .nav-rig .selectList .spanBox i{
+        font-style:normal;
+        line-height: 34px;
+        color:#e91835;
+    }
+    .spanLine_under{
+        display: inline-block;
+        user-select: none;
+    }
+    .tabBox{
+        border:1px solid #ccc;
+        border-bottom:none;
+    }
+    .tabBox table{
+        width: 100%;
+        border-collapse:collapse;
+        text-align: center;
+    }
+    .tabBox table tr{
+        height:36px;
+        line-height: 36px;
+        border-bottom:1px solid #ccc;
+    }
+    .tabBox table th,.tabBox tbody tr:nth-child(even){
+        background: #f8f6f6;
+    }
+    .tabBox input[type=checkbox].css-checkbox + label.css-label{
+        top:0;
+    }
+    .tabBox tbody td:nth-child(4){
+        width: 260px;
+        padding-left: 40px;
+        text-align: left;
+    }
+    .tabBox table img{
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        vertical-align: middle;
+    }
+    .tabBox .userName{
+        margin:0 5px;
+    }
+    .tabBox .editIcon{
+        vertical-align: middle;
+        font-size: 1.4rem;
+    }
+    .tabBox .drop,.tabBox .txtBlue{
+        color:#398bfe;
+        cursor: pointer;
+    }
+    .tabBox .drop::after{
+        display: inline-block;
+        content: '';
+        width: 0;
+        height:0;
+        border: 5px solid transparent;
+        border-top:5px solid #A5A4A4;
+        border-bottom: none;
+    }
+    .tabBox .txt{
+        display: inline-block;
+        margin-left:6px;
+        width: 35px;
+    }
+    #mask{
+        position: absolute;
+        top:0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,.6);
+    }
+    #tabSecond{
+        position: absolute;
+    }
+    #tabSecond tr{
+        background: #fff;
+    }
+    #mask .tabBox{
+        border-left:none;
+        border-right:none;
+    }
+    #mask .tip{
+        margin-left:240px;
+    }
+    #mask .tip .tipWrap{
+        margin-left:145px;
+        letter-spacing: 4px;
+        font-family: "站酷快乐体";
+        color: #fff;
+    }
+    #mask .tipWrap p{
+        margin:4px 0;
+        width: 180px;
+    }
+    #mask .tipBtn{
+        text-align: center;
+    }
+    #mask .tipBtn span{
+        display: inline-block;
+        margin-top: 8px;
+        width: 100px;
+        height: 25px;
+        line-height: 25px;
+        border-radius: 5px;
+        border: 1px dashed #fff;
+        user-select: none;
+        cursor: pointer;
+        letter-spacing:0;
+    }
+    .lableBox{
+        display: none;
+        position: fixed;
+        padding: 5px;
+        width:220px;
+        background: #ffffff;
+        /*border-radius: 5px;*/
+        border: 0.3px solid;
+        box-shadow:3px 3px 2px #767676;
+        border-color:#767676;
+    }
+    .lableBox .lable{
+        margin:3px;
+        color:#767676;
+    }
+    .lableBlue{
+        background: green;
+    }
+    .selectList .hidden{
+        display: none;
+    }
+    .spanLine_left{
+        min-width: 460px;
+    }  
+    .list_children ul li{
+        margin: 16px 0;
+    }
+    .selectList li{
+        min-width: 415px;
+    }
+    /* 保存按钮 */
+    .ui_buttons input.ui_state_highlight{
+        display: inline-block;
+        width: 84px;
+        height:34px;
+        line-height: 34px;
+        text-align: center;
+        background-color: #529bfd;
+        color: #fff;
+        padding: 0px 10px;
+        margin: 5px 10px;
+        cursor: pointer;
+        border-radius: 0px;
+    }
+    .ui_buttons input.ui_state_highlight:hover{
+        background-color: #6eacfe;
+    }
+    /* 关闭按钮 */
+    .ui_buttons input:last-child{
+        display: inline-block;
+        width: 84px;
+        height:34px;
+        line-height: 34px;
+        text-align: center;
+        padding: 0px 10px;
+        margin: 5px 10px;
+        border:1px solid #d3d3d3;
+        cursor: pointer;
+        border-radius: 0px;
+    }
+    .ui_buttons input:last-child:hover{
+        border:1px solid #6eacfe;
+    }
+    /*  */
+    .list_item{
+        margin: 5px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .text_rig{
+        text-align: right;
+        width: 98px;
+        margin-bottom: 10px;
+    }
+    .spanLine_new{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    .btn_bro_blue{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new.png');
+        background-size: 100% 100%;
+        width: 24px !important;
+        height: 24px !important;
+        margin-top: 10px !important;
+        border: none !important;
+    } 
+    .btn_bro_blue:hover{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new_hover.png');
+    }    
+    .btn_bro_blue:hover{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new_hover.png');
+    }    
+    .btn_bro_blue_remove{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_remove_new.png');
+    }
+    .datagrid-cell-check input[type='checkbox']:disabled{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-disablecheck.png')  !important;
+    }
+    .btn_bro_blue_remove:hover{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_remove_new_hover.png');
+    }
+    /* 左侧列表样式 */
+    .nav-lef{
+        width: auto;
+        min-width: 15px;
+        height:calc(100% - 20px);
+        background-color: #f9fafb;
+        border-right: 1px solid #e7e7ed;
+        padding-top:20px;
+        position: relative;
+    }
+    .nav-lef li{
+        padding: 0 20px 0 0;
+    }
+    .list_box{
+        width:auto;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    .list_box ul{
+        padding-left: 25px;
+        padding-right: 25px;
+        overflow: hidden;
+    }
+    .le{
+        flex: 1;
+        display: flex;
+        align-items: center;
+    }
+    .ri{
+        width: 60px;
+        display: flex;
+        align-items: center;
+    }
+    .tag_title{
+        overflow: hidden;
+        display: inline-block;
+        width:120px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        vertical-align: top;
+        padding: 3px 0;
+        cursor: pointer;
+    }
+    /* 显示隐藏按钮 */
+    .btn_seen_lef{
+        width: 16px;
+        height: 114px;
+        text-align: center;
+        background-color: #f9fafb;
+        position: absolute;
+        right: -16px;
+        top: calc(50% - 47px);
+        z-index: 111;
+        cursor: pointer;
+        border-top-right-radius: 13px;
+        border-bottom-right-radius: 13px;
+        border: 1px solid #d3d3d3;
+        border-left: 0px;
+        padding-top: 8px;
+    }
+    .btn_seen_lef:hover{
+        opacity: 0.8;
+    }
+    .btn_seen_lef>p{
+        margin: 0;
+        padding: 0;
+    }
+    .btn_seen_lef>.icon-allow{
+        width: 16px;
+        height: 16px;
+        margin-top: 10px;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/arrow-right.png');
+    }
+    /* 左侧列表过渡效果 */
+    .slide-enter,.slide-leave-to{
+        opacity: 0;
+        width: 0;
+    }
+    .slide-enter-to,.slide-leave{
+        opacity: 1;
+        width: 320px;
+    }
+    .slide-enter-active, .slide-leave-active {
+        transition: all 0.1s;
+    }
+        /* 返回顶部 */
+    #backUp{
+        width: 48px;
+        height: 48px;
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_tobackup.png');
+        background-size: 100% 100%;
+        position: fixed;
+        z-index: 99;
+        bottom: 80px;
+        right: 80px;
+    }
+    #backUp:hover{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_tobackup_hover.png');
+    }
+    /* 底部分页栏 */
+    .datagrid-view{
+        padding-bottom: 40px;
+    }
+    .datagrid .datagrid-pager {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        z-index: 99;
+    }
+    /* 筛选条件框 */
+    .select-box{
+        display: none;
+        position: absolute;
+        top: 32px;
+        right: 0px;
+        z-index: 8;
+        padding: 0 10px 10px;
+        background-color: #fff;
+        box-shadow: 1px 1px 10px 1px;
+        overflow: hidden;        
+    }
+    .select-box>p{
+        margin: 10px 5px;
+    }
+    .datagrid-header {
+        overflow:unset;
+    }
+    .datagrid-cell{
+        clear: both;
+        overflow:unset;
+    }
+    .datagrid .panel-body {
+        overflow: unset;
+    }
+    .datagrid-view{
+        overflow: unset;
+    }
+    .datagrid-view2 {
+        overflow: unset;
+    }
+    .datagrid-cell>span.lable{
+        float: left;
+        margin: 2px 3px;
+    }
+    .datagrid-cell>span.txtBlue{
+        float: left;
+        margin-left:2px; 
+    }
+    .followed-time-down{
+        display: inline-block;
+        width: 8px;
+        height: 18px;
+        margin: 0px 10px;
+        background-size: 100% 100%;
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c9.png');
+        cursor: pointer;
+    }
+    .followed-time-up{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c14.png');
+    }
+    .icon-communication{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin: 5px;
+        background-size: 100% 100%;
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-footer02-grey.png');
+        cursor: pointer;
+    }
+    .icon-communication:hover{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-footer02.png');
+    }
+</style>
+
+<div id="com_wrap">
+    <div id="app" class="clearFix">
+        <div class="nav-lef" id="nav-lef" >
+            <div class="btn_seen_lef" v-on:click="isSeen">
+                <p>标</p>
+                <p>签</p>
+                <p>管</p>
+                <p>理</p>
+                <p class="icon-allow"></p>
+            </div>
+            <div class="list_box">
+                <transition name="slide">
+                    <tree  v-show="seen" :folder = "trees"></tree>
+                </transition>
+            </div>
+        </div>
+
+        <div class="nav-rig">
+            <ul class="selectList status" >
+                <li id="topZero">
+                    <span class="lef text_rig">用户类型：</span>
+                    <p class="spanBox user_type_status">
+                        <span id="usertype-0" data-value="0" class="btn_bg_gray btn_bg_gray_on">全部</span>
+                        <span id="usertype-1" data-value="1" class="btn_bg_gray">员工</span>
+                        <span id="usertype-2" data-value="2" class="btn_bg_gray">客户</span>
+                        <span id="usertype-3" data-value="3" class="btn_bg_gray">粉丝</span>
+                    </p>
+                </li>
+                <li>
+                    <span class="lef text_rig">关注公众号：</span>
+                    <p class="spanBox is_follow_status">
+                        <span id="follow-0" data-value="0" class="btn_bg_gray btn_bg_gray_on">全部</span>
+                        <span id="follow-1" data-value="1" class="btn_bg_gray">已关注</span>
+                        <span id="follow-2" data-value="2" class="btn_bg_gray">未关注</span>
+                    </p>
+                </li>
+                <li>
+                    <span class="lef text_rig">绑定手机：</span>
+                    <p class="spanBox mobile_status">
+                        <span data-value="0" class="btn_bg_gray btn_bg_gray_on">全部</span>
+                        <span data-value="1" class="btn_bg_gray">已绑定</span>
+                        <span data-value="2" class="btn_bg_gray">未绑定</span>
+                    </p>
+                </li>
+<!--                 <li >
+                    <span class="lef text_rig">绑定公司：</span>
+                    <p class="spanBox company_status">
+                        <span data-value="0" class="btn_bg_gray btn_bg_gray_on">全部</span>
+                        <span data-value="1" class="btn_bg_gray">已绑定</span>
+                        <span data-value="2" class="btn_bg_gray">未绑定</span>
+                    </p>
+                </li> -->
+            </ul>
+            <div style="width:100%">
+                <div id="tags" style="width:100%">
+                    <ul class="selectList tags">
+                        <li v-for="(item1,index1) in additional" style="width:100%;">
+                            <span class="lef text_rig">{{tagLevel[index1]}}级标签：</span>
+                            <p class="spanBox">
+                                <span class="btn btn_mar btn_bg_gray btn_bg_gray_on" :data-index="index1+1" v-for="(item2,index2) in additional[index1]" :data-id="item2.id" :data-name="item2.name" :title="item2.name">{{item2.name}}</span>
+                            </p>
+                        </li>
+                        <li style="width: 100%;">
+                            <span class="lef text_rig">{{tagLevel[additional.length]}}级标签：</span>
+
+                            <p class="spanBox first">
+                                <!-- <span class="on all btn" data-index="0" data-id="all" id="tag-all">全部</span> -->
+                                <span class="btn btn_mar btn_bg_gray" onclick="addFilter(this)" data-index="0" v-for="(item,index) in tagList" v-if="not_in_array(item.id,checkedTag)" :data-id="item.id" :data-name="item.name" :id="'tag-'+item.id" :title="item.name">{{item.name}}</span>
+                                <span class="addLevel btn_bg_gray btn_bro_blue" @click="addLevel()" title="添加下一级标签"></span>
+                                <span v-if="additional.length > 0 " class="delLevel btn_bg_gray btn_bro_blue btn_bro_blue_remove" @click="delLevel(additional.length-1)" title="删除上一级标签"></span>
+                            </p>
+                        </li>
+                    </ul>
+                    <div id="showTags" class="lableBox clearFix"  style="z-index:999">
+                        <span style="width:auto;" class="lable fl" v-for="(item,index) in showTags">{{item}}</span>
+                    </div>
+                    <div id="showCompany" class="lableBox clearFix"  style="z-index:999">
+                        <span style="width:auto;" class="lable fl" v-for="(item,index) in showCompany">{{item}}</span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="spanLine spanLine_new" style="padding-bottom:15px;">
+                <div class="spanLine_left">
+                <!--<span class="printMore ck common-disable">批量打标签</span>
+                    <span class="bindCompany spanLine_under a.ck">自动匹配公司</span>
+                    <span class="bindTel ck common-disable">批量邀请绑定手机</span> -->
+                    <span class="printMore spanLine_under btn_disable ck">打标签</span>
+                    <span class="bindTel spanLine_under btn_disable ck">绑定手机</span>
+                    <span class="synFan spanLine_under btn_bg_blue">同步粉丝</span>
+                    <!-- <span class="bindCompany spanLine_under btn_bg_blue">匹配公司</span> -->
+                </div>
+                <!-- <i style="font-style:normal;line-height: 34px;color:#e91835;">鼠标左键双击会员列表，可查看用户详细资料</i> -->
+                <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                    <input type="text" placeholder="客户昵称/备注/手机/公司" style="width:300px;" class="filter-field" name="SerachComPotential"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="queryComPotential()">
+                    <input type="hidden" class="filter-field" id="order_followed_at" name="order_followed_at" value="desc">
+                    <input type="hidden" class="filter-field" id="serach_subscribe_scene" name="serach_subscribe_scene">
+                </div>
+            </div>
+            <div style="width:100%" id="table-area">
+                <span id="total-count" style="margin-left:18px;"></span>
+                <table id="ComPotential-datagrid" class="datagrid"  data-options="url:'ComPotential/list'" fit="false" fitColumns="true">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'id',hidden:true"></th>
+                            <th data-options="field:'ck',checkbox:true"></th>
+                            <th data-options="field:'name',width:170,align:'left',formatter:formatName">客户昵称</th>
+                            <th data-options="field:'user_type_value',width:85,align:'left'">用户类型
+                                <span style="position: relative;">
+                                    <i class="map_tab" style="padding:0;margin: 0;"></i>
+                                    <div class="select-box">
+                                        <p>
+                                            <input type="radio" name="user_type_value" onclick="selectUserType(this)" value="0" checked id="141a" class="css-checkbox">
+                                            <label for="141a" class="css-label" style="background-position: 0 -20px;"><span>全部</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="user_type_value" onclick="selectUserType(this)" value="1" id="142a" class="css-checkbox">
+                                            <label for="142a" class="css-label"><span>员工</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="user_type_value" onclick="selectUserType(this)" value="2" id="143a" class="css-checkbox">
+                                            <label for="143a" class="css-label"><span>客户</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="user_type_value" onclick="selectUserType(this)" value="3" id="144a" class="css-checkbox">
+                                            <label for="144a" class="css-label"><span>粉丝</span></label>
+                                        </p>
+                                        <!-- <div class="btn-confirm" onclick="selectUserType(this)" style="margin:0;">确定</div> -->
+                                    </div>
+                                </span>
+                            </th>
+                            <!-- <th data-options="field:'comments',width:120,align:'left'">备注</th> -->
+                            <th data-options="field:'is_follow',width:85,align:'left',formatter:formatFollowStatus">关注状态
+                                <span style="position: relative;">
+                                    <i class="map_tab" style="padding:0;margin: 0;"></i>
+                                    <div class="select-box">
+                                        <p>
+                                            <input type="radio" name="is_follow" onclick="selectIsFollow(this)" value="0" checked id="141b" class="css-checkbox">
+                                            <label for="141b" class="css-label" style="background-position: 0 -20px;"><span>全部</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="is_follow" onclick="selectIsFollow(this)" value="1" id="142b" class="css-checkbox">
+                                            <label for="142b" class="css-label"><span>已关注</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="is_follow" onclick="selectIsFollow(this)" value="2" id="143b" class="css-checkbox">
+                                            <label for="143b" class="css-label"><span>未关注</span></label>
+                                        </p>
+                                        <!-- <div class="btn-confirm" onclick="selectIsFollow(this)" style="margin:0;">确定</div> -->
+                                    </div>
+                                </span>
+                            </th>
+                            <th data-options="field:'followed_at',width:120,align:'left'">关注时间<i onclick="SreenFollowedTime(event)" class="followed-time-down"></i></th>
+                            <th data-options="field:'subscribe_scene_value',width:120,align:'left',formatter:formatSubscribe">来源渠道
+                                <span style="position: relative;">
+                                    <i class="map_tab" style="padding:0;margin: 0;"></i>
+                                    <div class="select-box">
+                                        <p>
+                                            <input type="radio" name="subscribe_scene" onclick="selectSubscribeScene(this)" value="0" checked id="141c" class="css-checkbox">
+                                            <label for="141c" class="css-label" style="background-position: 0 -20px;"><span>全部</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="subscribe_scene" onclick="selectSubscribeScene(this)" value="ADD_SCENE_SEARCH" id="142c" class="css-checkbox">
+                                            <label for="142c" class="css-label"><span>公众号搜索</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="subscribe_scene" onclick="selectSubscribeScene(this)" value="ADD_SCENE_PROFILE_CARD" id="144c" class="css-checkbox">
+                                            <label for="144c" class="css-label"><span>名片分享</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="subscribe_scene" onclick="selectSubscribeScene(this)" value="ADD_SCENE_QR_CODE" id="145c" class="css-checkbox">
+                                            <label for="145c" class="css-label"><span>扫描二维码</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="subscribe_scene" onclick="selectSubscribeScene(this)" value="ADD_SCENE_OTHERS" id="149c" class="css-checkbox">
+                                            <label for="149c" class="css-label"><span>其他</span></label>
+                                        </p>
+                                        <!-- <div class="btn-confirm" onclick="selectIsFollow(this)" style="margin:0;">确定</div> -->
+                                    </div>
+                                </span>
+                            </th>
+                            <th data-options="field:'superior_user',width:160,align:'left'">上级用户</th>
+                            <th data-options="field:'tags_value',width:160,align:'left',formatter:formatTagName">标签
+                                
+                            </th>
+                            <th data-options="field:'mobile',width:150,align:'left',formatter:formatMobileStatus">绑定手机</th>
+                            <th data-options="field:'company_names',width:180,align:'left',formatter:formatCompanyName">所属公司</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="empty-notice" style="background: #fff;display:none;width:100%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: relative;
+            bottom: 40px;">此筛选条件,暂无数据！</div>
+            <form id="inputTag-form">        
+            <div style="display:none" id="inputTag">
+            </div>
+            </form>
+
+        </div>
+    </div>
+    <div id="mask" style="display:none;">
+        <div class="tabBox" id="tabSecond">
+            <table>
+                <tbody id="tBody"></tbody>
+            </table>
+            <div class="tip">
+                <div>
+                    <img class="to" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/to.png" alt="">
+                </div>
+                <div class="tipWrap">
+                    <p>鼠标左键双击会员列表</p>
+                    <p>可查看该用户详细资料</p>
+                    <p class="tipBtn"><span>我知道啦~</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a id="backUp" href="#topZero"></a>
+<script src="__ROOT__/{$Think.MODULE_PATH}/Public/vue/vue.min.js"></script>
+<script>
+    (function (){
+        // var oTabBox=document.getElementById('tabBox');
+        // var tabSecond=document.getElementById('tabSecond');
+        // var oFirstTr=document.getElementById('firstTr');
+        // var oBody=document.getElementById('tBody');
+        // var w=$('#tabBox').width();
+        // var l=oTabBox.offsetLeft;
+        // var t=oTabBox.offsetTop+38;
+        // tabSecond.style.width=w+'px';
+        // tabSecond.style.top=t+'px';
+        // tabSecond.style.left=l+'px';
+        // var oTr=oFirstTr.cloneNode(true);
+        // oBody.appendChild(oTr);
+    })();
+
+
+// $(document).on('click', function() {
+//     var selections = $('#ComPotential-datagrid').datagrid("getSelections");
+//     if (selections.length > 0) {
+//         $('.ck').addClass('btn_bg_blue');
+//         $('.ck').removeClass('btn_disable');
+//     }else{
+//          $('.ck').addClass('btn_disable');
+//          $('.ck').removeClass('btn_bg_blue');
+//     }
+// })
+    $(document).on('change','input:checkbox' ,function() {
+        if($('#ComPotential-datagrid').length > 0){
+            var selections = $('#ComPotential-datagrid').datagrid("getSelections");
+            var arr = [];
+            for (var i = 0;i < selections.length; i++) {
+                if (selections[i].is_follow == 1) {
+                    arr.push(selections[i]);
+                }
+            }
+            if (arr.length > 0) {
+                $('.ck').addClass('btn_bg_blue');
+                $('.ck').removeClass('btn_disable');
+            }else{
+                $('.ck').addClass('btn_disable');
+                $('.ck').removeClass('btn_bg_blue');
+            }
+        }
+    });
+
+    $(document).on('click',function() {
+        if($('#ComPotential-datagrid').length > 0){
+            var selections = $('#ComPotential-datagrid').datagrid("getSelections");
+            var arr = [];
+            for (var i = 0;i < selections.length; i++) {
+                if (selections[i].is_follow == 1) {
+                    arr.push(selections[i]);
+                }
+            }
+            if (arr.length > 0) {
+                $('.ck').addClass('btn_bg_blue');
+                $('.ck').removeClass('btn_disable');
+            }else{
+                $('.ck').addClass('btn_disable');
+                $('.ck').removeClass('btn_bg_blue');
+            }
+        }
+    });
+
+    $('#ComPotential-datagrid').datagrid({
+        onLoadSuccess: function(data){
+            $("#total-count").text("当前筛选条件下，微信用户共"+data.total+"人");
+
+            if (data.total == 0) {
+                $('#empty-notice').show();
+                $(this).closest('div.datagrid-wrap').find('div.datagrid-pager').hide();
+            }else{
+                $(this).closest('div.datagrid-wrap').find('div.datagrid-pager').show();
+                $('#empty-notice').hide();
+            }
+            if (data.rows.length > 0) {
+                for (var i = 0; i < data.rows.length; i++) {
+                    if (data.rows[i].is_follow == 0) {
+                        $("input[type='checkbox']")[i + 1].disabled = true;
+                        // console.log("!!!");
+                        // $("input[type='checkbox']")[i + 1].css("background-image","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/disable-check.png");
+                    }
+                }
+                var selections = $('#ComPotential-datagrid').datagrid("getSelections");
+                var arr = [];
+                for (var i = 0;i < selections.length; i++) {
+                    if (selections[i].is_follow == 1) {
+                        arr.push(selections[i]);
+                    }
+                }
+                if (arr.length > 0) {
+                    $('.ck').addClass('btn_bg_blue');
+                    $('.ck').removeClass('btn_disable');
+                }else{
+                    $('.ck').addClass('btn_disable');
+                    $('.ck').removeClass('btn_bg_blue');
+                }
+            }
+        },
+        onDblClickRow: function (index, row) {
+            $.get("ComPotential/detail/id/" + row.id+"/",
+                function (data, status) {
+                    var dlg = $.dialog({
+                        id:'ComPotential',
+                        title: '编辑用户',
+                        autoSize: true,
+                        content: data,
+                        lock: false,
+                        max: false,
+                        min: false,
+                        parent: this
+                    });
+                    parseForm();
+                }
+            );
+        }
+    });
+
+    function addFilter(obj){
+        if ($(obj).attr("data-id") == 'all') {
+            // $(this).addClass('on').siblings().removeClass('on');
+            // tags.additional = [];
+        } else {
+            if ($(obj).hasClass('btn_bg_gray_on')) {
+                tags.filterLength --;
+                $(obj).removeClass('btn_bg_gray_on');
+                var num=0;
+                $(".first .btn_bg_gray_on").each(function(){
+                    num++;
+                });
+            }else{
+                tags.filterLength ++;
+                $(obj).addClass('btn_bg_gray_on');
+                $('.all').removeClass('btn_bg_gray_on');
+            }
+
+        }
+        tags.$nextTick(function() {
+            queryComPotential();
+        });
+    }
+
+    $(function(){
+        $(".user_type_status span").on('click',function(){
+            $(this).addClass('btn_bg_gray_on').siblings().removeClass('btn_bg_gray_on');
+            queryComPotential();
+        });
+
+        $(".is_follow_status span").on('click',function(){
+            $(this).addClass('btn_bg_gray_on').siblings().removeClass('btn_bg_gray_on');
+            queryComPotential();
+        });
+
+        $(".mobile_status span").on('click',function(){
+            $(this).addClass('btn_bg_gray_on').siblings().removeClass('btn_bg_gray_on');
+            queryComPotential();
+        });
+
+        var searchTime = '';
+        $("input[name='SerachComPotential']").on('input propotychange',function(){
+            clearTimeout(searchTime);
+            searchTime = setTimeout(function(){
+                queryComPotential();
+            },600)
+        });
+
+        $('.tipBtn span').click(function (){
+            $('#mask').css('display','none');
+        });
+        $('.printMore').click(function (){
+            var data = new Array();
+            var ids = new Array();
+            // var rows = getGridSelections("ComPotential");
+
+            var selections = $('#ComPotential-datagrid').datagrid("getSelections");
+            var rows = [];
+            for (var i = 0;i < selections.length; i++) {
+                if (selections[i].is_follow == 1) {
+                    rows.push(selections[i]);
+                }
+            }
+
+            if (rows.length === 0) {
+                $.dialog.tips('请先勾选用户!');
+            } else {
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    data.push(row);
+                    ids.push(row.id);
+                }
+            }
+            if (rows.length > 0) {
+                createDialog("ComPotential/checkLabel/", '选择标签','dlg-checkLabel', {data:data,ids:ids});
+            }
+        });
+
+        $('.bindTel').click(function (){
+            var data = new Array();
+            var ids = new Array();
+            // var rows = getGridSelections("ComPotential");
+
+            var selections = $('#ComPotential-datagrid').datagrid("getSelections");
+            var rows = [];
+            for (var i = 0;i < selections.length; i++) {
+                if (selections[i].is_follow == 1) {
+                    rows.push(selections[i]);
+                }
+            }
+            if (rows.length === 0) {
+                $.dialog.tips('请选择绑定通知项!');
+            } else {
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    data.push(row);
+                    ids.push(row.id);
+                }
+            }
+            if (rows.length > 0) {
+                createDialog("ComPotential/bindTel/", '绑定通知','dlg-company-select', {data:data,ids:ids});
+            }
+        });
+        $('.bindCompany').click(function (){
+            createDialog("ComPotential/bindCompany","只能匹配手机号绑定公司","dlg-bindCompany");
+        });
+        $('.bindSigle').click(function (){
+            createDialog("ComPotential/bindSigle","单个绑定公司");
+        });
+    });
+
+    function getAttachGroup(id){
+        $.post("ComPotential/getAttachGroup/id/"+id,function(result){
+            var group = result.attach_group;
+            openAttachForm("沟通记录", [{text:"沟通记录",attach_group:group}],function(id){
+            },"text")
+        },'json');
+    }
+    //同步粉丝
+    $('.synFan').click(function (){
+        showMaskLayer();
+        shuntSyncFans('');
+    });
+
+    //同步粉丝昵称、头像
+    function shuntSyncFans(token){
+        $.post("/ComPotential/syncFans",{token:token}, function(result){
+            if (result.code == 2) {
+                shuntSyncFans(result.token);
+                $.dialog.tips(result.message);
+            } else {
+                $.dialog.alert(result.message);
+                hideMaskLayer();
+            }
+            if(result.code == 0){
+                queryComPotential();
+            }
+        },"json");
+    }
+
+    // shuntSyncFans();
+    function not_in_array(search,array){
+        for(var i in array){
+            if(array[i]==search){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function showTags(e){
+        var X = $(e).offset().top; 
+        var Y = $(e).offset().left;
+        var arr = $(e).attr("data-value");
+        arr = arr.split(",");
+        tags.showTags=arr;
+
+        $("#showTags").css("top",X+30);
+        $("#showTags").css("left",Y+10);
+        $("#showTags").show();
+    }
+    function hideTags(){
+        $("#showTags").hide();
+    }
+
+    function showCompany(e){
+        var X = $(e).offset().top; 
+        var Y = $(e).offset().left;
+        var arr = $(e).attr("data-value");
+        arr = arr.split(",");
+        tags.showCompany=arr;
+
+        $("#showCompany").css("top",X+30);
+        $("#showCompany").css("left",Y-180);
+        $("#showCompany").show();
+    }
+    function hideCompany(){
+        $("#showCompany").hide();
+    }
+
+    function singleNotice(id){
+        var data = new Array();
+        var ids = new Array();
+        ids.push(id);
+        createDialog("ComPotential/bindTel/", '绑定通知','dlg-company-select', {data:data,ids:ids});
+    }
+
+    function bindSingle(id) {
+        createDialog("ComPotential/bindSingle/id/"+ id,"单个绑定公司","dlg-bindSingle");
+    }
+
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+
+    Vue.component('tree', {
+        name:"tree",
+        data(){
+            return{
+                new_tag:"",
+                isWrite:false
+            }
+        },
+        template:`<div>
+                <ul v-if="!isWrite" style="width:270px;">
+                    <li>
+                        <div class="clearFix list_item">
+                            <div class="le"></div>
+                            <div style="display:flex;border-bottom: 1px solid #d3d3d3;padding-bottom: 10px;width: 100%;">
+                                <div style="flex:1;text-align:center;font-size: 16px;font-weight: 600;">标签管理</div>
+                                <div @click="isWrite = true" class="btn-confirm" style="margin:0;height:28px;line-height:28px;">编辑</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li v-if = "folder.slice(2).length == 0">
+                        <p>暂无标签,请点击编辑按钮添加标签</p> 
+                    </li>
+                    <li v-for = "(item,index) in folder.slice(2)" :id="item.id" :level="item.level">
+                        <div class="clearFix list_item">
+                            <div class="le">
+                                <i style="margin-left: 18px;" class="map"></i>
+                                <span :title="item.text" class="tag_title">{{item.name}}</span>
+                                <span class="tag_count">({{item.user_count}})</span>
+                            </div>
+                            <div class="ri">
+
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul v-else style="width:270px;">
+                    <li>
+                        <div class="clearFix list_item">
+                            <div class="le"></div>
+                            <div class="ri">
+                                <div @click="tags_save" class="btn-confirm" style="margin:0;height:28px;line-height:28px;">保存</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li v-for = "(item,index) in folder.slice(2)" :id="item.id" :level="item.level">
+                        <div class="clearFix list_item">
+                            <div class="le">
+                                <span  style="width:18px;margin:0 5px;">{{index + 1}}</span>
+                                <input class="tag_title" v-model="item.name" type="text">
+                            </div>
+                            <div v-if="item.id != 'other' && item.id != 'all'" class="ri">
+                                <i class="del" @click.stop="removeTag(index,item)" title="删除"></i>
+                                <i class="up" v-if="index>0" @click.stop="up(index)" title="上移"></i>
+                                <i class="down" v-if="index<(folder.slice(2).length-1)" @click.stop="down(index)" title="下移"></i>
+                            </div>
+                        </div>
+                    </li>
+                    <li style="border-top:1px solid #d3d3d3;">
+                        <div class="clearFix list_item">
+                            <div class="le">
+                                <span style="width:18px;margin:0 5px;"></span>
+                                <input class="tag_title" v-model="new_tag" type="text">
+                            </div>
+                            <div class="ri">
+                                <i class="add" @click.stop="addTag()" title="新增标签"></i>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>`,
+        props:["folder"],
+        methods:{
+            removeTag: function (index,item){
+                
+                if (!item.id) {
+                    this.folder.splice(index+2, 1);
+                }else{
+                    var str = '确定删除该标签？';
+                    if (item.user_count > 0) {
+                        str = '该标签已有用户存在，是否确认删除？';
+                    }
+                    var list = new Array();
+                    list.push(item.id);
+                    $.dialog.confirm(str, function () {
+                        $.post("/SysTargetTag/delete", {id:list}, function(result){
+                            if (result.code == 0){
+                                queryTagList();
+                                getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                                $.dialog.tips("删除成功！");
+                            }else{
+                                $.dialog.alert(result.message);
+                            }
+                        },"json");
+                    });
+                }
+            },
+            addTag(){
+                if(this.new_tag == ""){
+                    $.dialog.tips("标签不能为空，请填写");
+                    return;
+                }
+                var ishas = false;
+                for(var i = 0;i<this.folder.length;i++){
+                    if(this.folder[i].name == this.new_tag){ 
+                        $.dialog.tips("已存在该标签");
+                        ishas = true;
+                        break;
+                    }
+                }
+                if(ishas == false){
+                    var obj = {
+                        id:null,
+                        name:this.new_tag,
+                        user_count:0,
+                        text:`${this.new_tag}(0)`
+                    }
+                    this.folder.push(obj);
+                    // tags.tagList.push(obj);
+                }
+                console.log(this.folder);
+                this.new_tag = "";
+                // createDialog("ComPotential/saveTag","新建标签","dlg-addTag");
+            },
+            up: function ($index){
+                var _index = $index + 2;
+                this.replace(_index, _index - 1);
+            },
+            down: function ($index){
+                var _index = $index + 2;
+                this.replace(_index, _index + 1);
+            },
+            // 交换数组元素
+            replace(index1, index2) {
+                this.folder[index1] = this.folder.splice(index2, 1, this.folder[index1])[0];
+                // tags.tagList[index1 - 1] = tags.tagList.splice(index2 - 1, 1, tags.tagList[index1 - 1])[0];
+            },
+            // 保存按钮
+            tags_save(){
+                var arr = [];
+                arr = this.folder;
+
+                console.info(arr);
+                $.post("/ComPotential/saveTagAll", {arr:arr}, function(result){
+                    if (result.code == 0){
+                        queryTagList();
+                        getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                    }else{
+                        $.dialog.alert(result.message);
+                    }
+                },"json");
+                this.isWrite = false;
+            }
+        }
+    });
+
+    function removeTreeItem(parent, child){
+        var index = 0;
+        $(parent).each(function(){
+            if (this.id == child.id){
+                parent.splice(index, 1);
+                return true;
+            }else{
+                if (this.children != undefined){
+                    removeTreeItem(this.children, child);
+                }
+            }
+            index++;
+        });
+    }
+    // <tree v-if = "item.children" :folder = "item.children"></tree>
+    var app = new Vue({
+        el:"#nav-lef", // app nav-lef
+        data:{
+            seen:false,
+            trees:[]
+        },
+        methods:{
+            isSeen:function(){
+                if(this.seen){
+                    $(".btn_seen_lef>.icon-allow").css("backgroundImage","url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/arrow-right.png')")
+                    $(".nav-rig").css("width","100%");
+                    // $('#ComPotential-datagrid').datagrid({fitColumns:true});
+                    // $("#table-area").css("width","100%");
+                }else{
+                    $(".btn_seen_lef>.icon-allow").css("backgroundImage","url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/arrow-left.png')")
+                    $(".nav-rig").css("width","calc(100% - 270px)");
+                    // $('#ComPotential-datagrid').datagrid({fitColumns:false});
+                    // $("#table-area").css("width","calc(100% - 280px)");
+                }
+                setTimeout(function(){
+                    var w = $("#table-area").width();
+                    $('#ComPotential-datagrid').datagrid('resize',{ 
+                        width:w
+                    });
+                    $.parser.parse("#table-area");
+                    $('.datagrid .datagrid-pager').css('width',w+"px");
+                }, 300);
+                this.seen = !this.seen
+            }
+        }
+    });
+
+    var tags = new Vue({
+        el:"#tags",
+        data:{
+            tagList:[],
+            additional:[],
+            checkedTag:[],
+            tagIds:[],
+            showTags:[],
+            showCompany:[],
+            tagLevel:['一','二','三','四','五','六','七','八','九','十'],
+            filterLength:0
+        },
+        methods:{
+            addLevel:function(){
+                if(tags.filterLength == 0){
+                    $.dialog.tips("至少选择一个标签");
+                    return false;
+                }
+                if (tags.additional.length <= 8) {
+                    tags.filterLength = 0;
+                    var checkTag = [];
+                    $(".first .btn_bg_gray_on").each(function(){
+                        var tmp = {};
+                        // var index = $(this).attr("data-index");
+                        var value = $(this).attr("data-id");
+                        var name = $(this).attr("data-name");
+                        tmp = {
+                            id:value,
+                            name:name
+                        };
+                        checkTag.push(tmp);
+                    });
+                    if (checkTag.length > 0) {
+                        tags.additional.push(checkTag);
+                    }
+                    var data = tags.additional;
+                    tags.checkedTag = [];
+                    data.forEach(function(value1,index1){
+                        value1.forEach(function(value2,index2){
+                            tags.checkedTag.push(value2.id);
+                        })
+                    });
+                    queryComPotential();
+                }
+            },
+            delLevel:function(index){
+                var data = tags.additional;
+                data.splice(-1);
+                tags.additional = data;
+                tags.checkedTag = [];
+                data.forEach(function(value1,index1){
+                    value1.forEach(function(value2,index2){
+                        tags.checkedTag.push(value2.id);
+                    })
+                })
+                queryComPotential();
+            }
+        }
+    });
+
+    // setTimeout(function(){
+    //     var w = $("#table-area").width();
+    //     $('#ComPotential-datagrid').datagrid('resize',{ 
+    //         width:w
+    //     });
+    //     $.parser.parse("#table-area");
+    //     $('.datagrid .datagrid-pager').css('width',w+"px");
+    // }, 1500);
+
+
+    function queryTagList() {
+        $.post("/ComPotential/tagList",function(result) {
+            app.trees = result[0]['children'];
+            tags.tagList = result[0]['tagList'];
+            // var w = result[0]['children'].length * 150;
+            // $("#tags").width(w+"px");
+        }, "json");
+    }
+    queryTagList();
+
+    function queryComPotential() {
+        var html = '';
+        var is_follow_status = $(".is_follow_status").find(".btn_bg_gray_on").attr("data-value");
+        var mobile_status = $(".mobile_status").find(".btn_bg_gray_on").attr("data-value");
+        var user_type_status = $(".user_type_status").find(".btn_bg_gray_on").attr("data-value");
+        // var company_status = $(".company_status").find(".btn_bg_gray_on").attr("data-value");
+        html += '<input name="user_type" class="filter-field" type="hidden" value="'+user_type_status+'">';
+        html += '<input name="is_follow" class="filter-field" type="hidden" value="'+is_follow_status+'">';
+        html += '<input name="mobile_bind" class="filter-field" type="hidden" value="'+mobile_status+'">';
+        // html += '<input name="company_bind" class="filter-field" type="hidden" value="'+company_status+'">';
+        $('.tags .spanBox .btn_bg_gray_on').each(function(){
+            var index = $(this).attr("data-index");
+            var value = $(this).attr("data-id");
+            html += '<input name="tags['+index+'][]" class="filter-field" type="hidden" value="'+value+'">';
+        })
+        $('#inputTag').html(html);
+        var target= $('.filter-field');
+        var query = getParams(target)
+        $('#ComPotential-datagrid').datagrid('load',query);
+    }
+
+    function getParams(target){
+        var query = {};
+        $(target).each(function () {
+            var value = "";
+            var $input = $(this);
+            var value = $input.val();
+            var name = $input.attr("name");
+            if (value && name) {
+                if (query[name]){
+                    if ($.isArray(query[name])){
+                        query[name].push(value);
+                    } else{
+                        query[name] = [query[name],value]; 
+                    }
+                }else{
+                    query[name] = value;
+                }
+            }
+        }); 
+        return query;
+    }
+
+    // function selectClick(el){
+    //     if($(el).siblings(".select-box").css("display") == "none"){
+    //         $(".select-box").each(function(i,ele){
+    //             $(ele).hide();
+    //         })
+    //         $(el).siblings(".select-box").show();
+    //     }else{
+    //         $(el).siblings(".select-box").hide();
+    //     }
+    // }
+
+    function selectUserType(el){
+        if($(el).siblings("label.css-label").find("span").text() != "全部"){
+            $(el).parents(".select-box").find("label.css-label").eq(0).css("background-position","unset");
+        }else{
+            $(el).parents(".select-box").find("label.css-label").eq(0).css("background-position","0 -20px");
+        }
+        var value = $("input[name='user_type_value']:checked").val();
+        $("#usertype-"+value).click();
+        $(el).parents(".select-box").hide();
+    }
+
+    function selectIsFollow(el){
+        if($(el).siblings("label.css-label").find("span").text() != "全部"){
+            $(el).parents(".select-box").find("label.css-label").eq(0).css("background-position","unset");
+        }else{
+            $(el).parents(".select-box").find("label.css-label").eq(0).css("background-position","0 -20px");
+        }
+        var value = $("input[name='is_follow']:checked").val();
+        $("#follow-"+value).click();
+        $(el).parents(".select-box").hide();
+    }
+    function selectSubscribeScene(el){
+        if($(el).siblings("label.css-label").find("span").text() != "全部"){
+            $(el).parents(".select-box").find("label.css-label").eq(0).css("background-position","unset");
+        }else{
+            $(el).parents(".select-box").find("label.css-label").eq(0).css("background-position","0 -20px");
+        }
+        var value = $("input[name='subscribe_scene']:checked").val();
+        $("#serach_subscribe_scene").val(value);
+        $(el).parents(".select-box").hide();
+         queryComPotential();
+    }
+
+    function closeSelect(el){
+        $(el).parent(".select-box").hide();
+    }
+    document.onclick = function(){
+        if($(event.target).hasClass("map_tab")){
+            if($(event.target).siblings(".select-box").css("display") == "none"){
+                $(".select-box").each(function(i,ele){
+                    $(ele).hide();
+                })
+                $(event.target).siblings(".select-box").show();
+            }else{
+                $(event.target).siblings(".select-box").hide();
+            }
+        }else{
+            $(".select-box").hide();
+        }
+    }
+    // 关注时间排序
+    function SreenFollowedTime(e){
+        if($(e.target).hasClass("followed-time-up")){
+            $("#order_followed_at").val("desc");
+            $(e.target).removeClass("followed-time-up")
+        }else{
+            $("#order_followed_at").val("asc");
+            $(e.target).addClass("followed-time-up")
+        }
+        queryComPotential();
+    }
+</script>

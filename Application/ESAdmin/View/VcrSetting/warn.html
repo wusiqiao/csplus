@@ -1,0 +1,19 @@
+<div class="flex-1" id="module-content" fit="true" border="false">
+    <div class="content" id="intelligent">
+        <div class="main-content">
+            <empty name="hasSeting">
+                <div class="content-opt">
+                    <div><span class="red-line"></span><span>未配置财务参数，请先进行参数设置</span><a class="manage-btn" onclick="displayMenuItemContentByUrl('VcrSetting')">前往管理</a></div>
+                </div>
+            </empty>
+            <eq name="subjectImport" value="0">
+                <div class="content-opt">
+                    <div><span class="red-line"></span><span>未设置科目，请先进行企业科目设置</span><a class="manage-btn" onclick="displayMenuItemContentByUrl('VcrSubject')">前往管理</a></div>
+                </div>
+            </eq>
+            <div class="content-opt">
+                <div><span class="blue-line"></span><span>新增科目数量：{$newTotal}个</span><a class="manage-btn" onclick="displayMenuItemContentByUrl('VcrSubject')">前往查看</a></div>
+            </div>
+        </div>
+    </div>
+</div>

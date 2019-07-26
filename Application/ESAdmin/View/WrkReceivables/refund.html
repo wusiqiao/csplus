@@ -1,0 +1,43 @@
+<div class="detailcontainer" style="width:350px;height:250px">
+    <form id="refund-form">
+    <div class="row">
+        <input type="hidden" name="id" value="{$model.id}">
+        <input type="hidden" name="attach_group" value="{$model.attach_group}">
+        <input type="hidden" name="company_id" value="{$model.company_id}">
+        <p>资金账户：<input type="text" class="easyui-validatebox" readonly="true" name="company_name" value="{$model.company_name}" style="width:200px;text-overflow:ellipsis;"></p>
+        <p>退款金额：<input type="text" class="easyui-numberbox" id="refund_amount" name="amount" data-options="min:0,max:{$model.refund_max},precision:2" prompt="退款金额不得大于已收金额。" style="width:200px"></p>
+        <p>退款账户：<select name="account_id" class="chosen-select" data-options="all:true,search_key_url:'WrkReceivables/accountList'" style="width:200px">
+                    </select></p>
+        <!-- <p>退款备注：<input type="text" class="easyui-validatebox" name="remark" value="" style="width:200px"></p> -->
+        <p>备注附件：<a class="common-blue-btn" onclick="showAttachment()">查看</a></p>
+    </div>
+    </form>
+	<div align="center">
+		<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="refundSave()">确认</a>
+		<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>	
+	</div>
+</div>
+<script>
+    function refundSave() {
+        var refund_amount = $("#refund_amount").val();
+        if (refund_amount > 0) {
+            var data = $('#refund-form').serialize();
+            showMaskLayer();
+            $.post("/WrkReceivables/refund/id/{$model.id}",data,function(result) {
+                hideMaskLayer();
+                $.dialog.tips(result.message);
+                if (result.code == 0) {
+                    queryData3();
+                    queryData4();
+                    statistics();
+                	closeDialog("dlg-refund");
+                }
+            }, "json");
+        }else{
+            $.dialog.tips("退款金额必须大于零");
+        }
+    }
+    function showAttachment(){
+        openAttachmentForm('退款附件', [{text:'退款附件',attach_group:'{$model.attach_group}'}]);
+    }
+</script>

@@ -1,0 +1,127 @@
+<style>
+    .example-dialog{position: absolute; width:50%; height:80%; top:5%; left:25%;background: #cccccc;border: 1px solid #c2ccd1;display: none}
+    .example-dialog .close-dlg{width: 100%;position: absolute;left: 0;bottom: 0;color: red;font-size: 2rem;text-align: center;background: #fff;overflow-y: auto}
+    .tpl-item-active{color:blue}
+    .example-dialog .content{padding: 10px;}
+    .example-dialog .content-header{width: 100%;font-weight: bold;text-align: center;background: #fff;padding: 10px 0px}
+    .tableForm table{ border-collapse:collapse; border:solid 1px Black; }
+    .tableForm table td{ width: 300px; height:20px;  border:solid 1px Black; padding:5px;}
+    .table-lo{border:0 !important; }
+    .table-lo td{ border:0 !important;}
+    .table-lo .lo-line{border-bottom: solid 1px Black;}
+    .tableForm a{padding: 10px 20px;background-color: #00AFFF;color: #fff;text-align: center;border: 1px;border-radius: 5px;}
+    .tableForm .complete{padding: 10px 20px;background-color: #fff;border: 1px solid #999;color: #999;text-align: center;border-radius: 5px;}
+</style>
+<div class="detailcontainer" id="indexesCompany-detailcontainer" style="position: relative">
+    <form id="indexesCompany-form">
+        <div class="tableForm" style="overflow-y: auto;height:400px">
+            <!--<notempty name="companys">-->
+                <table class="table table-bordered table-cut " >
+                    <tr style="text-align: center">
+                        <td colspan="1" class="td-h" style="background-color: #999;">公司名称</td>
+                        <td colspan="1" class="td-h" style="background-color: #999;">联系人</td>
+                        <td  class="td-h" style="background-color: #999;">电话</td>
+                        <td  class="td-h" style="background-color: #999;">操作</td>
+                    </tr>
+                    <volist name="companys" id="vo">
+                        <tr>
+                            <td>
+                                {$vo.name}
+                            </td>
+                            <td>
+                                {$vo.linkman}
+                            </td>
+                            <td>
+                                {$vo.contact}
+                            </td>
+                            <td style="text-align: center">
+                                <input type="radio" value="{$vo.id}" name="company_id" >
+                            </td>
+                        </tr>
+                    </volist>
+                </table>
+                <!--<else/>-->
+                <!--<div style="padding: 20px; margin-top:190px;width:90%;text-align: center;font-weight: bold">没有可以绑定的公司信息</div>-->
+            <!--</notempty>-->
+        </div>
+    </form>
+    <div class='actions-sysdefault' style="text-align: right">
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button btn-update" plain="true" icon="fa-save fa-lg"  onclick="actionBinding()">确定</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeButton()">关闭</a>
+    </div>
+    <div class="example-dialog"><div class="content-header"></div><div class="content"></div><i class="close-dlg fa fa-check-circle-o"></i></div>
+</div>
+
+
+<script type="text/javascript">
+    var data = new Array;
+    $(function () {
+
+        setTimeout(function () {
+            data = getData();
+            var company = data.data;
+            var temp = new Array;
+            for (var i = 0 ; i < company.length ; i++) {
+                if (!company[i].company_id) {
+                    temp = [];
+                    break;
+                } else if (i == 0) {
+                    temp = company[i].company_id.split(',');
+
+                } else {
+                    var inc_ins = company[i].company_id.split(',');
+                    for (var a = 0 ; a < temp.length ; a++)
+                    {
+                        if ($.inArray(temp[a],inc_ins) == -1){
+                            temp.splice(a,1);
+                        }
+                    }
+                    if (temp.length == 0 || temp == ''){
+                        temp = [];
+                        break;
+                    }
+                }
+            }
+            if (temp) {
+                for (var i = 0 ; i < temp.length ; i++) {
+                    $('input[name*=company_id][value='+temp[i]+']').parent('td').parent('tr').remove()
+                }
+
+                if ($('input[name*=company_id]').length == 0) {
+                    $('input[name*=company_id]').parent('td').parent('tr').parent('tbody').parent('table').remove();
+                    $('div.tableForm').append('<div style="padding: 20px; margin-top:190px;width:90%;text-align: center;font-weight: bold">没有可以绑定的公司信息</div>')
+                }
+            }
+
+        },200)
+        function getData()
+        {
+            return $.dialog.list["dlg-company-select"].data;
+        }
+    });
+    function actionBinding()
+    {
+        var users = data.ids;
+        var checkedId = $('input[name=company_id]:checked').val();
+        if (checkedId > 0) {
+            if ($.dialog.confirm("请务必确定需要绑定的公司！", function(){
+                    showMaskLayer();
+                    $.post("{$Think.const.CONTROLLER_NAME}/usersBindCompany", {ids:users,company_id:checkedId}, function(result){
+                        $.dialog.tips(result.message);
+                        if (result.code == 0){
+                            getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                            closeDialog("dlg-company-select");
+                        }
+                        hideMaskLayer();
+                    },"json");
+                }));
+        } else {
+            $.dialog.tips('请选择一个公司');
+        }
+    }
+    $("#select-all-tpl").change(function(){
+        $("input[name='company_id']").prop("checked", $(this).prop("checked"));
+    });
+
+
+</script>

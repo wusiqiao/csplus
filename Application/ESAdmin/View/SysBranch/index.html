@@ -1,0 +1,233 @@
+<script>
+    function format_is_valid(value, row){
+        var txt = (value==1)?"正常":"暂停";
+        return "<a href='javascript:;' onclick='updateBranchValidState("+ row.id +")'>"+ txt + "</a>"
+    }
+    function updateBranchValidState(id){
+        if ($.dialog.confirm("是否切换商家状态？", function(){
+            $.post("/SysBranch/updateValidState", {id: id}, function(result){
+                if (result.code == 0){
+                    refreshDatagrid(getDataGrid("SysBranch"), result.message, "edit");
+                }
+            },"json");
+        }));
+    }
+    function format_state(value,row){
+        return value == 0 ? "意向客户":"成交客户";
+    }
+
+    function format_addCommunication(value,row){
+        var result = "<a href='javascript:void(0)' onclick='addCommunication(\""+value+"\")'>添加沟通记录</a>&nbsp;&nbsp;" +
+                "<a href='javascript:void(0)' onclick='addAgreement(\""+row.id+"\")'>添加合同</a>";
+        if(row.leader_id != null && row.leader_id != ""){
+            result += "&nbsp;&nbsp;<a href='javascript:void(0)' onclick='enterShop("+row.id+")' style='margin-left: 10px'>登陆后台</a>";
+        }
+        if (row.branch_role == "{$Think.const.ROLE_ID_COMPANY_FREE}"){
+            result = result + "&nbsp;&nbsp;<a href='javascript:void(0)' onclick='resetBranchRole(\""+row.id+"\")'>初始化</a>";
+        }
+        return result;
+    }
+
+    function addCommunication(attach_group){
+        $.get("/Index/attachment/simple/1",
+            function (result, status) {
+                var data = {
+                    attach_group:attach_group
+                };
+                var options = {id: "attachment_dialog",title: "沟通记录", content:result, autoSize: true,data: data,lock: true,max: false,min: false};
+                $.dialog(options);
+            }
+        );
+    }
+
+    function formatBranchRole(value, row){
+        var branch_roles = JSON.parse('{$branch_roles}');
+        for(var i=0; i<branch_roles.length; i++) {
+            if (branch_roles[i].id == value) {
+                return branch_roles[i].name;
+            }
+        }
+    }
+
+    function addAgreement(id){
+        action_add("SysBranchAgreement", "新增合同", {branch_id:id});
+    }
+
+    function resetBranchRole(id){
+        $.dialog.confirm("您将清空商家数据，您确定要继续吗？",function() {
+            $.post("SysBranch/resetBranchRole", {id: id}, function (ret) {
+                $.dialog.tips(ret.message);
+            }, "json");
+        });
+    }
+
+    function enterShop(shop_id){
+        $.dialog.confirm("您将登陆一个新的账号，登陆后可能<br>无法返回该界面，您确定要继续登陆吗",function(){
+            $.post("/Login/trackerEnterShop", {shop_id: shop_id}, function(result){
+                if (result.code == 0){
+                    $.dialog.tips("登录校验中...");
+                    setTimeout("location.href='/Index'", 2000);
+                }else{
+                    $.dialog.tips(result.message);
+                }
+            },"json");
+        });
+    }
+
+</script>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css"/>
+<style>
+    .maincontainer{
+        height: 100%;
+        position: relative;
+    }
+</style>
+<div class="dialog-temp" id="invoice-import-dialog">
+    <div class="importTax">
+        <form   id="wxfile-import-form" method="post" enctype="multipart/form-data" style="width:360px;position: relative">
+            <input type="file" id="import-wx-file" name="import_file" accept="*.txt" class="easyui-file" title="上传文件："/>
+        </form>
+
+        <div class="btn-group">
+            <input class="blue-btn" type="button" value="上传" onclick="WxFileFunctions.importWxFile(this)"/>
+            <input class="square-btn" type="button" value="取消" onclick="closeDialog();"/>
+        </div>
+    </div>
+</div>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <a style="position: absolute; top: 16px; z-index: 9999; float: right;right: 0;" class="opt-import blue-btn" onclick="WxFileFunctions.showInvoiceImportDialog(this)">认证文件上传</a>
+    <tr>
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <!--<th data-options="field:'agree_agreement_no',width:180,align:'left'">合同编号</th>-->
+        <th data-options="field:'name',align:'left'", width="20%">公司</th>
+        <!--<th data-options="field:'bundles',width:200,align:'left'">服务</th>-->
+        <th data-options="field:'linkman',align:'left'", width="9%">联系人</th>
+        <!--<th data-options="field:'agree_start_date',width:120,align:'left'">开通时间</th>
+        <th data-options="field:'agree_end_date',width:120,align:'left'">到期时间</th>-->
+        <th data-options="field:'contact',align:'left'", width="9%">联系电话</th>
+        <!--<th data-options="field:'is_valid',width:60,align:'left',formatter:format_is_valid">服务状态</th>-->
+        <th data-options="field:'state',align:'left',formatter:format_state", width="8%">客户状态</th>
+        <th data-options="field:'branch_role',align:'left',formatter:formatBranchRole", width="7%">商城版本</th>
+        <th data-options="field:'create_time',align:'left',sortable:true,formatter:formatDateTime", width="13%">跟踪时间</th>
+        <th data-options="field:'tracker',align:'left'", width="8%">跟踪业务员</th>
+        <th data-options="field:'attach_group',align:'left',formatter:format_addCommunication", width="26%">操作</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table" >
+        <tr>
+            <th>客户状态：</th>
+            <td >
+                <select name="q-state" class="easyui-validatebox chosen-select" id="state" style="width: 130px">
+                    <option value="" >全部</option>
+                    <option value="1" >成交客户</option>
+                    <option value="0" >意向客户</option>
+                </select>
+            </td>
+            <th>商城版本：</th>
+            <td >
+                <input  id="branch-role-select" class="easyui-validatebox" style="width: 130px">
+                <input name="q-branch_role" class="easyui-validatebox filter-field" type="hidden">
+            </td>
+            <th>业务员：</th>
+            <td >
+                <input name="tracker" class="easyui-validatebox filter-field" data-name="q-tracker_id" placeholder="请选择业务员" style="width: 130px">
+            </td>
+            <td>
+                <input name="search"  class="easyui-validatebox filter-field" value="" placeholder="请输入关键字查询" style="width: 150px;margin-left: 10px;float: right"/>
+            </td>
+            <td id="search_state" style="display: none">
+                <input type="hidden" name="state" value="" class="easyui-validatebox filter-field">
+            </td>
+    </table>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script>
+
+    $("#state").on("change",function(){
+        var state = $("#state :checked").val();
+        $("input[name='state']").val(state);
+        doSearchQuery("SysBranch");
+    });
+
+    $(function(){
+        $("input[name='search']").on("change",function(){
+            if($("input[name='search']").length > 0 && $("input[name='search']").val() == ""){
+                doSearchQuery("SysBranch");
+            }
+        });
+        autocompleteAjax($("input[name='tracker']"),"Organization/staffListForSearch",function(item){
+            doSearchQuery("SysBranch");
+        });
+        $("input[name='tracker']").on("change",function(){
+            if($("input[name='tracker']").length > 0 && $("input[name='tracker']").val() == ""){
+                $("input[name='q-tracker_id']").val("");
+                doSearchQuery("SysBranch");
+            }
+        })
+
+        var search_time;
+        $("input[name='search']").bind("input propertychange",function(){
+            clearTimeout(search_time);
+            search_time=setTimeout(function(){
+                doSearchQuery("SysBranch");
+            },500)
+        });
+        var branch_roles = JSON.parse('{$branch_roles}');
+        branch_roles.push({id:"-1", name:"全部"});
+        easyui_combobox($("#branch-role-select"), branch_roles, '-1', function(row){
+            if (row.id == "-1"){
+                $("input[name='q-branch_role']").val('');
+            }else{
+                $("input[name='q-branch_role']").val(row.id);
+            }
+            doSearchQuery("SysBranch");
+        });
+    })
+
+
+    var WxFileFunctions =  {
+        showInvoiceImportDialog: function(){
+            var html = $("#invoice-import-dialog").html();
+
+            $.dialog({max:false,min:false,lock: true, title: "微信认证文件上传", content: html});
+            // parseInputFile("#wxfile-import-form");
+            $("#import-wx-file").change(function () {
+                var filePath = $("#import-wx-file").val();
+                var fileExt = filePath.substring(filePath.lastIndexOf('.') + 1, filePath.length);
+                var accept = $("#import-wx-file").attr("accept");
+                if (accept && accept.lastIndexOf(fileExt) >= 0) {
+                    $("#wxfile-import-form").find("input").last().val($("#import-wx-file").val());
+                } else {
+                    $("#wxfile-import-form").find("input").last().val('');
+                    if (accept) {
+                        $.dialog.alert("文件类型错误！后缀必须为" + accept);
+                    } else {
+                        $.dialog.alert("文件必须设置accept属性！");
+                    }
+                }
+            });
+        },
+        importWxFile: function(){
+            action_import("import-wx-file", "{$Think.const.CONTROLLER_NAME}/importWeChatFile", "确定导入商户的微信认证文件？", function (result) {
+                setTimeout(function () {
+                    // WxFileFunctions.showAttachmentContent("#import-invoice-content",result.attachment_id, result.file_name);
+                    // $("#VcrBill-sale-datagrid").datagrid("reload");
+                }, 2000);
+            })
+        },
+        //显示导入文件名
+        showAttachmentContent: function(target, attachment_id, file_name){
+            if (attachment_id != undefined && attachment_id != null) {
+                $(target).css("display", "inline-block");
+                $(target).data("attachment_id", attachment_id);
+                $(target).find(".import-file-name").text("已导入：" + file_name);
+            }
+        }
+    }
+
+
+
+</script>

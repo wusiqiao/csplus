@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div class="details-wrap">
+			<div style="overflow-y: scroll;height:500px;">
+				<div class="details-section">
+					<div class="details-content">
+						<p class="line">
+							<span class="txt">合同信息</span>
+							<span class="drop-down"></span>
+						</p>
+						<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120"><span class="important" style="padding-right: 1px">*</span>客户公司：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">请选择 公司</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+			    		<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120">合同商家编号：</th>
+						    		<td>
+										<input name="inviter_name" class="easyui-validatebox filter-field validatebox-text" value="">
+									</td>
+									<td class="block"></td>
+									<th class="width120">合同系统编号：</th>
+						    		<td>
+										<input name="inviter_name" class="easyui-validatebox filter-field validatebox-text" value="">
+									</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+			    		<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th  class="width120"><span class="important" style="padding-right: 1px">*</span>合同名称：</th>
+						    		<td>
+										<input name="inviter_name" class="easyui-validatebox filter-field validatebox-text" value="">
+									</td>
+									<td class="block"></td>
+									<th class="width120"><span class="important" style="padding-right: 1px">*</span>合同金额：</th>
+						    		<td>
+										<input name="inviter_name" class="easyui-validatebox filter-field validatebox-text" value="">
+									</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+			    		<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120"><span class="important" style="padding-right: 1px">*</span>合同开始日期：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">请选择公司;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    		<td class="block"></td>
+						    		<th class="width120">合同结束日期：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">请选择公司;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+					</div>
+				</div>
+				<div class="details-section">
+					<div class="details-content">
+						<p class="black">
+							<span class="txt">收款信息</span>
+						</p>
+						<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120"><span class="important" style="padding-right: 1px">*</span>收款客户负责人：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">未选择;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+			    		<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120"><span class="important" style="padding-right: 1px">*</span>收款商户负责人：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">未选择;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    		<td class="block"></td>
+						    		<th class="width120">收款商户可见人：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">未选择;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    		<td style="position: relative">
+					                    <div class="icon-addbtn"></div>
+					                </td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+			    		<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120">收款计划备注：</th>
+						    		<td>
+										<textarea></textarea>
+									</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+			    		<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120">收款计划附件：</th>
+						    		<td>
+										<button class="upload">上传</button>
+									</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+					</div>
+				</div>
+				<div class="details-section">
+					<div class="details-content">
+						<p class="black">
+							<span class="txt">收款设置</span>
+						</p>
+						<table class="c-table" border="1" bordercolor="#ccc" border-collaspe="collaspe">
+							<thead>
+								<tr>
+									<th>付款日期</th>
+									<th>已付金额</th>
+									<th>收款账户</th>
+									<th>收款手续费</th>
+									<th>实收金额</th>
+									<th>付款附件</th>
+									<th>付款备注</th>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2019-06-15</td>
+									<td>￥1200</td>
+									<td>微信</td>
+									<td>￥10</td>
+									<td>￥1190</td>
+									<td>查看</td>
+									<td>备注</td>
+								</tr>
+								<tr>
+									<td>2019-06-15</td>
+									<td>￥1200</td>
+									<td>微信</td>
+									<td>￥10</td>
+									<td>￥1190</td>
+									<td>查看</td>
+									<td>备注</td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120">收款方式：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">一次性;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+			    		<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120">应收日期：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">选择日期;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    		<td class="block"></td>
+						    		<th class="width120">应收金额：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">请输入金额;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+			    		<div class="tab-div clearFix">
+			    			<span class="width122 fl" style="font-weight: bold;">收款计划列表：</span>
+			    			<div class="fl" style="margin-left:15px;">
+			    				<p>
+			    					<span>应收日期</span>
+			    					<span>应收金额</span>
+			    					<span>服务期间</span>
+			    				</p>
+			    				<p>
+			    					<span>2019-12-31</span>
+			    					<span>￥6000</span>
+			    					<span>20190101-20191231</span>
+			    				</p>
+			    			</div>
+			    		</div>
+				    	<table class="search-table" style="text-indent: 0;">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120">收款方式：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">按天;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    		<th>
+						    			<div style="position: relative;top:3px;width:40px" class="datagrid-cell-check offsetBox1"><input type="checkbox" name="ck" value=""></div>
+						    		</th>
+						    		<td >工作日</td>
+						    		<th>
+						    			<div style="position: relative;top:3px;width:40px" class="datagrid-cell-check offsetBox1"><input type="checkbox" name="ck" value=""></div>
+						    		</th>
+						    		<td>周六</td>
+						    		<th>
+						    			<div style="position: relative;top:3px;width:40px" class="datagrid-cell-check offsetBox1"><input type="checkbox" name="ck" value=""></div>
+						    		</th>
+						    		<td>周日</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+						<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120">应收期间：</th>
+						    		<td>
+						                <input id="day_start" class="easyui-datebox filter-field datebox-f combo-f textbox-f" value="" textboxname="qdr-create_time" style="display: none;" comboname="qdr-create_time">－
+						                <input id="day_end" class="easyui-datebox filter-field datebox-f combo-f textbox-f" value="" textboxname="qdr-create_time" style="display: none;" comboname="qdr-create_time">
+						            </td>
+						    		<td class="block"></td>
+						    		<th class="width120">合计期数：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">请输入金额;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    	</tr>
+						    </tbody>
+			    		</table>   		
+			    		<table class="search-table">
+						    <tbody>
+						    	<tr>
+						    		<th class="width120">应收金额：</th>
+						    		<td>
+						    			<!--<input name="ql-pro_product_title"  class="easyui-validatebox filter-field" value="" />-->
+						    			<select name="q-product_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComProduct/keyNameList/'" style="width: 300px; display: none;">
+						    				<option value="">请输入金额;</option>
+						    				<option value="290">公司1</option>
+						    				<option value="291">公司2</option>
+						    				<option value="292">公司3</option>
+						    			</select>
+						    		</td>
+						    	</tr>
+						    </tbody>
+			    		</table>
+			    		<div class="tab-div clearFix">
+			    			<span class="fl width122" style="font-weight: bold;">收款计划列表：</span>
+			    			<div class="fl" style="margin-left:15px;">
+			    				<p class="title">
+			    					<span>期数</span>
+			    					<span>计划开票时间</span>
+			    					<span>计划开票金额</span>
+			    					<span>服务期间</span> 
+			    					<span class="icon-addbtn"></span>
+			    				</p>
+			    				<p>
+			    					<span>1</span>
+			    					<span>2018-12-03</span>
+			    					<span>￥1200</span>
+			    					<span></span>
+			    					<span class="icon-delbtn"></span>
+			    				</p>
+			    				<p>
+			    					<span>2</span>
+			    					<span>2018-12-03</span>
+			    					<span>￥1200</span>
+			    					<span></span>
+			    					<span class="icon-delbtn"></span>
+			    				</p>
+			    				<p>
+			    					<span>3</span>
+			    					<span>2018-12-03</span>
+			    					<span>￥1200</span>
+			    					<span></span>
+			    					<span class="icon-delbtn"></span>
+			    				</p>
+			    			</div>
+			    		</div>
+			    		
+			    		<div class="details-section">
+			    			<div class="details-content">
+			    				<p class="black">
+			    					<span class="txt">其它续费设置</span>
+			    				</p>
+			    				<p>续费设置：</p>
+			    				<div class="table-addInfo clearFix">
+			    					<table class="c-table  fl" border="1" bordercolor="#ccc" border-collaspe="collaspe">
+			    						<thead>
+			    							<tr>
+			    								<th>序</th>
+			    								<th>续费内容</th>
+			    								<th>付款金额</th>
+			    								<th>服务期间</th>
+			    						</thead>
+			    						<tbody id="changeTab">
+			    							<tr>
+			    								<td>1</td>
+			    								<td>续费1年优惠300元</td>
+			    								<td>￥5700</td>
+			    								<td></td>
+			    							</tr>
+			    							<tr>
+			    								<td>2</td>
+			    								<td>续费1年优惠1000元</td>
+			    								<td>￥11000</td>
+			    								<td></td>
+			    							</tr>
+			    							<tr>
+			    								<td>3</td>
+			    								<td>续费1年优惠2000元</td>
+			    								<td>￥5700</td>
+			    								<td></td>
+			    							</tr>
+			    						</tbody>
+			    					</table>
+			    					<div class="addDel fl" id="addWrapSpan">
+			    						<span class="addRow" style="position: relative;">
+			    							<span class="icon-addbtn"></span>
+			    						</span>
+			    						<span class="DelRow" style="position: relative;">
+			    							<span class="icon-delbtn"></span>
+			    						</span>
+			    						<span class="DelRow" style="position: relative;">
+			    							<span class="icon-delbtn"></span>
+			    						</span>
+			    						<span class="DelRow" style="position: relative;">
+			    							<span class="icon-delbtn"></span>
+			    						</span>
+			    					</div>
+			    				</div>
+			    			</div>
+			    		</div>
+			    			
+					</div>
+				</div>
+				<div class="details-section">
+					<div class="form-actions" id="ToolEnclosure-form-actions">
+						<div class="actions-sysdefault">
+							<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="action_update('ToolEnclosure')">保存</a>
+							<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var delWrap = document.getElementById('addWrapSpan');
+			$('.addRow .icon-addbtn').click(function() {
+				$('#changeTab').append(`
+							<tr>
+			    				<td>3</td>
+								<td>续费1年优惠2000元</td>
+								<td>￥5700</td>
+								<td></td>
+							</tr>`);
+				var oSpan = document.createElement('span');
+				oSpan.className = "icon-delbtn";
+				oSpan.onclick = remove.bind(oSpan);
+				pSpan = document.createElement('span');
+				pSpan.className = "DelRow";
+				pSpan.style.position = "relative";
+				pSpan.appendChild(oSpan);
+				delWrap.appendChild(pSpan);
+			});
+		
+			(function() {
+				var aDelBtn = delWrap.getElementsByClassName('icon-delbtn');
+				var oBody = document.getElementById('changeTab');
+				var aTr = oBody.getElementsByTagName('tr');
+				for(var i = 0; i < aDelBtn.length; i++) {
+					aDelBtn[i].i = i;
+					aDelBtn[i].onclick = remove1;
+				};
+		
+				function remove1() {
+					this.parentNode.parentNode.removeChild(this.parentNode);
+					oBody.removeChild(aTr[this.i]);
+				}
+			})();
+		
+			function remove() {
+				var aDelBtn = delWrap.getElementsByClassName('icon-delbtn');
+				var oBody = document.getElementById('changeTab');
+				var aTr = oBody.getElementsByTagName('tr');
+				for(var i = 0; i < aDelBtn.length; i++) {
+					aDelBtn[i].i = i;
+					aDelBtn[i].onclick = remove;
+				};
+				this.parentNode.parentNode.removeChild(this.parentNode);
+				oBody.removeChild(aTr[this.i]);
+			}
+		</script>
+	</body>
+</html>

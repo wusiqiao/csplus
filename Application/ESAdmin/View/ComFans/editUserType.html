@@ -1,0 +1,45 @@
+<style>
+</style>
+<div class="detailcontainer" id="editUserType-detailcontainer" style="position: relative">
+    <form id="editUserType-form">
+        <div class="tableForm" style="width:500px;height:200px">
+            <foreach name="ids" item="v">
+                <input type="hidden" name="ids[]" value="{$v}">
+            </foreach>
+            <div class="center-row">
+                <div class="caption" style="display: inline-block;width:45%;text-align: center;"><span>修改类型：</span></div>
+                <div class="inputbox_x2" style="display: inline-block; width:50%">
+                    <select name="user_type" class="chosen-select">
+                        <option value="" selected> 请选择用户类型</option>
+                                <option value="{$Think.const.USER_TYPE_COMPANY_MANAGER}">员工</option>
+                                <option value="{$Think.const.USER_TYPE_CUSTOMER}">成交客户</option>
+                                <option value="{$Think.const.USER_TYPE_PROSPECTIVE}">意向客户</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="common-blue-btn  btn-update" plain="true" onclick="editUserType('{$Think.const.CONTROLLER_NAME}');">保存</a>
+            <a href="javascript:void(0)" class="common-red-btn" plain="true" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+function editUserType(frameId) {
+    showMaskLayer();
+    var data = $('#editUserType-form').serialize();
+    $.post('/' + frameId + '/editUserType', data, function(result) {
+        hideMaskLayer();
+        if (result.code == 0) {
+            closeDialog();
+            getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+            $.dialog.tips('保存成功');
+        } else {
+            $.dialog.tips(result.message);
+            return false;
+        }
+    }, 'json')
+}
+</script>

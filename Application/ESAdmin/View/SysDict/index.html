@@ -1,0 +1,56 @@
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <div style="display: flex; flex-direction: row">
+        <div style="width:25%" >
+            <div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+                <ul style="border: 0px #F2F2F2 solid;height: 99%" id="tree-dict" data-options="animate:true"></ul>
+            </div>
+        </div>
+        <div style="flex:1; disply:flex; flex-direction: column">
+            <include file="./Application/Common/Layout/Default/list_header.html"  controller="SysDict" />
+            <tr>
+                <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+                <th data-options="field:'name',width:120,align:'left'">{$Think.lang.FLD_DICT_ITEM}</th>
+                <th data-options="field:'comments',width:120,align:'left'">{$Think.lang.FLD_COMMENTS}</th>
+                <th data-options="field:'sort',width:120,align:'left'">{$Think.lang.FLD_SORT}</th>
+            </tr>
+            <include file="./Application/Common/Layout/Default/list_footer.html"  controller="SysDict" />
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        load_dict_tree();
+        var $datagrid = getDataGrid("{$Think.const.CONTROLLER_NAME}");
+        $("#tree-dict").tree({onClick: function (node) {
+                $datagrid.datagrid({queryParams: {"q-parent_id": node.id}});
+        }});
+    });
+    function load_dict_tree() {
+        $.getJSON("SysDict/tree", {}, function (result) {
+            $("#tree-dict").tree({
+                data: result
+            });
+        });
+    }
+    $(function () {
+        var $datagrid = getDataGrid("{$Think.const.CONTROLLER_NAME}");
+        $datagrid.bind("afterDelete", function () {
+            load_dict_tree();
+        });
+    });
+    re_bind_action_add("{$Think.const.CONTROLLER_NAME}", function () {
+        dict_action_add("{$Think.const.CONTROLLER_NAME}");
+    });
+    function dict_action_add(title) {
+        var node = $("#tree-dict").tree("getSelected");
+        if (node) {
+            if (node.parent_id !== "1") { //第一级
+                $.dialog.tips('无法新增子项，级别最多只能为一级');
+            } else {
+                _add("SysDict", "数据字典", {"parent_id": node.id});
+            }
+        } else {
+            $.dialog.tips('请先选择父项');
+        }
+    }
+</script>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            width: 350px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <p>选择删除之后将无法恢复，确定要删除吗？</p>
+</div>
+<div class="wrap" style="margin-top: 30px">
+    <a href="javascript:void(0)" class="btn_save_blue" onclick="deleteDept(this)" data-id="{$id}">确定</a>
+    <a href="javascript:void(0)" class="btn_close_gray" onclick="closeDialog()">取消</a>
+</div>
+</body>
+<script>
+    function deleteDept(obj){
+        showMaskLayer();
+        var id = $(obj).data("id");
+        $.post("Organization/deleteDept",{id:id},function(result){
+            hideMaskLayer();
+            if(result.code == 0){
+                $('#Organization-datagrid').datagrid("load",{
+                    branch_id:0
+                });
+                getTrees();
+            }
+            closeDialog();
+            $.dialog.tips(result.message);
+        },'json');
+    }
+</script>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            display:flex;
+            position: relative;
+            height:100%;
+        }
+        .con-lef{
+            padding-left:20px;
+            width:220px;
+            height:100%;
+            background: #fbfafa;
+        }
+        .con-lef li{
+            height:60px;
+        }
+        .con-rig{
+            width:calc(100% - 220px);
+            padding: 0 3%;
+        }
+        .tab-top{
+            display: flex;
+            margin:20px 0;
+            justify-content: space-between;
+        }
+        .tab-top span{
+            display: inline;
+            padding: 10px 25px;
+            background: #398bfe;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+        }
+        .tab-top span + span{
+            margin-left:15px;
+        }
+        .tab{
+            border-collapse: collapse;
+            width:100%;
+        }
+        .tab tr{
+            height:50px;
+        }
+        .tab thead tr,.tab tbody tr:nth-child(even){
+            background: #f8f6f6;
+        }
+        .tab td:first-child,.tab td:nth-child(2){
+            width:170px;
+            text-align: center;
+        }
+        .tab .txt{
+            margin-left:12px;
+        }
+        .tab tbody td:nth-child(3){
+            padding: 0 25px;
+        }
+        .tab tbody .wrapSpan{
+            display: inline-block;
+            width:150px;
+            height: 50px;
+            padding-top: 14px;
+            box-sizing: border-box;
+        }
+        .tab .third{
+            padding: 0 25px;
+            text-align:left !important;
+        }
+        .cover{
+            position: absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.6);
+        }
+        .cover .cover-con{
+           margin:30px 0 0 210px;
+        }
+        .cover p{
+            color:#fff;
+            font-family: "站酷快乐体";
+            font-size: 16px;
+            line-height: 20px ;
+        }
+        .cover .spanBtn{
+            margin-top:30px;
+            padding-left: 340px;
+        }
+        .cover .know{
+            display: inline-block;
+            border:1px dashed #fff;
+            width:148px;
+            height:40px;
+            cursor: pointer;
+            border-radius: 10px;
+            user-select: none;
+            line-height: 40px;
+            text-align: center;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="con-lef">
+            <h3>公司角色</h3>
+            <ul>
+                <li>超级管理员（系统默认）</li>
+                <li>普通管理员（系统默认）</li>
+                <li>普通员工（系统默认）</li>
+            </ul>
+        </div>
+        <div class="con-rig">
+            <div class="tab-top">
+                <h3>超级管理员权限选择</h3>
+                <p>
+                    <span class="addRole">新增角色</span>
+                    <span class="copyRole">复制角色</span>
+                </p>
+            </div>
+            <table class="tab" border="1" bordercolor="#ccc">
+                <thead>
+                    <tr>
+                        <th>模块</th>
+                        <th></th>
+                        <th colspan="5">期限</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="7">
+                            <input type="checkbox" class="css-checkbox">
+                            <label  class="css-label">
+                                <span class="txt">工作管理</span>
+                            </label>
+                        </td>
+                        <td>
+                            <input type="checkbox" class="css-checkbox">
+                            <label  class="css-label">
+                                <span class="txt">我的工作</span>
+                            </label>
+                        </td>
+                        <td class="third">
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="css-checkbox">
+                            <label  class="css-label">
+                                <span class="txt">我的工作</span>
+                            </label>
+                        </td>
+                        <td  class="third">
+                             <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="css-checkbox">
+                            <label  class="css-label">
+                                <span class="txt">我的工作</span>
+                            </label>
+                        </td>
+                        <td  class="third">
+                             <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                            <span class="wrapSpan">
+                                <input type="checkbox" class="css-checkbox">
+                                <label  class="css-label">
+                                    <span class="txt">新增</span>
+                                </label>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div class="cover">
+            <div class="cover-con">
+                <p>提示：</p>
+                <p>1.角色代表操作权限，操作权限是指具有该角色的用户是否能查看、新增、编辑、删除某些数据</p>
+                <p>2.超级管理员的权限是系统默认的最大权限角色，不能修改</p>
+                <p class="spanBtn">
+                    <span class="know">我知道啦~</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('.know').click(function (){
+            $('.cover').css('display','none');
+        });
+        $('.addRole').click(function (){
+            createDialog("StaffRole/addRole","新增角色名");
+        });
+        $('.copyRole').click(function (){
+            createDialog("StaffRole/copyRole","复制角色");
+        });
+    </script>
+</body>
+</html>

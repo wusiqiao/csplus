@@ -1,0 +1,267 @@
+<style>
+    .important {
+        color: red;
+        font-size: 22px;
+        padding: 5px;
+        margin-right: 0px
+    }
+
+    .grey {
+        color: grey;
+        margin-left: 15px
+    }
+
+    .demo--label {
+        margin: 20px 20px 0 0;
+        display: inline-block
+    }
+
+    .demo--radio {
+        display: none
+    }
+
+    .demo--radioInput {
+        background-color: #fff;
+        border: 2px solid rgba(0, 0, 0, 0.15);
+        border-radius: 100%;
+        display: inline-block;
+        height: 20px;
+        margin-right: 10px;
+        margin-top: -1px;
+        vertical-align: middle;
+        width: 20px;
+        line-height: 1
+    }
+
+    .demo--radio:checked + .demo--radioInput:after {
+        background-color: #00A1E9;
+        border-radius: 100%;
+        content: "";
+        display: inline-block;
+        height: 10px;
+        margin-left: 5px;
+        margin-top: 5px;
+        width: 10px
+    }
+
+    .demo--checkbox.demo--radioInput, .demo--radio:checked + .demo--checkbox.demo--radioInput:after {
+        border-radius: 0
+    }
+
+    .demo--radio:checked + .demo--radioInput {
+        border: 2px solid #00A1E9;
+    }
+
+    .tree {
+        max-height: 460px;
+        overflow-y: auto;
+    }
+
+    .input-row {
+        margin-bottom: 20px;
+    }
+
+    #dataform .css-label{
+        margin-left: 5px;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer"
+     style="margin: 10px;background: #fff;width:75%;border:1px solid #ccc;">
+    <form id="dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-section" style="padding-bottom: 20px">
+            <div class="easyui-section-item float" style="padding-left:0px">
+                <div class="tab-header"><span>线下支付</span></div>
+                <div class="tableForm" style="padding-left:30px">
+                    <div class="row">
+                        <div class="caption" style="width:20%"><span class="important"
+                                                                     style="padding-right: 18px">*</span><span>是否开启：</span>
+                        </div>
+                        <div class="inputbox" style="width: 10%;">
+                            <input type="checkbox" id="store_pay_status" name="store_pay_status" class="css-checkbox" value="20"
+                            <if condition="$storeConfig.pay_status neq 30"> checked</if>
+                            />
+                            <label for="store_pay_status" class="css-label"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="caption block" style="width:20%"><span class="important"
+                                                                           style="padding-right: 17px">*</span><span>收款账户：</span>
+                        </div>
+                        <div class="inputbox">
+                            <input name="unline_payee" class="easyui-validatebox" data-options="required:true"
+                                   value="{$storeConfig.unline_payee}"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="caption block" style="width:20%">
+                            <span class="important" style="padding-right: 18px">*</span><span>&nbsp;开&nbsp;&nbsp;户&nbsp;行：</span>
+                        </div>
+                        <div class="inputbox">
+                            <input name="unline_bank_account" class="easyui-validatebox" data-options="required:true"
+                                   value="{$storeConfig.unline_bank_account}"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="caption" style="width:20%">
+                            <span class="important" style="padding-right: 18px">*</span><span>收款账号：</span>
+                        </div>
+                        <div class="inputbox">
+                            <input name="unline_card_number" class="easyui-validatebox" data-options="required:true"
+                                   value="{$storeConfig.unline_card_number}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="easyui-section-item float" style="padding-left:0px">
+                <div class="tab-header"><span>微信支付</span></div>
+                <div class="tableForm" style="padding-left:30px">
+                    <div class="row">
+                        <div class="caption" style="width:20%"><span class="important"
+                                                                     style="padding-right: 18px">*</span><span>是否开启：</span>
+                        </div>
+                        <div class="inputbox" style="width: 10%;">
+                            <input type="checkbox" id="wxpay_open" name="wxpay_open" class="css-checkbox" value="20"
+                            <if condition="$wxConfig.wxpay_open neq 30"> checked</if>
+                            />
+                            <label for="wxpay_open" class="css-label"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption block" style="width:20%"><span class="important"
+                                                                           style="padding-right: 17px">*</span><span>&nbsp;&nbsp;商&nbsp;户&nbsp;号：</span>
+                        </div>
+                        <div class="inputbox"><input name="wx_mchid" class="easyui-validatebox"
+                                                     data-options="required:true" value="{$wxConfig.wx_mchid}"/></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="caption block" style="width:20%"><span class="important"
+                                                                           style="padding-right: 18px">*</span><span>&nbsp;商户&nbsp;key：</span>
+                        </div>
+                        <div class="inputbox"><input name="wx_pay_key" class="easyui-validatebox"
+                                                     data-options="required:true" value="{$wxConfig.wx_pay_key}"/></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="easyui-section-item float" style="padding-left:0px">
+                <div class="tableForm" style="padding-left:30px">
+                    <div class="row" style="padding-top:10px">
+                        <div class="caption block" style="width:20%">
+                            <span class="important" style="padding-right: 17px">*</span>
+                            <span>默认支付：</span>
+                        </div>
+                        <div class="inputbox" style="font-size:16px; width: 70%;margin-top: 6px">
+                            <label id="default-offline" class="css-label">
+                                线下支付：<input type="radio" name="default" id="default1" class="easyui-validatebox css-checkbox" value="offline"
+                                            style="width:10%" checked/>
+                                <label for="default1" class="css-label"></label>
+                            </label>
+
+                            <label id="default-wechat" class="css-label">
+                                微信支付：<input type="radio" name="default" id="default2" class="css-checkbox" value="wechat"
+                                            style="width:10%"
+                                <if condition="$wxConfig.wxpay_open eq 10"> checked</if>
+                                />
+                                <label for="default2" class="css-label"></label>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="easyui-section-item float" style="padding-left:0px">
+                <center>
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true"
+                       icon="fa-save fa-lg" onclick="saveComStoreForm()">保存</a>
+                </center>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    var lock = false;
+    function saveComStoreForm() {
+        if (lock) {
+            $.dialog.alert('请不要频繁提交!')
+        }
+        ;
+        var form = $("#dataform").serializeArray();
+        var data = {};
+        $.each(form, function (item, val) {
+            data[val.name] = val.value;
+        });
+
+        data.store = '{$storeConfig["id"]}';
+        data.wechat = '{$wxConfig["id"]}';
+
+        $.ajax({
+            url: 'ComPayConfig/modify',
+            type: 'post',
+            data: data,
+            dataType: 'json',
+            success: function (res) {
+                $.dialog.alert(res.message);
+            },
+            error: function () {
+                $.dialog.alert('服务器异常!');
+            },
+            complete: function () {
+                lock = false;
+            }
+        })
+    }
+    (function () {
+        $(":input[type='checkbox']").change(function () {
+            var box = $(":input[type='checkbox']");
+            var isWechat = $(box[1]).is(":checked");
+            var isOffline = $(box[0]).is(":checked");
+
+            if (isWechat == isOffline && isOffline == false) {
+                $.dialog.alert('必须开启一种支付');
+                $(this).attr('checked', true);
+                return false;
+            }
+
+            if (isOffline == false) {
+                $("#default-offline").hide().attr('checked', false);
+            } else {
+                $("#default-offline").show()
+            }
+
+            if (isWechat == false) {
+                $("#default-wechat").hide().attr('checked', false);
+            } else {
+                $("#default-wechat").show();
+            }
+
+            if (!(isWechat && isOffline)) {
+                if (isWechat) {
+                    $("#default-wechat input").attr('checked', true);
+                }
+
+                if (isOffline) {
+                    $("#default-offline input").attr('checked', true);
+                }
+            }
+        });
+
+        $.each($(":input[type='checkbox']"), function(key, obj){
+            if(!$(obj).is(":checked")){
+                switch(key){
+                    case 0 :
+                        $("#default-offline").hide()
+                        break;
+                    case 1 :
+                        $("#default-wechat").hide()
+                        break;
+                }
+            }
+        });
+    })();
+</script>

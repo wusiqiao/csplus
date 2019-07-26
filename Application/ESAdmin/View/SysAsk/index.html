@@ -1,0 +1,38 @@
+<style>
+    .ask_list_new span{
+        color: #676767 !important;
+    }
+</style>
+<script type="text/javascript">
+    function format_ask_type(value, row){
+        var scale_text = [];
+        scale_text['order'] = "服务订单";
+        scale_text['system'] = "系统消息";
+        return scale_text[value];
+    }
+    function format_head_pic(value, row){
+        return '<img src="'+value+'" width="50px" height="50px">';
+    }
+    function format_ask_content(value, row){
+        return '<div class="ask_list_new" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap">'+value+'</div>';
+    }
+</script>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th data-options="field:'id',hidden:true">id</th>
+        <th data-options="field:'comment_time',width:180" sortable="true">{$Think.lang.ASK_CREATED_AT}</th>
+        <th data-options="field:'head_pic',width:80,align:'left',formatter:format_head_pic">{$Think.lang.ASK_HEAD_PIC}</th>
+        <th data-options="field:'obj_type',width:120,align:'left',formatter:format_ask_type">{$Think.lang.ASK_TYPE}</th>
+        <th data-options="field:'contacts',width:120,align:'left'">{$Think.lang.ASK_SOURCE_NAME}</th>
+        <th data-options="field:'remark',width:120,align:'left'">{$Think.lang.ASK_REMARKS}</th>
+        <th data-options="field:'content',width:400,align:'left',formatter:format_ask_content" sortable="true" order="desc">{$Think.lang.ASK_CONTENT}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<div id="actions-{$Think.const.CONTROLLER_NAME}">
+    <if condition="($permissions.detail eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+        <a href="javascript:void(0)" class="common-blue-btn detail-edit" style="width:auto" plain="true" onclick="action_detail('{$Think.const.CONTROLLER_NAME}','{$title}')">查看</a><div class="btn-separator"></div>
+
+    </if>
+</div>

@@ -1,0 +1,131 @@
+<input name="bill_flag" type="hidden" value="{$Think.const.FLAG_BILL_SALARY}" />
+<div class="property-content">
+    <ul class="input-contents">
+        <include file="error" />
+        <li class="third-width">
+            <div class="title required">录入日期</div>
+            <div class="input">
+                <input type="text" name="bill_date" style="width:100%" class="easyui-datebox easyui-validatebox" data-options="required:true,formatter:formatDate" value="{$model.bill_date}">
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title required">录入单号</div>
+            <div class="input">
+                <input type="text" name="bill_no" class="easyui-validatebox" data-options="required:true,formatter:formatDate" value="{$model.bill_no}">
+            </div>
+        </li>
+        <li  class="third-width">
+            <div class="title required">会计期间</div>
+            <div class="input">
+                <!--<input type="text" name="source_date" style="width:100%"  class="easyui-datebox easyui-validatebox" data-options="formatter:formatDate" value="{$model.source_date}">-->
+                <select class="chosen-select" style="width:100%;" name="accounting_section" data-value="{$model.accounting_section}"></select>
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title tax-type-amount-title required">应发工资</div>
+            <div class="input">
+                <input type="text" class="easyui-validatebox calc" name="salary_payable" data-options="required:true,precision:2,validType:'number'" placeholder="" value="{$model.salary_payable}">
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title tax-type-amount-title required">社保</div>
+            <div class="input">
+                <input type="text" class="easyui-validatebox calc" name="insurance" data-options="required:true,precision:2,validType:'number'" placeholder="" value="{$model.insurance}">
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title">公积金</div>
+            <div class="input">
+                <input type="text" class="easyui-validatebox calc" name="fund" data-options="precision:2,validType:'number'" placeholder="" value="{$model.fund}">
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title tax-type-amount-title">个人所得税</div>
+            <div class="input">
+                <input type="text" class="easyui-validatebox calc" name="personal_tax" data-options="precision:2,validType:'number'" placeholder="" value="{$model.personal_tax}">
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title required">实发工资</div>
+            <div class="input">
+                <input type="text" class="easyui-validatebox" name="salary_net" data-options="required:true,precision:2,validType:'number'" placeholder="" value="{$model.salary_net}">
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title">发放部门</div>
+            <div class="input">
+                <select class="chosen-select" style="width:100%;" name="fee_department" data-value="{$model.fee_department}">
+                    <option value="{$Think.const.FEE_DEPATMENT_MANAGE}">管理部门</option>
+                    <option value="{$Think.const.FEE_DEPATMENT_SALES}">销售部门</option>
+                    <option value="{$Think.const.FEE_DEPATMENT_RD}">研发部门</option>
+                    <option value="{$Think.const.FEE_DEPATMENT_PRODUCTION}">生产部门</option>
+                    <option value="{$Think.const.FEE_DEPATMENT_BUILDING}">施工部门</option>
+                </select>
+            </div>
+        </li>
+        <li class="pay-type-row source-input">
+            <fieldset style="border:1px #ccc solid;margin:0;border-radius:5px">
+                <legend>付款方式</legend>
+                <div class="input" style="padding:5px 5px 0px;float:left;width:40%">
+                    <label><input name="cashpayed" type="radio" value="1" data-value="{$model.cashpayed}"
+                                  default="true">现金已付</label>
+                    <label><input name="cashpayed" type="radio" value="0" data-value="{$model.cashpayed}">银行转账</label>
+                </div>
+                <div class="input" style="padding:0px 0px;width:50%;float:left">
+                    <select name="bank_subject" style="width: 100%;" class="chosen-select"
+                            data-options="all:true,textField:'name',idField:'id',search_key_url:'VcrSubject/getBankSubject/'">
+                    </select>
+                </div>
+            </fieldset>
+        </li>
+        <li>
+            <div class="title">摘要</div>
+            <div class="input">
+                <textarea name="memo" rows="4" placeholder="">{$model.memo}</textarea>
+            </div>
+        </li>
+    </ul>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        create_ccounting_section($("select[name=accounting_section]"));
+        loadSalaryItems('{$model.items}');
+        $("input.calc").change(function(){
+            var salary_payable = tryParseFloat($("input[name=salary_payable]").val(),0);
+            var insurance = tryParseFloat($("input[name=insurance]").val(),0);
+            var fund = tryParseFloat($("input[name=fund]").val(),0);
+            var personal_tax = tryParseFloat($("input[name=personal_tax]").val(),0);
+            var salary_net = salary_payable-insurance-fund-personal_tax;
+            $("input[name=salary_net]").val(salary_net);
+        });
+    });
+
+    function loadSalaryItems(json){
+        if (json != '') {
+            var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+            var items = JSON.parse(json);
+            $(items).each(function (index) {
+                switch (this["goods_name"]){
+                    case "应发工资":
+                        dataForm.find("input[name=salary_payable]").val(this["amount"]);
+                        break;
+                    case "保险":
+                        dataForm.find("input[name=insurance]").val(this["amount"]);
+                        break;
+                    case "公积金":
+                        dataForm.find("input[name=fund]").val(this["amount"]);
+                        break;
+                    case "个人所得税":
+                        dataForm.find("input[name=personal_tax]").val(this["amount"]);
+                        break;
+                    case "实发工资":
+                        dataForm.find("input[name=salary_net]").val(this["amount"]);
+                        break;
+                }
+            });
+        }
+    }
+</script>
+

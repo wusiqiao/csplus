@@ -1,0 +1,120 @@
+<style>
+    .search-btn{
+        float:left;
+        padding: 4px 13.5px;
+        margin: 0 2px;
+        background-color: #fff;
+        border-radius: 4px;
+        color: #368bfe;
+    }
+    .search-btn.checked{
+        background-color: #368bfe;
+        color: #fff;
+    }
+    .search-action-panel {
+        display: none;
+    }
+    /* 搜索框 */
+    .search_ipt{
+        display: inline-block;
+        width: 360px;
+        height: 26px;
+        border: 1px solid #d3d3d3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding:2px 5px;
+        margin: 10px 20px 10px 0px;
+    }
+    .search_ipt:hover{
+        border: 1px solid #6eacfe;
+    }
+    .search_ipt input{
+        border:none;
+        height:100%;
+        text-indent:6px;
+        outline: none;
+    }
+</style>
+<script>
+    function fixWidth(percent)
+    {
+        return document.getElementById('UseDetail-maincontainer').clientWidth * percent ; //这里你可以自己做调整
+    }
+    function formatUserName(value,row)
+    {
+        return '<div style="display: flex;"><img  style="border-radius: 15px;width: 26px;height: 26px;flex: .1;" src="'+row.head_pic+'"> <span style="flex: 1;line-height: 25px;">'+value+'</span></div>';
+    }
+    setMainContainerConfig("UseDetail", {
+        onDblClickRow: function(){
+            return false;
+        }
+    })
+</script>
+<div class="maincontainer" id="UseDetail-maincontainer">
+    <form>
+        <div class="tableForm" style="width:600px;min-height: 400px;;overflow-x:auto">
+            <table  class="easyui-datagrid datagrid" id="UseDetail-datagrid" data-options="
+           url:'{$Think.const.CONTROLLER_NAME}/getHaveReceivedLists/id/{$id}',
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#UseDetail-toolbar',
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:false,
+           border:true">
+                <thead>
+                <tr>
+                    <th data-options="field:'id',hidden:true">序号</th>
+                    <th data-options="field:'received_name',width:fixWidth(0.30),formatter:formatUserName">领取用户</th>
+                    <th data-options="field:'received_mobile',width:fixWidth(0.2)">手机号</th>
+                    <th data-options="field:'received_time',width:fixWidth(0.25),formatter:formatDateTime">领取时间</th>
+                    <th data-options="field:'user_state',width:fixWidth(0.2)">使用状态</th>
+                </tr>
+                <include file="./Application/Common/Layout/Default/list_footer.html"  controller="UseDetail" />
+    <div class="form-actions">
+        <div class='actions-UseDetail'>
+            <a href="javascript:void(0)" class="common-red-btn bg_red" plain="true" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+    <div class="search-panel" id="UseDetail-search-panel" style="display: none">
+        <table class="search-table" style="    max-width: 100%;">
+            <tr class="groups">
+                <th>使用状态：</th>
+                <td colspan="9">
+                    <div class="search-btn checked"  data-status="">全部</div>
+                    <div class="search-btn" data-status="2">已使用</div>
+                    <div class="search-btn" data-status="1">未使用</div>
+                    <input type="hidden" id="ts_state" name="q-ts*state" value="" class="filter-field">
+                </td>
+                <td colspan="3">
+                    <div style="flex: .26;text-align: right">
+                        <div class="search_ipt" style="width: 100%;margin-left: 20%;" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                            <input type="text" v-model="keyword" value="" placeholder="输入昵称/手机号进行搜索" class="filter-field ipt_new" name="ql-ts*mobile"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/minicolors/jquery.minicolors.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    function format_head_pic(value){
+        var url = "<img src='" + value + "' width='40px' height='40px'>";
+        return url;
+    }
+    $('.search-btn').click(function(){
+        if (!$(this).hasClass('checked')) {
+            $(this).addClass('checked').siblings('.search-btn').removeClass('checked');
+            var status = $(this).data('status');
+            $('#ts_state').val(status);
+            doSearchQuery("UseDetail");
+        }
+    })
+    $(".search_ipt input").keyup(function(){
+        doSearchQuery("UseDetail")
+    });
+</script>

@@ -1,0 +1,373 @@
+<script>
+    function formatterStatus(val) {
+        switch (parseInt(val)) {
+            case 20:
+                return '已发布';
+                break;
+            default :
+                return '<span style="color: red">未发布</span>';
+        }
+    }
+
+    function formatterTime(val, obj) {
+        if (obj.shelf_status != 20) {
+            return formatterStatus();
+        }
+
+        return new Date(parseInt(val) * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ');
+    }
+    function formatterButton(val, obj) {
+        if (obj.shelf_status == 20) {
+            return `<div class='btn-speed' onclick="lowerShelf(${obj.id}, this)">下架</div>
+            <a class='btn-speed' style="color:#fff;" href="ComMaterialLibrary/preview/${obj.id}" target="_blank">预览</a>`;
+        }
+        return `<div class='btn-speed' style="background-color: red" onclick="release(${obj.id}, this)">上架</div>
+        <a class='btn-speed' style="color:#fff;" href="ComMaterialLibrary/preview/${obj.id}" target="_blank">预览</a>`;
+    }
+</script>
+<style>
+    .btn-screening-label {
+        float: left;
+        width: 90px;
+        height: 54px;
+        line-height: 54px;
+        text-align: right;
+    }
+
+    .search_ipt {
+        float: right;
+    }
+
+   .search-panel  .common-blue-btn {
+        display: none;
+    }
+
+    .search-panel {
+        padding: 0;
+        overflow: hidden;
+    }
+</style>
+<div class="c-header">
+    <div class="tab-span tab-span-on" data-source="10">财穗+图文</div>
+    <!--<div class="tab-span" data-index="0" data-source="20">图文</div>-->
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <div class="search-table" style="max-width:100%;">
+        <div style="height:54px;line-height: 54px;position: relative;">
+            <div class="btn-screening-label">图文状态：</div>
+            <div class="btn-screening btn-screening-on">全部</div>
+            <div class="btn-screening" data-status="20">已发布</div>
+            <div class="btn-screening" data-status="10">未发布</div>
+            <input type="hidden" name="q-shelf_status" class="filter-field" id="status"/>
+            <input type="hidden" name="q-source" class="filter-field" id="source" value="10"/>
+            <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                <input type="text" placeholder="请输入标题" style="width:300px;" class="filter-field" name="ql-title"
+                       onkeydown="search.search()"><img
+                    src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+    <tr>
+        <th data-options="field:'aa',width:50,checkbox:'true'"></th>
+        <th data-options="field:'title',width:400,align:'center'">{$Think.lang.TITLE}</th>
+        <th data-options="field:'shelf_status',width:200,align:'center', formatter : formatterStatus">
+            {$Think.lang.STATUS}
+        </th>
+        <th data-options="field:'shelf_time',width:200,align:'center', formatter:formatterTime">
+            {$Think.lang.SHELF_TIME}
+        </th>
+        <th data-options="field:'id',width:200,align:'center', formatter:formatterButton">操作</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+</div>
+
+<script>
+    (function(){
+        $("#MaterialCenter-toolbar a").each(function(){
+            if($(this).text() == '新增'){
+                $(this).attr('onclick', 'action_add_edit()');
+            }
+
+            if($(this).text() == '修改'){
+                $(this).attr('onclick', 'action_detail_edit()');
+            }
+
+            if($(this).text() == '删除'){
+                $(this).attr('onclick', 'action_delete_edit()');
+            }
+        })
+
+        $("#MaterialCenter-toolbar .actions")
+                .append('<a href="javascript:void(0)" class="btn-speed detail-delete" plain="true" onclick="batch(\'lower\')">批量下架</a>')
+                .append('<a href="javascript:void(0)" class="btn-speed detail-delete" plain="true" onclick="batch(\'shelf\')">批量上架</a>');
+    })()
+
+    function batch(action){
+        var list = $("#MaterialCenter-datagrid").datagrid('getSelections');
+        if(list.length == 0){
+            $.dialog.alert('请选择');
+            return false;
+        }
+
+        $.dialog.confirm('确定操作?', function(){
+            var ids = [];
+            for(var index in list){
+                var item = list[index];
+                if(item.shelf_status == 20 && action == 'lower'){
+                    ids.push(item.id);
+                }
+
+                if(item.shelf_status == 10 && action == 'shelf'){
+                    ids.push(item.id);
+                }
+            }
+
+            if(ids.length == 0){
+                $.dialog.alert('已全部 ' + (action == 'lower' ? '下架' : '上架'))
+                return false;
+            }
+            $.post('/MaterialCenter/batch', {ids : ids.join(','),action :action },function(res){
+                if(res.code == 0){
+                    $.dialog.alert('操作成功!');
+                    search.search();
+                }else{
+                    $.dialog.alert(res.message);
+                }
+            }, 'json')
+        })
+    }
+
+    //数据添加保存操作
+    function saveData(data) {
+        var bool = false;
+        data.source = 10;
+        var Url = 'MaterialCenter/add';
+        if (data.id > 0) {
+            var id = data.id;
+            delete data.id;
+            Url = 'MaterialCenter/update?id=' + id;
+        }
+        $.ajax({
+            url: Url,
+            async: false,
+            type: 'post',
+            data: data,
+            dataType: 'json',
+            success: function (res) {
+                var message = res.message;
+                if (res.code == 0) {
+                    search.search();
+                    bool = true;
+                    message = '操作成功';
+                }
+
+                $.dialog.alert(message);
+            },
+            error: function () {
+                $.dialog.alert('服务器异常!');
+            }
+        });
+
+        return bool;
+    }
+    //上架
+    function release(id, obj) {
+        $.post('MaterialCenter/shelf', {id, id}, function (res) {
+            if (res.code == 0) {
+                $(obj).attr('onclick', `lowerShelf(${id}, this)`).text('下架');
+                $.dialog.alert("上架成功!");
+                search.search();
+            } else {
+                $.dialog.alert(res.message);
+            }
+        }, 'json')
+    }
+    //下架
+    function lowerShelf(id, obj) {
+        $.post('MaterialCenter/lowerShelf', {id, id}, function (res) {
+            if (res.code == 0) {
+                $(obj).attr('onclick', `release(${id}, this)`).text('上架');
+                ;
+                $.dialog.alert("下架成功!");
+                search.search();
+            } else {
+                $.dialog.alert("下架失败!");
+            }
+        }, 'json')
+    }
+    //数据详情
+    function action_detail_edit() {
+        var data_grid = getDataGrid('MaterialCenter');
+        var data = data_grid.datagrid('getSelections');
+        if (data.length == 0) {
+            $.dialog.alert("请选择要修改的数据!");
+            return false;
+        }
+
+        action_add_edit(data[0]);
+    }
+
+    $("#MaterialCenter-datagrid").datagrid({
+        onDblClickRow: function () {
+            action_detail_edit('MaterialCenter');
+        },
+    });
+    //数据天津
+    function action_add_edit(data) {
+        if (data && data.shelf_status == 20) {
+            $.dialog.alert('请下架，在修改!');
+            return false;
+        }
+        if(data){
+            $.ajax({
+                url : 'MaterialCenter/getContent?id=' + data.id,
+                async : false,
+                dataType : 'json',
+                success : function(res){
+                    data.content = res.message;
+                }
+            });
+        }
+
+        var dlg = $.dialog({
+            title: "文章新增",
+            autoSize: true,
+            content: "url:MaterialCenter/add",
+            lock: false,
+            max: true,
+            min: false,
+            cancel: false,
+            button: [{
+                name: '保存',
+                callback: function () {
+                    var data = dlg.content.GraphicCenter.getInput();
+                    data.content = dlg.content.document.getElementById("previews").innerHTML;
+
+                    if(!data.title || !data.content || !data.cover_url){
+                        $.dialog.alert('标题，内容必填封面图片必选，请检查');
+                        return false;
+                    }
+
+                    if(data.title && data.title.length > 64){
+                        $.dialog.alert('标题最多64个');
+                        return false;
+                    }
+
+                    if(data.digest && data.digest.length > 120){
+                        $.dialog.alert('摘要最多120个');
+                        return false;
+                    }
+
+                    return saveData(data);
+                }
+            }, {
+                name: '关闭',
+                callback: function () {
+                    if (confirm("确定放弃编辑？")) {
+                        return true;
+                    } else {
+                        return false
+                    }
+                }
+            }],
+            init: function () {
+                var source = "";
+                if (data != undefined) {
+                    source = data.content;
+                }
+                if (source == undefined) {
+                    source = '';
+                }
+                this.content.document.getElementById("source-content").innerHTML = source;
+                this.content.GraphicCenter.initData(data);
+            }
+        });
+        dlg.max();
+        // var source = $("#store-content").html();
+        // openEditor("文章新增", source, function () {
+        //     $("#store-content").html(content);
+        //     $dataform.find("input[name=body]").val(content);
+        // },"MaterialCenter/edit");
+    }
+
+    function action_delete_edit(_grid) {
+        var item = $("#MaterialCenter-datagrid").datagrid('getSelected');
+        if (!item) {
+            $.dialog.alert('请选择要删除的数据');
+            return false;
+        }
+
+        if (item.shelf_status == 20) {
+            $.dialog.alert('请下架，在删除!');
+            return false;
+        }
+
+        $.post('/MaterialCenter/delete', {id: item.id}, function (res) {
+            $.dialog.alert(res.message);
+            if (res.code == 0) {
+                refreshDatagrid($("#MaterialCenter-datagrid"), [], 'delete');
+            }
+        }, 'json')
+    }
+    var searchForm = function () {
+        $btnScreening = $(".btn-screening");
+        $statusInput = $("#status");
+        $tabSpan = $(".c-header > .tab-span");
+        $sourceInput = $("#source");
+        var onClickStatus = function () {
+            var newStatus = $(this).data('status');
+            var oldStatus = $statusInput.val();
+            if (newStatus != oldStatus) {
+                $statusInput.val(newStatus);
+                selectedStatus(this);
+                search();
+            }
+        }
+
+        var selectedStatus = function (obj) {
+            $btnScreening.removeClass('btn-screening-on');
+            $(obj).addClass('btn-screening-on');
+        }
+
+        var onClickSource = function () {
+            var source = $(this).data('source');
+            $sourceInput.val(source);
+            selectedSource(this);
+//            search();
+        }
+
+        var selectedSource = function (obj) {
+            $tabSpan.removeClass('tab-span-on');
+            $(obj).addClass('tab-span-on');
+        }
+
+        var search = function () {
+            doSearchQuery('MaterialCenter');
+        }
+
+        var init = function () {
+            search();
+            $btnScreening.click(onClickStatus);
+            $tabSpan.click(onClickSource)
+        }
+
+        init();
+
+        return {
+            search: search
+        };
+    }
+    var search = searchForm();
+    // 搜索框悬停效果
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+
+</script>

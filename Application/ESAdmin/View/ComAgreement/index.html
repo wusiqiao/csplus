@@ -1,0 +1,185 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .toggle-span + span{
+        border-left:none;
+    }
+    .q-select{
+        height: 30px;
+        padding: 0px 4px;
+    }
+    .grey{
+        background-color: #bfbfbf;
+    }
+    .red-point{
+        height:11px;
+        width:11px;
+        border-radius:50%;
+        color:#fff;
+        background:red;
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        -webkit-animation: twinkling 1s infinite ease-in-out;
+    }
+</style>
+<script>
+function formatOrign(value) {
+    return value == 0 ? "商城" : '导入';
+}
+
+function formatState(value) {
+    if(value == 0){
+        return "未激活";
+    } else if(value == 1){
+        return "服务中";
+    } else if(value == 2){
+        return "冻结中";
+    } else{
+        return "已结束";
+    }
+}
+
+function formatplanState(value) {
+    if (value == null) {
+        return "";
+    } else {
+        return value == 0 ? "未结束" : "已结束";
+    }
+}
+
+function formatWrState(value){
+    if(value == undefined){
+        return "";
+    }else{
+        return value == 0 ? "未结束" : "已结束";
+    }
+}
+
+function formatToDetail(value,row){
+    var html = "<a href='javascript:void(0)' class='common-blue-btn' style='color: white' onclick='toDetail("+row.id+")'>合同详情</a>";
+    /*if(row.assignment_id != "" && row.assignment_id != undefined){
+        html += "<a href='javascript:void(0)' class='common-blue-btn' style='color: white' onclick='toAssignment("+row.id+")'>任务详情</a>";
+    }else{
+        html += "<a href='javascript:void(0)' class='common-blue-btn grey' style='color: white'>任务详情</a>";
+    }*/
+    if(row.receivables_id != "" && row.receivables_id != undefined && row.wr.is_renew == 1){
+        if(row.wr.new_message == 1){
+            html += "<a href='javascript:void(0)' class='common-blue-btn' style='color: white;margin-right: 0;position: relative;' onclick='toReceivables("+row.receivables_id+")'>缴费详情<span class='red-point' id='new_receivable'></span></a>";
+        }else{
+            html += "<a href='javascript:void(0)' class='common-blue-btn' style='color: white;' onclick='toReceivables("+row.receivables_id+")'>缴费详情</a>";
+        }
+    }else{
+        html += "<a href='javascript:void(0)' class='common-blue-btn grey' style='color: white'>缴费详情</a>";
+    }
+    //if(row.invoice_type != 0 && row.is_show_invoice == 1){
+    if(row.is_show_invoice == 1){
+        if(row.new_invoice){
+            html += "<a href='javascript:void(0)' class='common-blue-btn' style='color: white;margin-right: 0;position: relative;' onclick='toInvoice("+row.id+")'>发票详情<span class='red-point' id='new_invoice'></span></a>";
+        }else{
+            html += "<a href='javascript:void(0)' class='common-blue-btn' style='color: white' onclick='toInvoice("+row.id+")'>发票详情</a>";
+        }
+    }else{
+        html += "<a href='javascript:void(0)' class='common-blue-btn grey' style='color: white'>发票详情</a>";
+    }
+    return html;
+}
+
+function toDetail(id){
+    createDialog('ComAgreement/detail/id/'+id,'合同详情','ComAgreement');
+}
+
+function toInvoice(id){
+    createDialog("ComAgreement/invoice/agreement_id/"+id,"发票详情","ComInvoice");
+    $("#new_invoice").hide();
+}
+
+function toReceivables(id){
+    createDialog("WrkReceivables/paymentDetails/id/" + id, '缴费清单', 'dlg-payment-details');
+}
+
+</script>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="height: 100%">
+    <div class="easyui-layout" data-options="fit:true,border: true" >
+        <if condition="($permissions._IS_ADMIN_ eq 1)">
+            <div data-options="region:'west',split:false,border:true" style="width: 20%; height: 100%">
+            </div>
+        </if>
+        <div data-options="region:'center',border:false" style="width: auto; height: 100%;">
+            <include file="./Application/Common/Layout/Default/list_header.html" controller="{$Think.const.CONTROLLER_NAME}" />
+            <tr>
+                <th data-options="field:'id',hidden:true">id</th>
+                <!--<th data-options="field:'agreement_sn',width:120,align:'left'">合同编号</th>-->
+                <th data-options=" field:'customer_branch_name',width:120,align:'left'">公司</th>
+                <th data-options="field:'name',width:120,align:'left'">合同名称</th>
+                <th data-options="field:'agreement_money',width:120,align:'center'">合同金额</th>
+                <th data-options="field:'state',width:100,align:'left',formatter:formatState">合同状态</th>
+                <th data-options="field:'a',width:500,align:'center',formatter:formatToDetail">操作</th>
+            </tr>
+            </thead>
+            </table>
+            <div id="ComAgreement-toolbar">
+                <div class="c-header" style="margin:2px 15px">
+                    <span class="tab-span on">全部</span>
+                    <span class="tab-span" data-state="1">服务中</span>
+                    <span class="tab-span" data-state="2">冻结中</span>
+                    <!--<span class="tab-span" data-state="0">未激活</span>-->
+                    <span class="tab-span" data-state="3">已结束</span>
+                </div>
+                <div class="search-panel">
+                    <div class="search-action-panel">
+                        <!--<input type="text" placeholder="工作/用户/公司" name="ql-agreement_sn" class="easyui-validatebox filter-field">-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table" >
+        <tr>
+            <th style="float: right;padding: 10px 0px 10px 10px;">合同名称：</th>
+            <td>
+                <input name="ql-name"  class="easyui-validatebox filter-field" value="" data-name="ql-name" placeholder="请输入合同名称" />
+            </td>
+        </tr>
+    </table>
+    <table class="search-table">
+        <tr id="state-input" style="display: none">
+        </tr>
+    </table>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+    $(".chosen-select").chosen({
+        search_contains:true,   //关键字模糊搜索，设置为false，则只从开头开始匹配
+    });
+    $(function() {
+        autocompleteAjax($("input[name='ql-name']"),"ComAgreement/nameList", function(item) {doSearchQuery("ComAgreement");});
+    });
+    $("input[name='ql-name']").on('change', function() {
+        if ($('input[name="ql-name"]').length > 0 && $("input[name='ql-name']").val()=="") {
+            $('input[name="ql-name"]').val("");
+            doSearchQuery("ComAgreement");
+        }
+    });
+
+</script>
+
+<script>
+    $('.tab-span').on('click', function() {
+        $(this).siblings().removeClass("on");
+        $(this).addClass("on");
+        var state = $(this).data('state');
+        var html = '';
+        if(state != undefined){
+            html += '<input name="q-state" class="easyui-validatebox filter-field" value="' + state + '">';
+        }
+        $('#state-input').html(html);
+        doSearchQuery('ComAgreement');
+    });
+
+    $(function() {
+        initial_easyui_grid("ComAgreement", "{$title}");
+    });
+
+</script>

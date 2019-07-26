@@ -1,0 +1,115 @@
+<style>
+    .tableForm .row .caption{
+        display: inline-block;
+        margin-left:0px;
+        vertical-align:middle;
+        text-align: right;
+    }
+    .chosen-results{max-height: 100px !important;}
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="height: 250px">
+        <form action="__CONTROLLER__/add" id="{$Think.const.CONTROLLER_NAME}-dataform" enctype='multipart/form-data' method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm" >
+            <!--<input name="id" type="hidden" value="{$model.id}">-->
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.DOCUMENT_NAME}：</span></div>
+                <div class="inputbox_x2"><input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" /></div>
+            </div>
+            <input type="hidden" name="target_branch" value="{$target_branch}">
+            <input type="hidden" name="parent_id" value="{$pid}">
+            <input type="hidden" name="type" value="0">
+        </div>
+    </form>
+    <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button btn-update" plain="true" icon="fa-save fa-lg"  onclick="action_append('{$Think.const.CONTROLLER_NAME}')">保存</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function () {
+    $('select[name=type]').on('change',function(){
+        if ($(this).val() == 1){
+            $('#files').show()
+        } else {
+            $('#files').hide()
+        }
+    })
+    $('input[name=file]').change(function(e){
+        var files = e.currentTarget.files[0];
+        var fileName = files['name'].split('.');
+        $('input[name=name]').val(fileName[0])
+    })
+})
+function action_append(frameId) {
+    showMaskLayer();
+    var val = $("input[name='name']").val();
+    if ($.trim(val) == '') {
+        $.dialog.alert('名称不能为空');
+        hideMaskLayer();
+        return false;
+    }
+    var dataForm = getDataForm(frameId);
+    //可以在提交前修改或添加input值，在master-detail
+    if (!formCache || !formCache[frameId]){
+        formCache[frameId] = {data:null, action:""};
+    }
+    if (formCache[frameId].action !== "add") {
+        hideMaskLayer();
+        $.dialog.alert('错误');
+        return false;
+    }
+    try{
+        dataForm.trigger("beforeUpdate", formCache[frameId].action);
+    }catch(e){
+        hideMaskLayer();
+        $.dialog.alert(e);
+        return false;
+    }
+    dataForm.trigger("Update", formCache[frameId].action); //内部控件绑定，不建议外部bind
+    dataForm.form('submit', {
+        onSubmit:function(){
+            var validate = $(this).form('validate');
+            if (!validate){
+                hideMaskLayer();
+                //$.dialog.alert("请输入必填项！");
+            }
+            return validate;
+        },
+        success: function (ret) {
+            var pattern = /^\{.*code.*\}$/gi;
+            if (!pattern.test(ret)){
+                hideMaskLayer();
+                $.dialog.alert("保存错误！"+ ret);
+                return false;
+            }
+            var result = $.parseJSON(removeJsonQuote(ret));
+            if (result.code === 0) {
+                //成功返回的message为本条记录
+                $.dialog.tips("保存成功！");
+                dataForm.trigger("afterUpdate", result.message.id); //提交成功后，触发
+                if (formCache[frameId].action === "add"){
+                    $.dialog.confirm('是否继续新增？',
+                        function () {
+                            $.dialog({id: frameId}).content(formCache[frameId].data);
+                            parseForm();
+                            dataForm.trigger("renewForm", result.message.id); //重新新增后触发
+                        }
+                    );
+                }
+                $.dialog({id: frameId}).close();
+                var pid = 0;
+                if (app.parentId.length > 0 ){
+                    pid = app.parentId[app.parentId.length - 1];
+                }
+                saveRefreshDocuments(pid);
+            } else {
+                $.dialog.alert(result.message);
+            }
+            hideMaskLayer();
+        }
+    });
+
+}
+</script>

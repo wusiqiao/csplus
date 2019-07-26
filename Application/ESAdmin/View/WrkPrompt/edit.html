@@ -1,0 +1,980 @@
+
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    input[readonly]{
+        background-color: #f7f5f5 !important;
+        cursor: not-allowed;
+    }
+    li.search-choice {
+        border-radius: 1px !important;
+        background-color: #fff !important;
+        color: #333 !important;
+        border: 1px solid #d3d3d3 !important;
+        margin: 5px !important;
+        width: 84px !important;
+    }
+    .chosen-choices {
+        border-radius: 1px;
+    }
+    .txt{
+        padding-left: 13px;
+        font-weight: 700;
+        border-left:5px solid #529bfd; 
+    }
+    .inputbox input {
+        float: left;
+        width: 270px;
+        height: 30px;
+    }
+    .caption {
+        float: left;
+        width: 160px;
+        line-height: 30px;
+        text-align: right;
+        color: #676767;
+    }
+    hr {
+        height: 1px;
+        border: none;
+        border-top: 1px solid #d3d3d3;
+    }
+    .details-section{
+        background: none;
+        text-indent: 0;
+    }
+    .options-table {
+        border-collapse: collapse;
+        margin: 0 0;
+        text-align: center;
+    }
+    .options-table td,
+    .options-table th {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+
+    .options-table thead,
+    .options-table th {
+        background-color: #f6f7fa;
+    }
+
+    .options-table tr:nth-child(even) {
+        background: #fbfafa;
+    }
+    .css-label {
+        padding-left: 0px;
+    }
+    input[type=checkbox].css-checkbox + label.css-label {
+        top: 0px;
+        left: 0px;
+    }
+    .combo {
+        margin: 6px 0;
+    }
+</style>
+<div class="details-wrap">
+    <div style="overflow-y:scroll;height:500px;">
+        <div class="details-section">
+            <div class="details-content">
+                <p style="height: 23px;line-height: 23px;margin: 23px 0 37px 38px;">
+                    <span class="txt">合同信息</span>
+                    <span class="drop-down"></span>
+                </p>
+                <div class="search-table" style="display:flex;margin:22px 0;">
+                    <div style="flex: 1">
+                        <div class="caption"><span class="important" style="padding-right: 1px">*</span>公司：</div>
+                        <div class="inputbox">
+                            <input name="company_name" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.company_name}" />
+                        </div>
+                    </div>
+                    <div style="flex: 1">
+
+                    </div>
+                </div>
+                <div class="search-table" style="display:flex;margin:22px 0;">
+                    <div style="flex: 1">
+                        <div class="caption">合同编号：</div>
+                        <div class="inputbox">
+                            <input name="agreement_sn" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.agreement_sn}" />
+                        </div>
+                    </div>
+                    <div style="flex: 1">
+                        <div class="caption">合同系统编号：</div>
+                        <div class="inputbox">
+                            <input name="sys_sn" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.sys_sn}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="search-table" style="display:flex;margin:22px 0;">
+                    <div style="flex: 1">
+                        <div class="caption"><span class="important" style="padding-right: 1px">*</span>合同名称：</div>
+                        <div class="inputbox">
+                            <input name="agreement_name" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.name}">
+                        </div>
+                    </div>
+                    <div style="flex: 1">
+                        <div class="caption"><span class="important" style="padding-right: 1px">*</span>合同金额：</div>
+                        <div class="inputbox">
+                            <input name="agreement_money" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.agreement_money}">
+                        </div>
+                    </div>
+                </div>
+                <div class="search-table" style="display:flex;margin:22px 0;">
+                    <div style="flex: 1">
+                        <div class="caption"><span class="important" style="padding-right: 1px">*</span>合同开始日期：</div>
+                        <div class="inputbox">
+                            <input name="start_time"  class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.start_time}" />
+                        </div>
+                    </div>
+                    <div style="flex: 1">
+                        <div class="caption">合同结束日期：</div>
+                        <div class="inputbox">
+                            <input name="finish_time"  class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.finish_time}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="details-section">
+            <div class="details-content">
+                <p style="height: 23px;line-height: 23px;margin: 40px 0 25px 38px;">
+                    <span class="txt">催款信息</span>
+                </p>
+                <form id="prompt-form">
+                    <input type="hidden" name="id" value="{$model.id}">
+                    <input type="hidden" name="contract_id" value="{$model.wrkAgreement.id}">
+                    <input type="hidden" name="company_id" value="{$model.wrkAgreement.company_id}">
+                    <input type="hidden" name="is_related" value="{$model.is_related}" />
+                    <input type="hidden" id="press_mode" name="press_mode" value="0" />
+                    <input type="hidden" name="attach_group" value="{$model.attach_group}">
+                    <!-- <input type="hidden" id="press_mode" name="press_mode" value="{$model.press_mode}" /> -->
+                    <div class="search-table" style="display:flex;margin:22px 0;">
+                        <div style="flex: 1">
+                            <div class="caption">催款客户负责人：</div>
+                            <div class="inputbox">
+                                <input name="" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.customer_leader_name}">
+                            </div>
+                        </div>
+                        <div style="flex: 1">
+                            <div class="caption">催款商户协作人：</div>
+                            <div class="inputbox">
+                                <select style="width:270px" name="collaborators" class="chosen-select" data-placeholder=" " id="collaborators_select" data-options="all:true,value:'{$model.collaborators}',required:true"  multiple style="width:100%">
+                                    <option value="" disabled>请选择商户协作人</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search-table" style="display:flex;margin:22px 0;">
+                        <div style="flex: 1">
+                            <div class="caption"><span class="important" style="padding-right: 1px">*</span>催款商户负责人：</div>
+                            <div class="inputbox">
+                                <if condition="$instance_permit egt 8 || $model.id == null ">
+                                        <input style="width:270px" name="service_man_name" id="service_man_name" value="{$model.service_man_name}" class="easyui-validatebox" data-name="q-service_man" data-options="required:true" placeholder="输入用户名将自动搜索，请选择搜索结果">
+                                    <else/>
+                                        <input style="width:270px" name="service_man_name" value="{$model.service_man_name}" class="easyui-validatebox" data-name="q-service_man" data-options="required:true">
+                                </if>
+                                <input type="hidden" name="leader_id" value="{$model.leader_id}">
+                            </div>
+                        </div>
+                        <div style="flex: 1">
+
+                        </div>
+                    </div>
+                    <div class="search-table" style="display:flex;margin:22px 0;">
+                        <div style="flex: 1">
+                            <div class="caption">催款计划备注附件：</div>
+                            <div class="inputbox">
+                                <if condition="$instance_permit egt 4">
+                                    <div style="margin: 0 5px;" class="btn-update btn-speed" plain="true" onclick="uploadAttachment()">上传</div>
+                                    <else/>
+                                    <div style="margin: 0 5px;" class="btn-update btn-speed-disable" plain="true">上传</div>
+                                </if>
+                            </div>
+                        </div>
+                        <div style="flex: 1">
+                            <div class="caption">催款商户可见人：</div>
+                            <div class="inputbox">
+                                <select style="width:270px" name="visiblers" class="chosen-select" data-placeholder=" " id="service_leader_select" data-options="all:true,value:'{$model.visiblers}',required:true"  multiple style="width:100%">
+                                    <option value="" disabled>请选择商户可见人</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <notempty name="model.id" >
+            <if condition="$instance_permit egt 4">
+                <div style="margin-left:38px;" class='btn-speed' onclick="sendMessage()">发送续费通知</div>
+            <else/>
+                <div style="margin-left:38px;" class="btn-update btn-speed-disable" plain="true">发送续费通知</div>
+            </if>
+        </notempty>
+        <div class="vue-zone">
+            <if condition="$model.is_related eq 1">
+                <div class="details-section">
+                    <div class="details-content">
+                        <p style="height: 23px;line-height: 23px;margin: 40px 0 25px 38px;">
+                            <span class="txt">催款提醒设置-有收款计划</span>
+                        </p>    
+                        <div class="tab-div clearFix datagrid-1" >
+                            <table class="search-table">
+                                <tr id="generator">
+                                    <td class="width120">催款模式：</td>
+                                    <td>
+                                        <select id="press_mode_select" name="press_mode" class="chosen-select" data-options="all:true" >
+                                            <option value="0">当天</option>
+                                            <option value="1">自定义</option>
+                                        </select>
+                                    </td>
+                                    <td class="width120">
+                                        <div class="advance_day" style="display:none;">提前通知天数：</div>
+                                    </td>
+                                    <td>
+                                        <div class="advance_day" style="display:none;">
+                                            <input id="advance_day" type="text" class="easyui-numberbox" value="" data-options="min:0,precision:0" style="width:60px">
+                                        </div>
+                                    </td>
+                                    <td class="width120">通知时间：</td>
+                                    <td>
+                                        <!-- <input id="notice_time" class="easyui-timespinner" style="width:80px;"  value="" data-options="showSeconds:false"> -->
+                                        <select id="notice_time" class="chosen-select" style="width:80px;" data-options="all:true">
+                                            <option value="0">00:00</option>
+                                            <option value="1">1:00</option><option value="2">2:00</option>
+                                            <option value="3">3:00</option><option value="4">4:00</option>
+                                            <option value="5">5:00</option><option value="6">6:00</option>
+                                            <option value="7">7:00</option><option value="8">8:00</option>
+                                            <option value="9" selected>9:00</option><option value="10">10:00</option>
+                                            <option value="11">11:00</option><option value="12">12:00</option>
+                                            <option value="13">13:00</option><option value="14">14:00</option>
+                                            <option value="15">15:00</option><option value="16">16:00</option>
+                                            <option value="17">17:00</option><option value="18">18:00</option>
+                                            <option value="19">19:00</option><option value="20">20:00</option>
+                                            <option value="21">21:00</option><option value="22">22:00</option>
+                                            <option value="23">23:00</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <span class="icon-addbtn" @click="newDate()"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="hiddenBox" style="width:1034px;overflow:hidden;">
+                                <div class="scrollBox" style="width:1034px;overflow-x:scroll;">
+                                    <div id="receivables_item" class="fl" style="margin-left:15px;width:1000px;display:flex;flex-flow:row;">
+                                        <div style="width:700px;">
+                                            <table class="options-table" style="width: 95%;margin-left: 28px;margin-bottom: 10px;margin-top:15px;">
+                                                <thead>
+                                                    <tr>
+                                                        <notempty name="model.id" >
+                                                            <td>&nbsp;</td>
+                                                        </notempty>
+
+                                                        <td>期数</td>
+                                                        <td>应收日期</td>
+                                                        <td>应收金额</td>
+                                                        <template v-if="is_show_service_date == '1'">
+                                                            <td>服务期间</td>
+                                                        </template>
+                                                        <notempty name="model.id">
+                                                            <td>最新催款日期</td>
+                                                            <td>催款备注附件</td>
+                                                        </notempty>
+                                                    </tr>
+                                                </thead>
+                                                <tr v-for="(item,index) in datas1" :class="'row-1-'+index">
+                                                    <notempty name="model.id" >
+                                                    <td style="line-height:42px;">
+                                                        <input type="radio" name="radio_check[]" :value="item.prompt_item_id" 
+                                                        :period_number = "index+1" 
+                                                        :begin_date = "item.begin_date" :end_date = "item.end_date">
+                                                    </td>
+                                                    </notempty>
+                                                    <td style="line-height:42px;">{{index+1}}</td>
+                                                    <td style="line-height:42px;">{{item.show_receivables_date}}</td>
+                                                    <td style="line-height:42px;">{{item.receivables_amount}}</td>
+                                                    <template v-if="is_show_service_date == '1'">
+                                                        <td style="line-height:42px;">{{item.show_begin_date}}至{{item.show_end_date}}</td>
+                                                    </template>
+                                                    <notempty name="model.id">
+                                                        <td style="line-height:42px;">{{item.show_press_last_date}}   </td>
+                                                        <td><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttacht(this)' :data-group="item.attach_group">查看</a></td>
+                                                    </notempty>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div style="width:300px;margin-left:15px;" v-for="(item1,index1) in datas2" :class="'row-2-'+index1">
+                                            <table class="options-table" style="width: 95%;margin-bottom: 10px;margin-top:15px;">
+                                                <thead>
+                                                    <tr>
+                                                        <td>催款时间（{{item1[0].title}}）</td>
+                                                        <notempty name="model.id">
+                                                            <td>催款开关</td>
+                                                        </notempty>
+                                                        <td><span style="margin:0;" class="icon-delbtn" @click="removeDate(index1)"></span></td>
+                                                    </tr>
+                                                    <tr v-for="(item2,index2) in item1" :class="'prompt_date-'+index1+'-'+index2">
+                                                        <td><span><input name="prompt_date[]" class="easyui-datetimebox" :data-index1="index1" :data-index2="index2" date-box-name="prompt_date" data-options="onChange:changeDate2,showSeconds:false,zeroMinute:true" v-model="item2.prompt_date"></span></td>
+                                                        <notempty name="model.id">
+                                                            <td>
+                                                                <span class="datagrid-cell-check">
+                                                                    <input type="checkbox" name="is_activate" :id="'ck_-'+index1+'-'+index2" :data-index1="index1" :data-index2="index2" class="css-checkbox">
+                                                                    <label :for="'ck_-'+index1+'-'+index2" class="css-label"></label>
+                                                                    <label :for="'ck_-'+index1+'-'+index2" class="css-label"></label>
+                                                                </span>
+                                                            </td>
+                                                        </notempty>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <else/>                
+                <div class="details-section">
+                    <div class="details-content">
+                        <p class="black">
+                            <span class="txt">催款提醒设置-无收款计划</span>
+                        </p>
+                        <div class="tab-div clearFix datagrid-0" id="datagrid0-form">
+                            <div class="fl" style="margin-left:15px;">
+                                <p class="title">
+                                    <notempty name="model.id" >
+                                        <span style="width:50px">&nbsp;</span>
+                                    </notempty>
+                                        <span style="width:50px;">期数</span>
+                                        <span style="width:200px;">提醒催款时间</span>
+                                    <notempty name="model.id">
+                                        <span style="width:150px">催款备注附件</span>
+                                    </notempty>
+                                        <span class="icon-addbtn" @click="newItem0()"></span>
+                                </p>
+                                <p v-for="(item,index) in datas0" :class="'row-0-'+index">
+                                    <notempty name="model.id" >
+                                        <span class="sList" style="width:50px"><input type="radio" name="radio_check[]" :value="item.prompt_item_id" :period_number = "index+1" :begin_date = "item.begin_date" :end_date = "item.end_date"></span>
+                                    </notempty>
+                                        <span class="sList" style="width:50px;line-height:34px;">{{index+1}}</span>
+                                        <span class="sList" style="width:200px;"><input name="prompt_date[]" :data-index="index" data-name="datas0" date-box-name="prompt_date" data-options="onChange:changeDate,showSeconds:false,zeroMinute:true" class="easyui-datetimebox" v-model="item.prompt_date" style="width:80%;" required/></span>
+                                    <notempty name="model.id">
+                                        <span class="sList" style="width:150px"><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttacht(this)' :data-group="item.attach_group">查看</a></span>
+                                    </notempty>
+                                        <span class="sList icon-delbtn" @click="removeItem0(datas0)"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </if>
+        </div>
+    </div>
+    <div class="details-section" style="padding:30px 0 20px;border-top:1px solid #d3d3d3;">
+        <div class="form-actions" id="ToolEnclosure-form-actions" style="height:auto;">
+            <div class="actions-sysdefault">
+                    <empty name="model.id">
+                        <div class="btn-update btn-confirm" plain="true" onclick="savePrompt()">保存</div>
+                    <else />
+                        <if condition="$instance_permit egt 4">
+                            <div class="btn-update btn-confirm" plain="true" onclick="editPrompt()">保存</div>
+                        </if>
+                    </empty>
+                <div class="btn-cancel" plain="true" onclick="closeDialog()">关闭</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+$(function(){
+    autocompleteAjaxEx($("#service_man_name"),"ComCompany/queryModuleUsers/module/WrkPrompt",{
+        formatItem(row){
+            var mobile = row['mobile'];
+            var item_text = $.format(
+                "<div style='display: flex;flex-direction: row;font-size: 13px;padding: 5px'>" +
+                "<div style='flex: 1'>用户：<span style='color:#368bfe'>{0}</span></div>"+
+                "<div style='flex: 1'>手机：<span style='color:#368bfe'>{1}</span></div>"+
+                "</div>",
+                [padLeft(row.name,8," "),(row.mobile == null || row.mobile == "")? "未绑定":row.mobile ]);
+            return item_text;
+        },
+        onSelected:function(row){
+            $("#service_leader_select option:selected").each(function () {
+                if ($(this).val() == row.id ) {
+                    $.dialog.tips("负责人不能和可见人重复！");
+                    $("input[name='leader_id']").val("");
+                    $("input[name='service_man_name']").val("");
+                    return false;
+                }
+            })
+
+            $("#collaborators_select option:selected").each(function () {
+                if ($(this).val() == row.id ) {
+                    $.dialog.tips("协负责人不能和协作人重复！");
+                    $("input[name='leader_id']").val("");
+                    $("input[name='service_man_name']").val("");
+                    return false;
+                }
+            })
+
+            $("input[name='leader_id']").val(row.id);
+        }
+    });
+
+    $(document).on("change","#service_man_name", function() {
+        if ($('input[name="service_man_name"]').length > 0 && $("input[name='service_man_name']").val()=="") {
+            $('input[name="leader_id"]').val("");
+        }
+    });
+
+        $("#collaborators_select").bind("chosen:beforeSelected", function(event, selected){
+            $("#service_leader_select option:selected").each(function () {
+                if (selected.value == $(this).val()) {
+                    $.dialog.tips("协作人不能和可见人重复！")
+                    selected.cancel = true;
+                    return false;
+                }
+            })
+            if (selected.value == $("input[name='leader_id']").val() ) {
+                $.dialog.tips("协作人不能和负责人重复！")
+                selected.cancel = true;
+                return false;
+            }
+        });
+
+        $("#service_leader_select").bind("chosen:beforeSelected", function(event, selected){
+            $("#collaborators_select option:selected").each(function () {
+                if (selected.value == $(this).val()) {
+                    $.dialog.tips("协作人不能和可见人重复！")
+                    selected.cancel = true;
+                    return false;
+                }
+            })
+            if (selected.value == $("input[name='leader_id']").val() ) {
+                $.dialog.tips("可见人不能和负责人重复！")
+                selected.cancel = true;
+                return false;
+            }
+        });
+});
+
+function getVisiblers(){
+    var id = "c" + '{$model.wrkAgreement.company_id}';
+    var visibler = "{$model.visiblers}";
+    var visiblers = visibler.split(",");
+    var html = "";
+    $.get("ComCompany/queryModuleUsers/module/WrkPrompt",{id:id},function(result){
+        if(result.length != 0){
+            for(var i in result){
+                if(visiblers.indexOf(result[i].value) > -1){
+                    html += "<option value='"+result[i].value+"' selected>"+result[i].text+"</option>"
+                }else{
+                    html += "<option value='"+result[i].value+"'>"+result[i].text+"</option>"
+                }
+            }
+        }else{
+            html += "<option value='' disabled>无可见人可选</option>"
+        }
+        $("#service_leader_select").html(html).trigger("liszt:updated");
+        $('#service_leader_select').chosen();
+    },'json');
+}
+getVisiblers();
+
+function getCollaborators(){
+    var id = "c" + '{$model.wrkAgreement.company_id}';
+    var visibler = "{$model.collaborators}";
+    var visiblers = visibler.split(",");
+    var html = "";
+    $.get("ComCompany/queryModuleUsers/module/WrkPrompt",{id:id},function(result){
+        if(result.length != 0){
+            for(var i in result){
+                if(visiblers.indexOf(result[i].value) > -1){
+                    html += "<option value='"+result[i].value+"' selected>"+result[i].text+"</option>"
+                }else{
+                    html += "<option value='"+result[i].value+"'>"+result[i].text+"</option>"
+                }
+            }
+        }else{
+            html += "<option value='' disabled>无协作人可选</option>"
+        }
+        $("#collaborators_select").html(html).trigger("liszt:updated");
+        $('#collaborators_select').chosen();
+    },'json');
+}
+getCollaborators();
+
+    var vue = new Vue({
+        el:".vue-zone",
+        data:{
+            datas0:[],
+            datas1:[],
+            datas2:[],
+            is_show_service_date:0
+        },
+        methods:{
+            newItem0:function(){
+                var data={};
+                data.prompt_date = "";
+                data.attach_group = "";
+                $.post("ComAttachment/getAttachGroup",function(result){
+                    data.attach_group = result;
+                    vue.datas0.push(data);
+                    vue.$nextTick(function() {
+                        var index = vue.datas0.length-1;
+                        var row_class = ".row-0-"+ index;
+                        $.parser.parse(row_class);
+                    });
+                },"text");
+            },
+            newDate:function(){
+                var data = [];
+                var tmp = [];
+                //根据催款模式计算提前时间
+                var press_mode = $("#press_mode_select").children('option:selected').val();
+                vue.datas1.forEach(function( val, index ) {
+                    var advance_day = '0';
+                    var title = '当天';
+                    if (press_mode == 1) {
+                        advance_day = $("#advance_day").val();
+                        if (advance_day == '' || advance_day == NaN) {
+                            // title = '自定义';
+                            advance_day = '0';
+                        } else {
+                            title = advance_day;
+                        }
+                    }else{
+                        advance_day = '0';
+                        title = '当天';
+                    }
+                    var notice_time = $("#notice_time").val()*60*60;
+                    var sum = '';
+                    tmp = {};
+                    sum = val.receivable_date - (advance_day*24*3600);
+                    sum > 0 ? sum = sum : sum = 0;
+                    sum = sum+notice_time
+                    tmp ={
+                        prompt_date:sum,
+                        title:title,
+                        is_checked:1
+                    };
+                    data.push(tmp);
+                })
+                //插入数据
+                vue.datas2.push(data);
+                vue.$nextTick(function() {
+                    var index = vue.datas2.length-1;
+                    //根据是否显示服务期间以及催款次数修改宽度
+                    var is_show_service_date = vue.is_show_service_date;
+                    var a = 900;
+                    var b = 300;
+                    if ('{$model.id}' == '') {
+                        a = a - 300;
+                        b = b - 100;
+                    }
+                    if (is_show_service_date != 1) {
+                        a = a - 200; 
+                    }
+                    //判断是否存在重复时间，是的话回滚操作
+                    if (!isRepeatDate()) {
+                        this.datas2.splice(index,1);
+                        // return false;
+                    }else{
+                        $('#receivables_item').width(a+(index+1)*b+'px');
+                    }
+                    //重新渲染表格页面
+                    var row_class = ".row-2-"+ index;
+                    var prompt_date = '';
+                    $.parser.parse(row_class);
+                    vue.datas2.forEach(function(val1, index1) {
+                        vue.datas2[index1].forEach(function( val2, index2) {
+                            var row_class = '.prompt_date-'+index1+'-'+index2;
+                            prompt_date = '';
+                            if (val2['prompt_date'] != '') {
+                                prompt_date = format_datetime(val2['prompt_date']);
+                            }
+                            $(row_class).find("[date-box-name='prompt_date']").datetimebox('setValue',prompt_date);
+                            if (val2['is_checked'] == 1) {
+                                $('#ck_-'+index1+'-'+index2).attr("checked","checked");
+                            }
+                        })
+                    })
+                });
+            },
+            removeItem0:function(index){
+                this.datas0.splice(index,1);
+                $(vue.datas0).each(function (index) {
+                    var row_class = ".row-0-"+ index;
+                    $(row_class).find("[date-box-name='prompt_date']").datebox('setValue', vue.datas0[index].prompt_date);
+                })
+            },
+            removeDate:function(index){
+                this.datas2.splice(index,1);
+                vue.datas2.forEach(function( val1, index1) {
+                    vue.datas2[index1].forEach(function( val2, index2) {
+                        var row_class = '.prompt_date-'+index1+'-'+index2;
+                        prompt_date = '';
+                        if (val2['prompt_date'] != '') {
+                            prompt_date = format_datetime(val2['prompt_date']);
+                            $(row_class).find("[date-box-name='prompt_date']").datetimebox('setValue',prompt_date);
+                        }
+                    })
+                })
+                var len = vue.datas2.length;
+                //根据是否显示服务期间以及催款次数修改宽度
+                var is_show_service_date = vue.is_show_service_date;
+                var a = 900;
+                var b = 300;
+                if ('{$model.id}' == '') {
+                    a = a - 300;
+                    b = b - 100;
+                }
+                if (is_show_service_date != 1) {
+                    a = a - 200; 
+                }
+                $('#receivables_item').width(a+(len)*b+'px');
+            }
+        },
+        watch: {
+            datas0:function(){
+                //  vue.$nextTick(function() {  
+                //     $.parser.parse(".datagrid-0");
+                //     $(".chosen-select").extChosen();
+                // });                         
+            }
+        }          
+    });
+
+    //上传
+    function uploadAttachment(){
+        // var attach_group = $("input[name='attach_group']").val();
+        // if(attach_group == ""){
+        //     $.post("ComAttachment/getAttachGroup",function(result){
+        //         $("input[name='attach_group']").val(result);
+        //         attach_group = result;
+        //     },"text")
+        // }
+        openAttachmentForm("催款计划附件", [{text:"催款计划",attach_group:'{$model.attach_group}'}],function(id){
+            //alert(id);
+        });
+    }
+    //上传
+    function showRecordAttacht(obj){
+        var attach_group = $(obj).data("group");
+        openAttachmentForm("催款计划附件",[{text:"催款计划",attach_group:'{$model.attach_group}'}],function(){
+        })
+    }
+    //初始化有收款计划催款计划生成器
+    $.parser.parse("#generator");
+
+    function format_datetime(inputTime) {  
+        var date = new Date(inputTime*1000);
+        var y = date.getFullYear();  
+        var m = date.getMonth() + 1;  
+        m = m < 10 ? ('0' + m) : m;  
+        var d = date.getDate();  
+        d = d < 10 ? ('0' + d) : d;  
+        var h = date.getHours();
+        h = h < 10 ? ('0' + h) : h;
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+        minute = minute < 10 ? ('0' + minute) : minute;  
+        second = second < 10 ? ('0' + second) : second; 
+        return m + '/' + d + '/' + y+' '+h+':'+minute+':'+second;  
+    };
+
+    function changeDate(date){
+        var index = $(this).attr("data-index");
+        var name = $(this).attr("data-name");
+        var date_name = $(this).attr("date-box-name");
+        var datetime = new Date(date);
+        var prompt_date = null;
+        if (date != null){
+            prompt_date = datetime.getTime()/1000;
+        }
+        vue[name][index][date_name] = prompt_date;
+        // vue.$nextTick(function() {
+        //     var row_class = ".row-0-"+ index;
+        //     prompt_date = format_datetime(prompt_date);
+        //     $(row_class).find("[date-box-name='prompt_date']").datetimebox('setValue', prompt_date);
+        // });
+    }
+
+    function changeDate2(date){
+        var index1 = $(this).attr("data-index1");
+        var index2 = $(this).attr("data-index2");
+        var datetime = new Date(date);
+        var prompt_date = null;
+        if (date != null){
+            prompt_date = datetime.getTime()/1000;
+        }
+        vue.datas2[index1][index2]['prompt_date'] = prompt_date;
+        // vue.$nextTick(function() {
+        //     row_class = '.prompt_date-'+index1+'-'+index2;
+        //     prompt_date = format_datetime(prompt_date);
+        //     $(row_class).find("[date-box-name='prompt_date']").datetimebox('setValue', prompt_date);
+        // });
+    }
+
+    //数字排序辅组函数
+    function sequence(a,b){
+        if (a>b) {
+            return 1;
+        }else if(a<b){
+            return -1
+        }else{
+            return 0;
+        }
+    }
+
+    function isRepeat(arr){
+        var hash = {};
+        for(var i in arr) {
+            if(hash[arr[i]]) //hash 哈希
+            return true;
+            hash[arr[i]] = true;
+        }
+        return false;
+    }
+
+    function isRepeatDate(){
+        var origin_date = [];
+        var is_related = '{$model.is_related}'
+        if (is_related==1) {
+            $(vue.datas2).each(function (key1) {
+                vue.datas2[key1].forEach(function( val, key2) {
+                    origin_date.push( val['prompt_date']);
+                })
+            })
+        } else {
+            vue.datas0.forEach(function(val, index) {
+                origin_date.push(val['prompt_date']);
+            })
+        }
+
+        if (isRepeat(origin_date)) {
+            $.dialog.alert("存在重复的催款时间");
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+
+    // 编辑页面获取收款计划列表
+    function queryData() {
+        $.post("/WrkReceivables/getItem/id/{$model.wrkAgreement.receivables_id}", function(result) {
+            vue.datas1 = result;
+            var is_show_service_date = 0;
+
+            var a = 0;
+            var b = 0;
+            var arr = [];
+            var minArr = [];
+            $(vue.datas1).each(function (index) {
+                if (vue.datas1[index].show_begin_date != '') {
+                    is_show_service_date = 1;
+                }
+                var row_class = ".row-1-"+ index;
+                vue.$nextTick(function() { 
+                    $.parser.parse(row_class);
+                });
+
+                arr.push(vue.datas1[index].receivable_date);
+            })
+            vue.is_show_service_date = is_show_service_date;
+
+            if (arr.length > 1) {
+                arr.sort(sequence);
+                for (var i = 0; i < arr.length; i++) {
+                    if (i != 0) {
+                        b = arr[i] - a;
+                        minArr.push(b);
+                    }
+                    a = arr[i];
+                }               
+                var n = Math.min.apply(null, minArr);
+                n = parseInt(n/86400);
+                if (n > 1) {
+                    n = n -1;
+                }else{
+                    n = 0;
+                }   
+                $('#advance_day').numberbox({
+                    max:n
+                });
+            }
+            queryData1();
+        }, "json");
+    }
+
+    if ('{$model.is_related}'==1) {
+        queryData();
+    } else {
+        queryData0();
+    }
+
+    //获取无收款计划催款计划
+    function queryData0() {
+        $.post("/WrkPrompt/getItem/id/{$model.id}", function(result) {
+            vue.datas0 = result;
+            vue.$nextTick(function() {
+                $.parser.parse("#datagrid0-form");
+            });
+        }, "json");
+    }
+
+    //获取有收款计划催款计划
+    function queryData1() {
+        $.post("/WrkPrompt/getRelatedItem/id/{$model.id}/receivables_id/{$model.wrkAgreement.receivables_id}", function(result) {
+            vue.datas2 = result.date;
+            var prompt_item_ids = result.prompt_item_ids;
+            prompt_item_ids.forEach(function( val, index) {
+                vue.datas1[index].prompt_item_id = val;
+            });
+            console.info(vue.datas1);
+            vue.$nextTick(function() {
+                $(vue.datas2).each(function (index1) {
+                    var row_class = ".row-2-"+ index1;
+                    $.parser.parse(row_class);
+                    vue.datas2[index1].forEach(function( val, index2) {
+                        row_class = '.prompt_date-'+index1+'-'+index2;
+                        if (val['prompt_date']!= 0 && val['prompt_date'] != null) {
+                            var tmp = format_datetime(val['prompt_date']);
+                            $(row_class).find("[date-box-name='prompt_date']").datetimebox('setValue',tmp);                                    
+                        }
+                        if (val['is_checked'] == 1) {
+                            $('#ck_-'+index1+'-'+index2).attr("checked","checked");
+                        }
+                    })
+                })
+                var len = vue.datas2.length;
+                //根据是否显示服务期间以及催款次数修改宽度
+                var a = 900;
+                var b = 300;
+                if ('{$model.id}' == '') {
+                    a = a - 300;
+                    b = b - 100;
+                }
+                if (vue.is_show_service_date != 1) {
+                    a = a - 200; 
+                }
+                $('#receivables_item').width(a+(len)*b+'px');
+            });
+
+        }, "json");
+    }
+
+    //保存新增催款计划
+    function savePrompt() {
+        var validate = $('#prompt-form').form("validate");
+        var validate1 = $('#datagrid0-form').form("validate");
+        if(!validate || !validate1){
+            return validate;
+        }
+        var data = $('#prompt-form').serializeArray();
+        var is_related = '{$model.is_related}';
+        if (is_related==1) {
+            var item = vue.datas1;
+        } else {
+            var item = vue.datas0;
+        }
+        if (!isRepeatDate()) {
+            return false;
+        }
+
+        var date = vue.datas2;
+        showMaskLayer();
+        $.post('/WrkPrompt/savePrompt',{data:data,item:item,date:date,is_related:is_related}, function(result) {
+            hideMaskLayer();
+            $.dialog.tips(result.message);
+            if (result.code == 0) {
+                // queryPrompt();
+                // queryPrompt2();
+                // closeDialog("dlg-edit-prompt");
+                closeDialog("WrkPrompt");
+
+            }
+        }, 'json')
+    }
+    function editPrompt() {
+        var validate = $('#prompt-form').form("validate");
+        var validate1 = $('#datagrid0-form').form("validate");
+        if(!validate || !validate1) {
+            return validate;
+        }
+        var data = $('#prompt-form').serializeArray();
+        var is_related = '{$model.is_related}';
+        if (is_related==1) {
+            var item = vue.datas1;
+        } else {
+            var item = vue.datas0;
+        }
+        if (!isRepeatDate()) {
+            return false;
+        }
+        var date = vue.datas2;
+        showMaskLayer();
+        $.post('/WrkPrompt/editPrompt/id/{$model.id}',{data:data,item:item,date:date,is_related:is_related}, function(result) {
+            hideMaskLayer();
+            $.dialog.tips(result.message);
+            if (result.code == 0) {
+                closeDialog("WrkPrompt");
+                // if (is_related == 1) {
+                //     closeDialog("WrkPrompt");
+                //     queryPrompt();
+                // } else {
+                //     closeDialog("dlg-edit-prompt");
+                //     queryPrompt2();
+                // }
+            }
+        }, 'json')
+    }
+
+    $(document).on('change','input[name="is_activate"]',function(){
+        var index1 = $(this).attr("data-index1");
+        var index2 = $(this).attr("data-index2");
+        var is_checked = $(this).attr("checked");
+
+        if (is_checked) {
+            vue.datas2[index1][index2]['is_checked'] = 1;
+        } else {
+            vue.datas2[index1][index2]['is_checked'] = 0;
+        }
+    });
+
+    $(document).on('change','#press_mode_select',function(){
+        var press_mode = $(this).children('option:selected').val();
+        if (press_mode==1) {
+            $(".advance_day").show();
+        } else {
+            $(".advance_day").hide();
+        }
+        // $('#press_mode').val($press_mode);
+    });
+
+    function sendMessage() {
+        var prompt_item_id = $("input[name='radio_check[]']:checked").val();
+        var period_number = $("input[name='radio_check[]']:checked").attr("period_number");
+
+        if (prompt_item_id) {
+            // var amount = 0;
+            // var begin_date = null;
+            // var end_date = null;
+            // if ('{$model.is_related}' == 1) {
+                var amount = vue.datas1[period_number-1]['receivables_amount'];
+                var date = vue.datas1[period_number-1]['show_receivables_date'];
+                var begin_date = vue.datas1[period_number-1]['begin_date'];
+                var end_date =vue.datas1[period_number-1]['end_date'];
+            // }
+            createDialog("{$Think.const.CONTROLLER_NAME}/sendMessage/id/{$model.id}/period_number/"+period_number+"/begin_date/"+begin_date+"/end_date/"+end_date+"/amount/"+amount+"/prompt_item_id/"+prompt_item_id+"/date/"+date, '催款通知', 'dlg-prompt-message');
+        }else{
+            $.dialog.tips("请先选择一期收款计划");
+        }
+    }
+</script>
+

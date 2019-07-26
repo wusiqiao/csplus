@@ -1,0 +1,11 @@
+<div class="maincontainer" id="ComArticle-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="ComArticle" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:200,align:'left'">{$Think.lang.FLD_TITLE}</th>
+        <th data-options="field:'category_name',width:200,align:'left'">{$Think.lang.FLD_TITLE}</th>
+        <th data-options="field:'sort',width:50,align:'left'">{$Think.lang.FLD_SORT}</th>
+        <th data-options="field:'updown',width:60,align:'center',formatter:function(value, row, index){return formatUpDown('{$Think.const.CONTROLLER_NAME}','#ComArticle-datagrid',row)}">移动</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="ComArticle" />
+</div>

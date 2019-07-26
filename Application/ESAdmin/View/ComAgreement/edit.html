@@ -1,0 +1,234 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/attachment.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .red_required{
+        color: red;
+        font-size: 21px;
+        padding: 5px
+    }
+    .row{
+        padding-bottom: 8px;
+    }
+
+    .options-table
+    {
+        border-collapse: collapse;
+        margin: 0 0 ;
+        text-align: center;
+    }
+    .options-table td, .options-table th
+    {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+    .options-table thead ,.options-table th
+    {
+        background-color: #CCE8EB;
+    }
+    .options-table tr:nth-child(even)
+    {
+        background: #F5FAFA;
+    }
+    .grey{
+        background: grey;
+    }
+    hr{
+        height:1px;border:none;border-top:1px solid #ddd;
+    }
+    textarea{
+        width: 95%;
+        border-radius:5px;
+        border:1px solid #ddd;
+    }
+    .btn-margin{
+        margin-left: 5%;
+    }
+    .readonly {
+        background-color: rgb(221, 221, 221) !important;
+    }
+</style>
+<div class="detailcontainer" id="WrkAgreement-detailcontainer" style="width: 850px;height: 600px;">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="WrkAgreement-dataform" method="post" name="WrkAgreement-dataform">
+        <div class="tableForm" style="width: 100%;overflow-y: auto;height: 600px;padding-right: 50px">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <input name="ctrlShow"  type="hidden"  value="{$model.state}">
+            <input name="formAction"  type="hidden"  value="{$Think.__FORM_ACTION__}">
+            <input name="attach_group"  type="hidden"  value="{$model.attach_group}">
+            <h3 style="text-align: center;font-size: 16px">合同基本信息</h3>
+            <div class="row">
+                <div class="caption"><span>合同来源：</span></div>
+                <div class="inputbox">
+                    <select name="origin" class="easyui-validatebox chosen-select" id="origin"  disabled>
+                        <option value="0" <if condition="$model.origin eq 0">selected</if>>商城订单</option>
+                        <option value="1" <if condition="$model.origin eq 1">selected</if>>线下导入</option>
+                    </select>
+                </div>
+                <span id="orderSn_div" <if condition="$model.origin eq 1">style="display:none"</if>>
+                    <div class="caption"><span>商城订单编号：</span></div>
+                    <div class="inputbox" >
+                        <input name="order_sn" class="easyui-validatebox readonly"  value="{$model.order_sn}" readonly/>
+                    </div>
+                </span>
+            </div>
+
+            <div class="row">
+                <div class="caption"><span>合同编号：</span></div>
+                <div class="inputbox">
+                    <input name="agreement_sn" class="easyui-validatebox readonly"  value="{$model.agreement_sn}" readonly/>
+                </div>
+                <!--<div class="caption"><span>合同系统编号：</span></div>
+                <div class="inputbox">
+                    <input name="sys_sn" class="easyui-validatebox readonly"  value="{$model.sys_sn}" readonly/>
+                </div>-->
+            </div>
+            <div class="row">
+                <div class="caption"><span>合同名称：</span></soan></div>
+                <div class="inputbox">
+                    <input name="name" class="easyui-validatebox readonly"  value="{$model.name}" readonly/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>合同金额：</span></soan></div>
+                <div class="inputbox">
+                    <input name="agreement_money" type="number" class="easyui-validatebox readonly"  value="{$model.agreement_money}" readonly/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>合同发票：</span></soan></div>
+                <div class="inputbox">
+                    <select class="easyui-validatebox chosen-select" name="invoice_type" disabled>
+                        <option value="0" <if condition="$model.invoice_type eq 0">selected</if>>不开票</option>
+                        <option value="1" <if condition="$model.invoice_type eq 1">selected</if>>增值税普通发票</option>
+                        <option value="2" <if condition="$model.invoice_type eq 2">selected</if>>增值税专用发票</option>
+                        <option value="3" <if condition="$model.invoice_type eq 3">selected</if>>其他发票</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>合同开始日期：</span></div>
+                <div class="inputbox" style="width:200px;margin-left: 2px">
+                    <input name="start_time" class="easyui-validatebox readonly" value="{$model.start_time}" readonly>
+                </div>
+                <div class="caption" style="margin-left: 90px"><span>合同结束日期：</span></div>
+                <div class="inputbox" style="width:200px;margin-left: 2px">
+                    <input name="finish_time" class="easyui-validatebox readonly" value="{$model.finish_time}" readonly>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>合同服务明细：</span></div>
+            </div>
+
+            <table class="options-table" id="product_options" style="width: 95%;margin-left: 35px;margin-bottom: 10px">
+                <thead>
+                    <tr>
+                        <td>序号</td>
+                        <td>服务类型1</td>
+                        <td>服务类型2</td>
+                        <td>服务选项1</td>
+                        <td>服务选项2</td>
+                        <td>服务选项3</td>
+                        <td style="border-style:none"></td>
+                    </tr>
+                </thead>
+                <tr v-for="(item,index) in items">
+                    <td>{{item.id}}</td>
+                    <td>{{item.type1}}</td>
+                    <td>{{item.type2}}</td>
+                    <td>{{item.attributes1}}</td>
+                    <td>{{item.attributes2}}</td>
+                    <td>{{item.attributes3}}</td>
+                    <td style="border-style: none">
+                        <input type='hidden' name='type1[]' :value='item.type1'>
+                        <input type='hidden' name='type2[]' :value='item.type2'>
+                        <input type='hidden' name='attributes1[]' :value='item.attributes1'>
+                        <input type='hidden' name='attributes2[]' :value='item.attributes2'>
+                        <input type='hidden' name='attributes3[]' :value='item.attributes3'>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
+            <div class="row" style="display: flex;">
+                <div class="caption" style="margin-left: 5px"><span>合同附件：</span></div>
+                <!--<if condition="$model.state eq 3">-->
+                    <!--<a href="javascript:void(0)" class="common-blue-btn grey" style="margin-left: 50px">上传</a>-->
+                    <!--<else/>-->
+                    <!--<a href="javascript:void(0)" class="common-blue-btn upload-btn" onclick="uploadAttachment(this)" style="margin-left: 50px">上传</a>-->
+                <!--</if>-->
+                <div class="attachment-container" style="width: 100%;">
+                    <!--<ul v-for="(item, iid) in historys" style="display:inline-block" class="attachments">
+                        <li  v-for="(item,index) in JSON.parse(item.images)" :key="index" style="" class="img-wrap">
+                            <div v-if="item.type=='image'" class="img-wrap">
+                                <img :src="item.url" alt="" style="height: 150px;width:150px;margin: 10px 5px"/>
+                            </div>
+                            <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type">
+                                <span class="btn-item-remove">{{item.name}}</span>
+                            </div>
+                        </li>
+                    </ul>-->
+
+                    <ul class="">
+                        <li v-for="(item, iid) in historys" style="display:inline-block">
+                            <div class="record">
+                                <ul  class="attachments" >
+                                    <li v-for="(item,index) in JSON.parse(item.images)" :title="item.name">
+                                        <div v-if="item.type=='image'" class="img-wrap">
+                                            <img :src="item.url" alt="" style="height: 150px;width:150px;margin: 10px 5px"/>
+                                        </div>
+                                        <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type" :data-url="item.url"
+                                             onclick="toDownloadFile(this)" style="height: 150px;width:150px;margin: 10px 5px" title="点击下载">
+                                            <span class="">{{item.name}}（点击下载）</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="form-actions" id='WrkAgreement-form-actions1' style="margin-top: 8px">
+    <div class='actions-sysdefault'>
+        <a href="javascript:void(0)" class="modal-close-btn btn-margin" id="cancel" plain="true" onclick="closeDialog()">关闭</a>
+    </div>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript" src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var OptionsVue = new Vue({
+        el:"#WrkAgreement-dataform",
+        data:{
+            items:[],
+            historys:[]
+        },
+        method:{
+            removeItem:function(data,index){
+                items.splice(index, 1);
+            },
+        }
+    });
+
+    $(function(){
+        var attach_group = $("input[name='attach_group']").val();
+        $.post("/ComAttachment/list", {"group": attach_group}, function(result){
+            OptionsVue.historys = result.rows;
+        },"json");
+    });
+
+    //获取服务明细
+    $.post("WrkAgreement/getOptions",{id:$("input[name='id']").val()},function(result){
+        $("textarea[name='order_desc']").val(result[result.length-1]);
+        result.pop();
+        OptionsVue.items = result ;
+    },'json');
+
+    function toDownloadFile(obj){
+        var url = $(obj).data("url");
+        if(url){
+            window.location.href=url;
+        }
+    }
+
+</script>

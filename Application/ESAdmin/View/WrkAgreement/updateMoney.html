@@ -1,0 +1,43 @@
+<div class="tableForm" style="width: 450px">
+    <input name="id"  type="hidden"  value="{$model.id}">
+    <div class="row">
+        <span class="edit-tips" style="margin-left: 15px">*修改金额将发送通知给客户，请注意修改收款、催款、开票等计划</span>
+    </div>
+    <div class="row">
+        <div style="text-align: center;margin-left: 20px"><span>原合同金额：</span>
+            <input class="easyui-validatebox"  value="{$model.money}" readonly/>
+        </div>
+    </div>
+    <div class="row">
+        <div style="text-align: center"><span><span class="red_required">*</span>新合同金额：</span>
+            <input name="money" type="number" class="easyui-validatebox" placeholder="请输入新的合同金额" required/>
+        </div>
+    </div>
+    <div style="text-align: center">
+        <a href="javascript:void(0)" class="common-blue-btn" onclick="updateAgreementMoney(this)">确定</a>
+        <a href="javascript:void(0)" class="common-red-btn" onclick="closeDialog()">取消</a>
+    </div>
+</div>
+<script>
+    function updateAgreementMoney(obj){
+        if(!$(obj).hasClass("grey")){
+            $(obj).addClass("grey");
+            var id = $("input[name='id']").val();
+            var money = $("input[name='money']").val();
+            if($.trim(money) == ""){
+                $.dialog.tips("金额不能为空！");
+                $(obj).removeClass("grey");
+                return false;
+            };
+            $.post("WrkAgreement/updateMoney",{id:id,money:money},function(result){
+                if(result.code == 1){
+                    $.dialog.focus.close();
+                    $("input[name='agreement_money']").eq(0).val(money);
+                }else{
+                    $(obj).removeClass("grey");
+                }
+                $.dialog.tips(result.message);
+            },'json')
+        }
+    }
+</script>

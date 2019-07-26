@@ -1,0 +1,168 @@
+<style>
+    .chooseSpan{
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        padding: 0px 2px;
+        margin: 5px 0 5px 5px;
+        color: #529bfd;
+        cursor: pointer;
+    }
+    .chooseSpan:hover{
+        color: #6eacfe;
+    }
+    .chooseSpan.on{
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        background-color: #529bfd;
+        color: #fff;
+        padding: 0px 2px;
+        margin: 5px 0 5px 5px;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+<script>
+    setMainContainerConfig("UserDetail", {
+        onDblClickRow: function(){
+            return false;
+        }
+    })
+    function formatMobile(value,row){
+        if(value== "" || value == null){
+            value = "未绑定";
+            if(row.is_follow == 1){
+                value += "<a href='javascript:void(0)' onclick='inviteBoundMobile("+row.id+")'>邀请绑定</a>";
+            }
+        }/*else if(value == null){
+            value = "-";
+        }*/
+        return value;
+    }
+
+    function formatNull(value){
+        if(value == "" || value == null){
+            value = "-";
+        }
+        return value;
+    }
+
+    function formatName(value,row){
+        if(!row.headimgurl){
+            row.headimgurl = "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg";
+        }
+        if(!value){
+            value = "-";
+        }
+        return `<div style="width:80%;height:35px;display:flex;margin-left: 5px">
+                    <img src="`+row.headimgurl+`" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;">
+                    <div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">`+value+`</div>
+                </div>`;
+    }
+</script>
+<div class="maincontainer" id="UserDetail-maincontainer">
+    <form>
+        <div class="tableForm" style="width:800px;min-height: 400px;;overflow-x:auto">
+            <table class="datagrid" id="UserDetail-datagrid" data-options="
+           url:'{$Think.const.CONTROLLER_NAME}/levelUserList/id/{$id}',
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#UserDetail-toolbar',
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:false,
+           border:true">
+                <thead>
+                <tr>
+                    <th data-options="field:'id',hidden:true">序号</th>
+                   <!-- <th data-options="field:'headimgurl',width:40,formatter:formatHeadPic"></th>-->
+                    <th data-options="field:'name',width:140,formatter:formatName">下级用户</th>
+                    <th data-options="field:'mobile',width:130,align:'center',formatter:formatMobile">手机号码</th>
+                    <th data-options="field:'region',width:100,align:'center',formatter:formatNull">归属地</th>
+                    <th data-options="field:'commission',width:100,align:'center'">贡献佣金</th>
+                    <th data-options="field:'create_time',width:150,align:'center',formatter:formatDateTime">成为下级时间</th>
+                    <th data-options="field:'subscribe_time',width:150,align:'center',">关注时间</th>
+                </tr>
+                <include file="./Application/Common/Layout/Default/list_footer.html"  controller="UserDetail" />
+                <div id="empty-notice" style="color: rgb(180, 180, 180);display: none;width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 40px;font-size: 20px">暂无数据</div>
+                <div class="search-panel" id="UserDetail-search-panel" style="display: none">
+                    <table class="search-table" style="max-width: 100%;">
+                        <tr class="groups">
+                            <th>成交状态：</th>
+                            <td colspan="9">
+                                <div class="chooseSpan on"  data-state="">全部</div>
+                                <div class="chooseSpan" data-state="1">已成交</div>
+                                <div class="chooseSpan" data-state="0">未成交</div>
+                                <input type="hidden" id="income_state" name="income_state" value="" class="filter-field">
+                            </td>
+                            <td colspan="3">
+                                <div style="flex: .26;text-align: right;">
+                                    <div class="search_ipt" style="width: 100%;margin-left: 20%;">
+                                        <input type="text" value="" placeholder="输入昵称/手机号进行搜索" class="filter-field ipt_new" name="ql-name"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+        </div>
+<script src="/{$Think.MODULE_PATH}Public/minicolors/jquery.minicolors.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    function inviteBoundMobile(id){
+        var data = new Array();
+        var ids = new Array();
+        ids.push(id);
+        createDialog("ComPotential/bindTel/", '绑定通知','dlg-company-select', {data:data,ids:ids});
+    }
+
+    $(".chooseSpan").on("click",function(){
+        $(this).siblings().removeClass("on");
+        $(this).addClass("on");
+        var state = $(this).data('state');
+        //if(state != undefined){
+            $("#income_state").val(state);
+        //}
+        doSearchQuery("UserDetail");
+    });
+
+    $(function(){
+        $(".search-action-panel").hide();
+    });
+
+    /*$(".search_ipt input").keyup(function(){
+        doSearchQuery("UserDetail")
+    });*/
+
+    var search_time;
+    $(".search_ipt input").bind("input propertychange",function(){
+        clearTimeout(search_time);
+        search_time=setTimeout(function(){
+            doSearchQuery("UserDetail");
+        },1000)
+    });
+
+    $(function(){
+       var h1 = $("#UserDetail-toolbar").height();
+       var h2 = $(".datagrid-header-row").height();
+       $("#empty-notice").css("top",h1+h2)
+    });
+
+    $("#UserDetail-datagrid").datagrid({
+        onLoadSuccess:function(data){
+            if(data.total == 0){
+                $("#empty-notice").show();
+            }else{
+                $("#empty-notice").hide();
+            }
+        }
+    })
+
+</script>

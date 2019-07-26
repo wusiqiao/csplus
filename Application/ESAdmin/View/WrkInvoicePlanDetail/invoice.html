@@ -1,0 +1,164 @@
+<style>
+	#add-invoice{
+		width: 825px;
+		background-color: #ffffff;
+	}
+	.caption{
+		width: 110px !important;
+	}
+</style>
+<div class="details-wrap invoice-main" id="add-invoice" style="overflow: hidden;">
+	<div style="width:100%;height:332px;overflow-y: auto;padding-right: 35px;">
+		<p style="text-align: left;margin-left:35px;">您好，您的发票已开，请确认后签收，谢谢您的配合。</p>
+		<form method="post" id="WrkInvoiceRecord-dataform">
+			<input type="hidden" value="{$plan_id}" name="plan_id">
+			<input type="hidden" value="{$type}" name="type">
+			<div class="details-section">
+				<div class="tab-div newTab clearFix datagrid-0">
+					<table class="options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px;">
+						<thead>
+							<tr>
+								<td>开票日期</td>
+								<td>发票编号</td>
+								<td>发票金额</td>
+								<td>发票类型</td>
+								<td>发票附件</td>
+								<td><span class="icon-addbtn" @click="newItem0()"></span></td>
+							</tr>
+						</thead>
+						<tr v-for="(item,index) in datas0" :class="'row-0-'+index">
+							<td><span><input name="invoice_day[]" :data-index="index" date-box-name="invoice_day" class="easyui-datebox" data-options="onSelect:changeDate0,prompt:'选择时间',editable:false" v-model="item.a" required ></span></td>
+							<td><span><input name="invoice_id[]" class="easyui-validatebox" v-model="item.b" data-options="required:true" oninput="value=value.replace(/[^\d]/g,'')" placeholder="请输入发票编号" maxlength="8"/></span></td>
+							<td><span><input name="invoice_money[]" type="number" class="easyui-validatebox" v-model="item.c" data-options="required:true" placeholder="请输入发票金额"/></span></td>
+							<td><span>
+								<select name="invoice_type[]" class="chosen-select" data-options="required:true">
+									<option value="0">普通发票</option>
+									<option value="1">增值税专用发票</option>
+								</select>
+							</span></td>
+							<td><span style="line-height:34px;">
+								<a class="common-blue-btn" :data-group="item.attach_group" onclick="uploadRecordAttach(this)">上传</a>
+								<input type="hidden" v-model="item.attach_group" name="attach_group[]">
+							</span></td>
+							<td><span style="margin:10px 5px;" class="icon-delbtn" onclick="removeSelf(this)" title="删除"></span></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="express-box clearFix" style="margin: 40px 0 25px 38px;">
+				<div style="float:left;padding-right:20px;margin-top:15px;">
+					<input type="checkbox" name="ck" value="" id="ck_2215" class="css-checkbox" style="left:0px;">
+					<label for="ck_2215" class="css-label" style="padding-left: 30px">快递信息：</label>
+				</div>
+			</div>
+			<div class="search-table" style="display:flex;margin:22px 0;">
+				<div style="flex: 1">
+					<div class="caption">快递公司：</div>
+					<div class="inputbox">
+							<input name="express_name" class="easyui-validatebox" placeholder="快递公司" style="width:270px;"/>
+					</div>
+				</div>
+				<div style="flex: 1">
+					<div class="caption">快递编号：</div>
+					<div class="inputbox">
+						<input name="express_id" class="easyui-validatebox" placeholder="快递编号" style="width:270px;"/>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="details-section" style="padding:30px 0 20px;border-top:1px solid #d3d3d3;">
+		<div class="form-actions" id="WrkInvoiceRecord-form-actions" style="height:auto;">
+			<div class="actions-sysdefault">
+				<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="invoiceSave(this)">发送</a>
+				<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+	var vue = new Vue({
+		el:"#add-invoice",
+		data:{
+			datas0:[]
+		},
+		methods:{
+			newItem0:function(){
+				var data={};
+				data.a = "";
+				data.b = "";
+				data.c = "";
+				data.attach_group = $("input[name='attach_group']").val();
+				/*$.post("ComAttachment/getAttachGroup",function(result){
+					data.attach_group = result;
+				});*/
+				this.datas0.push(data);
+				vue.$nextTick(function() {
+					vue.$nextTick(function() {
+						var index = vue.datas0.length-1;
+						var row_class = ".row-0-"+ index;
+						$.parser.parse(row_class);
+						$(".chosen-select").extChosen();
+					});
+				});
+			}
+		},
+		watch: {
+		}          
+	});
+
+	function removeSelf(e){
+		$(e).parent().parent("tr").remove();
+	}
+
+	$(function(){
+		vue.newItem0();
+	});
+
+	function invoiceSave(){
+		showMaskLayer();
+		var validate = $("#WrkInvoiceRecord-dataform").form('validate');
+		if (!validate){
+			hideMaskLayer();
+			$.dialog.alert("请输入必填项！");
+			return validate;
+		}
+		var data = $("#WrkInvoiceRecord-dataform").serialize();
+		var type = $("input[name='type']").val();
+		data = data +"&type="+type;
+		$.post("WrkInvoicePlanDetail/invoice",data,function(result){
+			hideMaskLayer();
+			if(result.error == 0){
+				for(var i in result.record){
+					var record = [];
+					record['id'] = result.record[i].id;
+					record['invoice_day'] = result.record[i].invoice_day;
+					record['invoice_id'] = result.record[i].invoice_id;
+					record['invoice_sum'] = result.record[i].invoice_sum;
+					record['invoice_type'] = result.record[i].invoice_type == 0? "普通发票":"增值税专用发票";
+					record['confirm_man'] = "未签收";
+					record['state'] = "正常";
+					record['attach_group'] = result.record[i].attach_group;
+					planDetailvue.invoice_record.unshift(record);
+				}
+				//计算结余、未开
+				getInvoiceState();
+				if(type == "WrkInvoicePlanDetail"){
+					getInvoicePlan();
+				}
+				$.dialog.focus.close();
+			}
+			$.dialog.tips(result.message);
+		},"json");
+	}
+	function changeDate0(date){
+
+	}
+
+	function uploadRecordAttach(obj){
+		var attach_group = $(obj).data("group");
+		openAttachmentForm("开票附件备注",[{text:"开票记录附件备注",attach_group:attach_group}],function(){
+		})
+	}
+</script>

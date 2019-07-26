@@ -1,0 +1,11 @@
+<?php
+return array
+(   
+    "SUNDRY_TRANSFER_LENDER" => "出借人",
+	"SUNDRY_TRANSFER_BORROWER" => "借用人",
+	"SUNDRY_TRANSFER_NO" => "编号",
+	"SUNDRY_TRANSFER_CUSTOMER_CC_RECIPIENT" => "客户抄送人",
+	"SUNDRY_TRANSFER_COMPANY_CC_RECIPIENT" => "公司抄送人",
+    "SUNDRY_TRANSFER_STATUS" => "状态",
+    "SUNDRY_TRANSFER_CREATED_AT" => "创建时间"
+);

@@ -1,0 +1,219 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<script>
+    function formatMoneyShow(value, row, index)
+    {
+        if (value === 'hide') {
+            return '';
+        } else {
+            return value != '' ? "¥"+value:'-';
+        }
+    }
+    function formatOperation(value, row, index)
+    {
+        var operation = '';
+        if (row.id > 0) {
+            operation += '<button class="operation-btn" style="width:auto" onclick="actionAppendFolder(\''+row.attach_group+'\',\''+row.id+'\',\''+row.operation+'\')">备注附件</button>';
+        }
+        return operation;
+    }
+</script>
+<style>
+    .grey{
+        background: grey;
+    }
+    .search-panel{
+        display: block !important;
+    }
+    .search-action-panel{
+        display: none;
+    }
+    .action-botton{
+        padding: 8px 13.5px;
+        background-color: #368BFE;
+        color: #fff ;
+        border-radius: 4px;
+        border: 0;
+        margin: 0 2px;
+    }
+    .operation-btn{
+        padding: 8px 13.5px;
+        background-color: #368BFE;
+        color: #fff ;
+        border-radius: 4px;
+        border: 0;
+        margin: 0 2px;
+    }
+</style>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <table class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+           data-options="
+                       url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/list',
+                       pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+                       pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+                       toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+                       pageNumber:1,
+                       checkOnSelect:true,
+                       singleSelect:false,
+                       border:true,
+                       showFooter: true,
+                       onRowContextMenu: function (e, rowIndex, rowData) {
+                         $(this).datagrid('clearSelections');
+                         $(this).datagrid('selectRow', rowIndex);
+                       e.preventDefault();
+                        $('#box_{$Think.const.CONTROLLER_NAME}').menu('show', {
+                            left: e.pageX,
+                            top: e.pageY
+                         });
+                        }">
+        <thead>    <tr>
+            <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+            <th data-options="field:'created_time',width:150,align:'left'">发生日期</th>
+            <th data-options="field:'income_money',width:120,align:'left',formatter:formatMoneyShow">收入金额</th>
+            <th data-options="field:'pay_money',width:120,align:'left',formatter:formatMoneyShow">支出金额</th>
+            <th data-options="field:'actual_money',width:120,align:'left',formatter:formatMoneyShow">账户余额</th>
+            <th data-options="field:'detail_type',width:120,align:'left'">明细类型</th>
+            <th data-options="field:'income_type',width:120,align:'left'">收入类型</th>
+            <th data-options="field:'pay_type',width:120,align:'left'">支出类型</th>
+            <th data-options="field:'state_view',width:120,align:'left'">状态</th>
+            <th data-options="field:'operation',width:160,align:'center',formatter:formatOperation">操作</th>
+        </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+        <div id="empty-notice" style="color: rgb(180, 180, 180);;width:80%;display:none;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;top: 40px;font-size: 20px">暂无数据</div>
+
+</div>
+<div id="actions-{$Think.const.CONTROLLER_NAME}">
+    <div class="extend-nav-menu" style="margin: 10px;">
+
+    </div>
+</div>
+<div class="details-section">
+    <div id="{$Think.const.CONTROLLER_NAME}-search-panel">
+        <table class="search-table">
+            <tbody>
+            <tr>
+                <th >明细类型：</th>
+                <td>
+                    <div class="indexes-start-up indexes" data-toggle="mold">
+                        <div class="btn-screening btn-screening-on"  data-status="0">全部</div>
+                        <div class="btn-screening" data-status="1">收入</div>
+                        <div class="btn-screening" data-status="2">支出</div>
+                        <input type="hidden" name="mold" value="0" class="filter-field">
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="search-table">
+            <tbody>
+            <tr>
+                <th >收入类型：</th>
+                <td>
+                    <div class="indexes-start-up indexes" data-toggle="income">
+                        <div class="btn-screening btn-screening-disable"  data-status="0">全部</div>
+                        <div class="btn-screening btn-screening-disable" data-status="5">充值</div>
+                        <div class="btn-screening btn-screening-disable" data-status="3">转账</div>
+                        <div class="btn-screening btn-screening-disable" data-status="4">退款</div>
+                        <input type="hidden" name="income" value="0" class="filter-field">
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="search-table">
+            <tbody>
+            <tr>
+                <th >支出类型：</th>
+                <td>
+                    <div class="indexes-start-up indexes" data-toggle="pay">
+                        <div class="btn-screening btn-screening-disable"  data-status="0">全部</div>
+                        <div class="btn-screening btn-screening-disable" data-status="1">付款</div>
+                        <div class="btn-screening btn-screening-disable" data-status="2">提现</div>
+                        <input type="hidden" name="pay" value="0" class="filter-field">
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <if condition="$has_leader">
+            <table class="search-table">
+                <tbody>
+                <tr>
+                    <th >
+                        <button class="action-botton" onclick="createDialog('{$Think.const.CONTROLLER_NAME}/recharge','充值页面','ComRechargeDetails')">充值</button>
+                        <button class="action-botton" onclick="createDialog('{$Think.const.CONTROLLER_NAME}/withdrawal','提现页面','ComWithdrawalDetails')">提现</button>
+                    </th>
+                </tr>
+                </tbody>
+            </table>
+        </if>
+    </div>
+</div>
+
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+
+<script>
+    $('div.indexes-start-up > .btn-screening').on('click','',function(){
+        if (!$(this).hasClass('btn-screening-on')) {
+            var toggle = $(this).parent('div').data('toggle');
+            var status = $(this).data('status');
+            if(toggle != 'mold'){
+                var mold_status = $(".indexes[data-toggle=mold]").find(".btn-screening-on").data("status");
+                if(mold_status == 0){
+                    return false;
+                }
+            }
+            if (toggle == 'mold'){
+                if (status == 2) {
+                    $('.indexes[data-toggle=income]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+                    $('.indexes[data-toggle=pay]').addClass('indexes-start-up').find('div:first').addClass('btn-screening-on');
+                    $('input[name=income]').val('');
+                    $('.indexes[data-toggle=income]').find('div').addClass("btn-screening-disable");
+                    $('.indexes[data-toggle=pay]').find('div').removeClass("btn-screening-disable");
+                } else if(status == 1) {
+                    $('.indexes[data-toggle=pay]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+                    $('.indexes[data-toggle=income]').addClass('indexes-start-up').find('div:first').addClass('btn-screening-on');
+                    $('input[name=pay]').val('');
+                    $('.indexes[data-toggle=pay]').find('div').addClass("btn-screening-disable");
+                    $('.indexes[data-toggle=income]').find('div').removeClass("btn-screening-disable");
+                }else{
+                    $('.indexes[data-toggle=pay]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+                    $('.indexes[data-toggle=income]').removeClass('indexes-start-up').find('div').removeClass('btn-screening-on');
+                    $('input[name=pay]').val('');
+                    $('input[name=income]').val('');
+                    $('.indexes[data-toggle=pay]').find('div').addClass("btn-screening-disable");
+                    $('.indexes[data-toggle=income]').find('div').addClass("btn-screening-disable");
+                }
+            }
+            if ($(this).parent('div').hasClass('indexes-start-up')) {
+                $(this).addClass('btn-screening-on').siblings('.btn-screening').removeClass('btn-screening-on');
+                $(this).siblings('input').val(status);
+                doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+            }
+        }
+    })
+    function actionAppendFolder(attach_group,id,operation) {
+        openAttachmentForm("附件备注", [{text:"类型1",attach_group:attach_group}],function(result){
+            if (attach_group == '' || attach_group == null) {
+                $.post('/ComUserCapital/setAttachGroup',{id:id,attach_group:result.group,operation:operation},function(){
+
+                },'json')
+                refreshGrid("{$Think.const.CONTROLLER_NAME}", {id:id,attach_group:result.group}, 'edit');
+            }
+        });
+    }
+    function callHandler()
+    {
+        doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+    }
+
+    $(function () {
+        var H4 = $("#ComCompanyCapital-toolbar").height() + 100;
+        $("#empty-notice").css("top", H4);
+    })
+
+    $("#ComCompanyCapital-datagrid").bind("onLoadSuccess",function(event,data){
+        if(data.total == 0){
+            $("#empty-notice").html(data.tips).show();
+        }
+    })
+</script>

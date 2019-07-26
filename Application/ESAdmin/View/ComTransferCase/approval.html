@@ -1,0 +1,122 @@
+<style>
+    .row .inputbox{
+        text-align: left;
+    }
+    .tableForm .row .caption{
+        width: 18%;
+        display: inline-block;
+        margin-left:0px;
+        vertical-align:middle;
+        text-align: right;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="height:500px; width:500px; ">
+    <div class="easyui-section" style="text-align: center">
+        <div class="easyui-section-item" style="text-align: center">
+            <div class="tab-header"><span>基本资料</span></div>
+            <div class="tableForm" style="width: 100%">
+                <input name="id"  type="hidden"  value="{$model.id}">
+                <input name="attach_group"  type="hidden"  value="{$model.attach_group}">
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.TC_PRODUCT_TITLE}：</span></div>
+                    <div class="inputbox">{$model.title}</div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.TC_ORDER_SN}：</span></div>
+                    <div class="inputbox">{$model.order_sn}</div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.TC_TRANSFER_CASE}：</span></div>
+                    <div class="inputbox">{$model.account}</div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.TC_TRANSFER_VOUCHER}：</span></div>
+                    <div class="inputbox" >
+                        <a href="{$model.pic}" target="_blank">
+                            <img src="{$model.pic}"
+                                 id="dlg"
+                                 style="max-width: 350px;max-height: 200px;"
+                                 alt=""
+                            >
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.TC_TRANSFER_CREATE_TIME}：</span></div>
+                    <div class="inputbox">{$model.created_time}</div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.TC_TRANSFER_STATE}：</span></div>
+                    <div class="inputbox">{$model.view_state}</div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>收款账户：</span></div>
+                    <div class="inputbox">
+                        <select name="origin" class="easyui-validatebox"  id="origin">
+                            <volist name="receivables_account" id="vo">
+                                <option value="{$vo.id}" >{$vo.name}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.TC_REFUSE_REASON}：</span></div>
+                    <div class="inputbox">
+                        <textarea name="remark" id="" cols="30" placeholder="拒绝审核时,必填" rows="2" >{$model.remark}</textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="caption"><span>附件：</span></div>
+                    <div class="inputbox">
+                        <a href="javascript:void(0)" class="common-blue-btn" onclick="uploadAttachment()" >上传</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <if condition="$model.pay_status eq 0 && $model.order_state eq 3 && $model.surety_state neq 1">
+        <div class="form-actions" style="text-align: center;margin-top: 15px">
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save"  onclick="adoptApproval()">通过</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-reply" onclick="refuseApproval()">拒绝</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-reply" onclick="closeDialog('ComTransferCase-approval')">关闭</a>
+        </div>
+        <else/>
+        <div class="form-actions" style="text-align: center;margin-top: 15px">
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-reply" onclick="closeDialog('ComTransferCase-approval')">关闭</a>
+        </div>
+    </if>
+    <script>
+        function adoptApproval() {
+            updateApproval(1);
+        }
+        function updateApproval(type){
+            var remark = $('textarea[name=remark]').val();
+            var origin = $('select[name=origin]').val();
+            var attach_group = $('input[name=attach_group]').val();
+            if (remark.trim() == '' && type == 2){
+                $.dialog.tips('请在备注里面填写拒绝原因!');
+                return false;
+            }
+            if ($('select[name=origin]').val() == '' && type == 1) {
+                $.dialog.tips('请选择收款账户!');
+                return false;
+            }
+            $.post("ComTransferCase/updateApproval", {id: "{$model.id}", type: type,remark:remark,origin:origin,attach_group:attach_group}, function(result) {
+                $.dialog.tips(result.message);
+                if(result['error'] == 0){
+                    closeDialog('ComTransferCase-approval')
+                }
+
+            },'JSON')
+        }
+        function refuseApproval(){
+            updateApproval(2);
+        }
+        function uploadAttachment() {
+            var attach_group = $("input[name='attach_group']").val();
+            openAttachmentForm("附件备注", [{text:"类型1",attach_group:attach_group}],function(id){
+                //alert(id);
+            });
+        }
+    </script>
+</div>

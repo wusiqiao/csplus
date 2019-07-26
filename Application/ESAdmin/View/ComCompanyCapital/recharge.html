@@ -1,0 +1,161 @@
+<style type="text/css">
+    .pay_content_bankinfo {
+
+        width: 80%;
+        height: 200px;
+        background:#fde8ca;
+        padding: 2%;
+    }
+    .pay_content_bankinfo h3 {
+        background:url({$Think.MODULE_PATH}Public/images/icon/bankcard.png) no-repeat 2% 50%;
+        height: 36px;
+        line-height: 36px;
+        padding-left: 55px;
+        font-size: 14px;
+        color:#3f3f4c;
+        border-bottom: 1px solid #9e938b;
+    }
+    .pay_content_bank {
+        margin-top: 18px;
+    }
+    .pay_content_bank li {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 36px;
+    }
+    .pay_content_bank li span {
+        display:inline-block;
+        width: 100px;
+    }
+    th{
+        font-weight:initial;
+    }
+    .second-header{
+        display: block;
+        height: 50px;
+        line-height: 50px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #35323b;
+        padding-left: 15px;
+        background-color: #eeeeee;
+    }
+    .tabs-header{
+        border-style: hidden;
+    }
+    .ui_content{
+        padding: 10px 0 !important;
+    }
+</style>
+<div class="detailcontainer" style="width:600px;">
+    <form id="pay-form">
+        <div class="row">
+            <input type="hidden" name="attach_group" value="{$model.attach_group}">
+            <table style="width: 100%;padding: 10px;">
+                <tr>
+                    <th >充值金额：</th>
+                    <td>
+                        <input name="account" type="number"  class="easyui-validatebox"  data-options="required:true,precision:2" value="100"/>
+                    </td>
+                    <th>账户金额：</th>
+                    <td>
+                        <input  type="number"  class="easyui-validatebox" disabled  data-options="precision:2" value="{$model.money}"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="second-header">
+                付款方式
+            </div>
+            <div class="easyui-tabs" >
+                <div title="线下支付" style="height:700px;padding:20px;">
+                    <div style="display: flex">
+                        <div class="pay_content_wrap" style="flex: 1">
+                            <div class="pay_content_bankinfo">
+                                <h3>银行账户信息</h3>
+                                <div class="pay_content_bank">
+                                    <ul>
+                                        <li><span>收款人</span> {$store.unline_payee}</li>
+                                        <li><span>开户行</span> {$store.unline_bank_account}</li>
+                                        <li><span>卡&nbsp;&nbsp;&nbsp;&nbsp;号</span>
+                                            {$store.unline_card_number}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex: .5">
+                            <a href="javascript:;" class="action-botton" onclick="actionCapitalFolder()">备注附件</a>
+                        </div>
+                    </div>
+                    <div align="center" style="margin-top: 15px">
+                        <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="customerPay()">确认</a>
+                        <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+                    </div>
+                </div>
+                <div title="微信支付" style="overflow:auto;padding:20px">
+                    <div>
+                        <div class="pay_ma" align="center"><img src="data:image/png;base64,{$model.code}" alt=""></div>
+                        <div style="text-align: center;"><img width="175" src="{$Think.MODULE_PATH}Public/images/icon/message.png" alt=""></div>
+                        <p align="center" class="pay_txt5">二维码2小时内有效，请尽快支付</p>
+                    </div>
+                    <div align="center" style="margin-top: 15px">
+                        <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script>
+    var order_sn = '';
+    updateCode();
+    changeOrderStatues();
+    $('input[name=account]').change(function(){
+        if ($("input[name=account]").val() > 0) {
+            updateCode();
+        } else {
+            $.dialog.alert('充值金额不能小于0!!');
+            $("input[name=account]").val(100);
+            updateCode();
+        }
+    })
+    function customerPay(){
+        showMaskLayer();
+        $.post('/{$Think.const.CONTROLLER_NAME}/recharge',$('#pay-form').serialize(),function(data){
+            $.dialog.tips(data.message);
+            hideMaskLayer();
+            if (data.error == 0) {
+                closeDialog('ComRechargeDetails');
+                callHandler();
+            }
+        },'json')
+    }
+    function updateCode(){
+        var price		=	$("input[name=account]").val();//需要充值的金额
+        var data 		=	{
+            price:price,
+        };
+        $.post('/{$Think.const.CONTROLLER_NAME}/WxNativePay',data,function(result){
+            order_sn = result.no;
+            $('.pay_ma > img').attr('src','data:image/png;base64,'+result.code);
+        },'JSON')
+    }
+    function changeOrderStatues(){
+        $.post('/{$Think.const.CONTROLLER_NAME}/hasWXRecharge',{sn:order_sn},function(data){
+            if(data.error == 0 ){
+                closeDialog('ComRechargeDetails');
+                $.dialog.alert('微信支付成功!!');
+                callHandler();
+            }else if(typeof($.dialog.list['ComRechargeDetails']) != "undefined"){
+                setTimeout("changeOrderStatues()", 1000);
+            }
+        },'JSON')
+    }
+    function actionCapitalFolder() {
+        var attach_group = $("input[name='attach_group']").val();
+        openAttachmentForm("附件备注", [{text:"类型1",attach_group:attach_group}],function(result){
+
+        });
+    }
+</script>

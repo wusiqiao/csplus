@@ -1,0 +1,322 @@
+<script>
+    function formatState(value){
+        return value == 0 ? "未结束":"已结束"
+    }
+    function formatAgreementName(value) {
+        if(value == null||value == ""){
+            return "-"
+        }else{
+            return `<div style="width:150px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+        }
+    }
+    function formatAgreementNum(value){
+        if(value == null||value == ""){
+            return "-"
+        }else{
+            return `<div style="width:80px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+        }
+    }
+    function formatComCompanyName(value, row) {
+        if(value == null||value == ""){
+            return "-"
+        }else{
+            return `<div style="width:182px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+        }
+    }
+    function toggleType(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+
+    function formatNull(value,row){
+        if(value == "" || value == null){
+            value =  "-";
+        }
+        return value;
+    }
+</script>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .chooseSpan{
+        border-radius: 0px !important;
+    }
+    .btn-screening-label {
+        float: left;
+        width: 130px;
+        height: 54px;
+        line-height: 54px;
+        text-align: right;
+    }
+
+    .btn-screening-input {
+        float: left;
+        height: 32px;
+        margin: 11px 0px 11px 0px;
+    }
+
+    #user-defined-time {
+        height: 54px;
+        line-height: 54px;
+        min-width: 270px;
+        position: absolute;
+        right: -120px;
+        top: 0;
+    }
+
+    @media screen and (max-width:1920px) {
+        .btn-screening-input input {
+            width: 270px !important;
+        }
+    }
+
+    @media screen and (max-width:1680px) {
+        .btn-screening-input input {
+            width: 240px !important;
+        }
+    }
+
+    @media screen and (max-width:1580px) {
+        .btn-screening-input input {
+            width: 210px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    @media screen and (max-width:1470px) {
+        .btn-screening-input input {
+            width: 190px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    @media screen and (max-width:1400px) {
+        .btn-screening-input input {
+            width: 170px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    @media screen and (max-width:1330px) {
+        .btn-screening-input input {
+            width: 150px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+</style>
+<div class="maincontainer" id="WrkInvoicePlan-maincontainer" style="height: 100%">
+	<div class="content-wrap">
+		<div id="WrkInvoicePlan-toolbar">
+		<div class="c-header">
+    		<!--<span class="tab-span" onclick="toggleType('WrkInvoiceApply')">开票申请</span>-->
+    		<div class="tab-span" onclick="toggleType('WrkInvoice')">全部</div>
+            <div class="tab-span" onclick="toggleType('WrkInvoicePlanDetail')">有计划开票</div>
+            <div class="tab-span tab-span-on" onclick="toggleType('WrkInvoicePlan')">无计划开票</div>
+    	</div>
+        <div class="c-select" style="padding: 17px 0 10px 18px;">
+            <div class="search-table">
+                <div style="width:800px;height:54px;line-height: 54px;position: relative;">
+                    <div class="btn-screening-label">最新开票时间：</div>
+                    <span class="view-date btn-screening btn-screening-on" data-date="">全部</span>
+                    <span class="view-date btn-screening" data-date="1">今日</span>
+                    <span class="view-date btn-screening" data-date="2">本周</span>
+                    <span class="view-date btn-screening" data-date="3">本月</span>
+                    <span class="view-date btn-screening" data-date="4">自定义</span>
+                    <div id="user-defined-time" style="display: none;">
+                        <input style="width: 122px;" id="latest_start" class="easyui-datebox filter-field datebox-f combo-f textbox-f" value="" textboxname="qdr-latest_invoice_time" style="display: none;" data-options="prompt:'选择时间',editable:false">－
+                        <input style="width: 122px;" id="latest_end" class="easyui-datebox filter-field datebox-f combo-f textbox-f" value="" textboxname="qdr-latest_invoice_time" style="display: none;" data-options="prompt:'选择时间',editable:false">
+                    </div>
+                </div>
+                <div style="width:800px;height:54px;line-height: 54px;position: relative;">
+                    <div class="btn-screening-label">合同开票状态(总)：</div>
+                    <span class="view-state btn-screening btn-screening-on" data-state="">全部</span>
+                    <span class="view-state btn-screening" data-state="0">未结束</span>
+                    <span class="view-state btn-screening" data-state="1">已结束</span>
+                </div>
+                <div style="height:54px;line-height: 54px;position: relative;">
+                    <div class="btn-screening-label">公司名称：</div>
+                    <div class="btn-screening-input">
+                        <input name="customer_branch"  class="easyui-validatebox filter-field" value="" data-name="q-ag*company_id" placeholder="请输入公司名称" />
+                    </div>
+                    <div class="btn-screening-label">合同名称：</div>
+                    <div class="btn-screening-input">
+                        <input name="name"  class="easyui-validatebox filter-field" value="" data-name="q-ag*name" placeholder="请输入合同名称" />
+                    </div>
+                    <div style="width: 160px;" class="btn-screening-label">开票商户负责人：</div>
+                    <div class="btn-screening-input">
+                        <input name="service_man"  class="easyui-validatebox filter-field" value="" data-name="q-leader_id" placeholder="请输入开票商户负责人" />
+                    </div>
+                </div>
+            </div>
+			<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none;height: 0;padding: 0;">
+				<table class="search-table" style="display: none;">
+					<td id="state_input"></td>
+					<td id="date_input"></td>
+					<td id="company_input"></td>
+					<td id="qdr-time"></td>
+					<td id="leader_input"></td>
+				</table>
+			</div>
+    	</div>
+        <!--<div class="search-panel">
+            <div class="search-action-panel">
+                <a href="javascript:void(0)" class="common-blue-btn" plain ="true" onclick="doSearchQuery('WrkInvoicePlan')">查询</a>
+            </div>
+        </div>-->
+    </div>
+	</div>
+    <include file="./Application/Common/Layout/Default/list_header_auto.html"  controller="WrkInvoicePlan" />
+    <tr>
+        <th data-options="field:'id',hidden:true">ID</th>
+        <th data-options="field:'ag_agreement_sn',width:120,align:'left',formatter:formatAgreementNum">合同编号</th>
+        <th data-options="field:'branch_name',width:170,align:'left'">公司名称</th>
+        <th data-options="field:'customer_leader',width:100,align:'left',formatter:formatNull">开票客户负责人</th>
+        <th data-options="field:'ag_name',width:170,align:'left',formatter:formatAgreementName">合同名称</th>
+        <th data-options="field:'leader_name',width:100,align:'left',formatter:formatNull">开票商户负责人</th>
+        <th data-options="field:'ag_agreement_money',width:90,align:'left'">合同金额</th>
+        <th data-options="field:'amount_paid',width:90,align:'left'">已开总额</th>
+        <th data-options="field:'amount_noPaid',width:90,align:'left'">未开总额</th>
+        <th data-options="field:'balance',width:90,align:'left',formatter:formatNull">结余总额</th>
+        <th data-options="field:'recently_invoice_time',width:110,align:'left',formatter:formatNull">最新开票时间</th>
+        <th data-options="field:'state',width:90,align:'left',formatter:formatState">合同开票状态</th>
+    </tr>
+	</thead>
+	</table>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="WrkInvoicePlan" />
+	<div id="invoice-empty-notice" style="color: rgb(180, 180, 180);display:none;width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+        top: 40px;font-size: 20px">暂无数据</div>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+	$('.c-header .tab-span').click(function (){
+		$(this).addClass('tab-span-on').siblings().removeClass('tab-span-on');
+	});
+	$('.c-select .view-state').click(function (){
+        $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+        var state = $(this).data('state');
+        var html = '';
+        if(state!=undefined){
+            html += '<input name="state" type="hidden" class="easyui-validatebox filter-field" value="' + state + '">';
+        }
+        $("#state_input").html(html);
+        doSearchQuery("WrkInvoicePlan");
+	});
+	$('.addSpan1').click(function (){
+		createDialog("/WrkInvoicePlan/details", "新增开票计划-无合同");
+	});
+    $(function() {
+        autocompleteAjax($("input[name='customer_branch']"),"WrkAgreement/companyList",function(item){
+            $("input[name='customer_leader']").val(item.customer_leader);
+            doSearchQuery("WrkInvoicePlan");
+        });
+        $("input[name='customer_branch']").on('change', function() {
+            if ($('input[name="customer_branch"]').length > 0 && $("input[name='customer_branch']").val()=="") {
+                $("input[name='q-ag*company_id']").val("");
+                doSearchQuery("WrkInvoicePlan");
+            }
+        });
+        autocompleteAjax($("input[name='customer']"),"WrkAgreement/customerList",function(item){
+            doSearchQuery("WrkInvoicePlan");
+        });
+        $("input[name='customer']").on('change', function() {
+            if ($('input[name="customer"]').length > 0 && $("input[name='customer']").val()=="") {
+                $("input[name='q-ag*customer_leader_id']").val("");
+                doSearchQuery("WrkInvoicePlan");
+            }
+        });
+       /* autocompleteAjax($("input[name='service_man']"),"WrkAgreement/service_manList",function(item){
+            doSearchQuery("WrkInvoicePlan");
+        });*/
+        autocompleteAjaxEx($("input[name='service_man']"),"ComCompany/queryModuleUsers/module/WrkInvoicePlan",{
+            formatItem(row){
+                var mobile = row['mobile'];
+                var item_text = $.format(
+                    "<div style='display: flex;flex-direction: row;font-size: 13px;padding: 5px'>" +
+                    "<div style='flex: 1'>姓名：<span style='color:#368bfe'>{0}</span></div>"+
+                    "<div style='flex: 1'>部门：<span style='color:#368bfe'>{1}</span></div>"+
+                    "</div>",
+                    [padLeft(row.name,10," "),row.branch_name]);
+                return item_text;
+            },
+            onSelected:function(row){
+                /*$("#WrkInvoicePlan-datagrid").datagrid('load',{
+                    'q-leader_id':row.id
+                });*/
+                var html = "";
+                html += '<input name="q-leader_id" type="hidden" class="easyui-validatebox filter-field" value="' + row.id + '">';
+                $("#leader_input").html(html);
+                doSearchQuery("WrkInvoicePlan");
+            }
+        });
+        $("input[name='service_man']").on('change', function() {
+            if ($('input[name="service_man"]').length > 0 && $("input[name='service_man']").val()=="") {
+                $("input[name='q-leader_id']").val("");
+                doSearchQuery("WrkInvoicePlan");
+            }
+        });
+        autocompleteAjax($("input[name='name']"),"WrkAgreement/nameList",function(item){
+            doSearchQuery("WrkInvoicePlan");
+		});
+        $("input[name='name']").on("change",function(){
+            if($("input[name='name']").val() == "" && $("input[name='name']").length >0){
+                $("input[name='q-ag*name']").val("");
+                doSearchQuery("WrkInvoicePlan");
+			}
+		});
+        /*$('.aaa').click(function (){
+        	createDialog("/WrkInvoicePlan/noPlan", "开票详情-无开票计划");
+        });*/
+    });
+
+    $("#day_start").datebox({onSelect:function () {
+			doSearchQuery("WrkInvoicePlan");
+    }});
+    $("#day_end").datebox({onSelect:function () {
+            doSearchQuery("WrkInvoicePlan");
+    }});
+	$("#latest_start").datebox({onSelect:function () {
+            doSearchQuery("WrkInvoicePlan");
+    }});
+    $("#latest_end").datebox({onSelect:function () {
+            var html = '<input name="date" type="hidden" class="easyui-validatebox filter-field" value="4">';
+            $("#date_input").html(html);
+            doSearchQuery("WrkInvoicePlan");
+    }});
+    $('.c-select .view-date').click(function (){
+        var html = '';
+        $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+        $("input[name='qdr-latest_invoice_time']").val("");
+        $(".textbox-text").val("");
+        var date = $(this).data('date');
+        if(date!=undefined){
+            html += '<input name="date" type="hidden" class="easyui-validatebox filter-field" value="' + date + '">';
+        }
+        if ($(this).text() == "自定义") {
+            $(`#user-defined-time`).show();
+            return false;
+        } else {
+            $(`#user-defined-time`).hide();
+        }
+        $("#date_input").html(html);
+        doSearchQuery("WrkInvoicePlan");
+    });
+
+    $("#WrkInvoicePlan-datagrid").bind("onLoadSuccess",function(event,data){
+        if(data.total == 0){
+            $("#invoice-empty-notice").show();
+        }else{
+            $("#invoice-empty-notice").hide();
+        }
+    });
+
+    $(function(){
+        var H4 = $("#WrkInvoicePlan-toolbar").height()+100;
+        $("#invoice-empty-notice").css("top",H4);
+    })
+
+</script>

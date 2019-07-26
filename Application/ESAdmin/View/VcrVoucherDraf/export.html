@@ -1,0 +1,61 @@
+<div class="detailcontainer" id="voucher-export-detailcontainer" style="width:480px; height:240px;margin-top: 20px;">
+    <form id="draf-export-form">
+        <div class="tableForm" style="width:100%">
+            <div class="row">
+                <div class="caption"><span>会计期间</span></div>
+                <div class="inputbox_x2">
+                    <input type="text"  name="accounting_section" id="salary-accounting-section" style="width:100%">
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>开始凭证号</span></div>
+                <div class="inputbox_x2">
+                    <input name="voucher_no" class="easyui-validatebox" data-options="required:true" placeholder="财务软件记账凭证最后一笔资料的凭证号"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>开始流水号</span></div>
+                <div class="inputbox_x2">
+                    <input name="serial_no" class="easyui-validatebox" data-options="required:true" placeholder="财务软件记账凭证最后一笔资料的流水号"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>导出格式</span></div>
+                <div class="inputbox_x2">
+                    <select class="easyui-combobox" name="state" style="width:100%;">
+                        <option value="{$Think.const.EXPORT_FMT_K3}">金蝶K3</option>
+                        <option value="{$Think.const.EXPORT_FMT_YY}">用友</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="btn-group">
+            <input class="blue-btn" type="button" value="导出" onclick="action_voucher_export(this)"/>
+            <input class="square-btn" type="button" value="取消" onclick="closeDialog();"/>
+        </div>
+    </form>
+</div>
+<script>
+    create_accounting_section_combox("#salary-accounting-section");
+    function action_voucher_export() {
+        var customer = $(".page-selected .company-name").text();
+        var accounting_section = $("#salary-accounting-section").combobox("getValue");
+        var data = $("#draf-export-form").serialize();
+        if (customer !== "") {
+            $.post("/VcrVoucherDraf/exportCheck", {accounting_section: accounting_section}, function(result){
+                if (result.code == 0){
+                    $.dialog.confirm("确定导出客户【" + customer + "】的凭证？", function(){
+                        $.dialog.tips("正在导出，请稍后...");
+                        $(".btn-voucher-export").css("background","#ccc");
+                        location.href = "/VcrVoucherDraf/export?" + data;
+                    });
+                }else{
+                    $.dialog.tips(result.message);
+                }
+            },"json");
+        } else {
+            alert("请先选择客户！");
+        }
+    }
+</script>

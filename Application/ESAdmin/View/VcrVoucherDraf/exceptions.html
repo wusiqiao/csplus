@@ -1,0 +1,42 @@
+<div id="def-exceptions"  style="width:600px;max-height: 480px;overflow-y: auto">
+<table class="gridtable exceptions-table">
+    <thead>
+    <tr><th style="width:70%">异常科目名称</th><th>设置正确科目</tr>
+    </thead>
+    <tbody>
+    <volist name="exceptions" id="vo">
+    <tr>
+        <td>{$vo.subject_name}</td>
+        <td style="text-align: right">
+            <a href="javascript:;" class="change-subject" title="点击设置" data-title="{$vo.subject_name}"><i class="fa fa-caret-down fa-lg"></i></a>
+        </td>
+    </tr>
+    </volist>
+    </tbody>
+</table>
+</div>
+<div class="form-actions" id='[controller]-form-actions'>
+    <div class='actions-sysdefault'>
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">关闭</a>
+    </div>
+</div>
+<script>
+    $(function () {
+       $("a.change-subject").click(function(){
+           var _this = this;
+           createDialog("/VcrSubject/select", "选择科目（双击取回）", "dlg-VcrSubject-select", {callback: function (rows) {
+                   var current_subject = rows[0];
+                   $.post("/VcrVoucherDraf/dealException", {old_name: $(_this).attr("data-title"), subject_id: current_subject.id}, function (result) {
+                       if (result.code == 0){
+                           var subject_name = current_subject.name;
+                           if (current_subject.parent_name){
+                               subject_name = current_subject.parent_name + "-" + subject_name
+                           }
+                           $(_this).text(subject_name);
+                           refreshGrid("VcrVoucherDraf");
+                       }
+                   }, "json");
+               }});
+       })
+    });
+</script>

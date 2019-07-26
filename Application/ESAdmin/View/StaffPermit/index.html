@@ -1,0 +1,651 @@
+<link rel="stylesheet" href="/{$Think.APP_PATH}Public/vender/vue-tree-2.0/vue-tree.css">
+<style>
+    .permit-table
+    {
+        border-collapse: collapse;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .permit-table td, .permit-table th
+    {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+    .permit-table thead ,.permit-table th
+    {
+        background-color: #CCE8EB;
+    }
+    .permit-table tr:nth-child(odd)
+    {
+        background: #fff;
+    }
+    .permit-table tr:nth-child(even)
+    {
+        background: #F5FAFA;
+    }
+
+    .wrap{
+        display:flex;
+        position: relative;
+        height:100%;
+    }
+    .con-lef{
+        padding-left:20px;
+        width:220px;
+        height:100%;
+        background: #fbfafa;
+    }
+    .con-lef li{
+        height:60px;
+    }
+    .con-rig{
+        width:calc(100% - 220px);
+        padding: 0 3%;
+    }
+    .cover{
+        position: absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.6);
+        display: none;
+    }
+    .cover .cover-con{
+        margin:30px 0 0 210px;
+    }
+    .cover p{
+        color:#fff;
+        font-family: "站酷快乐体";
+        font-size: 16px;
+        line-height: 20px ;
+    }
+    .cover .spanBtn{
+        margin-top:30px;
+        padding-left: 340px;
+    }
+    .cover .know{
+        display: inline-block;
+        border:1px dashed #fff;
+        width:148px;
+        height:40px;
+        cursor: pointer;
+        border-radius: 10px;
+        user-select: none;
+        line-height: 40px;
+        text-align: center;
+        color: #fff;
+    }
+    .tab-top{
+        display: flex;
+        margin:20px 0;
+        justify-content: space-between;
+    }
+    .tab-top span{
+        display: inline;
+        padding: 10px 25px;
+        background: #398bfe;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+    }
+    .tab-top span + span{
+        margin-left:15px;
+    }
+    .btn_bg_blue{
+        display: inline-block;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        background-color: #529bfd;
+        color: #fff;
+        padding: 0px 20px;
+        margin: 10px 10px;
+        cursor: pointer;
+    }
+    .btn_bg_blue:hover{
+        background-color: #6eacfe;
+    }
+    .clearFix:after{
+        display: block;
+        content: '';
+        clear: both;
+    }
+    .map,.del,.edit,.add,.up,.down,.map_tab{
+        display: inline-block;
+        padding:3px 0;
+        width:20px;
+        height:20px;
+        cursor: pointer;
+    }
+    .map{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c8_che.png') 0 5px no-repeat;
+    }
+    .map_tab{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png') 0 10px no-repeat;
+    }
+    .del{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c11.png') 0 5px no-repeat;
+    }
+    .edit{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c12.png') 0 5px no-repeat;
+    }
+    .add{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new.png');
+        background-size: 100% 100%;
+        padding: 0;
+        margin-top: 3px;
+    }
+    .up{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c14.png') 0 5px no-repeat;
+    }
+    .down{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c9.png') 0 5px no-repeat;
+    }
+    .list_box ul{
+        padding-left: 20px;
+        overflow: hidden;
+    }
+    .list_box::-webkit-scrollbar{
+       display: none;
+    }
+    .le{
+        float:left;
+        min-width:120px;
+    }
+    .ri{
+        float:right;
+        min-width:100px;
+    }
+    .tag_title{
+        overflow: hidden;
+        display: inline-block;
+        width:70px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        vertical-align: top;
+        padding: 3px 0;
+        cursor: pointer;
+    }
+    .on{
+        background-color: #e9f4fd;
+    }
+    .nav-lef{
+        width: auto;
+        height:calc(100% - 20px);
+        background-color: #f9fafb;
+        border-right: 1px solid #e7e7ed;
+        padding-top:20px;
+        position: relative;
+        margin-right: 16px;
+    }
+    .nav-lef li{
+        min-width: 220px;
+        padding-right: 14px;
+    }
+    .le{
+        float:left;
+        min-width:120px;
+    }
+    .ri{
+        float:right;
+        min-width:100px;
+    }
+    /* 显示隐藏按钮 */
+    .btn_seen_lef{
+        width: 16px;
+        height: 94px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/btn_close.png');
+        position: absolute;
+        right: -16px;
+        top: calc(50% - 47px);
+        /* z-index: 999; */
+        cursor: pointer;
+    }
+    .btn_seen_lef:hover{
+        opacity: 0.8;
+    }
+    /* 左侧列表过渡效果 */
+    .slide-enter,.slide-leave-to{
+        opacity: 0;
+        width: 0px;
+    }
+    .slide-enter-to,.slide-leave{
+        opacity: 1;
+        width: 268px;
+    }
+    .slide-enter-active, .slide-leave-active {
+        transition: all 0.5s;
+    }
+    input[type=checkbox].css-checkbox:checked:disabled + label.css-label{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-didcheck.png')  !important;
+    }
+</style>
+<script>
+    function formatEditRole(value,row){
+        if(!row.is_admin_role){
+            return '<a onclick="actionEditRole(' + row.id + ')">编辑</a>';
+        }
+    }
+
+    function actionEditRole(id) {
+        createDialog("staffRole/editRole/id/" + id, '编辑角色', 'dlg-edit-role');
+    }
+
+    function actionAddRole() {
+        createDialog("staffRole/addRole", '新增角色', 'dlg-add-role',function(){
+            alert(1);
+        });
+    }
+</script>
+<div id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="display: flex;  flex-flow: row;height: 100%;background: white" class="wrap">
+    <!-- <div style="width: 330px;background-color: white;border-right:1px solid #ddd;overflow-y: scroll;" class="clearFix"> -->
+        <!-- <div class="action-panel" style="width: 100px;"> -->
+            <!-- <div class="actions" style="width: 100px"> -->
+                <!-- <span style="color: #368BFE;font-size: 18px;">公司角色</span> -->
+                <!--<a href="javascript:void(0)" class="common-blue-btn detail-edit" style="width:auto" plain="true" onclick="actionAddRole()">新增角色</a>-->
+            <!-- </div> -->
+        <!-- </div> -->
+        <!--<table id="role-datagrid" class="easyui-datagrid datagrid" data-options="url:'StaffPermit/roleList',singleSelect:true,showHeader:false,pagination:false" style="padding-right: 50px">
+            <thead>
+                <tr>
+                    <th data-options="field:'id',hidden:true"></th>
+                    <th data-options="field:'name',width:160,align:'left'"></th>
+                    <th data-options="field:'edit',width:100,align:'left',formatter:formatEditRole"></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>-->
+        <div class="nav-lef" id="nav-lef">
+            <div class="btn_seen_lef" v-on:click="isSeen"></div>
+            <div class="list_box" style="overflow: auto;height: 100%;">
+                <transition name="slide">
+                    <tree v-show="seen" :folder = "trees"></tree>
+                </transition>
+            </div>
+        </div>
+    <!-- </div> -->
+    <div style="flex:4; height: 100%;background-color: white;overflow-y: scroll" id="role-menu-options">
+        <div style="" class=".tab-top">
+            <strong><span style="float: left;margin: 13px;" id="role_name"></span></strong>
+            <span style="float: right;margin: 8px">
+                <a href="javascript:void(0)" class="btn_bg_blue" onclick="actionAddRole()">新增角色</a>
+                <a href="javascript:void(0)" class="btn_bg_blue" onclick="createDialog('StaffPermit/role_copy/','角色复制','role_copy');">复制角色</a>
+            </span>
+        </div>
+        <template v-if="!show">
+            <div style="margin: 25%; color: rgb(180, 180, 180); font-size: 20px; text-align: center;height: 100px" id="role-tip">
+                <span></span>
+            </div>
+        </template>
+        <template v-if="show">
+            <table width="100%" class="permit-table" style="margin-bottom: 50px;">
+                <thead>
+                <tr>
+                    <th width="120">
+                        模块
+                    </th>
+                    <th width="800">
+                        功能权限
+                    </th>
+                </tr>
+                <tr v-for="item in items">
+                    <td width="120" >
+                        <input type="checkbox" class="css-checkbox"  :checked="item.checked?true:false" onclick="checkOperation(this,1)" :text="item.id" :id="item.id+'a'" :disabled="!btn_show">
+                        <label  class="css-label" :for="item.id+'a'">
+                            <span>&nbsp;{{item.text}}</span>
+                        </label>
+                    </td>
+                    <td width="800" :id="'m'+item.id">
+                        <table width="100%" frame=void class="permit-table" >
+                            <tr v-for="it in item.children" >
+                                <td align="left" style="padding: 5px 5px 5px 20px" width="125">
+                                    <input type="checkbox" class="css-checkbox" :checked="it.checked?true:false" onclick="checkOperation(this)" :text="it.id" :id="it.id+'z'" :disabled="!btn_show">
+                                    <label class="css-label" :for="it.id+'z'">
+                                        <span>&nbsp;{{it.text}}</span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <table frame=void width="100%" id="permissions1" class="permit-table">
+                                        <tr v-for="it in item.children" >
+                                            <div :id="'m'+it.id" style="text-align: left;padding-left:10px">
+                                                <div v-for="it1 in it.children" style="float:left;width:125px;padding: 7px;">
+                                                    <input type="checkbox" :checked="it1.checked?true:false" class="css-checkbox" name="data[]" :id="it1.parent_id+-it1.id" :disabled="!btn_show">
+                                                    <label class="css-label" :for="it1.parent_id+-it1.id">
+                                                        <span>&nbsp;{{it1.text}}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr v-if="btn_show" style="position: fixed;bottom: 0;height: 50px;">
+                    <td width="135" style="border-style: none">
+                        <input type="checkbox" class="css-checkbox" onclick="checkAll(this)" :checked="false" id="checkAll">
+                        <label  class="css-label" for="checkAll">
+                            <span>&nbsp;全选</span>
+                        </label>
+                    </td>
+                    <td width="915" style="border-style: none">
+                        <if condition="($permissions.add eq 1) ">
+                            <a href="javascript:void(0)" class="btn_bg_blue detail-edit" id="permit-save-btn" style="width:auto;margin: 5px;" plain="true" onclick="action_update_role_permit()">保存</a>
+                        </if>
+                    </td>
+                </tr>
+                </thead>
+            </table>
+        </template>
+   </div>
+    <div class="cover">
+        <div class="cover-con">
+            <p>提示：</p>
+            <p>1.角色代表操作权限，操作权限是指具有该角色的用户是否能查看、新增、编辑、删除某些数据</p>
+            <p>2.超级管理员的权限是系统默认的最大权限角色，不能修改</p>
+            <p class="spanBtn" style="border-style: none">
+                <span class="know">我知道啦~</span>
+            </p>
+        </div>
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    function action_update_role_permit() {
+        var data_list = new Array();
+        var arrChk=$("input[name='data[]']:checked");
+        $(arrChk).each(function(index, element){
+            //data_list.push(element.getAttribute("parent_id") + "_" + element.getAttribute("operation_id"));
+            data_list.push(element.getAttribute("id").replace("-",'_'));
+        });
+        if(roleVue.role_id != ""){
+            $.post("StaffPermit/updatePermits", {id: roleVue.role_id, data: data_list}, function(result) {
+                //var ret = $.parseJSON(result);
+                if (result.code === 0) {
+                    $.dialog.tips("更新成功！");
+                }else{
+                    $.dialog.tips(result.message);
+                }
+            },'json')
+        }else{
+            $.dialog.tips("请先在左侧选择角色！");
+        }
+    }
+</script>
+
+<script>
+    function checkAll(obj){
+        var arrChk = $("#role-menu-options").find("input");
+        if(obj.checked){
+            arrChk.attr("checked","checked");
+        }else{
+            arrChk.removeAttr("checked");
+        }
+    }
+    function checkOperation(obj,type){
+        var id = obj.getAttribute('text');
+        var arrChk = $("#m"+id).find("input");
+        if(obj.checked){
+            arrChk.attr("checked","checked");
+            if(type == 1){
+                for(var i=0;i<arrChk.length;i++){
+                    checkOperation(arrChk[i],0);
+                }
+            }
+        }else{
+            arrChk.removeAttr("checked");
+            if(type == 1){
+                for(var i=0;i<arrChk.length;i++){
+                    var id = arrChk[i].getAttribute('text');
+                    var arrChk1 = $("#"+id).find("input");
+                    arrChk1.removeAttr("checked");
+                }
+            }
+        }
+    }
+</script>
+<script type="text/javascript">
+    Vue.component('tree', {
+        name:"tree",
+
+        template:`<ul>
+                    <li v-for = "(item,index) in folder" :id="item.id" :level="item.level">
+                        <div :id="'div-'+item.id" :class="item.is_admin_role == 1 ? 'clearFix list_item on' : 'clearFix list_item'" style="margin: 5px 0">
+                            <template v-if="item.id == 'all'">
+                                <div class="le">
+                                    <i class="map_tab"></i>
+                                    <span :title="item.name" class="tag_title">{{item.name}}</span>
+                                </div>
+                            </template>
+                            <template v-else-if="item.is_admin_role == '1'">
+                                <div class="le">
+                                    <i class="map"></i>
+                                    <span :title="item.name" class="tag_title" style="overflow: visible;" @click.stop="getPermit(item)">{{item.name}}</span>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="le">
+                                    <i class="map"></i>
+                                    <span @click.stop="getPermit(item)" :title="item.name" class="tag_title">{{item.name}}</span>
+                                </div>
+                            </template>
+
+                            <div class="ri">
+                                <template v-if="item.id == 'all'">
+                                    <i class="add" @click.stop="addRole(item)" title="新增角色"></i>
+                                </template>
+                                <template v-else-if="item.is_admin_role == 1">
+                                </template>
+                                <template v-else>
+                                    <i class="del" @click.stop="removeRole(item)" title="删除角色"></i>
+                                    <i class="edit" @click.stop="editRole(item)" title="编辑角色"></i>
+                                    <i class="up" v-if="index>1" @click.stop="up(item)" title="上移"></i>
+                                    <i class="down" v-if="index<(folder.length-1)" @click.stop="down(item)" title="下移"></i>
+                                <template />
+                            </div>
+                        </div>
+                        <div v-if = "item.children">
+                            <tree v-if = "item.children" :folder = "item.children"></tree>
+                        </div>
+                    </li>
+                </ul>`,
+        props:["folder"],
+        methods:{
+            removeRole: function (item){
+                var str = '是否确认删除此角色？';
+                if('1' == item.has_user){
+                    str = '该角色下已有员工，请先移除员工！';
+                    $.dialog.alert(str, function(){});
+                    return false;
+                }
+                $.dialog.confirm(str, function () {
+                    showMaskLayer();
+                    var name = $("input[name='name']").val();
+                    $.post('/StaffRole/deleteRole/id/'+item.id, {name:name}, function(result) {
+                        hideMaskLayer();
+                        if (result.code == 0) {
+                            role_id ="";
+                            var div = $(".on").attr("id").split("-");
+                            if(div[1] == item.id){
+                                roleVue.show = false;
+                            }
+                            getRoleList();
+                        }
+                        $.dialog.tips(result.message);
+                    }, 'json')
+                });
+            },
+            editRole: function (item){
+                createDialog("StaffRole/editRole/id/"+item.id,"编辑角色","dlg-editRole");
+            },
+            addRole: function (item){
+                actionAddRole();
+            },
+            up: function (item){
+                $.post("/StaffPermit/sortRole/id/"+item.id+"/type/up", function(result){
+                    if (result.error == 0){
+                        getRoleList();
+                    }
+                    $.dialog.tips(result.message);
+                },"json");
+            },
+            down: function (item){
+                $.post("/StaffPermit/sortRole/id/"+item.id+"/type/down", function(result){
+                    if (result.error == 0){
+                        getRoleList();
+                    }
+                    $.dialog.tips(result.message);
+                },"json");
+            }
+        }
+    });
+
+    $(function () {
+        getRoleList();
+        //getPermit(roleVue.trees[0].children[0]);
+    });
+
+    function getRoleList(){
+        $.post("StaffPermit/roleList",function(result){
+            var role = [];
+            role.push(result);
+            roleVue.trees = role;
+            if(!roleVue.show){
+                getPermit(result["children"][0]);
+            }
+        },'json');
+
+    }
+
+    var roleVue = new Vue({
+       //el:"#role-menu-options",
+       el:"#{$Think.const.CONTROLLER_NAME}-maincontainer",
+       data:{
+           seen:true,
+           items:[],
+           role_id:"",
+           show:false,
+           btn_show:true,
+           trees:[]
+       },
+        methods:{
+            isSeen:function(){
+                if(this.seen){
+                    $(".btn_seen_lef").css("backgroundImage","url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/btn_open.png')")
+                }else{
+                    $(".btn_seen_lef").css("backgroundImage","url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/btn_close.png')")
+                }
+                this.seen = !this.seen
+            }
+        }
+    });
+
+    function getPermit(row){
+        $(".on").removeClass("on");
+        $("#div-"+row.id).addClass("on");
+        $.post("/StaffPermit/permit",{id: row.id},function(result){
+            if(row.is_admin_role){
+                $("#role_name").html(row.name+"（当前角色无法编辑）");
+                roleVue.btn_show = false;
+            }else{
+                $("#role_name").html(row.name+"权限选择");
+                roleVue.btn_show = true;
+            }
+            roleVue.items = result;
+            roleVue.role_id = row.id;
+            roleVue.show = true;
+            for(var i in result){
+                result[i].checked = true;
+                var value = result[i].children;
+                for(var j in value){
+                    value[j].checked = true;
+                    var v = value[j].children;
+                    for(var x in v){
+                        if(v[x].checked == false){
+                            value[j].checked = false;
+                        }
+                        if(row.is_admin_role){
+                            value[j].checked = true;
+                            v[x].checked = true;
+                        }
+                    }
+                    result[i].checked = result[i].checked && value[j].checked;
+                    if(row.is_admin_role){
+                        result[i].checked = true;
+                    }
+                }
+            }
+        },"json");
+    }
+
+    /*$("#role-datagrid").datagrid({
+        onClickRow: function (index, row) {
+            $.post("/StaffPermit/permit",{id: row.id},function(result){
+                if(row.is_admin_role){
+                    $("#role_name").html(row.name+"（当前角色无法编辑）");
+                }else{
+                    $("#role_name").html(row.name+"权限选择");
+                }
+                roleVue.items = result;
+                roleVue.role_id = row.id;
+                roleVue.show = true;
+                for(var i in result){
+                    result[i].checked = true;
+                    var value = result[i].children;
+                    for(var j in value){
+                        value[j].checked = true;
+                        var v = value[j].children;
+                        for(var x in v){
+                            if(v[x].checked == false){
+                                value[j].checked = false;
+                            }
+                            if(row.is_admin_role){
+                                value[j].checked = true;
+                                v[x].checked = true;
+                            }
+                        }
+                        result[i].checked = result[i].checked && value[j].checked;
+                        if(row.is_admin_role){
+                            result[i].checked = true;
+                        }
+                    }
+                }
+            },"json");
+            if(row.is_admin_role){
+                roleVue.btn_show = false;
+            }else{
+                roleVue.btn_show = true;
+            }
+        }
+
+    });*/
+
+    /*$('#role-datagrid').datagrid({
+        onLoadSuccess: function(data) {
+            if (data.total == 0) {
+                $("#role-tip").html("请先在角色列表中添加角色！");
+            }else{
+                $("#role-tip").html("请先在左侧选择角色");
+            }
+        }
+    });*/
+
+    $('.know').click(function (){
+        $('.cover').css('display','none');
+    });
+
+    $(function(){
+        var is_show = localStorage.getItem("isShowPermissionTip");
+        if(is_show == null){
+            $('.cover').show();
+            localStorage.setItem("isShowPermissionTip","0");
+        }
+
+    })
+</script>

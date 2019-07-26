@@ -1,0 +1,62 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/flatfoot.css?version={$version}" rel="stylesheet" />
+<div class="content-wrap" style="padding-top: 25px;background-color: #fff">
+    <div class="c-select">
+        <div class="whole-title">
+            <div class="title-tip bgb"></div>
+            <div class="title-message">模板详情</div>
+        </div>
+        <div class="whole-div" style="margin: 25px 25px 0 0;border: 1px solid #e3e3e3">
+            <div class="whole-substance" id="detail">
+                <div class="whole-viewshow" id="edit" style="padding: 0px 10px;">
+                    <div style="font-weight: 600;margin: 0 0 5px 0;">{$model.name}</div>
+                    <div style="margin: 0 0 5px 0;color:#b6b6b6">{$model.created_time}</div>
+                    <div>
+                        <div  v-for="(content , keys) in contents">
+                            <span v-if="content.key">{{ content.key }}：</span>
+                            <span >{{ content.value }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="whole-substance">
+                    <div class="whole-viewshow" style="padding: 0px 10px;">
+                        <div>
+                            <div>
+                                <span>发送方式：</span>
+                                <span>{$model.mold}</span>
+                            </div>
+                            <div>
+                                <span>已选择发送商家：</span>
+                                <span>{$model.send_name}</span>
+                            </div>
+                            <notempty name="model.mobile">
+                                <div>
+                                    <span>手机号码：</span>
+                                    <span>{$model.mobile}</span>
+                                </div>
+                            </notempty>
+                            <div>
+                                <span>客户姓名：</span>
+                                <span>{$model.user_name}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center">
+            <div class="whole-small-div" >
+                <a href="javascript:;" style="padding: 7px 30px" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/history')" class="whole-button">返回上级</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var vue = new Vue({
+        el: '#detail',
+        data:{
+            contents:{$content},
+        }
+    });
+</script>

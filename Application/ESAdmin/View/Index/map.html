@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery-1.10.2.min.js"></script>
+    <title>地图</title>
+    <style type="text/css">
+        *{
+            margin:0px;
+            padding:0px;
+        }
+        body, button, input, select, textarea {
+            font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
+        }
+        p{
+            width:603px;
+            /*padding-top:3px;*/
+            /*margin-top:10px;*/
+            /*overflow:hidden;*/
+        }
+        input#address{
+            width:300px;
+        }
+        #container {
+            min-width:603px;
+            min-height:767px;
+        }
+    </style>
+    <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=XXRBZ-GTOH6-O7RSX-MQL4C-O3YP5-W2BWA"></script>
+    <script>
+            $.browser = {};
+            $.browser.msie = /msie/.test(navigator.userAgent.toLowerCase()) || /trident/.test(navigator.userAgent.toLowerCase());
+            if ($.browser.msie) {
+                alert("请使用谷歌或360/搜狗/猎豹/IE版本10.0以上等浏览器的极速模式，勿使用IE浏览器10.0以下版本！");
+            }
+            var geocoder,map,marker = null;
+            setTimeout(function(){
+                init();
+            }, 500);
+            var init = function() {
+                var location = document.getElementById('location').value;
+                var center = '';
+                if(location == ''){
+                    center = new qq.maps.LatLng(39.916527,116.397128);
+                }else{
+                    center = new qq.maps.LatLng(location.split(',')[0],location.split(',')[1]);
+                }
+                map = new qq.maps.Map(document.getElementById('container'),{
+                    center: center,
+                    zoom: 20
+                });
+                // var anchor = new qq.maps.Point(6, 6),
+                //     size = new qq.maps.Size(24, 24),
+                //     origin = new qq.maps.Point(0, 0),
+                //     icon = new qq.maps.MarkerImage('{$Think.const.IMG_URL}/center.gif', size, origin, anchor);
+                var marker = new qq.maps.Marker({
+                    // icon: icon,
+                    map: map,
+                    position:map.getCenter()});
+                //调用地址解析类
+                geocoder = new qq.maps.Geocoder({
+                    complete : function(result){
+                        document.getElementById("location").value = result.detail.location;
+                        map.setCenter(result.detail.location);
+                        if(marker){
+                            marker.setMap(null);
+                        }
+                        marker = new qq.maps.Marker({
+                            map:map,
+                            position: result.detail.location
+                        });
+
+                    }
+                });
+            }
+            function codeAddress() {
+                var address = document.getElementById("address").value;
+                //通过getLocation();方法获取位置信息值
+                geocoder.getLocation(address);
+            }
+
+    </script>
+</head>
+<body >
+<div style="margin-top: 20px;height: 30px;">
+    <input id="address" type="textbox" value="中国厦门">
+    <input id="location"  type="hidden">
+    <button onclick="codeAddress()">确认地址</button>
+    <p style="float: right">输入地址，点击确认地址后将会在地图上显示。</p>
+</div>
+<div id="container"></div>
+
+</body>
+</html>

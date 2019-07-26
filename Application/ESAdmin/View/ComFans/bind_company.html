@@ -1,0 +1,202 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+	.datagrid .datagrid-pager {
+	    display: none;
+	}
+</style>
+<script>
+
+    function formatValidGroup(value) {
+        return value ? value : '未分组';
+    }
+</script>
+<div class="detailcontainer" id="editUserType-detailcontainer" style="position: relative">
+    <form id="bindCompany-form">
+        <div class="tableForm" style="width:1200px;height: 700px;">
+            <div style="margin-bottom:0px">
+                <div class="selection-title">已选用户</div>
+                <div style="height: 280px;overflow-y:auto">
+                    <table id="user-checked-datagrid" class="easyui-datagrid datagrid">
+                        <thead>
+                            <tr>
+                                <th field="ck" checkbox="true"></th>
+                                <th data-options="field:'id',hidden:true,align:'left'"></th>
+                                <th data-options="field:'head_pic',width:60,align:'left'">头像</th>
+                                <th data-options="field:'name',width:100,align:'left'">昵称</th>
+                                <th data-options="field:'comments',width:100,align:'left'">备注</th>
+                                <th data-options="field:'mobile',width:100,align:'left'">绑定手机</th>
+                                <th data-options="field:'groups_value',width:100,align:'left',formatter:formatValidGroup">分组</th>
+                                <th data-options="field:'tags_value',width:200,align:'left'">标签</th>
+                                <th data-options="field:'user_type',width:60,align:'left'">用户类型</th>
+                                <th data-options="field:'service_man_value',width:100,align:'left'">业务负责人</th>
+                                <th data-options="field:'company_names',width:300,align:'left'">公司</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="flex-start-center">
+                    <span>公司名称：</span><input style="width: 250px;" type="text" class="easyui-validatebox" placeholder="请输入公司名称" name="company_name"><span style="color:#555555">输入公司或简称，即可进行公司搜索</span>
+                </div>
+            </div>
+            <div style="margin-bottom:0px">
+                <div class="selection-title">已选公司</div>
+<!--                 <div style="float:right" >
+                    <input id="checkAll" type="checkbox" />
+                    <label class="ml15" align="right" for="checkAll">全选/反选</label>
+                </div> -->
+                <div style="height: 280px;overflow-y:auto">
+                    <table id="company-checked-datagrid" class="easyui-datagrid datagrid">
+                        <thead>
+                            <tr>
+                                <th field="ck" checkbox="true"></th>
+                                <th data-options="field:'id',hidden:true"></th>
+                                <th data-options="field:'name',width:200,align:'left'">公司名称</th>
+                                <th data-options="field:'linkman',width:120,align:'left'">联系人</th>
+                                <th data-options="field:'contact',width:120,align:'left'">手机</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="common-blue-btn btn-update" plain="true" icon="fa-save fa-lg"  onclick="bindCompany('{$Think.const.CONTROLLER_NAME}');">保存</a>
+            <a href="javascript:void(0)" class="common-red-btn bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+var company_data = [];
+$(function() {
+    autocomplete($("input[name='company_name']"), {$company_data},function(item) {
+        var flag =0;
+        var index= '';
+        var namestr = '';
+        for (var i = 0; i < company_data.length; i++) {
+            if (company_data[i].id == item.id) {
+                flag=1;
+            }
+        }
+
+        if (flag == 0) {
+            for (var i in data.data) {
+                var str = data.data[i].company_ids;
+                // console.log(str);
+                if (str!="" && str != null) {
+                    str = str.split(",");
+                    
+                    for (var j in str) {
+                        if (str[j] == item.id && index=='') {
+                            index = i;
+                            namestr = $.trim(data.data[i].name) != '' ? data.data[i].name : '未命名用户' + data.data[i].id;
+                            // console.log(index);
+                        }
+                    }
+
+                }
+            }
+            if (index != '') {
+                if (confirm("用户<"+namestr+">已绑定该公司，是否继续？") == true) {
+                    company_data.push({
+                        id: item.id,
+                        name: item.name,
+                        linkman: item.linkman,
+                        contact: item.contact
+                    });
+                }
+            }else{
+                company_data.push({
+                    id: item.id,
+                    name: item.name,
+                    linkman: item.linkman,
+                    contact: item.contact
+                });
+            }
+        }else{
+            alert("已选择该公司");
+        }
+        $('#company-checked-datagrid').datagrid('loadData', company_data);
+        $('#company-checked-datagrid').datagrid('selectAll');
+    });
+});
+
+var data = new Array;
+setTimeout(function() {
+    data = getData();
+    var html = '';
+    var input = '';
+    var arr = [];
+    for (var i in data.data) {
+        // var checked = '<input name="user_ids[]" class="css-checkbox" type="checkbox" value="' + data.data[i].id + '" checked />';
+        var namestr = $.trim(data.data[i].name) != '' ? data.data[i].name : '未命名用户' + data.data[i].id;
+        var img = '<img src="' + data.data[i].head_pic + '" width="40px" height="40px">';
+        arr.push({
+            // checked: checked,
+            head_pic: img,
+            name: namestr,
+            id: data.data[i].id,
+            comments: data.data[i].comments,
+            mobile: data.data[i].mobile,
+            groups_value: data.data[i].groups_value,
+            tags_value: data.data[i].tags_value,
+            user_type: data.data[i].user_type_value,
+            service_man_value: data.data[i].service_man_value,
+            company_names: data.data[i].company_names
+        });
+    }
+    $('#user-checked-datagrid').datagrid('loadData', arr);
+    $('#user-checked-datagrid').datagrid('selectAll');
+}, 200)
+
+function getData() {
+    return $.dialog.list["dlg-company-select"].data;
+}
+// function getCompany(item) {
+//      console.info(item);
+// }
+function help() {
+   alert("1.人员和公司都可以进行多选<br>2.如选择多家公司和多个人员，则视为所选的每个人员与所选<br>的每个公司都进行一次绑定操作。");
+}
+$("#checkAll").change(function() {
+    $("input[name='branch_ids[]']").prop("checked", $(this).prop("checked"));
+    // alert("");
+});
+
+function bindCompany(frameId) {
+    showMaskLayer();
+        // var data = $('#bindCompany-form').serialize();
+        var user = getGridSelections("user-checked");
+        var company = getGridSelections("company-checked");
+        var user_ids = [];
+        var branch_ids =[];
+        for (var i in user)
+        {
+            user_ids.push(user[i].id);
+        }
+        for (var i in company)
+        {
+            branch_ids.push(company[i].id);
+        }
+        // console.info(user_ids);
+        $.post('/' + frameId + '/indexesCompany', {user_ids:user_ids,branch_ids:branch_ids}, function(result) {
+            hideMaskLayer();
+            if (result.code == 0) {
+                closeDialog();
+                getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                $.dialog.tips(result.message);
+            } else {
+                $.dialog.tips(result.message);
+                return false;
+            }
+        }, 'json')
+}
+</script>

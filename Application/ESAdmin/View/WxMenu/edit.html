@@ -1,0 +1,100 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox"  value="{$model.name}" /></div>
+                <div class="caption"><span>{$Think.lang.FLD_PARENT_ID}：</span></div>
+                <div class="inputbox">
+                    <select name="parent_id" class="chosen-select" data-options="all:true,value:'{$model.parent_id}',search_key_url:'WxMenu/keyNameList/'">
+                        <option value="0">--选择所属菜单--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_TYPE}：</span></div>
+                <div class="inputbox">
+                    <select name="type" class="chosen-select">
+                        <option value="view" <eq name="model.type" value="view">selected</eq>>{$Think.lang.ENUM_TYPE_VIEW}</option>
+                        <option value="click" <eq name="model.type" value="click">selected</eq>>{$Think.lang.ENUM_TYPE_CLICK}</option>
+                        <option value="media_id" <eq name="model.type" value="media_id">selected</eq>>{$Think.lang.ENUM_TYPE_MEDIA_ID}</option>
+                        <option value="view_limited" <eq name="model.type" value="view_limited">selected</eq>>{$Think.lang.ENUM_TYPE_VIEW_LIMITED}</option>
+                        <option value="miniprogram" <eq name="model.type" value="miniprogram">selected</eq>>{$Think.lang.ENUM_TYPE_MINI_PROGRAM}</option>
+                    </select>
+                </div>
+<!--                <div class="caption"><span>{$Think.lang.FLD_IS_REDIRECT}：</span></div>
+                <div class="inputbox"><input type="hidden" name="is_redirect" value="0" />
+                    <input name="is_redirect" class="easyui-validatebox"  type="checkbox" value="1" <eq name="model.is_redirect" value="1">checked</eq> /></div>-->
+
+            </div>
+            <div class="row type-row type-row-view" <notempty name="model.type" ><neq name="model.type" value="view">style="display:none"</neq></notempty>>
+                <div class="caption"><span>{$Think.lang.ENUM_TYPE_VIEW}：</span></div>
+                <div class="inputbox_x2"><input name="value_view" class="easyui-validatebox"  value="{$model.value}" /></div>
+            </div>
+            <div class="row type-row type-row-click" <neq name="model.type" value="click">style="display:none"</neq>>
+                <div class="caption"><span>{$Think.lang.ENUM_TYPE_CLICK}：</span></div>
+                <div class="inputbox_x2"><input name="value_click" class="easyui-validatebox"  value="{$model.value}" /></div>
+            </div>
+            <div class="row type-row type-row-click" <neq name="model.type" value="click">style="display:none"</neq>>
+                <div class="caption"><span>{$Think.lang.ENUM_TYPE_CLICK_CONTENT}：</span></div>
+                <div class="inputbox_x2">
+                    <textarea name="content" class="easyui-validatebox" >{$model.content}</textarea>
+                </div>
+            </div>
+            <div class="row type-row type-row-media_id" <neq name="model.type" value="media_id">style="display:none"</neq>>
+                <div class="caption"><span>{$Think.lang.ENUM_TYPE_MEDIA_ID}：</span></div>
+                <div class="inputbox_x2"><input name="value_media_id" class="easyui-validatebox"  value="{$model.value}" /></div>
+            </div>
+            <div class="row type-row type-row-view_limited" <neq name="model.type" value="view_limited">style="display:none"</neq>>
+                <div class="caption"><span>{$Think.lang.ENUM_TYPE_VIEW_LIMITED}：</span></div>
+                <div class="inputbox_x2"><input name="value_view_limited" class="easyui-validatebox"  value="{$model.value}" /></div>               
+            </div>
+
+            <div class="row type-row type-row-miniprogram" <neq name="model.type" value="miniprogram">style="display:none"</neq>>
+                <div class="caption"><span>链接：</span></div>
+                <div class="inputbox_x2"><input name="value_miniprogram" class="easyui-validatebox"  value="{$model.value}" /></div>
+            </div>
+
+            <input name="media_id"  type="hidden" value="{$model.media_id}"/>
+<!--            <div class="row">
+                <div class="caption"><span>分组：</span></div>
+                <div class="inputbox">
+                    <select name="group_id" class="chosen-select" data-options="all:true,value:'{$model.group_id}',search_key_url:'WxGroup/keyNameList/'">
+                        <option value="NULL">---选择分组---</option>
+                    </select>
+                </div>
+                <div class="caption"><span>默认菜单：</span></div>
+                <div class="inputbox"><input type="hidden" name="is_default" value="0" />
+                    <input name="is_default" class="easyui-validatebox"  type="checkbox" value="1" <eq name="model.is_default" value="1">checked</eq> /></div>
+            </div>-->
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_IS_VALID}：</span></div>
+                <div class="inputbox"><input type="hidden" name="is_valid" value="0" />
+                    <input name="is_valid" class="easyui-validatebox"  type="checkbox" value="1" <eq name="model.is_valid" value="1">checked</eq> /></div>
+                <div class="caption"><span>{$Think.lang.FLD_SORT}：</span></div>
+                <div class="inputbox"><input name="sort" class="easyui-validatebox" data-options="validType:'number'" value="{$model.sort}" /></div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_COMMENTS}：</span></div>
+                <div class="inputbox_x2"><input name="comments" class="easyui-validatebox"  value="{$model.comments}" /></div> 
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+
+<script type='text/javascript'>
+    $(function () {
+        $("select[name=type").bind("change", function (evt, data) {
+            $(".type-row").hide();
+            $(".type-row-" + data.selected).show();
+        });
+        $(".type-row-media_id").click(function () {
+            showMediaForm(this);
+        });
+        $(".type-row-view_limited").click(function () {
+            showMediaForm(this);
+        });
+    });
+</script>

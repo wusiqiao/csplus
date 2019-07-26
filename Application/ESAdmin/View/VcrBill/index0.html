@@ -1,0 +1,273 @@
+<style>
+    /*#VcrBill-maincontainer .datagrid-header,.datagrid-header-row{height:0px !important;}*/
+    #VcrBill-maincontainer .detail-content{background: #fff; padding:10px;border:1px solid #ccc; margin: 5px 0px}
+    #VcrBill-maincontainer .datagrid-row-selected{background-color: #0b95ff !important; color: #0b95ff}
+    #VcrBill-maincontainer .datagrid-row-over{background: #cccccc}
+    #VcrBill-maincontainer .source-bill-table th{background: transparent}
+</style>
+<script>setMainContainerConfig("VcrBill", {add:{text:"手工录入",icon:""}});
+function getDetailRows(row) {
+    var bill_flag;
+    var content = '';    
+    if (row.bill_flag==1) {
+        //工资册
+        var memo = (row.memo!=null && row.memo) || "";
+        var fee_department={
+            'manage':'管理部门',
+            'sales':'销售部门',
+            'rd':'研发部门',
+            'production':'生产部门',
+            'building':'施工部门'
+        }[row.fee_department] || ""; 
+        // 应发工资
+        var salary_payable = "";
+        // 保险
+        var insurance = "";
+        // 公积金
+        var fund = "";
+        // 个人所得税
+        var personal_tax = "";
+        // 实发工资
+        var salary_net = "";
+
+        $(row.items).each(function(){
+            if (this.goods_name=="应发工资"){
+                salary_payable = this.amount;
+            }else if (this.goods_name=="保险"){
+                insurance = this.amount;
+            }else if (this.goods_name=="公积金"){
+                fund = this.amount;
+            }else if (this.goods_name=="个人所得税"){
+                personal_tax = this.amount;
+            }else if (this.goods_name=="实发工资"){
+                salary_net = this.amount;
+            }
+        });
+        content = content+
+        '<table class="gridtable detail-table">\n' +
+        '   <thead>\n' +
+        '       <tr><th colspan="6" align="left">摘要:'+memo+'</th>\n' +
+        '       <tr><th style="width:20%">部门</th><th  style="width:16%">应发工资</th><th style="width:16%">保险</th><th style="width:16%">个税</th><th style="width:16%">公积金</th><th style="width:16%">实发工资</th></tr>\n' +
+        '   </thead>\n' +
+        '   <tbody>\n' +
+        '       <tr><td>'+fee_department+'</td><td>'+salary_payable+'</td><td>'+insurance+
+        '</td><td>'+personal_tax+'</td><td>'+fund+'</td><td>'+salary_net+'</td></tr>\n'+
+        '   </tbody>\n' +
+        '</table>\n';
+    }else if(row.bill_flag==3){
+        //银行类
+        var memo = (row.memo!=null && row.memo) || "";
+        var source_date = (row.source_date!=null && row.source_date) || "";
+        var amount_out = "0";
+        var amount_in = "0";
+        content = content +
+        '<table class="gridtable detail-table">\n' +
+        '   <thead>\n' +
+        '       <tr><th colspan="5" align="left">摘要:'+memo+'</th>\n' +
+        '       <tr><th style="width:15%">交易日期</th><th style="width:10%">借方发生额</th><th style="width:10%">贷方发生额</th><th style="width:20%">对方账号名称</th><th style="width:45%">摘要/备注</th></tr>\n' +
+        '   </thead>\n' +
+        '   <tbody>\n';
+        $(row.items).each(function(){
+            if (row.source_flag==0) {
+               amount_in = this.amount;
+            }else{
+               amount_out =  this.amount;
+            }
+        content = content +
+            '<tr><td>'+formatDateInner(source_date,"/")+'</td><td>'+amount_out+'</td><td>'+amount_in+'</td><td>'+row.name+'</td><td>'+this.goods_name+'</td></tr>\n';
+        }); 
+        content = content +
+        '   </tbody>\n' +
+        '</table>\n';
+    }else if(row.bill_flag==0){
+        //自开票
+        var memo = (row.memo!=null && row.memo) || "";
+        var total_amount = (row.total_amount!=null && row.total_amount) || "";
+        var total_tax = (row.total_tax!=null && row.total_tax) || "";
+        var total_sum = (row.total_sum!=null && row.total_sum) || "";
+        content = content +
+        '<table class="gridtable detail-table">\n' +
+        '   <thead>\n' +
+        '       <tr><th colspan="7" align="left">摘要:'+memo+'</th>\n' +
+        '       <tr><th style="width:20%">付款方单位</th><th  style="width:20%">货物或劳务、服务名称</th><th style="width:12%">单价</th><th style="width:12%">数量</th><th style="width:12%">金额</th><th style="width:12%">税额</th><th style="width:12%">总额</th></tr>\n' +
+        '   </thead>\n' +
+        '   <tbody>\n';
+        $(row.items).each(function(){
+        content = content +
+            '<tr><td>'+row.name+'</td><td>'+this.goods_name+'</td><td>'+this.price+
+                '</td><td>'+this.quantity+'</td><td>'+this.amount+'</td><td>'+
+                this.tax_amount+'</td><td>'+accAdd(this.amount,this.tax_amount).toFixed(2)+'</td></tr>\n';
+        }); 
+        content = content +
+        '       <tr><td colspan="4" align="right">总计:</td><td>'+total_amount+'</td><td>' +total_tax+'</td><td>' +total_sum+'</td></tr>' +
+        '   </tbody>\n' +
+        '</table>\n';
+
+    }else if(row.bill_flag==2){
+        //外取票
+        //是否费用
+        if(row.is_fee==0){
+            var memo = (row.memo!=null && row.memo) || "";
+            var total_amount = (row.total_amount!=null && row.total_amount) || "";
+            var total_tax = (row.total_tax!=null && row.total_tax) || "";
+            var total_sum = (row.total_sum!=null && row.total_sum) || "";
+            content = content +
+            '<table class="gridtable detail-table">\n' +
+            '   <thead>\n' +
+            '       <tr><th colspan="7" align="left">摘要:'+memo+'</th>\n' +
+            '       <tr><th style="width:20%">收款方单位</th><th style="width:20%">货物或劳务、服务名称</th><th style="width:12%">单价</th><th style="width:12%">数量</th><th style="width:12%">金额</th><th style="width:12%">税额</th><th style="width:12%">总额</th></tr>\n' +
+            '   </thead>\n' +
+            '   <tbody>\n';
+            $(row.items).each(function(){
+            content = content +
+                '<tr><td>'+row.name+'</td><td>'+this.goods_name+'</td><td>'+this.price+
+                    '</td><td>'+this.quantity+'</td><td>'+this.amount+'</td><td>'+
+                    this.tax_amount+'</td><td>'+accAdd(this.amount,this.tax_amount).toFixed(2)+'</td></tr>\n';
+            }); 
+            content = content +
+            '       <tr><td colspan="4" align="right">总计:</td><td>'+total_amount+'</td><td>' +total_tax+'</td><td>' +total_sum+'</td></tr>' +
+            '   </tbody>\n' +
+            '</table>\n';
+        }else{
+            var memo = (row.memo!=null && row.memo) || "";
+            var total_amount = (row.total_amount!=null && row.total_amount) || "";
+            var total_tax = (row.total_tax!=null && row.total_tax) || "";
+            var total_sum = (row.total_sum!=null && row.total_sum) || "";
+            content = content +
+            '<table class="gridtable detail-table">\n' +
+            '   <thead>\n' +
+            '       <tr><th colspan="5" align="left">开支理由及用途:'+memo+'</th>\n' +
+            '       <tr><th style="width:20%">收款方单位</th><th>费用项目</th><th style="width:10%">金额</th><th style="width:10%">税额</th><th  style="width:10%">总额</th></tr>\n' +
+            '   </thead>\n' +
+            '   <tbody>\n';
+            $(row.items).each(function(){
+            content = content +
+                '<tr><td>'+row.name+'</td><td>'+this.goods_name+'</td><td>'+this.amount+'</td><td>'+
+                    this.tax_amount+'</td><td>'+accAdd(this.amount,this.tax_amount).toFixed(2)+'</td></tr>\n';
+            }); 
+            content = content +
+            '       <tr><td colspan="2" align="right">总计:</td><td>'+total_amount+'</td><td>' +total_tax+'</td><td>' +total_sum+'</td></tr>' +
+            '   </tbody>\n' +
+            '</table>\n';
+        }
+    }
+    return content;
+}
+
+//浮点数加法运算
+function accAdd(arg1,arg2){ 
+var r1,r2,m; 
+try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0} 
+try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0} 
+m=Math.pow(10,Math.max(r1,r2)); 
+return (arg1*m+arg2*m)/m; 
+} 
+
+function formatContent(value ,row, index){
+    var bill_flag = "";
+    if (row.bill_flag==1) {
+        bill_flag="工资册"; 
+    }else if(row.bill_flag==3){
+        bill_flag="银行类";
+    }else if(row.bill_flag==0){
+        bill_flag="自开票";
+    }else if(row.bill_flag==2){
+        bill_flag="外取票";
+    }
+    var attachment = (row.attachment!=null && '<span>附件：</span><a href="'+row.attachment+'">查看</a>\n') || "";
+    var content= '<div class="detail-content">'+
+        '    <div class="top-content">\n' +
+        '        <div class="bottom-content-header" style="text-align:left;position:relative">\n' +
+        '           <span id="bill_flag" style="font-weight:bold">'+ bill_flag + '</span>' +
+        '           <div style="position: absolute;right:10px;top:10px">\n' +
+        '               <span>会计期间：</span><span id="accounting_section">'+ row.accounting_section + '</span>\n' +
+        '               <span>录入日期：</span><span id="bill_date" >'+ formatDateInner(row.bill_date,"/") + '</span>\n' +
+        '               <span>凭证单号：</span><span id="bill-no">'+ row.bill_no +'</span>\n' +attachment +
+        '           </div>\n' +
+        '        </div>\n';
+    content = content +  getDetailRows(row) +
+        '    </div>';
+    return content;
+}
+
+
+</script>
+
+<div class="maincontainer" id="VcrBill-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="VcrBill" />
+    <tr>
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'ck',checkbox:true"></th>
+        <th data-options="field:'content',width:'96%',align:'left',formatter:formatContent"></th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="VcrBill" />
+</div>
+
+<div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+
+    <span>选择导入类型：</span>
+        <select class="chosen-select" style="width:160px;" name="import_type">
+            <option value="1">自开票明细表</option>
+            <option value="2">工资册</option>
+            <option value="3">银行对账单</option>
+            <option value="4">影像资料</option>
+        </select>
+    <div class="btn-separator"></div>
+    <a href="javascript:void(0)" class="common-blue-btn btn-import">导入</a>
+    <div class="btn-separator"></div>
+    <a href="javascript:void(0)" class="common-blue-btn btn-download">下载工资册模板</a>
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table">
+        <tr>
+            <th>公司：</th>
+            <td>
+                <select  name="q-branch_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComCompany/keyNameList/'"></select>
+            </td>
+            <th>单号：</th>
+            <td>
+                <input name="q-bill_no"  class="easyui-validatebox filter-field" value="" />
+            </td>
+            <th>票证类型：</th>
+            <td>
+                <select name="q-bill_flag" class="chosen-select filter-field">
+                    <option value="">全部类型</option>
+                    <option value="{$Think.const.FLAG_BILL_TAX_PAY}">外取票</option>
+                    <option value="{$Think.const.FLAG_BILL_TAX_INCOME}">自开票</option>
+                    <option value="{$Think.const.FLAG_BILL_SALARY}">工资册</option>
+                    <option value="{$Think.const.FLAG_BILL_BANK}">银行类</option>
+                </select>
+            </td>
+            <th>总额：</th>
+            <td>
+                <input type="text" class="easyui-validatebox filter-field" name="q-total_sum" data-options="validType:'number'">
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    $(function () {
+        $("#VcrBill-toolbar .chosen-select").extChosen();
+        $("#VcrBill-toolbar .btn-import").click(function(){
+            var type = $("select[name=import_type]").val();
+            switch (type){
+                case "1":
+                    createDialog("/VcrBillValueTax/import", "导入自开票明细表（excel格式）");
+                    break;
+                case "2":
+                    createDialog("/VcrBillSalary/import", "导入工资册数据（excel格式）");
+                    break;
+                case "3":
+                    createDialog("/VcrBillBankAccount/import", "导入银行对账数据（excel格式）");
+                    break;
+                case "4":
+                    createDialog("/VcrBill/imgImport", "导入影像（jpg、png图片格式）");
+                    break;
+            }
+        });
+        $("#VcrBill-toolbar .btn-download").click(function(){
+            location.href="/VcrBill/downloadSalary.html";
+        });
+    });
+
+</script>

@@ -1,0 +1,55 @@
+<script>
+    function branchTemplate(branch_id){
+        if(branch_id == 0){
+            return '公共库';
+        }
+
+        return '自定义';
+    }
+</script>
+<style>
+    .tuwenselect-edit-ft {
+        width: 100%;
+        border-top: 1px solid #d3d3d3;
+        padding: 22px 0;
+        text-align: center;
+    }
+</style>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <div class="search-table" style="max-width:100%;">
+        <div>
+            <input type="text" placeholder="请输入标题" style="width:200px;" class="easyui-validatebox validatebox-text filter-field" name="name">
+        </div>
+    </div>
+</div>
+
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="width:350px; min-height:250px">
+    <include file="./Application/Common/Layout/Default/list_header.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+    <tr>
+        <th data-options="field:'id',hidden:true">ID</th>
+        <th data-options="field:'branch_id',width:50,align:'center', formatter:branchTemplate">来源</th>
+        <th data-options="field:'name',width:250,align:'center'">{$Think.lang.NAME}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+</div>
+
+<div class="tuwenselect-edit-ft">
+    <span class="btn-confirm" onclick="query()">确认</span>
+    <span class="btn-cancel" onclick="closePage()">取消</span>
+</div>
+<script>
+    function query(){
+        var data = $("#VcrBillTemplate-datagrid").datagrid('getSelected');
+        if(data == null){
+            $.dialog.alert('请选择要使用的模板');
+            return false;
+        }
+
+        typeof  self.queryTemplateData == 'function' ? self.queryTemplateData(data) : $.dialog.alert('queryTemplateData');;
+        closePage();
+    }
+
+    function closePage(){
+        closeDialog('VcrBillTemplate/query');
+    }
+</script>

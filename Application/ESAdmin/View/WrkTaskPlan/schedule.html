@@ -1,0 +1,445 @@
+<style>
+    input[readonly] {
+        background-color: #f7f5f5 !important;
+        cursor: not-allowed;
+    }
+    input[type=checkbox].css-checkbox+label.css-label {
+        top: 0px;
+        left: 0px;
+    }
+
+    .inputbox input {
+        float: left;
+        width: 270px;
+        height: 30px;
+    }
+
+    .caption {
+        float: left;
+        width: 120px;
+        line-height: 30px;
+        text-align: right;
+        color: #676767;
+    }
+
+    .details-section {
+        background: none;
+        text-indent: 0;
+    }
+
+    .txt {
+        padding-left: 13px;
+        font-weight: 700;
+        border-left: 5px solid #529bfd;
+    }
+
+    .options-table {
+        border-collapse: collapse;
+        margin: 0 0;
+        text-align: center;
+    }
+
+    .options-table td,
+    .options-table th {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+
+    .options-table thead,
+    .options-table th {
+        background-color: #f6f7fa;
+    }
+
+    .options-table tr:nth-child(even) {
+        background: #fbfafa;
+    }
+
+    .search-table .validatebox-text {
+        width: 270px;
+    }
+
+    .no-readonly input {
+        background: none !important;
+        cursor: text !important;
+    }
+    .drop-down{
+        display: inline-block;
+        width: 15px;
+        height: 11px;
+        margin: 5px 6px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png");
+        background-size: 100% 100%;
+        cursor: pointer;
+        transition: transform .5s;
+    }
+    #schedule-box::-webkit-scrollbar {
+        width: 8px;
+        background-color: #eee;
+        border-radius: 4px;
+    }
+    #schedule-box::-webkit-scrollbar-thumb{
+        background: #b8b4b4;
+        border-radius: 4px;
+    }
+    .progress-line:last-child::before {
+        height: 0;
+    }
+</style>
+
+<div id="schedule" style="height: 80vh;width: 70vw;">
+    <div style="height:100%;width: 100%;">
+        <div class="details-section">
+            <div id="schedule-top" style="overflow: hidden;">
+                <div class="details-content">
+                    <p style="height: 23px;line-height: 23px;margin: 23px 0 22px 38px;display: flex;align-items: center;">
+                        <span class="txt">合同详情</span>
+                        <span class="drop-down" onclick="dropDown(this,'contract-details')"></span>
+                    </p>
+                    <div id="contract-details" style="display: none;">
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption">公司：</div>
+                                <div class="inputbox">
+                                    <input name="company_name" class="easyui-validatebox" readonly="true"
+                                        value="{$model.company_name}" />
+                                </div>
+                            </div>
+                            <div style="flex: 1"></div>
+                        </div>
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption">合同名称：</div>
+                                <div class="inputbox">
+                                    <input name="name" class="easyui-validatebox" readonly="true" value="{$model.name}">
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                <div class="caption">客户任务负责人：</div>
+                                <div class="inputbox">
+                                    <input name="customer_name" class="easyui-validatebox" readonly="true"
+                                        value="{$model.customer_name}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="caption"><span>合同服务类型：</span></div>
+                        </div>
+                        <table class="options-table" id="product_options" style="width: 95%;margin-left: 35px;margin-bottom: 10px">
+                            <thead>
+                                <tr>
+                                    <td>序号</td>
+                                    <td>服务类型1</td>
+                                    <td>服务类型2</td>
+                                    <td>服务选项1</td>
+                                    <td>服务选项2</td>
+                                    <td>服务选项3</td>
+                                </tr>
+                            </thead>
+                            <foreach name="model.product_options" item="option">
+                                <tr>
+                                    <td>{$option.id}</td>
+                                    <td>{$option.type1}</td>
+                                    <td>{$option.type2}</td>
+                                    <td>{$option.attributes1}</td>
+                                    <td>{$option.attributes2}</td>
+                                    <td>{$option.attributes3}</td>
+                                </tr>
+                            </foreach>
+                        </table>
+                    </div>
+                </div>
+            
+                <div v-if="status == 3" class="details-content">
+                    <p style="height: 23px;line-height: 23px;margin: 23px 0 22px 38px;display: flex;align-items: center;">
+                        <span class="txt">服务评价</span>
+                        <span class="drop-down" onclick="dropDown(this,'task-evaluation')"
+                            style="transform: rotate(180deg);"></span>
+                    </p>
+                    <div id="task-evaluation">
+                        <div class="row" style="margin: 5px 0;">
+                            <div class="caption">服务等级：</div>
+                            <div style="display: flex;align-items: center;height: 30px;">
+                                <div v-for="(item,index) in 5" style="margin: 0 3px;">
+                                    <img v-if="index < evaluationNum" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/xx1.png"
+                                        alt="">
+                                    <img v-else src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/xx2.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 5px 0;overflow: hidden;display: flex;">
+                            <div class="caption">客户评价：</div>
+                            <div class="inputbox">
+                                <div style="width: 600px;line-height: 30px;padding: 0 5px;word-break: break-all;">{{evaluationTxt}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+
+            <div class="details-content">
+                <p style="height: 23px;line-height: 23px;margin: 3px 0 22px 38px;display: flex;align-items: center;">
+                    <span class="txt">任务详情</span>
+                    <span class="drop-down" onclick="dropDown(this,'task-details')" style="transform: rotate(180deg);"></span>
+                </p>
+                <div id="task-details" style="margin: 0px 0 0px 38px;">
+                    <div>
+                        <template v-if="pv == 8 || pv == 4">
+                        <template v-if="status == 1">
+                        <div class="btn-speed" onclick="ToFeedback()">沟通反馈</div>
+                        <div class="btn-speed" onclick="ToReportingProgress()">提报进度</div>
+                        <div class="btn-speed" onclick="FreezeQuest()" style="background-color: royalblue;">冻结任务</div>
+                        <div class="btn-speed" onclick="EndTask()" style="background-color: red;">结束任务</div>
+                        </template>
+                        <template v-if="status == 2">
+                        <div class="btn-speed-disable">沟通反馈</div>
+                        <div class="btn-speed-disable">提报进度</div>
+                        <div class="btn-speed" onclick="disFreezeQuest()" style="background-color: royalblue;">任务解冻</div>
+                        <div class="btn-speed" onclick="EndTask()" style="background-color: red;">结束任务</div>
+                        </template>
+                        <template v-if="status == 4">
+                        <div class="btn-speed-disable" >沟通反馈</div>
+                        <div class="btn-speed-disable" >提报进度</div>
+                        <div class="btn-speed-disable" >冻结任务</div>
+                        <div class="btn-speed-disable" >结束任务</div>
+                        </template>
+                        </template>
+                        <template v-else>
+                        <div class="btn-speed-disable" >沟通反馈</div>
+                        <div class="btn-speed-disable" >提报进度</div>
+                        <div class="btn-speed-disable" style="background-color: royalblue;">冻结任务</div>
+                        <div class="btn-speed-disable"  style="background-color: red;">结束任务</div>
+                        </template>
+                        <div class="btn-speed" onclick="createDialog('/Index/summary/contract_id/{$model.id}/attach_group/{$model.attach_group}','备注记录','summary');">备注记录</div>
+                        <div class="btn-speed" onclick="closeDialog('schedule');createDialog('WrkTaskPlan/schedule/id/{$model.task_plan_id}','任务进度','schedule');">刷新</div>
+                    </div>
+                    <div style="text-align: center;font-size: 18px;font-weight: 700;padding: 5px 0px;background-color: skyblue;color: #fff;">进度流程</div>
+                    <div id="schedule-box" onscroll="ToNextPage(this)" style="overflow-y:scroll;height: calc(80vh - 190px);">
+                        <p v-if="status == 3" style="margin: 5px 0;text-align: center;color: red;">任务已结束</p>
+                        <div id="scroll-box" style="width: 80%;margin: 0 auto;">
+                            <div  class="progress-line" v-for="(item,index) in scheduleList">
+                                <div v-if="item.create_type == 1" style="display: flex;">
+                                    <div v-if="item.is_sure == 1 && (item.sure_time || item.rejected_time)" style="flex:1;position: relative;">
+                                        <div style="display: flex;justify-content: flex-end;margin: 11px 0;">
+                                            <div style="flex: 1;border: 1px solid #d3d3d3;background-color: #fff;border-top-left-radius: 5px;border-top-right-radius: 5px;overflow: hidden;">
+                                                <div v-if="item.sure_time" style="padding: 5px 20px 5px 20px;color:#666;text-align: right;">已确认</div>
+                                                <div v-if="item.rejected_time" style="padding: 5px 20px 5px 20px;color:#666;text-align: right;">已驳回</div>
+                                                <div style="padding: 5px 20px 5px 20px;color:#666;text-align: right;">{{item.receiver_name}}</div>
+                                                <div v-if="item.sure_time" style="padding: 5px 20px 5px 0px;color:#666;display: flex;align-items: center;justify-content: space-between;">
+                                                    <div style="margin: 0px 8px;"></div>
+                                                    {{item.sure_time}}
+                                                </div>
+                                                <div v-if="item.rejected_time" style="padding: 5px 20px 5px 0px;color:#666;display: flex;align-items: center;justify-content: space-between;">
+                                                    <div style="margin: 0px 8px;"></div>
+                                                    {{item.rejected_time}}
+                                                </div>
+                                            </div>
+                                            <div style="width: 30px;height: 30px;position: relative;"></div>
+                                        </div>
+                                    </div>
+                                    <div v-else-if="item.is_sure == 1" style="flex:1;position: relative;">
+                                        <div style="display: flex;justify-content: flex-end;margin: 11px 0;">
+                                            <div style="flex: 1;border: 1px solid #d3d3d3;background-color: #fff;border-top-left-radius: 5px;border-top-right-radius: 5px;overflow: hidden;">
+                                                <div style="padding: 5px 20px 5px 20px;color:#666;text-align: right;">未确认</div>
+                                                <!--<div style="padding: 5px 20px 5px 20px;color:#666;text-align: right;">{{item.receiver_name}}</div>-->
+                                            </div>
+                                            <div style="width: 30px;height: 30px;position: relative;"></div>
+                                        </div>
+                                    </div>
+                                    <div v-else style="flex: 1;"></div>
+                                    <div style="flex: 1;position: relative;">
+                                        <div style="display: flex;margin: 11px 0;">
+                                            <div v-if="index == 0 && status != 3" style="width: 20px;height: 20px;background: #ddd;border-radius: 50%;position: relative;right: 10px;">
+                                                <div style="width: 10px;height: 10px;background:red;border-radius: 50%;margin: 5px;"></div>
+                                            </div>
+                                            <div v-else-if="(item.is_sure == 1 && (item.sure_time || item.rejected_time)) || item.is_sure == 0" style="width: 20px;height: 20px;background: #ddd;border-radius: 50%;position: relative;right: 10px;">
+                                                <div style="width: 10px;height: 10px;background: #999;border-radius: 50%;margin: 5px;"></div>
+                                            </div>
+                                            <div v-else style="width: 20px;height: 20px;background: #ddd;border-radius: 50%;position: relative;right: 10px;">
+                                                <div style="width: 10px;height: 10px;background:red;border-radius: 50%;margin: 5px;"></div>
+                                            </div>
+                                            
+                                            <div style="flex: 1;border: 1px solid #d3d3d3;background-color: #fff;border-top-left-radius: 5px;border-top-right-radius: 5px;overflow: hidden;">
+                                                <div style="background-color: #368bfe;padding: 5px 0px 5px 20px;color: #fff;">{{item.progress_type_name}}</div>
+                                                <div style="padding: 5px 0px 5px 20px;color:#666;">{{item.progress_situation}}</div>
+                                                <div style="padding: 5px 0px 5px 20px;color:#666;">{{item.create_name}}</div>
+                                                <div style="padding: 5px 0px 5px 20px;color:#666;display: flex;align-items: center;justify-content: space-between;">
+                                                    {{item.create_time}}
+                                                    <div class="btn-speed" style="margin: 0px 8px;" @click="scheduleInfo(item.id);">查看详情</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-if="item.create_type == 2" style="display: flex;">
+                                    <div style="flex:1;position: relative;">
+                                        <div style="display: flex;justify-content: flex-end;margin: 11px 0;">
+                                            <div style="flex: 1;border: 1px solid #d3d3d3;background-color: #fff;border-top-left-radius: 5px;border-top-right-radius: 5px;overflow: hidden;">
+                                                <div style="background-color: #368bfe;padding: 5px 20px 5px 20px;color: #fff;text-align: right;">{{item.progress_type_name}}</div>
+                                                <div style="padding: 5px 20px 5px 20px;color:#666;text-align: right;">{{item.progress_situation}}</div>
+                                                <div style="padding: 5px 20px 5px 20px;color:#666;text-align: right;">{{item.create_name}}</div>
+                                                <div style="padding: 5px 20px 5px 0px;color:#666;display: flex;align-items: center;justify-content: space-between;">
+                                                    <div class="btn-speed" style="margin: 0px 8px;" @click="scheduleInfo(item.id);">查看详情</div>
+                                                    {{item.create_time}}
+
+                                                </div>
+                                            </div>
+                                            <div style="width: 30px;height: 30px;position: relative;"></div>
+                                        </div>
+                                    </div>
+                                    <div v-else style="flex: 1;border-right: 1px solid #666;"></div>
+                                    <div style="flex: 1;position: relative;">
+                                        <div style="display: flex;margin: 11px 0;">
+                                            <div v-if="index == 0" style="width: 20px;height: 20px;background: #ddd;border-radius: 50%;position: relative;right: 10px;">
+                                                <div style="width: 10px;height: 10px;background:red;border-radius: 50%;margin: 5px;"></div>
+                                            </div>
+                                            <div v-else style="width: 20px;height: 20px;background: #ddd;border-radius: 50%;position: relative;right: 10px;">
+                                                <div style="width: 10px;height: 10px;background: #999;border-radius: 50%;margin: 5px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var schedule = new Vue({
+        el: "#schedule",
+        data: {
+            status:"{$model.status}",//3 结束
+            scheduleList: [],
+            evaluationNum:"{$model.evaluation_num}",
+            evaluationTxt:"{$model.evaluation_txt}",
+            pv:"{$pv}",
+        },
+        methods:{
+            scheduleInfo(id){
+                createDialog("/WrkTaskPlan/scheduleInfo/id/"+id,"进度详情","scheduleInfo");
+            }
+        }
+    })
+
+    console.log(schedule.status);
+
+    var p = 1;
+    function getNextPage() {
+        var task_plan_id = {$model.task_plan_id};
+        $.post("WrkTaskPlan/scheduleList", {task_plan_id:task_plan_id,page:p,rows:10}, function (result) {
+            if (result.code == 0){
+                $.each(result.message,function (val,index) {
+                    schedule.scheduleList.push(this);
+                });
+                p = p+1;
+                console.log(schedule.scheduleList);
+            } else {
+                $.dialog.tips(result.message);
+            }
+        }, 'json')
+    }
+
+    function reloadTaskItem() {
+        var task_plan_id = {$model.task_plan_id};
+        p = 1;
+        $.post("WrkTaskPlan/scheduleList", {task_plan_id:task_plan_id,page:p,rows:10}, function (result) {
+            if (result.code == 0){
+                $.each(result.message,function (val,index) {
+                    schedule.scheduleList = result.message;
+                });
+                p = p+1;
+                console.log(schedule.scheduleList);
+            } else {
+                $.dialog.tips(result.message);
+            }
+        }, 'json')
+    }
+
+    function ToNextPage(ele){
+        if(ele.scrollTop >= ($("#scroll-box").height() - $("#schedule-box").height())){
+            getNextPage();
+        }
+    }
+    getNextPage();
+
+    function autoHeight(){
+        var topH = $("#schedule-top").height();
+        console.log(topH)
+        $("#schedule-box").css("height",`calc(80vh - ${topH + 180}px)`);
+    }
+    autoHeight();
+    function dropDown(ele,id) {
+        if ($(`#${id}`).css("display") == "none") {
+            $(`#${id}`).show();
+            if(id == "contract-details"){
+                autoHeight()
+            }
+            $(ele).css("transform","rotate(180deg)")
+         
+        } else {
+            $(`#${id}`).hide();
+            if(id == "contract-details"){
+                autoHeight()
+            }
+            $(ele).css("transform","rotate(0deg)")
+        }
+        autoHeight()
+    }
+    function ToReportingProgress(){
+        createDialog("WrkTaskPlan/reporting/task_plan_id/{$model.task_plan_id}","提报进度","reporting");
+    }
+    function EndTask(){
+        var task_plan_id = {$model.task_plan_id};
+        $.dialog.confirm("任务结束后，将不能再做进度提报操作。<br/>确定结束该任务？",function () {
+            $.post("WrkTaskPlan/status", {task_plan_id:task_plan_id,status:3}, function (result) {
+                if (result.code == 0){
+                    $.dialog.tips('任务结束已提报');
+                    p = 1;
+                    schedule.scheduleList = [];
+                    schedule.status = 4;
+                    getNextPage();
+                }
+            }, 'json')
+        })
+    }
+    function FreezeQuest(){
+        var task_plan_id = {$model.task_plan_id};
+        $.dialog.confirm("冻结任务后，该任务将暂停服务。<br/>确定冻结该任务？",function () {
+            $.post("WrkTaskPlan/status", {task_plan_id:task_plan_id,status:2}, function (result) {
+                if (result.code == 0){
+                    $.dialog.tips('任务冻结');
+                    schedule.status = 2;
+                    p = 1;
+                    schedule.scheduleList = [];
+                    getNextPage();
+                }
+            }, 'json')
+        })
+    }
+    function disFreezeQuest() {
+        var task_plan_id = {$model.task_plan_id};
+        $.dialog.confirm("解冻任务后，该任务将继续服务。<br/>确定解冻该任务？",function () {
+            $.post("WrkTaskPlan/status", {task_plan_id:task_plan_id,status:1}, function (result) {
+                if (result.code == 0){
+                    $.dialog.tips('任务解冻');
+                    schedule.status = 1;
+                    p = 1;
+                    schedule.scheduleList = [];
+                    getNextPage();
+                }
+            }, 'json')
+        })
+    }
+    function ToFeedback(){
+        createDialog("WrkTaskPlan/feedback/task_plan_id/{$model.task_plan_id}","沟通反馈","feedback");
+    }
+</script>
+
+

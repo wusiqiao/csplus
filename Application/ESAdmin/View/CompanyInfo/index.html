@@ -1,0 +1,103 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="margin: 40px auto; width:700px;background: #ccc;height:480px">
+    <form action="CompanyInfo/update" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-tabs" style="width:700px;background: #ccc;height:480px">
+            <div title="基本资料" style="padding:10px;" >
+                <div class="tableForm">
+                    <input name="id"  type="hidden"  value="{$model.id}">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                        <div class="inputbox_x2"><input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>企业类型：</span></div>
+                        <div class="inputbox">
+                            <select name="ent_type_id" class="chosen-select" data-value="{$model.ent_type_id}">
+                                <volist name="enterprise_types" id="vo">
+                                    <option value="{$key}">{$vo}</option>
+                                </volist>
+                            </select>
+                        </div>
+                        <div class="caption"><span>企业规模：</span></div>
+                        <div class="inputbox">
+                            <input name="ent_scale" type="radio" value="{$Think.const.ENTERPRISE_SCALE_SMALL}" data-value="{$model.ent_scale}" />小规模
+                            <input name="ent_scale" type="radio" value="{$Think.const.ENTERPRISE_SCALE_GENERAL}" data-value="{$model.ent_scale}"  />一般纳税人
+                        </div>
+                    </div>
+                                       
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_LINKMAN}：</span></div>
+                        <div class="inputbox"><input name="linkman" class="easyui-validatebox"  value="{$model.linkman}" /></div>
+                        <div class="caption"><span>{$Think.lang.FLD_CONTACT}：</span></div>
+                        <div class="inputbox"><input name="contact" class="easyui-validatebox"  value="{$model.contact}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_TAXNO}：</span></div>
+                        <div class="inputbox_x2"><input name="tax_no" class="easyui-validatebox"  value="{$model.tax_no}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_BANK}</span></div>
+                        <div class="inputbox_x2"><input name="bank" class="easyui-validatebox"  value="{$model.bank}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_BANK_ACCOUNT}：</span></div>
+                        <div class="inputbox_x2"><input name="bank_account" class="easyui-validatebox"  value="{$model.bank_account}" /></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_ADDRESS}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="address" class="easyui-validatebox" data-options="" value="{$model.address}" style="width:100%" />
+                        </div>
+                    </div>                    
+                    <div class="row">
+<!--                        <div class="caption"><span>{$Think.lang.FLD_PRINCIPAL}：</span></div>
+                        <div class="inputbox">
+                            <select name="user_id" class="chosen-select" data-options="search_async:true,value:'{$model.user_id}',search_key_url:'SysUser/keyNameList/'">
+                                <option value=""></option>
+                            </select>
+                        </div>-->
+                        <div class="caption"><span>{$Think.lang.FLD_IS_VALID}：</span></div>
+                        <div class="inputbox"><input type="hidden" name="is_valid" value="0" />
+                            <input name="is_valid" class="easyui-validatebox"  type="checkbox" value="1" <eq name="model.is_valid" value="1">checked</eq> /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption block"><span>{$Think.lang.FLD_COMMENTS}：</span></div>
+                        <div class="inputbox_x2"><textarea name="comments" class="easyui-validatebox">{$model.comments}</textarea></div>
+                    </div>
+
+                </div>
+            </div>
+            <div title="税率设置" style="padding:10px;" >
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption"><span>税率：</span></div>
+                        <div class="inputbox">
+                            <input name="tax_rate" class="easyui-validatebox"  value="{$model.tax_rate}"  placeholder="%"  style="width:45%"/>
+                            <span>%</span>
+                        </div>
+                        <div class="caption"><span>免税额度：</span></div>
+                        <div class="inputbox">
+                            <select name="free_type" class="chosen-select" data-options="required:true" style="width:35%">
+                                <option value="0">每月</option>
+                                <option value="1">每季</option>
+                            </select>
+                            <input name="free_amount" class="easyui-validatebox"  value="{$model.free_amount}" placeholder="元" style="width:40%" />
+                            <span>元</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+   <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+    <div class='actions-sysdefault'>
+      <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+      <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="action_update('{$Think.const.CONTROLLER_NAME}')">保存</a>
+      </if>
+      <!--<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog('[controller]')">关闭</a>-->
+     </div>
+  </div>
+</div>
+<script type="text/javascript">
+    parseForm($("#{$Think.const.CONTROLLER_NAME}-detailcontainer"));
+</script>

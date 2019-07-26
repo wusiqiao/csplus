@@ -1,0 +1,687 @@
+<link rel="stylesheet" type="text/css"
+    href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .toggle-span+span {
+        border-left: none;
+    }
+
+    .q-select {
+        height: 30px;
+        padding: 0px 4px;
+    }
+
+    .search-panel {
+        padding: 0;
+        margin: 0px 0 0 18px;
+    }
+
+    .search-panel .search-table th {
+        padding: 0px;
+        padding-left: 10px;
+        text-align: right;
+    }
+
+    #user-defined-time {
+        height: 54px;
+        line-height: 54px;
+        min-width: 270px;
+        position: absolute;
+        right: 0px;
+    }
+    .btn-screening-label {
+        float: left;
+        width: 108px;
+        height: 54px;
+        line-height: 54px;
+        text-align: right;
+    }
+    .btn-screening-input{
+        float: left;
+        height: 32px;
+        margin: 11px 0px 11px 0px;
+    }
+    .btn-screening-input input{
+        height: 32px !important;
+        box-sizing: border-box;
+    }
+    @media screen and (max-width:1920px) {
+        .btn-screening-input input{
+            width: 270px !important;
+        }
+    }
+    @media screen and (max-width:1680px) {
+        .btn-screening-input input{
+            width: 240px !important;
+        }
+    }
+    @media screen and (max-width:1580px) {
+        .btn-screening-input input{
+            width: 210px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    @media screen and (max-width:1470px) {
+        .btn-screening-input input{
+            width: 190px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    @media screen and (max-width:1400px) {
+        .btn-screening-input input{
+            width: 170px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    @media screen and (max-width:1330px) {
+        .btn-screening-input input{
+            width: 150px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    .datagrid-cell-check input[type='checkbox']:disabled{
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-disablecheck.png')  !important;
+    }
+    .datagrid-view1 {
+        left: auto;
+        right: 0;
+    }
+    .datagrid-view2 {
+        left: 0;
+        right: auto;
+    }
+    .datagrid-view{
+        overflow: unset !important;
+    }
+    .panel-noscroll {
+        overflow: unset !important;
+    }
+    .datagrid-view1 .datagrid-body {
+        border-left: 1px solid #d3d3d3;
+        padding-right: 10px;
+    }
+    .datagrid-body {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+</style>
+<script>
+    function formatServiceManName(value){
+        if(value == "" || value == null){
+            value = "-";
+        }
+        return value;
+    }
+    function formatBranchName(value){
+        return `<div style="width:182px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+    }
+    function formatAgreementName(value){
+        return `<div style="width:150px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+    }
+    function formatOrign(value) {
+        return value == 0 ? "商城" : '导入';
+    }
+    function formatState(value) {
+        if (value == 0) {
+            return "未激活";
+        } else if (value == 1) {
+            return "服务中";
+        } else if (value == 2) {
+            return "冻结中";
+        } else {
+            return "已结束";
+        }
+    }
+    function formattaskplanState(value,row) {
+
+        if(row.state == 3){
+            return "已结束";
+        }else if(row.state == 0){
+            return "<span title='未激活'>-</span>";
+        }
+
+        if(value == 1){
+            return "<span title='开启服务'>未结束</span>";
+        } else if (value == 0) {
+            return "<span title='关闭服务'>关闭服务</span>";
+        } else {
+            return "<span title=''>-</span>";
+        }
+
+    }
+    function formatplanState(value,row) {
+        if(row.invoice_type == 0){
+            return "<span title='不开票'>-</span>";
+        }
+        if(row.state == 3){
+            return "已结束";
+        }else if(row.state == 0){
+            return "<span title='未激活'>-</span>";
+        }
+        if (value == null) {
+            return "<span title='无计划'>-</span>";
+        } else {
+            return value == 0 ? "未结束" : "已结束";
+        }
+    }
+    function formatInvoicePlan(value, row) {
+        if(row.invoice_type == 0){
+            return "<a href='javascript:void(0)' class='btn-speed-disable' style='color: #fff'>不开票</a>";
+        }
+        if(row.state == 0 || row.state == 3){
+            return "<a href='javascript:void(0)' class='btn-speed-disable' style='color: #fff'>开票计划</a>";
+        }
+        if (value != 0) {
+            if("{$menu_permissions.WrkInvoicePlanDetail}" != 1){
+                var html = "<a href='javascript:void(0)' class='btn-speed-disable' style='color: #fff' title='您没有开票功能权限'>开票计划</a>";
+            }else if ((row.wip_type == 1 || (row.wip_type == 0 && row.wip_state != 1 && row.wip_state != 2)) && "{$menu_permissions.WrkInvoicePlanDetail}" == 1) {
+                var html = "<a href='javascript:void(0)' class='btn-speed' onclick='indexToInvoicePlan(" + row.id + ")' style='color: #fff'>开票计划</a>";
+            } else {
+                var html = "<a href='javascript:void(0)' class='btn-speed-disable' style='color: #fff' title='开票状态已结束'>开票计划</a>";
+            }
+        } else {
+            var html = "<a href='javascript:void(0)' class='btn-speed-disable' style='width: 56px;color: #fff' title='请先修改合同开票类型'> 不开票 </a>";
+        }
+        return html;
+    }
+    function indexToInvoicePlan(id) {
+        showMaskLayer();
+        $.post("WrkAgreement/getPlanDetailId", { id: id }, function (result) {
+            if (result.code == 1) {
+                var plan_id = result.id;
+                createDialog("WrkInvoicePlanDetail/detail/id/" + plan_id, "编辑开票计划", "WrkInvoicePlanDetail");
+            } else if(result.code == 2){
+                $.dialog.alert("您没有查看此数据的权限！");
+            } else {
+                $.get("/WrkInvoicePlanDetail/addInvoicePlan", { id: id }, function (result) {
+                    var options = { title: "新增开票计划", content: result, autoSize: true, data: { id: id }, lock: true, max: false, min: false };
+                    var $dialog = $.dialog(options);
+                    parseForm();
+                });
+            }
+            hideMaskLayer();
+        }, 'json');
+    }
+    function formatReceivablesPlan(value, row) {
+        if(row.state == 0 || row.state == 3){
+            return "<a href='javascript:void(0)' class='btn-speed-disable' style='color: #fff;'>收款计划</a>";
+        }
+        var html = "";
+        if (row.rec != 0 && "{$menu_permissions.WrkReceivables}" == 1) {
+            html = "<a href='javascript:void(0)' class='btn-speed' onclick='toRecPromptPlan(" + row.id + ",1)' style='color: #fff;'>收款计划</a>";
+        } else{
+            html = "<a href='javascript:void(0)' class='btn-speed-disable' style='color: #fff;' title='您没有收款功能权限'>收款计划</a>";
+        }
+        return html;
+    }
+    function formatTaskPlan(value, row) {
+        if(row.state == 0 || row.state == 3){
+            return "<a href='javascript:void(0)' class='btn-speed-disable' style='color: #fff;'>任务计划</a>";
+        }
+        var html = "";
+        if (row.is_task_plan != 0 && "{$menu_permissions.WrkTaskPlan}" == 1) {
+            html = "<a href='javascript:void(0)' class='btn-speed' onclick='toTaskPlan(" + row.id + ",1)' style='color: #fff;'>任务计划</a>";
+        } else{
+            html = "<a href='javascript:void(0)' class='btn-speed-disable' style='color: #fff;' title='您没有该功能权限'>任务计划</a>";
+        }
+        return html;
+    }
+    function formatPromptPlan(value, row) {
+        if(row.state == 0 || row.state == 3){
+            return "<a href='javascript:void(0)' class='btn-speed-disable' style='color: white;background-color: #bfbfbf'>催款计划</a>";;
+        }
+        var html = "";
+        if(row.wr_status != null && "{$menu_permissions.WrkPrompt}" == 1){
+            html = "<a href='javascript:void(0)' class='btn-speed' onclick='toRecPromptPlan("+row.id+",2)' style='color: white'>催款计划</a>";
+        }else if("{$menu_permissions.WrkPrompt}" != 1){
+            html = "<a href='javascript:void(0)' class='btn-speed-disable' style='color: white;background-color: #bfbfbf' title='您没有催款功能权限'>催款计划</a>";
+        } else{
+            html = "<a href='javascript:void(0)' class='btn-speed-disable' style='color: white;background-color: #bfbfbf' title='请先创建收款计划'>催款计划</a>";
+        }
+        return html;
+    }
+
+    function toRecPromptPlan(id, type) {
+        showMaskLayer();
+        $.post("WrkAgreement/getReceivablePromptId", { id: id ,type:type}, function (result) {
+            if(result.error == 2){
+                //已有计划且没有查看权限
+                hideMaskLayer();
+                $.dialog.alert(result.message);
+                return false;
+            }
+            if (type == "1") {
+                if (result.rec != null && result.error != 2) {
+                    createDialog("WrkReceivables/detail/id/" + result.rec, '编辑收款计划', 'WrkReceivables');
+                } else {
+                    createDialog("WrkReceivables/addReceivables/contract_id/" + id, '新增收款计划', 'WrkReceivables');
+                }
+            } else if (type == "2") {
+                if (result.prompt != null) {
+                    createDialog("WrkPrompt/detail/id/" + result.prompt, '编辑催款计划', 'WrkPrompt');
+                } else {
+                    var is_related = result.rec == null ? 0 : 1;
+                    createDialog("WrkPrompt/addPrompt/contract_id/" + id + "/is_related/" + is_related, '新增催款计划', 'WrkPrompt');
+                }
+            }
+            hideMaskLayer();
+        }, 'json')
+    }
+
+    function toTaskPlan(id) {
+        showMaskLayer();
+        $.post("WrkAgreement/getWrkLeaderOrCollaborator", { id: id }, function (result) {
+            if (result.code == 0) {
+                createDialog("WrkTaskPlan/taskList/contract_id/" + id, '合同任务', 'taskList');
+            } else {
+                $.dialog.alert("您没有该数据的查看权限！");
+            }
+            hideMaskLayer();
+        }, 'json')
+    }
+
+    function formatAssignmentPlan(value, row) {
+        var html = "<a href='javascript:void(0)' onclick='' class='btn-speed-disable' style='color: #fff'>任务计划</a>";
+        return html;
+    }
+
+    function formatWrState(value,row) {
+        /*if(row.state == 3){
+            return "已结束";
+        }else */if( row.state == 0 ){
+            return "<span title='未激活'>-</span>";
+        }
+        if (value == undefined || value == null) {
+            return "<span title='无计划'>-</span>";
+        }  else {
+            return value == 0 ? "未结束" : "已结束";
+        }
+    }
+
+</script>
+<div class="" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="min-height: 100%;">
+    <div class="easyui-layout" data-options="fit:true,border: true">
+        <if condition="($permissions._IS_ADMIN_ eq 1)">
+            <div data-options="region:'west',split:false,border:true" style="width: 20%;">
+                <!-- <div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+                    <ul style="border: 0px #F2F2F2 solid;height: 99%" class="department-tree" data-options="animate:true"></ul>
+                </div>-->
+            </div>
+        </if>
+        <div data-options="region:'center',border:false" style="">
+            <if condition="$company_id eq ''">
+                <table class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid" fit="false"
+                    data-options="
+                    url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/list',
+                    pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+                    pageSize:<empty name='pagesize'>10<else/>{$pagesize}</empty>,
+                    toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+                    pageNumber:1,
+                    checkOnSelect:true,
+                    singleSelect:false,
+                    border:true">
+                <thead>
+            <else/>
+                <table class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid" fit="false"
+                    data-options="
+                    url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/list/company_id/{$company_id}',
+                    pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+                    pageSize:<empty name='pagesize'>10<else/>{$pagesize}</empty>,
+                    toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+                    pageNumber:1,
+                    checkOnSelect:true,
+                    singleSelect:false,
+                    border:true">
+                <thead>
+            </if>
+            <tr>
+                <th data-options="field:'id',hidden:true">id</th>
+                <th field="ck" checkbox="true"></th>
+                <th data-options="field:'origin',width:90,align:'left',formatter:formatOrign">合同来源</th>
+                <th data-options="field:'service_man_name',width:138,align:'left',formatter:formatServiceManName">合同商户负责人</th>
+                <th data-options=" field:'customer_branch_name',width:266,align:'left',formatter:formatBranchName">公司名称</th>
+                <th data-options="field:'name',width:180,align:'left',formatter:formatAgreementName">合同名称</th>
+                <th data-options="field:'agreement_money',width:120,align:'left'">合同金额</th>
+                <th data-options="field:'state',width:134,align:'left',formatter:formatState">合同状态</th>
+                <th data-options="field:'is_task_plan_state',width:130,align:'left',formatter:formattaskplanState">合同任务状态</th>
+                <th data-options="field:'wr_status',width:130,align:'left',formatter:formatWrState">合同付款状态</th>
+                <th data-options="field:'wip_state',width:130,align:'left',formatter:formatplanState">合同开票状态</th>
+                <th data-options="field:'start_time',width:165,align:'left'">合同开始日期</th>
+                <th data-options="field:'finish_time',width:165,align:'left'">合同结束日期</th>
+                <th data-options="field:'end_time',width:165,align:'left'">实际结束日期</th>
+                 <!--<th data-options="field:'assignment_state',width:100,align:'center',formatter:formatplanState">合同任务状态</th>-->
+                <!--<th data-options="field:'is_assignment_plan',width:120,align:'center',formatter:formatAssignmentPlan">合同任务计划</th>-->
+            </tr>
+            </thead>
+            <thead data-options="frozen:true">
+            <tr>
+                <th data-options="field:'is_task_plan',width:120,align:'center',formatter:formatTaskPlan">合同任务计划</th>
+                <th data-options="field:'is_receivables_plan',width:120,align:'center',formatter:formatReceivablesPlan">合同收款计划</th>
+                <th data-options="field:'is_prompt_plan',width:120,align:'center',formatter:formatPromptPlan">合同催款计划</th>
+                <th data-options="field:'invoice_type',width:120,align:'center',formatter:formatInvoicePlan">合同开票计划</th>
+            </tr>
+            </thead>
+            </table>
+            <div id="agreement-empty-notice" style="color: rgb(180, 180, 180);display:none;width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 40px;font-size: 20px">暂无数据</div>
+            <div id="WrkAgreement-toolbar">
+                <div class="c-header">
+                    <div class="tab-span tab-span-on">全部</div>
+                    <div class="tab-span" data-state="1">服务中</div>
+                    <div class="tab-span" data-state="2">冻结中</div>
+                    <div class="tab-span" data-state="0">未激活</div>
+                    <div class="tab-span" data-state="3">已结束</div>
+                    <div class="tab-span" data-state="10">已归档</div>
+                </div>
+                <div class="search-panel"></div>
+                <div class="action-panel" style="padding: 0px 10px;">
+                    <div class="actions">
+                        <if condition="($permissions.add eq 1) OR ($permissions._IS_ADMIN_ eq 1)">
+                            <a href="javascript:void(0)" class="detail-add btn-speed" plain="true"
+                                onclick="action_add('WrkAgreement','{$title}')">新增合同</a>
+                        </if>
+                        <if condition="($permissions.detail eq 1) OR ($permissions._IS_ADMIN_ eq 1)">
+                            <a href="javascript:void(0)" class="detail-edit btn-speed" style="display:none;"
+                                plain="true" onclick="action_detail('WrkAgreement','{$title}')">修改</a>
+                        </if>
+                        <if condition="($permissions.delete eq 1) OR ($permissions._IS_ADMIN_ eq 1)">
+                            <a href="javascript:void(0)" class="detail-delete btn-speed-disable" plain="true" onclick="action_delete('WrkAgreement')">删除</a>
+                        </if>
+                        <a href="javascript:void(0)" class="detail-delete btn-speed-disable" plain="true" onclick="fileAgreement()">合同归档</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none;">
+    <div class="search-table">
+        <div id="routine-select" style="width:800px;height:54px;line-height: 54px;position: relative;">
+            <div class="btn-screening-label">合同开始时间：</div>
+            <span class="view-st-state btn-screening <if condition='$company_id neq ""'>btn-screening-on</if>" data-time="all">全部</span>
+            <span class="view-st-state btn-screening <if condition='$company_id eq ""'>btn-screening-on</if>" data-time="4">本年度</span>
+            <span class="view-st-state btn-screening" data-time="3">本月</span>
+            <span id="user-defined" class="btn-screening">自定义</span>
+            <div id="user-defined-time" style="display: none;">
+                <input name="qdr-start_time" id="start_time_start" class="easyui-datebox filter-field" value=""
+                    data-options="prompt:'选择时间',editable:false" onkeydown="this.value='' " />－
+                <input name="qdr-start_time" id="start_time_end" class="easyui-datebox filter-field" value=""
+                    data-options="prompt:'选择时间',editable:false" />
+            </div>
+        </div>
+        <div style="width:800px;height:54px;line-height: 54px;position: relative;">
+            <div class="btn-screening-label">合同付款状态：</div>
+            <span class="view-wr-state btn-screening btn-screening-on" data-state="">全部</span>
+            <span class="view-wr-state btn-screening" data-state="0">未结束</span>
+            <span class="view-wr-state btn-screening" data-state="1">已结束</span>
+            <span class="view-wr-state btn-screening" data-state="2">无计划</span>
+        </div>
+        <div style="width:800px;height:54px;line-height: 54px;position: relative;">
+            <div class="btn-screening-label">合同开票状态：</div>
+            <span class="view-wip-state btn-screening btn-screening-on" data-state="">全部</span>
+            <span class="view-wip-state btn-screening" data-state="0">未结束</span>
+            <span class="view-wip-state btn-screening" data-state="1">已结束</span>
+            <span class="view-wip-state btn-screening" data-state="2">不开票</span>
+        </div>
+        <div style="width:800px;height:54px;line-height: 54px;position: relative;">
+            <div class="btn-screening-label">合同任务状态：</div>
+            <span class="view-rwp-state btn-screening btn-screening-on" data-state="">全部</span>
+            <span class="view-rwp-state btn-screening" data-state="0">未结束</span>
+            <span class="view-rwp-state btn-screening" data-state="1">已结束</span>
+            <span class="view-rwp-state btn-screening" data-state="2">关闭服务</span>
+        </div>
+        <div style="height:54px;line-height: 54px;position: relative;">
+            <div class="btn-screening-label">公司名称：</div>
+            <div class="btn-screening-input">
+                <input name="customer_branch_name" class="easyui-validatebox filter-field" value="{$company_name}" data-name="q-company_id" placeholder="请输入公司名称"/>
+                <input type="hidden" value="{$company_id}" name="q-company_id" class="easyui-validatebox filter-field">
+                <input type="hidden" id="is_by_company" value="{$company_id}">
+            </div>
+            <div class="btn-screening-label">合同名称：</div>
+            <div class="btn-screening-input">
+                <input name="ql-name" class="easyui-validatebox filter-field" value="" data-name="ql-name" placeholder="请输入合同名称"/>
+            </div>
+            <div style="width: 160px;" class="btn-screening-label">合同商户负责人：</div>
+            <div class="btn-screening-input">
+                <input name="service_man_name" class="easyui-validatebox filter-field" value="" data-name="q-leader_id" placeholder="请输入合同商户负责人"/>
+            </div>
+        </div>
+    </div>
+    <table class="search-table">
+        <tr id="state-input" style="display: none"></tr>
+        <tr id="wr-state-input" style="display: none"></tr>
+        <tr id="wip-state-input" style="display: none"></tr>
+        <tr id="time-input" style="display: none"></tr>
+        <tr id="leader_input" style="display: none"></tr>
+        <input id="rwp-state-input" type="hidden" name="q-is_task_plan" class="easyui-validatebox filter-field" value="">
+        <input type="hidden" name="q-is_valid" class="filter-field">
+    </table>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+    $(".chosen-select").chosen({
+        search_contains: true,   //关键字模糊搜索，设置为false，则只从开头开始匹配
+    });
+    $(function () {
+        autocompleteAjax($("input[name='customer_branch_name']").eq(0), "WrkAgreement/companyList", function (item) {
+            $("input[name='customer_leader']").val(item.customer_leader);
+            doSearchQuery("WrkAgreement");
+        });
+        autocompleteAjax($("input[name='ql-name']"), "WrkAgreement/nameList", function (item) { doSearchQuery("WrkAgreement"); });
+        autocompleteAjaxEx($("input[name='service_man_name']"), "WrkAgreement/service_manList/", {
+            formatItem(row) {
+                var mobile = row['mobile'];
+                var item_text = $.format(
+                    `<div style='font-size: 13px; line-height: 15px;'>
+                        <div style='float: left;margin:1px 2.5px;'>姓名：<span style='color:#368bfe'>{0}</span></div>
+                        <div style='float: left;margin:1px 2.5px;'>部门：<span style='color:#368bfe'>{1}</span></div>
+                    </div>`,
+                    [padLeft(row.name, 8, " "), row.branch_name]);
+                return item_text;
+            },
+            onSelected: function (row) {
+                var html = "";
+                html += '<input name="q-leader_id" type="hidden" class="easyui-validatebox filter-field" value="' + row.id + '">';
+                $("#leader_input").html(html);
+                doSearchQuery("WrkAgreement");
+            }
+        });
+        autocompleteAjax($("input[name='customer']"), "WrkAgreement/customerList", function (item) { doSearchQuery("WrkAgreement"); });
+    });
+
+    $("input[name='customer_branch_name']").eq(0).on('change', function () {
+        if ($('input[name="customer_branch_name"]').length > 0 && $("input[name='customer_branch_name']").val() == "") {
+            $('input[name="q-company_id"]').val("");
+            $('input[name="customer_leader"]').val("");
+            if($("#is_by_company").val() != ""){
+                $("#is_by_company").val("");
+                $("#{$Think.const.CONTROLLER_NAME}-datagrid").datagrid({
+                    url:"{$Think.const.CONTROLLER_NAME}/list"
+                })
+            }
+            doSearchQuery("WrkAgreement");
+        }
+    });
+    $("input[name='ql-name']").on('change', function () {
+        if ($('input[name="ql-name"]').length > 0 && $("input[name='ql-name']").val() == "") {
+            $('input[name="ql-name"]').val("");
+            doSearchQuery("WrkAgreement");
+        }
+    });
+    $("input[name='service_man_name']").eq(0).on('change', function () {
+        if ($('input[name="service_man_name"]').length > 0 && $("input[name='service_man_name']").val() == "") {
+            $('input[name="q-leader_id"]').val("");
+            doSearchQuery("WrkAgreement");
+        }
+    });
+    $("input[name='customer']").on('change', function () {
+        if ($('input[name="customer"]').length > 0 && $("input[name='customer']").val() == "") {
+            $('input[name="q-customer_leader_id"]').val("");
+            doSearchQuery("WrkAgreement");
+        }
+    });
+</script>
+<script>
+    $('.tab-span').on('click', function () {
+        $(this).siblings().removeClass("tab-span-on");
+        $(this).addClass("tab-span-on");
+        $("input[name='q-is_valid']").val("");
+        var state = $(this).data('state');
+        var html = '';
+        if (state != undefined && state != 10) {
+            html += '<input name="q-state" class="easyui-validatebox filter-field" value="' + state + '">';
+        }else if(state == 10){
+            $("input[name='q-is_valid']").val(0);
+        }
+        $('#state-input').html(html);
+        doSearchQuery('WrkAgreement');
+    });
+    $(".view-wr-state").on("click", function () {
+        $(".view-wr-state").removeClass("btn-screening-on");
+        $(this).addClass("btn-screening-on");
+        var state = $(this).data('state');
+        var html = '';
+        if (state != undefined) {
+            html += '<input name="wr_status" class="easyui-validatebox filter-field" value="' + state + '">';
+        }
+        $('#wr-state-input').html(html);
+        doSearchQuery('WrkAgreement');
+    });
+    $(".view-wip-state").on("click", function () {
+        $(".view-wip-state").removeClass("btn-screening-on");
+        $(this).addClass("btn-screening-on");
+        var state = $(this).data('state');
+        var html = '';
+        if (state != undefined) {
+            html += '<input name="wip*state" class="easyui-validatebox filter-field" value="' + state + '">';
+        }
+        $('#wip-state-input').html(html);
+        doSearchQuery('WrkAgreement');
+    });
+    $(".view-rwp-state").on("click", function () {
+        $(".view-rwp-state").removeClass("btn-screening-on");
+        $(this).addClass("btn-screening-on");
+        var state = $(this).data('state');
+
+        if (state != undefined) {
+            $('#rwp-state-input').val(state);
+        }
+        doSearchQuery('WrkAgreement');
+    });
+    $(function () {
+        initial_easyui_grid("WrkAgreement", "{$title}");
+        //$('#WrkAgreement-datagrid').datagrid({fitColumns:true});
+        var H4 = $("#WrkAgreement-toolbar").height() + 50;
+        $("#agreement-empty-notice").css("top", H4);
+    });
+    $('#end_time_start').datebox({
+        onSelect: function () {
+            doSearchQuery("WrkAgreement");
+        }
+    });
+    $('#end_time_end').datebox({
+        onSelect: function () {
+            doSearchQuery("WrkAgreement");
+        }
+    });
+    $('#start_time_start').datebox({
+        onSelect: function () {
+            doSearchQuery("WrkAgreement");
+        }
+    });
+    $('#start_time_end').datebox({
+        onSelect: function () {
+            doSearchQuery("WrkAgreement");
+        }
+    });
+
+    // 时间筛选按钮交互效果
+    $("#user-defined").on("click", function () {
+        $(".view-st-state").filter(function (i, ele) {
+            $(ele).removeClass("btn-screening-on");
+        });
+        $("#user-defined").addClass("btn-screening-on");
+        $("#user-defined-time").css("display", "inline-block");
+        $("#time-input").html("");
+    });
+    $("#routine-select").on("click", ".view-st-state", function (e) {
+        $("#user-defined").removeClass("btn-screening-on");
+        $("#user-defined-time").hide();
+        $(".view-st-state").filter(function (i, ele) {
+            $(ele).removeClass("btn-screening-on"); 
+        });
+        $(e.target).addClass("btn-screening-on");
+        $("input[name='qdr-start_time']").val("");
+        $(".textbox-text").val("");
+        var time = $(e.target).data("time");
+        if (time != "") {
+            var html = "<input name='time' class='filter-field' value='" + time + "'>";
+            $("#time-input").html(html);
+        }
+        doSearchQuery("WrkAgreement");
+    })
+    $("#WrkAgreement-datagrid").bind("onLoadSuccess", function(event, data){
+        if (data.total == 0) {
+            $("#agreement-empty-notice").show();
+        } else {
+            $("#agreement-empty-notice").hide();
+        }
+    });
+
+
+    $("#WrkAgreement-maincontainer").on("click",function () {
+        toggleDeleteAble();
+    });
+
+    $(function(){
+        $("input:checkbox").click(function(){
+            toggleDeleteAble();
+        })
+    });
+
+    function toggleDeleteAble(){
+        var data = $("#WrkAgreement-datagrid").datagrid("getSelections");
+        if(data.length > 0){
+            $(".detail-delete").removeClass("btn-speed-disable").addClass("btn-speed");
+        }else{
+            $(".detail-delete").addClass("btn-speed-disable").removeClass("btn-speed");
+        }
+    }
+
+    function queryReceivables(){
+        doSearchQuery("WrkAgreement");
+    }
+
+    //归档合同
+    function fileAgreement(){
+        var selections = $("#WrkAgreement-datagrid").datagrid("getSelections");
+        if(selections == undefined || selections.length == 0){
+            $.dialog.tips("请至少选择一项！");
+            return false;
+        }
+        var ids = [];
+        for(var i in selections){
+            if(selections[i].state != 3){
+                $.dialog.alert("客户合同未结束，请先结束合同<br>方可进行合同归档操作");
+                return false;
+            }
+            if(selections[i].is_valid == 0){
+                $.dialog.alert("已归档合同无法再次进行归档");
+                return false;
+            }
+            ids.push(selections[i].id);
+        }
+        $.dialog.confirm("是否确认归档？",function(){
+            $.post("/WrkAgreement/fileAgreement",{id:ids},function(result){
+                if(result.code == 0){
+                    doSearchQuery("WrkAgreement");
+                }
+                $.dialog.alert(result.message);
+            },'json')
+        })
+    }
+
+</script>

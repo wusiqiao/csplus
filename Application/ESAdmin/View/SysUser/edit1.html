@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>微店后台管理</title>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.easyui.min.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.easyui.patch.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/lhgdialog/dialog.min.js?skin=idialog"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/chosen/chosen.jquery.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/chosen/ajax-chosen.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/script/easyui-editor.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/script/ext-chosen.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}Public/script/gridtoolbar.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/script/core.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/script/comm.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/script/app.js"></script>
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/script/index.js"></script>
+    <script src="__ROOT__/{$Think.MODULE_PATH}/Public/script/common.js"></script>
+    <link href="__ROOT__/{$Think.APP_PATH}/Public/easyui/themes/icon.css" rel="stylesheet" />
+    <link href="__ROOT__/{$Think.APP_PATH}/Public/easyui/themes/default/easyui.css" rel="stylesheet" />
+    <link href="__ROOT__/{$Think.APP_PATH}/Public/css/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="__ROOT__/{$Think.APP_PATH}/Public/css/index.css" rel="stylesheet" />
+    <link href="__ROOT__/{$Think.APP_PATH}/Public/css/comm.css" rel="stylesheet" />
+    <link href="__ROOT__/{$Think.APP_PATH}/Public/chosen/chosen.css" rel="stylesheet" />
+    <!--<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/style.css" rel="stylesheet" />-->
+    <script src="__ROOT__/{$Think.APP_PATH}/Public/uploader/uploader.js"></script>
+</head>
+<body class="easyui-layout" style="list-style-position: outside; list-style-type: none; display: list-item; margin: 0; padding: 0;position: relative">
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm" style="width:680px">
+            <input name="id" type="hidden" value="{$model.id}">
+            <div class="easyui-tabs">
+                <div title="基本资料">
+                    <div class="row">
+                        <!--<div class="caption"><span>{$Think.lang.FLD_NO}：</span></div>-->
+                        <!--<div class="inputbox"><input name="no" class="easyui-validatebox" data-options="required:true" value="{$model.no}" /></div>-->
+                        <div class="caption"><span>{$Think.lang.FLD_MOBILE}：</span></div>
+                        <div class="inputbox">
+                            <input name="mobile" class="easyui-validatebox" data-options="validType:'mobile'" value="{$model.mobile}" />
+                        </div>
+                        <div class="caption"><span>{$Think.lang.FLD_USER_NAME}：</span></div>
+                        <div class="inputbox">
+                            <input name="name" class="easyui-validatebox" data-options="" value="{$model.name}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!--<div class="caption"><span>{$Think.lang.FLD_MOBILE}：</span></div>-->
+                        <!--<div class="inputbox"><input name="mobile" class="easyui-validatebox"  data-options="required:true,validType:'mobile'" value="{$model.mobile}" /></div>                -->
+                        <!--<div class="caption"><span>{$Think.lang.FLD_EMAIL}：</span></div>-->
+                        <!--<div class="inputbox"><input name="email" class="easyui-validatebox" data-options="validType:'email'" value="{$model.email}" /></div>-->
+                    </div>
+                    <!--<div class="row">-->
+                    <!--<div class="caption"><span>{$Think.lang.FLD_BIRTHDAY}：</span></div>-->
+                    <!--<div class="inputbox"><input name="birthday" class="easyui-datebox"  value="{$model.birthday}" /></div>-->
+                    <!--<div class="caption"><span>{$Think.lang.FLD_SEX}：</span></div>-->
+                    <!--<div class="inputbox">-->
+                    <!--<input name="sex" type="radio" value="0" data-value="{$model.sex}" />{$Think.lang.ENUM_SEX_0}-->
+                    <!--<input name="sex" type="radio" value="1" data-value="{$model.sex}" />{$Think.lang.ENUM_SEX_1}-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_USER_TYPE}：</span></div>
+                        <div class="inputbox">
+                            <select name="user_type" class="chosen-select" data-value="{$model.user_type}">
+                                <option value="" selected> </option>
+                                <option value="{$Think.const.USER_TYPE_COMPANY_MANAGER}">公司管理</option>
+                                <option value="{$Think.const.USER_TYPE_COMPANY_SALES}">财务人员</option>
+                                <option value="{$Think.const.USER_TYPE_CUSTOMER}">代账客户</option>
+                                <option value="{$Think.const.USER_TYPE_PROSPECTIVE}">潜在客户</option>
+                            </select>
+                        </div>
+                        <div class="caption"><span>{$Think.lang.FLD_DEPARTMENT}：</span></div>
+                        <div class="inputbox">
+                            <select name="branch_id" class="chosen-select" data-options="all:true,value:'{$model.branch_id}',search_key_url:'ComDepartment/keyNameList/'">
+                            </select>
+                        </div>
+                    </div>
+                    <!--            <div class="row">                        
+                        <div class="caption"><span>{$Think.lang.FLD_DAC_TYPE}：</span></div>
+                        <div class="inputbox_x2" style="border: 1px solid #ccc; border-radius: 4px; padding: 3px 0px">
+                            <div style="padding:10px">
+                                <input name="dac_type" type="radio" value="{$Think.const.DAC_CREATOR}" <eq name="model.dac_type" value="9">checked</eq> />{$Think.lang.ENUM_DAC_TYPE_9}          
+                                <input name="dac_type" type="radio" value="0" <eq name="model.dac_type" value="0">checked</eq> /><span id="user-branch">{$Think.lang.ENUM_DAC_TYPE_0} </span>             
+                                <input type="hidden" name="is_include_all" value="0" />
+                                <input name="is_include_all" class="easyui-validatebox"  type="checkbox" value="1" <eq name="model.is_include_all" value="1">checked</eq> /><span style="padding: 0 5px">{$Think.lang.FLD_INCLUDE_ALL}</span>
+                            </div>
+                            <div style="padding:5px 10px">
+                                <input name="dac_type" type="radio" value="1" <eq name="model.dac_type" value="1">checked</eq> />{$Think.lang.ENUM_DAC_TYPE_1}                                                      
+                                <div id="dac_branchs_names"  style="width:100%;border:1px solid #ccc;overflow: hidden;border-radius: 3px;margin-top:5px; ">
+                                    <a class="btn-data-find" href="javascript:;" style="padding:8px; display: block;float:right;"><i class="fa fa-search"></i></a>
+                                    <span style="overflow: hidden;display:block;height:20px;padding-left: 10px"></span>
+                                    <input name="dac_branchs" type="hidden" value="{$model.dac_branchs}">
+                                </div>                        
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_GROUP}：</span></div>
+                        <div class="inputbox">
+                            <select name="group_id" class="chosen-select" data-options="all:true,value:'{$model.group_id}',search_key_url:'SysTargetGroup/keyNameList/'">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_TAG}：</span></div>
+                        <div class="inputbox_x2">
+                            <select name="tag_ids[]" class="chosen-select" data-options="all:true,value:'{$model.tag_ids}',search_key_url:'SysTargetTag/keyNameList/'" multiple>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_ROLE_GROUP}：</span></div>
+                        <div class="inputbox_x2">
+                            <select name="role_ids[]" class="chosen-select" data-options="all:true,value:'{$model.role_ids}',search_key_url:'SysRole/keyNameList/'" multiple>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- </div> -->
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_IS_VALID}：</span></div>
+                        <div class="inputbox">
+                            <input name="is_valid" class="easyui-validatebox" type="checkbox" value="1" data-value="{$model.is_valid}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.FLD_ACCOUNT}：</span></div>
+                        <div class="inputbox">
+                            <input name="account" class="easyui-validatebox" data-options="" autocomplete="off" value="{$model.account}" placeholder="不填默认手机号码作为登录账号" />
+                        </div>
+                        <eq name="Think.__FORM_ACTION__" value="add">
+                            <div class="caption"><span>{$Think.lang.FLD_PASSWORD}：</span></div>
+                            <div class="inputbox">
+                                <input style="display:none">
+                                <input name="password" type="text" onfocus="this.type='password'" class="easyui-validatebox" data-options="validType:'minLength[6]'" value="{$model.password}" placeholder="不填默认手机号码作为密码" />
+                            </div>
+                        </eq>
+                    </div>
+                    <div class="row">
+                        <div class="caption block"><span>{$Think.lang.FLD_COMMENTS}：</span></div>
+                        <div class="inputbox_x2">
+                            <textarea name="comments" class="easyui-validatebox">{$model.comments}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div title="自定义属性" class="tab">
+                    <table>                    
+                        <tr>
+                        <td class="caption"><span>{$Think.lang.FLD_CUSTOM_TYPE}：</span></td>
+                        <td width="50px">
+                            <select name="add-custom-type" >
+                                <option selected value=0>文本</option>
+                                <option value=1>日期</option>
+                            </select>
+                        </td>
+                        <td class="caption"><span>{$Think.lang.FLD_CUSTOM_TITLE}：</span>
+                        </td>
+                        <td class="inputbox">
+                            <input name="add-custom-title" class="easyui-validatebox" />
+                        </td>
+                        <td class="inputbox">
+                            <a href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="addCustomAttr(this);">添加自定义属性</a>
+                        </td>
+                    </tr></table>
+                    <table margin-left="8px" class="custom-attr">
+                        <foreach name="model.custom" item="v">
+                            <tr class="row">
+                                <td Align="right">
+                                    <span>{$v.title}：</span>
+                                </td>
+                                <td>
+                                    <if condition="$v.type eq 0 ">
+                                        <input name="custom-value[]" value="{$v.value}" class="easyui-validatebox" />
+                                        <else />
+                                        <input name="custom-value[]" value="{$v.value}" class="easyui-datebox" />
+                                    </if>
+                                    <input name="custom-type[]" value="{$v.type}" type="hidden" />
+                                    <input name="custom-title[]" value="{$v.title}" type="hidden" />
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="removeCustomAttr(this);">删除</a>
+                                </td>
+                            </tr>
+                        </foreach>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html" controller="SysUser" />
+</div>
+<script type="text/javascript">
+$(function() {
+    $("input[name=dac_type]").change(function() {
+        dacType_Changed();
+    });
+    $("select[name=branch_id]").bind("change", function(evt, data) {
+        if (data.selected) {
+            var text = $(this).find("option:selected").text().replace("└─", "").replace("　", "");
+            $("#user-branch").html("所在部门【" + text + "】");
+        }
+    });
+    $(".btn-data-find").click(function() {
+        createDialog("/ComCompany/select", "选择客户", "dlg-company-select", { callback: setCompanySelect }, inital_selected_items);
+    });
+    dacType_Changed();
+    //显示多选数据
+    initial_select_components('{$model.dac_branchs_data}');
+});
+//弹出框初始化，填充已选
+function inital_selected_items() {
+    var objs = $.data($("#dac_branchs_names").get(0), "items_data");
+    addSelectItems(objs);
+}
+
+function initial_select_components(branchs_json) {
+    if (branchs_json) {
+        var objs = $.parseJSON(branchs_json);
+        $.data($("#dac_branchs_names").get(0), "items_data", objs);
+        setCompanySelect(objs);
+    }
+}
+
+function setCompanySelect(datas) {
+    var ids = "";
+    var texts = "";
+    $("#dac_branchs_names span").text("");
+    $("#dac_branchs_names input").val("");
+    if ($.isArray(datas)) {
+        $(datas).each(function() {
+            ids = ids + this.id + ",";
+            texts = texts + this.name + ",";
+        });
+    }
+    $("#dac_branchs_names span").text(texts);
+    $("#dac_branchs_names input").val(ids);
+}
+
+function dacType_Changed() {
+    var val = $("input[name=dac_type]:checked").val() || "0";
+    if (val !== "1") {
+        $("#dac_branchs_names").hide();
+    } else {
+        $("#dac_branchs_names").show();
+    }
+}
+
+function addCustomAttr(e) {
+    var custom_type = $('select[name="add-custom-type"]').val();
+    var str;
+    if (custom_type == 0) {
+        str = "easyui-validatebox";
+    } else {
+        str = "easyui-datebox";
+    }
+    var custom_title = $('input[name="add-custom-title"]').val();
+    if (custom_title === undefined || custom_title == null || custom_title == '') {
+        alert('自定义属性名称不能为空');
+    } else {
+        $("table.custom-attr").append('<tr class="row"><td Align="right"><span>' + custom_title + '：</span></td><td><input name="custom-value[]" value="" class="' + str + '" /><input name="custom-type[]" value="' + custom_type + '" type="hidden" /><input name="custom-title[]" value="' + custom_title + '" type="hidden" /></td><td><a href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="removeCustomAttr(this);">删除</a></td></tr>');
+    }
+    parseForm($(e).parents("div.tab"));
+}
+
+function removeCustomAttr(e) {
+    div = $(e).parents('tr.row');
+    div.remove();
+}
+</script>

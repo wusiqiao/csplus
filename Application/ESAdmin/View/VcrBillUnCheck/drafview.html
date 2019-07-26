@@ -1,0 +1,25 @@
+<div class="detailcontainer" id="voucher-draf-detailcontainer" style="width:480px; height:120px;margin-top: 20px;">
+    <div class="tableForm" style="width:100%; padding-left: 10%">
+        <input type="radio" name="gen_type" value="1" />根据查询条件生成
+        <br><br><input type="radio" name="gen_type" value="2" />根据所选择的记录生成
+    </div>
+    <div class="form-actions" style="margin-top: 10px">
+        <div class="actions-sysdefault">
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true"
+               icon="fa-save fa-lg" onclick="action_draf_gen()">确定</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true"
+               icon="fa-remove fa-lg" onclick="closeDialog('dlg-voucher-draf')">取消</a>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        var rows = getDataGrid("BillUnCheck").datagrid('getChecked');
+        if (rows.length > 0){
+            $("input[name=gen_type][value='2']").prop("checked", true);
+        }else{
+            $("input[name=gen_type][value='1']").prop("checked",true);
+        }
+    });
+
+</script>

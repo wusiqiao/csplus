@@ -1,0 +1,57 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/addStaff" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id" type="hidden" value="{$model.id}">
+            <div style="margin-bottom:20px;height:200px">
+                <span><input id="inAll" type="checkbox" checked disabled="disabled" />已有用户</span>
+                <div style="float:right;word-break:break-all;width:500px;height:200px;overflow-y:auto;">
+                    <foreach name="model.in" item="v">
+                        <div style="float:left;width:30%;padding-bottom:5px;overflow-x:hidden; text-overflow:ellipsis; white-space: nowrap;">
+                            <input disabled="disabled" readonly="true" class="in" type="checkbox" value="{$v.id}" checked /> {$v.staff_name}
+                        </div>
+                    </foreach>
+                </div>
+            </div>
+            <div style="margin-bottom:50px;height:200px">
+                <input id="outAll" type="checkbox" />待选用户
+                <div style="float:right;word-break:break-all;width:500px;height:200px;overflow-y:auto;">
+                    <foreach name="model.out" item="v">
+                        <div style="float:left;width:30%;padding-bottom:5px;overflow-x: hidden; text-overflow:ellipsis; white-space: nowrap;">
+                            <input  name="user_ids[]" class="out" value="{$v.id}" type="checkbox" /> {$v.staff_name}
+                        </div>
+                    </foreach>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='Organization-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="addStaff()">保存</a>
+            <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$("#outAll").change(function() {
+    $(".out").prop("checked", $(this).prop("checked"));
+});
+
+function addStaff() {
+    showMaskLayer();
+    var user_ids = [];
+
+    $("input[name='user_ids[]']:checked").each(function() {
+        user_ids.push($(this).val());
+    });
+    $.post('/StaffRole/addStaff/role_id/{$role_id}', { user_ids: user_ids }, function(result) {
+        hideMaskLayer();
+        if (result.code == 0) {
+            closeDialog();
+            getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+        } else {
+            return false;
+        }
+        $.dialog.tips(result.message);
+    }, 'json')
+}
+</script>

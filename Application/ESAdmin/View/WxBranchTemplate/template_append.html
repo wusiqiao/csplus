@@ -1,0 +1,463 @@
+<script type="text/javascript">
+
+    function format_operation(value ,row, index){
+        var html = '';
+        html += "<i style=\"width:auto;height:24px;line-height: 24px;margin:  0 10px;cursor:pointer\" class=\"fa fa-building fa-lg\" onclick=\"templateDesc("+row.id+")\" title=\"查看详情\"></i>";
+        return html;
+    }
+</script>
+<link href="/{$Think.MODULE_PATH}Public/minicolors/jquery.minicolors.css" rel="stylesheet" />
+<style>
+    .mt-15{
+        margin-top: 15px;
+    }
+    .pb-15{
+        padding-bottom: 15px;
+    }
+    .bd-ff{
+        border-bottom: 1px solid #ddd;
+    }
+    .maincontainer{
+        width:820px !important;
+    }
+    .page_sign{
+        padding: 3px 6px;
+        background-color: #fff;
+        /*border-radius: 5px;*/
+        color: #00AFFF;
+        /*border: 1px solid;*/
+    }
+    .page_sign.checked{
+        color:#fff;
+        background-color:#00AFFF;
+    }
+    .hide{
+        display: none !important;
+    }
+    .show{
+        text-decoration: none;
+        display: inline-block;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        outline: none;
+         text-align: center;
+        vertical-align: middle;
+        padding: 5px 10px 0px 5px;
+    }
+    div.tag{
+        padding: 2px 10px;
+        background-color: #0b95ff;
+        color: #fff;
+        margin: 3px 5px;
+        line-height: 30px;
+        display: -webkit-inline-box;
+    }
+    .caption{
+        text-align: left !important;
+        margin-left: 23px !important;
+    }
+    .wd-120{
+        width: 100px !important;
+    }
+    .checked-users{
+        width: 80% !important;height: 200px;overflow-y: scroll
+    }
+    .checked-users::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+<div class="maincontainer" id="WxBranchTemplate-maincontainer" style="height:600px;">
+    <div id="app" style="margin-left: 20px">
+        <div style="height:550px;overflow-y: scroll;width: 800px;">
+            <div class="tableForm" style="width:750px">
+                <div class="bd-ff pb-15">
+                    <div class="row">
+                        <div class="caption wd-120"><span>{$Think.lang.TEMPLATE_CHOICE}：</span></div>
+                        <div class="inputbox">
+                            <select  name="templates" v-model="selected" class="chosen-select">
+                                <option v-for="template in templates" :value="template.value">{{template.text}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="tableForm" style="margin-left: 20px;width: 750px;display: flex">
+                            <div style="flex: 1">
+                                <div v-for="(content, key) in contents.content_records" style="display: flex">
+                                    <div class="wd-120" style="flex: .4;line-height: 30px;">{{content.view}}：</div>
+                                    <div class="simple-template-input select-color" style="flex: 1">
+                                        <input type="text" class="easyui-validatebox" v-model="content.value" v-bind:placeholder="content.placeholder" v-bind:style="{color:content.color}"/>
+                                        <input type="hidden" class="color" v-model="content.color">
+                                        <span class="add-color" data-color="" v-bind="{id : key}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                <div class="template-tip font24">
+                                    <span class="page_sign" v-bind:class="{checked : !showPreview}" @click="previewSwitch(false)">场景应用</span>
+                                    <span class="page_sign" v-bind:class="{checked : showPreview}" @click="previewSwitch(true)">实时预览</span>
+                                </div>
+                                <div style="padding: 0.3rem 0;" v-if="!showPreview">
+                                <!--<div style="padding: 2px;" class="simple-template" v-if="contents.example_records.first">-->
+                                <!--<span >{{ contents.example_records.first.title }}</span>-->
+                                <!--</div>-->
+                                <div style="padding: 2px;min-height: 22px" class="simple-template" v-for="(content , keys) in contents.example_records">
+                                <span class="title gray-a1" v-if="content.key!=''">{{ content.key }}：</span>
+                                <span v-if="keys != 'first'" style="flex: 1;">{{ content.title }}</span>
+                                </div>
+                                </div>
+                                <div style="padding: 0.3rem 0;" v-if="showPreview">
+                                <!--<div style="padding: 2px;" class="simple-template" v-if="contents.example_records.first">-->
+                                <!--<span >{{ contents.example_records.first.title }}</span>-->
+                                <!--</div>-->
+                                <div  style="padding: 2px;min-height: 22px" class="simple-template" v-for="(example ,keys) in contents.example_records">
+                                <span class="title gray-a1" v-if="example.key">{{ example.key }}：</span>
+                                <span v-if="keys != 'first'" v-bind:style="{color:contents.content_records[keys]['color']}">{{contents.content_records[keys]['value']}}</span>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="row">-->
+                        <!--<div class="tableForm" style="margin-left: 20px;width: 750px">-->
+                            <!--<table>-->
+                                <!--<tr >-->
+                                    <!--<td colspan="6" style="width: 350px">-->
+                                        <!--<table>-->
+                                            <!--<tr v-for="(content, key) in contents.content_records">-->
+                                                <!--<td class="wd-120">{{content.view}}：</td>-->
+                                                <!--<td class="simple-template-input select-color">-->
+                                                    <!--<input type="text" class="easyui-validatebox" v-model="content.value" v-bind:placeholder="content.placeholder" v-bind:style="{color:content.color}"/>-->
+                                                    <!--<input type="hidden" class="color" v-model="content.color">-->
+                                                    <!--<span class="add-color" data-color="" v-bind="{id : key}"></span>-->
+                                                <!--</td>-->
+                                            <!--</tr>-->
+                                        <!--</table>-->
+                                    <!--</td>-->
+                                    <!--<td colspan="4" style="width: 350px">-->
+                                        <!--<div class="pr" style="margin-left: 15px">-->
+                                            <!--<div class="template-tip font24">-->
+                                                <!--<span class="page_sign" v-bind:class="{checked : !showPreview}" @click="previewSwitch(false)">场景应用</span>-->
+                                                <!--<span class="page_sign" v-bind:class="{checked : showPreview}" @click="previewSwitch(true)">实时预览</span>-->
+                                            <!--</div>-->
+                                            <!--<div style="padding: 0.3rem 0;" v-if="!showPreview">-->
+                                                <!--&lt;!&ndash;<div style="padding: 2px;" class="simple-template" v-if="contents.example_records.first">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;<span >{{ contents.example_records.first.title }}</span>&ndash;&gt;-->
+                                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                                                <!--<div style="padding: 2px;min-height: 22px" class="simple-template" v-for="(content , keys) in contents.example_records">-->
+                                                    <!--<span class="title gray-a1" v-if="content.key!=''">{{ content.key }}：</span>-->
+                                                    <!--<span v-if="keys != 'first'" style="flex: 1;">{{ content.title }}</span>-->
+                                                <!--</div>-->
+                                            <!--</div>-->
+                                            <!--<div style="padding: 0.3rem 0;" v-if="showPreview">-->
+                                                <!--&lt;!&ndash;<div style="padding: 2px;" class="simple-template" v-if="contents.example_records.first">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<span >{{ contents.example_records.first.title }}</span>&ndash;&gt;-->
+                                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                                                <!--<div  style="padding: 2px;min-height: 22px" class="simple-template" v-for="(example ,keys) in contents.example_records">-->
+                                                    <!--<span class="title gray-a1" v-if="example.key">{{ example.key }}：</span>-->
+                                                    <!--<span v-if="keys != 'first'" v-bind:style="{color:contents.content_records[keys]['color']}">{{contents.content_records[keys]['value']}}</span>-->
+                                                <!--</div>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</td>-->
+                                <!--</tr>-->
+                            <!--</table>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <div class="row">
+                        <div class="caption wd-120"><span>点击跳转：</span></div>
+                        <div class="inputbox">
+                            <span class="page_sign" v-bind:class="[point? '' : 'checked']" @click="linkSelected(0)"  >链接</span>
+                            <span class="page_sign" v-bind:class="[point? 'checked' : '']" @click="linkSelected(1)" >小程序</span>
+                            <span class="page_sign" @click="linkShow()">功能链接</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption wd-120"></div>
+                        <div class="inputbox" v-bind:class="[point ? 'hide' : '']">
+                            <input type="text" class="easyui-validatebox"  v-model="url" placeholder="https://">
+                        </div>
+                        <div class="inputbox" v-bind:class="[point ? '' : 'hide']">
+                            <input type="text" class="easyui-validatebox"  v-model="xcx_space_url" placeholder="输入备用链接,不支持小程序的旧版微信会跳转至此">
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 250px">
+                    <div class="row">
+                        <div class="caption wd-120"><span>人员选择：</span></div>
+                        <div class="inputbox" style="width: 50%;">
+                            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" @click="addReceive()"   icon="fa fa-plus fa-lg" >添加用户</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red"   icon="fa fa-minus fa-lg" :class="[users.length > 0 ? 'show' : 'hide']" @click="deleteUser()"  >清空用户</a>
+                        </div>
+                    </div>
+                    <div class="row"  v-if="users.length > 0" >
+                        <div class="caption wd-120" style="float: left;"><span>已选择用户：</span></div>
+                        <div class="inputbox checked-users">
+                            <div class="tag" v-for="(user,key) in users" >{{user.name}}  <span @click="deleteSingleUser(key)" > X </span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div >
+            <eq name="sign" value="history">
+                <div style="text-align: center;margin-top: 10px">
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" @click="preview()"  icon="fa fa-envelope fa-lg" >存为草稿</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" @click="previewFor()"  icon="fa fa-feed fa-lg" >测试发送</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" @click="send()" icon="fa fa-paper-plane fa-lg" >立即发送</a>
+                </div>
+            </eq>
+            <eq name="sign" value="append">
+                <div style="text-align: center;margin-top: 10px">
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" @click="preview()"  icon="fa fa-envelope fa-lg" >存为草稿</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" @click="previewFor()"  icon="fa fa-feed fa-lg" >测试发送</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" @click="send()" icon="fa fa-paper-plane fa-lg" >立即发送</a>
+                </div>
+            </eq>
+            <eq name="sign" value="update">
+                <div style="text-align: center;margin-top: 10px">
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" @click="preview()"  icon="fa fa-envelope fa-lg" >保存</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" @click="previewFor()"  icon="fa fa-feed fa-lg" >测试发送</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" @click="send()" icon="fa fa-paper-plane fa-lg" >立即发送</a>
+                </div>
+            </eq>
+        </div>
+    </div>
+
+</div>
+<script src="/{$Think.MODULE_PATH}Public/minicolors/jquery.minicolors.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+
+<script type="text/javascript">
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            templates:{$templates},
+            selected:'{$template_id}'||0,
+            contents:{$contents},
+            point:{$point},
+            showPreview:false,
+            url:'{$url}',
+            xcx_space_url:'{$xcx_space_url}',
+            users:{$users},
+            id:'{$id}' || 0,
+            shunt_count:200//分流限制
+        },
+        created:function(){
+            if (this.selected == '' || this.selected == 0) {
+                this.selected = this.templates[0]['value'];
+            }
+        },
+        methods:{
+            previewSwitch(inc){
+                this.showPreview = inc;
+            },
+            linkSelected(inc){
+                this.point = inc;
+            },
+            linkShow(){
+                createDialog('{$Think.const.CONTROLLER_NAME}/linkShow', '功能链接','dlg-link-select');
+            },
+            addReceive(){
+                createDialog('{$Think.const.CONTROLLER_NAME}/sendUsersLists', '人员选择','dlg-users-select');
+            },
+            deleteSingleUser(index){
+                this.users.splice(index,1)
+            },
+            deleteUser(){
+                this.users = [];
+            },
+            previewFor(){
+                createDialog('{$Think.const.CONTROLLER_NAME}/previewForUsers', '预览','dlg-preview-select');
+            },
+            send(){
+                var data={
+                    content : this.contents.content_records,
+                    examples : this.contents.example_records,
+                    point : this.point ? 1 : 0,
+                    xcx_appid : this.xcx_appid,
+                    url : this.url,
+                    xcx_url : this.xcx_url,
+                    xcx_space_url : this.xcx_space_url,
+                    key : 'send',
+                    users : this.users,
+                    template_id : this.selected
+                };
+                var id = this.id;
+                if (id > 0){
+                    data['id'] = id;
+                }
+                //分流节点
+                if (this.users.length > this.shunt_count) {
+                    var template_tip = '';
+                    var obj = this;
+                    data.users = obj.users.slice(0,obj.shunt_count);
+                    $.post('/WxBranchTemplate/templateCUImplementShunt',data,function(result){
+                        if (result.error == 1){
+                            $.dialog.tips(result.message);
+                            return false;
+                        } else {
+                            template_tip = result.id;
+                            shunt(template_tip,obj.users,data.content,obj.shunt_count,id,1,true);
+                        }
+                    },'json')
+                } else {
+                    if( id > 0 ) {
+                        $.post('/WxBranchTemplate/previewUpdateImplement',data,function(result){
+                            $.dialog.tips(result.message);
+                            if (result.error == 0) {
+                                closeDialog('dlg-edit-select')
+                            }
+                        },'json')
+                    } else {
+                        $.post('/WxBranchTemplate/templateAppendImplement',data,function(result){
+                            $.dialog.tips(result.message);
+                            if (result.error == 0) {
+                                closeDialog('dlg-notice-select')
+                            }
+                        },'json')
+                    }
+                }
+            },
+            preview(){
+                var id = this.id;
+                var data={
+                    content : this.contents.content_records,
+                    examples : this.contents.example_records,
+                    point : this.point ? 1 : 0,
+                    xcx_appid : this.xcx_appid,
+                    url : this.url,
+                    xcx_url : this.xcx_url,
+                    xcx_space_url : this.xcx_space_url,
+                    key : 'draft',
+                    users : this.users,
+                    template_id : this.selected
+                };
+                if (id > 0){
+                    data['id'] = id;
+                }
+                //分流节点
+                if (this.users.length > this.shunt_count) {
+                    var template_tip = '';
+                    var obj = this;
+                    data.users = obj.users.slice(0,obj.shunt_count);
+                    $.post('/WxBranchTemplate/templateCUImplementShunt',data,function(result){
+                        if (result.error == 1){
+                            $.dialog.tips(result.message);
+                            return false;
+                        } else {
+                            template_tip = result.id;
+                            shunt(template_tip,obj.users,data.content,obj.shunt_count,id,1,false);
+                        }
+                    },'json')
+                } else {
+                    if( id > 0 ) {
+                        $.post('/WxBranchTemplate/previewUpdateImplement',data,function(result){
+                            $.dialog.tips(result.message);
+                            if (result.error == 0) {
+                                closeDialog('dlg-edit-select')
+                            }
+                        },'json')
+                    } else {
+                        $.post('/WxBranchTemplate/templateAppendImplement',data,function(result){
+                            $.dialog.tips(result.message);
+                            if (result.error == 0) {
+                                closeDialog('dlg-notice-select')
+                            }
+                        },'json')
+                    }
+                }
+            },
+        }
+    });
+    $(function(){
+        var template = '{$template_id}';
+        if ( !vue.id || !template) {
+            get_template();
+        } else {
+            getColor()
+        }
+        $('select[name=templates]').change(function(){
+            vue.selected = $(this).val();
+            get_template()
+        })
+    })
+    function shunt(template_tip,users,content,shunt_count,id,i,isSend){
+
+        if (users.slice(shunt_count * i,shunt_count * (i+1)).length > 0) {
+            $.post('/WxBranchTemplate/templateAppendImplementShuntUsers',{id:template_tip,users:users.slice(shunt_count * i,shunt_count * (i+1))},function(result){
+                if (result.error == 1){
+                    $.dialog.tips(result.message);
+                    return false;
+                } else {
+                    i++;
+                    shunt(template_tip,users,content,shunt_count,id,i,isSend)
+                }
+            },'json')
+        } else if (isSend){
+            //发送
+            $.post('/WxBranchTemplate/templateAppendImplementShuntSend',{id:template_tip,content:content},function(result){
+                $.dialog.tips(result.message);
+                if (result.error == 0) {
+                    if (id > 0) {
+                        closeDialog('dlg-edit-select')
+                    } else {
+                        closeDialog('dlg-notice-select')
+                    }
+                }
+            },'json')
+        } else {
+            if (id > 0) {
+                $.dialog.tips('保存草稿成功');
+                closeDialog('dlg-edit-select')
+            } else {
+                $.dialog.tips('保存草稿成功');
+                closeDialog('dlg-notice-select')
+            }
+        }
+
+    }
+    function get_template(){
+        $.post("/WxBranchTemplate/getContent", {template_id: vue.selected}, function(result){
+            if (result.code == 0){
+                vue.contents = result.message;
+                setTimeout(function(){
+                    $('table').find('.minicolors-swatch > .minicolors-swatch-color').css('background-color','initial');
+                    getColor()
+                },200)
+            }
+        },"json");
+    }
+    function getColor(){
+        $('.add-color').each( function() {
+            var obj  = $(this);
+            $(this).minicolors({
+
+                control: 'wheel',
+
+                defaultValue: '',
+
+                inline: false,
+
+                letterCase: 'lowercase',
+
+                opacity: false,
+
+                hideSpeed : 100,
+
+                position: 'bottom right',
+
+                change: function(hex, opacity) {
+                    try {
+                        // obj.siblings('.minicolors-swatch').css('background','initial')
+                        var  id = obj.attr('id');
+                        vue.contents.content_records[id]['color'] = hex;
+                    } catch(e) {}
+                },
+                theme: 'default'
+
+            });
+        });
+    }
+</script>

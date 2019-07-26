@@ -1,0 +1,209 @@
+<link rel="stylesheet" href="../../../../../测试专用/index/EShop/style.css">
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}/Public/css/step.css">
+<style>
+    .tableForm .row .caption{
+    width: 30%;
+    display: inline-block;
+    margin-left:0px;
+    vertical-align:middle;
+    text-align: right;
+}
+    .chosen-container-multi .chosen-choices{
+        border: 1px solid #D4D4D4;
+    }
+    .chosen-container-active .chosen-choices{
+        border: 1px solid #D4D4D4;
+        box-shadow: 0 0 0 0.5px #D4D4D4 !important;
+    }
+    .chosen-container .chosen-drop{
+        border: 0;
+    }
+    .chosen-container .chosen-results{
+        max-height: 180px;
+    }
+</style>
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-tabs" style="width:700px;background: #ccc;height:480px">
+            <div title="代金券规格" style="padding:10px" >
+                <div class="tableForm">
+                    <input name="id"  type="hidden"  value="{$model.id}">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.SP_LEAST_COST}：</span></div>
+                        <div class="inputbox">
+                            <input class="easyui-numberspinner" 
+                                    name="least_cost" 
+                                    value="{$model.least_cost}" 
+                                    data-options="
+                                    increment:10,
+                                    required:true,
+                                    validType:['min[0]','compare[\'least_cost\',\'reduce_cost\',\'gt\']']"
+                                    style="width:100%"
+                                    <eq name="model.has_receive" value="1">readonly</eq>
+                            >
+                            </input>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.SP_REDUCE_COST}：</span></div>
+                        <div class="inputbox">
+                            <input class="easyui-numberspinner" 
+                                   name="reduce_cost" 
+                                   value="{$model.reduce_cost}" 
+                                   data-options="
+                                   increment:10,
+                                   required:true,
+                                   validType:['min[0]','compare[\'least_cost\',\'reduce_cost\',\'gt\']']"
+                                   style="width:100%"
+                            <eq name="model.has_receive" value="1">readonly</eq>
+                                    >
+                            </input>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.SP_TICKET_TOTAL}：</span></div>
+                        <div class="inputbox">
+                            <input 
+                                class="easyui-numberspinner" 
+                                value="{$model.at_total}" 
+                                name="total" 
+                                data-options="
+                                increment:1,
+                                required:true,
+                                validType:['min[1]','max[1000]']
+                                " 
+                                style="width:100%"
+                            <eq name="model.has_receive" value="1">readonly</eq>
+                            ></input></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.SP_USER_GET_LIMIT}：</span></div>
+                        <div class="inputbox">
+                            <input 
+                                class="easyui-numberspinner"
+                                 value="{$model.ac_user_get_limit}"
+                                 name="user_get_limit" 
+                                 data-options="
+                                 increment:1,
+                                 required:true,
+                                 validType:['min[1]','max[5]']"
+                                 style="width:100%;"
+                            <eq name="model.has_receive" value="1">readonly</eq>
+                                 ></input></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.SP_SETION}：</span></div>
+                        <div class="inputbox">
+                            <input name="is_scope" type="radio" value="0"  data-value="{$model.ac_is_scope}"  default="true" <eq name="model.has_receive" value="1">disabled</eq>/>通用
+                            <input name="is_scope" type="radio" value="1"  data-value="{$model.ac_is_scope}" <eq name="model.has_receive" value="1">disabled</eq>/>设置指定服务
+                        </div>
+                    </div>
+                    <eq name="model.has_receive" value="1">
+                        <input name="is_scope" type="hidden" value="{$model.ac_is_scope}">
+                        <eq name="model.ac_is_scope" value="1">
+                            <volist name="model.arr_scope" id="vo">
+                                <input name="scope[]" type="hidden" value="{$vo}">
+                            </volist>
+                        </eq>
+
+                    </eq>
+                    <div class="row operations" <neq name="model.ac_is_scope" value="1" >style="display: none"</neq>>
+                        <div class="caption"><span></span></div>
+                        <div class="inputbox">
+                            <select name="scope[]" class="chosen-select"  <eq name="model.has_receive" value="1">disabled</eq>  data-placeholder=" " id="menu_operation_select" data-options="search_async:true,all:true,value:'{$model.ac_scope}',search_key_url:'ComProduct/keyNameList'"  multiple style="width:100%">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.SP_ENABLE}：</span></div>
+                        <div class="inputbox" style="width: 50%;">
+                            <input name="is_over" type="radio" value="0"  data-value="{$model.ac_is_over}"  default="true" />开启
+                            <input name="is_over" type="radio" value="1" data-value="{$model.ac_is_over}"/>关闭
+                            <eq name="model.has_receive" value="1">
+                                <input name="is_over" type="radio" value="2" data-value="{$model.ac_is_over}"/>失效<span style="color:red">(已领取优惠券将失效)</span>
+                            </eq>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.SP_TICKET_BEGIN_DATE}：</span></div>
+                        <div class="inputbox">
+                            <input class="easyui-datetimebox" <eq name="model.has_receive" value="1">readonly</eq> name="ticket_begin_date" value="{$model.ticket_begin_date}" data-options="required:true," style="width:100%"></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.SP_TICKET_END_DATE}：</span></div>
+                        <div class="inputbox"><input class="easyui-datetimebox" <eq name="model.has_receive" value="1">readonly</eq> name="ticket_end_date" value="{$model.ticket_end_date}" data-options="required:true" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script type="text/javascript">
+    //添加验证信息
+    $.extend($.fn.validatebox.defaults.rules, {
+        compare:{
+            validator: function (value,param) {
+                return parseFloat($('input[name='+param[0]+']').val()) > parseFloat($('input[name='+param[1]+']').val());
+            },
+            message: '{$Think.lang.SP_LEAST_COST}不能小于{$Think.lang.SP_REDUCE_COST}'
+        },
+        min:{
+            validator: function (value,param) {
+                return parseFloat(value) >= param[0];
+            },
+            message: '不能小于{0}'
+        },
+        max:{
+            validator: function (value,param) {
+                return parseFloat(value) <= param[0];
+            },
+            message: '不能大于{0}'
+        }
+    });
+    $(function(){
+        var $dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+            $dataForm.bind("beforeUpdate", function () {
+                beforeInspect();
+            });
+    })
+    //提交前检查
+    function beforeInspect(){
+        var scopeType = $('input[name=is_scope]:checked').val();
+        var onScope = 1;//开启
+        var scopeValue = $('select[name*=scope]').val();
+        var ticket_begin_date = $('input[name=ticket_begin_date]').val();
+        var ticket_end_date = $('input[name=ticket_end_date]').val();
+        var beginDate = new Date(ticket_begin_date);
+        var endDate = new Date(ticket_end_date);
+        if(scopeType == onScope && scopeValue == null){
+            throw '设置指定服务';
+        }
+        if(beginDate.getTime() > endDate.getTime()){
+            throw '开始时间不能大于结束时间';
+        }
+    }
+    function baidumap() {
+        $.get("ComCompany/baidumap",
+            function (data, status) {
+                $.dialog({
+                    id: "baidumap",
+                    title: "选取坐标",
+                    autoSize: true,
+                    content: data,
+                    lock: true,
+                    max: false,
+                    min: false
+                });
+            }
+        );
+    }
+    $('input[name=is_scope]').on('change', function() {
+        var isCheck = $(this).val();
+        if(isCheck == 1){
+            $(".operations").show();
+        }else{
+            $(".operations").hide();
+        }
+    });
+</script>

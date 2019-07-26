@@ -1,0 +1,439 @@
+<style>
+    .details-section {
+        background: none;
+        text-indent: 0;
+        padding: 0 10px;
+    }
+
+    .txt {
+        padding-left: 13px;
+        font-weight: 700;
+        border-left: 5px solid #529bfd;
+    }
+
+    .info-line {
+        width: 800px;
+        position: relative;
+        overflow: hidden;
+        margin: 10px 0 10px 20px;
+    }
+
+    .chosen-select {
+        width: 270px;
+        height: 30px;
+        line-height: 30px;
+        outline: none;
+        text-indent: 6px;
+        border: 1px solid #d3d3d3;
+    }
+
+    .inputbox input {
+        width: 180px;
+        height: 28px;
+        line-height: 28px;
+        box-sizing: border-box;
+    }
+
+    .inputbox span {
+        margin: 0 5px;
+    }
+
+    .address-select {
+        width: 120px;
+        height: 30px;
+        line-height: 30px;
+        text-indent: 6px;
+        outline: none;
+        border: 1px solid #d3d3d3;
+    }
+
+    .address-input {
+        width: 270px;
+        height: 30px;
+        line-height: 30px;
+        outline: none;
+        text-indent: 6px;
+        box-sizing: border-box;
+        border: 1px solid #d3d3d3;
+    }
+
+    .content-box textarea {
+        resize: none;
+        outline: none;
+        width: 580px;
+        height: 120px;
+        padding: 5px;
+        border: 1px solid #d3d3d3;
+    }
+    .content-box textarea::-webkit-scrollbar {
+        width: 8px;
+        background-color: #eee;
+        border-radius: 4px;
+    }
+    .content-box textarea::-webkit-scrollbar-thumb {
+        background: #b8b4b4;
+        border-radius: 4px;
+    }
+    #info-box {
+        width: 600px;
+    }
+    #info-box input[readonly]{
+        background-color: #f7f5f5 !important;
+        cursor: not-allowed;
+    }
+    .options-table {
+        border-collapse: collapse;
+        margin: 0 0;
+        text-align: center;
+    }
+
+    .options-table td,
+    .options-table th {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+
+    .options-table thead,
+    .options-table th {
+        background-color: #f6f7fa;
+    }
+
+    .options-table tr:nth-child(even) {
+        background: #fbfafa;
+    }
+    .icon-remove{
+        color: #529bfd;
+        cursor: pointer;
+    }
+</style>
+<div id="yhEdit" style="background-color: #fff;">
+    <div class="btn-speed menu_item" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/index')">返回</div>
+    <form id="myform">
+        <div class="details-section">
+            <div class="details-content">
+                <p style="margin: 15px 0 15px 10px;">
+                    <span class="txt">基本信息</span>
+                    <span class="drop-down"></span>
+                </p>
+                <div class="info-line">
+                    <input name="id" :value="info.id" type="hidden">
+                    <div style="display: flex;align-items: center;height: 32px;">
+                        <div style="text-align: right;width: 100px;"><span style="color: red;">*</span>活动主题：</div>
+                        <div style="width: 360px;">
+                            <input name="title"
+                                style="width: 100%;border: 1px solid #d3d3d3;height: 28px;line-height: 28px;text-indent: 6px;outline: none;"
+                                type="text" v-model="info.title" placeholder="活动主题不得超过64个字符">
+                        </div>
+                    </div>
+                </div>
+                <div class="info-line">
+                    <div style="display: flex;align-items: center;height: 32px;">
+                        <div style="text-align: right;width: 100px;"><span style="color: red;">&nbsp;</span>客户类型：</div>
+                        <select name="type_id" class="chosen-select filter-field" data-options="all:true" style="width: 230px">
+                            <option>请选择类型</option>
+                            <template v-for="(item,index) in typeList">
+                                <option :value="item.value" v-if="item.value == info.type_id" selected >{{item.text}}
+                                </option>
+                                <option :value="item.value" v-esle>{{item.text}}</option>
+                            </template>
+                        </select>
+                        <div class="btn-speed" style="width:auto" plain="true" onclick="setTypeList()">设置客户来源</div>
+                    </div>
+                </div>
+                <div class="info-line">
+                    <div class="important-input upload-image" style="display: flex;align-items: center;">
+                        <div style="text-align: right;width: 100px;"><span style="color: red;">&nbsp;</span>上传图片：</div>
+                        <div style="position: relative;overflow: hidden;">
+                            <div class="btn-speed" style="margin: 0;">点击上传图片</div>
+                            <input name="image" type="hidden" v-model="info.image">
+                            <input type="file" accept="image/*" class="input-upload"
+                                style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;opacity: 0;">
+                        </div>
+                    </div>
+                </div>
+                <div style="position: relative;overflow: hidden;margin: 0px 0 0px 120px;">
+                    <img style="width:300px;" id="image" :src="info.image">
+                </div>
+                <div class="info-line">
+                    <div style="display: flex;align-items: center;height: 32px;">
+                        <div style="text-align: right;width: 100px;"><span style="color: red;">*</span>报名时间：</div>
+                        <div class="inputbox" style="display: flex;align-items: center;">
+                            <input name="apply_start_time" class="easyui-datetimebox" :value="info.apply_start_time"
+                                required data-options="prompt:'报名开始时间',editable:false,showSeconds:false">
+                            <span>至</span>
+                            <input name="apply_end_time" class="easyui-datetimebox" :value="info.apply_end_time"
+                                data-options="editable:false,prompt:'报名结束时间',showSeconds:false">
+                        </div>
+                    </div>
+                </div>
+                <div class="info-line">
+                    <div style="display: flex;align-items: center;height: 32px;">
+                        <div style="text-align: right;width: 100px;"><span style="color: red;">&nbsp;</span>活动时间：</div>
+                        <div class="inputbox" style="display: flex;align-items: center;">
+                            <input name="start_time" class="easyui-datetimebox" :value="info.start_time" required
+                                data-options="prompt:'活动开始时间',editable:false,showSeconds:false">
+                            <span>至</span>
+                            <input name="end_time" class="easyui-datetimebox" :value="info.end_time"
+                                data-options="editable:false,prompt:'活动结束时间',showSeconds:false">
+                        </div>
+                    </div>
+                </div>
+                <div class="info-line">
+                    <div style="display: flex;align-items: center;height: 32px;">
+                        <div style="text-align: right;width: 100px;"><span style="color: red;">*</span>活动地址：</div>
+                        　　 <div style="display: flex;align-items: center;">
+                            <select class="address-select" name="province" id="province">
+                                <option value="">省份</option>
+                                <template v-for="province in provinces">
+                                    <option :value="province.id" v-if="province.id == info.province" selected>
+                                        {{province.name}}</option>
+                                    <option :value="province.id" v-else>{{province.name}}</option>
+                                </template>
+                            </select>
+                            <select class="address-select" name="city" id="city" style="margin: 0 5px;">
+                                <option value="">城市</option>
+                                <template v-for="city in citys">
+                                    <option :value="city.id" v-if="city.id == info.city" selected>{{city.name}}
+                                    </option>
+                                    <option :value="city.id" v-else>{{city.name}}</option>
+                                </template>
+                            </select>
+                            <select class="address-select" name="area" id="area">
+                                <option value="">区县</option>
+                                <template v-for="area in areas">
+                                    <option :value="area.id" v-if="area.id == info.area" selected>{{area.name}}
+                                    </option>
+                                    <option :value="area.id" v-else>{{area.name}}</option>
+                                </template>
+                            </select>
+                            　　<input style="margin: 0 5px;" class="address-input" type="text" name="town" v-model="info.town" placeholder="乡镇" />
+                        </div>
+                    </div>
+                </div>
+                <div class="info-line">
+                    <div style="display: flex;align-items: center;height: 32px;">
+                        <div style="text-align: right;width: 100px;"><span style="color: red;">&nbsp;</span>详细地址：</div>
+                        <input class="easyui-validatebox" style="width: 60%;margin-right: 15px" type="hidden" v-model="info.map_location" name="map_location" />
+                        <div class="inputbox_x2"><input class="easyui-validatebox" style="width: 275px;margin-right: 15px" readonly v-model="info.address" name="address" placeholder="您暂未设置地图的所在位置" />
+                            <a href="javascript:void(0)" class="common-blue-btn detail-edit map-edit-botton btn-speed" style="margin: 0 5px;" plain="true">设置地图</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-line">
+                    <div style="display: flex;align-items: flex-start;">
+                        <div style="text-align: right;width: 100px;"><span style="color: red;">&nbsp;</span>活动详情：</div>
+                        <div class="content-box">
+                            <textarea name="content" id="" cols="20" rows="6" v-model="info.content">{{info.content}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <p style="margin: 15px 0 15px 10px;">
+                    <span class="txt">报名表单</span>
+                    <span class="drop-down"></span>
+                </p>
+                <div class="info-line">
+                    <div style="display: flex;align-items: center;height: 32px;">
+                        <div style="text-align: right;width: 100px;"><span style="color: red;">&nbsp;</span>报名需审核：</div>
+                        <div style="display: flex;align-items: center;">
+                            <span style="margin: 0 10px;">
+                                <input class="css-checkbox" type="radio" value="1" name="is_check" v-if="info.is_check == 1" checked id="trademarks1">
+                                <input class="css-checkbox" type="radio" value="1" name="is_check" v-else id="trademarks1">
+                                <label class="css-label" for="trademarks1">是</label>
+                            </span>
+                            <span style="margin: 0 10px;">
+                                <input class="css-checkbox" type="radio" value="0" name="is_check" v-if="info.is_check == 0" checked id="trademarks2">
+                                <input class="css-checkbox" type="radio" value="0" name="is_check" v-else id="trademarks2">
+                                <label class="css-label" for="trademarks2">否</label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-line">
+                    <div style="display: flex;align-items: flex-start;">
+                        <div style="text-align: right;width: 100px;"><span style="color: red;">&nbsp;</span>报名需审核：</div>
+                        <div id="info-box">
+                            <table class="options-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <td>序号</td>
+                                        <td>报名项名称</td>
+                                        <td>是否必填</td>
+                                        <td>操作</td>
+                                    </tr>
+                                </thead>
+                                <tr v-for="(item,index) in info.parameter">
+                                    <td>{{index+1}}</td>
+                                    <td>
+                                        <template v-if="index > 1">
+                                            <input :name="'parameters['+index+'][parameter_name]'" v-model="item.parameter_name" placeholder="名称" type="text" style="width: 50%;height: 30px;border: 1px solid #d3d3d3;text-indent: 5px;">
+                                        </template>
+                                        <template v-else>
+                                            <input :name="'parameters['+index+'][parameter_name]'" v-model="item.parameter_name" placeholder="名称" type="text" readonly style="width: 50%;height: 30px;border: 1px solid #d3d3d3;text-indent: 5px;">
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template v-if="item.is_require == 1">
+                                            <span class="datagrid-cell-check">
+                                                <input type="checkbox" :name="'parameters['+index+'][is_require]'" value="1" :id="'ck_-'+ index" class="css-checkbox" checked="true">
+                                                <label style="margin-left: 22px;" :for="'ck_-'+ index" class="css-label"></label>
+                                                <!--<label :for="'ck_-'+ index" class="css-label"></label>-->
+                                            </span>
+                                        </template>
+                                        <template v-else>
+                                            <span class="datagrid-cell-check">
+                                                <input type="checkbox" :name="'parameters['+index+'][is_require]'" value="1" :id="'ck_-'+ index" class="css-checkbox">
+                                                <label style="margin-left: 22px;" :for="'ck_-'+ index" class="css-label"></label>
+                                                <!--<label :for="'ck_-'+ index" class="css-label"></label>-->
+                                            </span>
+                                        </template>
+                                        <!--<input type="hidden" name="parameter_requires[]" value="0">-->
+                                    </td>
+                                    <td>
+                                        <div v-if="index > 1" class="icon-remove" @click="remove_defined(index)" title="删除">删除</div>
+                                    </td>
+                                </tr>
+                                <tr v-if="info.parameter.length < 26">
+                                    <td colspan="4">
+                                        <div class="icon-add" @click="add_defined" title="新增">新增报名项</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="is_drafts">
+        <div style="display: flex;align-items: center;justify-content: center;border-top: 1px solid #d3d3d3;padding: 10px 0;">
+            <div v-if="info.is_drafts == 1" class="btn-speed menu_item" onclick="addInfo(1)">保存到草稿箱</div>
+            <div class="btn-speed menu_item" onclick="addInfo(0)">保存并发布</div>
+        </div>
+    </form>
+</div>
+
+<script>
+    YhEdit = new Vue({
+        el: "#yhEdit",
+        data: {
+            info: {$model},
+            typeList: [],
+            provinces: [],
+            citys: [],
+            areas: [],
+        },
+        methods: {
+            add_defined() {
+                this.info.parameter.push({ parameter_name: "", is_require: 0 });
+            },
+            remove_defined(index) {
+                this.info.parameter.splice(index, 1);
+            },
+        },
+    });
+
+    function updateChosen() {
+        $.post("YhMeeting/typeList", function (result) {
+            YhEdit.typeList = result;
+        }, 'json');
+    }
+
+    updateChosen();
+
+    function addInfo(is_drafts) {
+        $("input[name='is_drafts']").val(is_drafts);
+        var url = 'YhMeeting/add';
+        if ($("input[name='id']").val()) {
+            url = 'YhMeeting/update';
+        }
+        $.post(url, $("#myform").serialize(), function (result) {
+            $.dialog.tips("保存成功");
+        }, 'json');
+    }
+
+    function getPCQList(id) {
+        $.post("YhMeeting/getPCQList", { id: id }, function (result) {
+            if (result.level == 1) {
+                YhEdit.provinces = result.list;
+            }
+            if (result.level == 2) {
+                YhEdit.citys = result.list;
+            }
+            if (result.level == 3) {
+                YhEdit.areas = result.list;
+            }
+        }, 'json');
+    }
+    getPCQList(0);
+    getPCQList(YhEdit.info.province);
+    getPCQList(YhEdit.info.city);
+
+    $("#province").change(function () {
+        var parent_id = $(this).val();
+        console.log(parent_id);
+        getPCQList(parent_id);
+    });
+    $("#city").change(function () {
+        var parent_id = $(this).val();
+        getPCQList(parent_id);
+    });
+
+    $(".map-edit-botton").click(function () {
+        var data = {
+            address: $("input[name=address]").val(),
+            location: $("input[name=map_location]").val(),
+        };
+        openMAP("地图", data, function (data) {
+            $("input[name=address]").val(data.address);
+            YhEdit.info.address = data.address;
+            $("input[name=map_location]").val($.trim(data.location.split(',')[0]) + ',' + $.trim(data.location.split(',')[1]));
+            YhEdit.info.map_location = $.trim(data.location.split(',')[0]) + ',' + $.trim(data.location.split(',')[1]);
+        });
+    });
+
+    function toggleType(url) {
+        $.get(url, function (result) {
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+
+    function setTypeList() {
+        createDialog("YhMeeting/typeIndex", "设置雁会活动类型", 'typeIndex');
+    }
+
+    $(".input-upload").change(function () {
+        showMaskLayer();
+        var oFiles = $(this).get(0).files;
+        var maxsize = 4 * 1024 * 1024;
+        var formData = new FormData();
+        for (var i = 0, file; file = oFiles[i]; i++) {
+            if (file.size > maxsize) {
+                $.dialog.tips("图片大于4M");
+                hideMaskLayer();
+                return;
+            }
+            formData.append(file.name, file);
+        }
+        $.ajax({
+            url: "/YhMeeting/uploadFields",
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.code == 0) {
+                    $("input[name='image']").val(response.message[0].url);
+                    YhEdit.info.image = response.message[0].url;
+                    $("#image").attr('src', response.message[0].url);
+                    $("#image").attr('alt', response.message[0].name);
+                }
+                hideMaskLayer();
+            },
+            error: function () {
+                hideMaskLayer();
+            }
+        });
+    });
+</script>

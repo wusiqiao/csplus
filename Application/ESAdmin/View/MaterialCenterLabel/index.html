@@ -1,0 +1,416 @@
+<style>
+    /* 图文设置 */
+    #MaterialCenterLabel {
+        width: 100%;
+        background-color: #fff;
+        position: relative;
+    }
+
+    .tuwen-setting {
+        width: calc(100% - 36px);
+        margin: 0px 18px;
+    }
+
+    .tuwen-setting-title {
+        margin: 22px 0;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 18px;
+        color: #333;
+    }
+
+    .tuwen-setting-tip {
+        margin: 11px 0;
+        line-height: 14px;
+        color: #999;
+    }
+
+    .tags-box {
+        width: 80%;
+        overflow: hidden;
+        border-bottom: 1px solid #d3d3d3;
+    }
+
+    .tags-item {
+        float: left;
+        width: 84px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        color: #333;
+        background-color: #fff;
+        border: 1px solid #d3d3d3;
+        box-sizing: border-box;
+        margin: 11px 8px;
+        cursor: pointer;
+    }
+
+    .tags-item-active {
+        color: #fff;
+        background-color: #368bfe;
+        border: 1px solid #368bfe;
+    }
+
+    .configs {
+        overflow: hidden;
+        width: calc(100% - 36px);
+        padding: 0px 18px 72px;
+        background-color: #ffffff;
+        position: relative;
+    }
+
+    .configs-title {
+        margin: 22px 0;
+        font-size: 16px;
+        line-height: 16px;
+        color: #333;
+    }
+
+    .configs-line {
+        width: 100%;
+        overflow: hidden;
+        margin: 22px 0;
+    }
+
+    .configs-label {
+        float: left;
+        width: 100px;
+        height: 32px;
+        line-height: 32px;
+    }
+
+    .config-item {
+        float: left;
+        width: 150px;
+        height: 32px;
+        line-height: 32px;
+        margin: 0 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .configs-role{
+        display: flex;
+        align-items: center;
+        text-indent: 10px;
+        float: left;
+        width: 100px;
+        height: 32px;
+        line-height: 32px;
+    }
+    .checked-ipt {
+        float: left;
+        width: 16px;
+        height: 16px;
+        margin: 8px;
+    }
+
+    .MaterialCenterLabel-foot {
+        position: absolute;
+        bottom: 0;
+        width: calc(100% - 36px);
+        padding: 20px 0;
+        text-align: center;
+        border-top: 1px solid #d3d3d3;
+    }
+
+    .date-select {
+        width: 96px;
+        height: 32px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        margin-right: 10px;
+        text-indent: 13px;
+    }
+
+    .date-input {
+        width: 96px;
+        height: 32px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        box-sizing: border-box;
+        text-indent: 13px;
+    }
+
+</style>
+
+
+<div id="MaterialCenterLabel">
+    <!-- 分页栏 -->
+    <div class="c-header">
+        <div class="tab-span tab-span-on" onclick="">图文设置</div>
+    </div>
+    <!-- 图文设置内容 -->
+    <div class="tuwen-setting">
+        <!--start 文字说明-->
+        <div class="tuwen-setting-title">文章类别</div>
+        <div class="tuwen-setting-tip">请选择您要让素材中心展示的文章</div>
+        <!--end 文字说明-->
+        <!--start标签-->
+        <div class="tags-box" id="lables">
+            <template v-for="(item,index) in tagsListAll">
+                <div>
+                    <div :id="item.id" :class="is_Active(item.status)" @click="()=>{Action_click(index)}">{{item.name}}
+                    </div>
+                </div>
+            </template>
+        </div>
+        <!-- <div class="lables padding-left-15">
+        </div> -->
+        <!--end 标签-->
+    </div>
+</div>
+<!--start配置信息-->
+<div id="configs-info" class="configs">
+    <div class="tuwen-setting-title">图文使用权限</div>
+    <form id="form">
+        <div class="configs-line">
+            <div class="configs-label">付费版本</div>
+            <div class="configs-role">
+                <input type="hidden" name="payHeId" value="{$config['pay']['he']['id']}">
+                <div>
+                    <input id="role-1" class="css-checkbox" type="checkbox" name="payHeSource" value="10" <if
+                        condition="$config['pay']['he']['status'] eq 20"> checked</if>>
+                    <label class="css-label" for="role-1">图文中心</label>
+                </div>
+            </div>
+            <div class="configs-label" style="text-align:right;">使用限制：</div>
+            <div class="config-item">
+                <div>
+                    <input id="wxz-1" class="css-checkbox" type="radio" name="payHeStint" value="10" <if condition="$config['pay']['he'][stint] eq 10">
+                    checked</if> >
+                    <label class="css-label" for="wxz-1">无限制</label>
+                </div>
+                <div>
+                    <input id="zdy-1" class="css-checkbox" type="radio" name="payHeStint" value="20" <if condition="$config['pay']['he'][stint] eq 20">
+                    checked</if>>
+                    <label class="css-label" for="zdy-1">自定义</label>
+                </div>
+            </div>
+            <div class="config float-left col-md-3 customize" hidden>
+                <label>&nbsp;</label>
+                <select class="date-select" name="payHeCycle">
+                    <option value="10" selected>天</option>
+                    <option value="20" <if condition="$config['pay']['he'][cycle] eq 20"> selected</if>>周
+                    </option>
+                    <option value="30" <if condition="$config['pay']['he'][cycle] eq 30"> selected</if>>月
+                    </option>
+                </select>
+                <input class="date-input" type="number" name="payHeNumber" placeholder="输入篇数" value="{$config['pay']['he'][number]}">
+            </div>
+        </div>
+
+        <div class="configs-line">
+            <div class="configs-label"></div>
+            <div class="configs-role">
+                <div>
+                    <input type="hidden" name="payMeId" value="{$config['pay']['me']['id']}">
+                    <input id="role-2" class="css-checkbox" type="checkbox" name="payMeSource" value="10" <if
+                        condition="$config['pay']['me'][status] eq 20"> checked</if>>
+                    <label class="css-label" for="role-2">财穗+图文</label>
+                </div>
+            </div>
+            <div class="configs-label" style="text-align:right;">使用限制：</div>
+            <div class="config-item">
+                <div>
+                    <input id="wxz-2" class="css-checkbox" type="radio" name="payMeStint" value="10" <if condition="$config['pay']['me'][stint] eq 10">
+                    checked</if>>
+                    <label class="css-label" for="wxz-2">无限制</label>
+                </div>
+                <div>
+                    <input id="zdy-2" class="css-checkbox" type="radio" name="payMeStint" value="20" <if condition="$config['pay']['me'][stint] eq 20">
+                    checked</if> >
+                    <label class="css-label" for="zdy-2">自定义</label>
+                </div>
+            </div>
+
+            <div class="customize" hidden>
+                <label>&nbsp;</label>
+                <select class="date-select" name="payMeCycle">
+                    <option value="10" selected>天</option>
+                    <option value="20" <if condition="$config['pay']['me'][cycle] eq 20"> selected</if>>周
+                    </option>
+                    <option value="30" <if condition="$config['pay']['me'][cycle] eq 30"> selected</if>>月
+                    </option>
+                </select>
+                <input class="date-input" name="payMeNumber" type="number" placeholder="输入篇数" value="{$config['pay']['me'][number]}">
+            </div>
+        </div>
+
+        <div class="configs-line">
+            <div class="configs-label">免费版本</div>
+            <div class="configs-role">
+                <div>
+                    <input type="hidden" name="freeHeId" value="{$config['free']['he']['id']}">
+                    <input id="role-3" class="css-checkbox" name="freeHeSource" type="checkbox" value="10" <if
+                        condition="$config['free']['he'][status] eq 20"> checked</if>>
+                    <label class="css-label" for="role-3">图文中心</label>
+                </div>
+            </div>
+            <div class="configs-label" style="text-align:right;">使用限制：</div>
+            <div class="config-item">
+                <div>
+                    <input id="wxz-3" class="css-checkbox" type="radio" name="freeHeStint" value="10" <if
+                        condition="$config['free']['he'][stint] eq 10"> checked</if> >
+                    <label class="css-label" for="wxz-3">无限制</label>
+                </div>
+                <div>
+                    <input id="zdy-3" class="css-checkbox" type="radio" name="freeHeStint" value="20" <if
+                        condition="$config['free']['he'][stint] eq 20"> checked</if>>
+                    <label class="css-label" for="zdy-3">自定义</label>
+                </div>
+            </div>
+
+            <div class="customize" hidden>
+                <label>&nbsp;</label>
+                <select class="date-select" name="freeHeCycle">
+                    <option value="10" selected>天</option>
+                    <option value="20" <if condition="$config['free']['he'][cycle] eq 20"> selected</if>>周
+                    </option>
+                    <option value="30" <if condition="$config['free']['he'][cycle] eq 30"> selected</if>>月
+                    </option>
+                </select>
+                <input class="date-input" type="number" name="freeHeNumber" placeholder="输入篇数" value="{$config['free']['he'][number]}">
+            </div>
+        </div>
+
+        <div class="configs-line">
+            <div class="configs-label"></div>
+            <div class="configs-role">
+                <input type="hidden" name="freeMeId" value="{$config['free']['me']['id']}">
+                <div>
+                    <input id="role-4" class="css-checkbox" name="freeMeSource" type="checkbox" value="10" <if condition="$config['free']['me'][status] eq 20"> checked</if>>
+                    <label class="css-label" for="role-4">财穗+图文</label>
+                </div>
+            </div>
+            <div class="configs-label" style="text-align:right;">使用限制：</div>
+            <div class="config-item">
+                <div>
+                    <input id="wxz-4" class="css-checkbox" type="radio" name="freeMeStint" value="10" <if condition="$config['free']['me'][stint] eq 10"> checked</if> >
+                    <label class="css-label" for="wxz-4">无限制</label>
+                </div>
+                <div>
+                    <input id="zdy-4" class="css-checkbox" type="radio" name="freeMeStint" value="20" <if condition="$config['free']['me'][stint] eq 20"> checked</if> >
+                    <label class="css-label" for="zdy-4">自定义</label>
+                </div>
+            </div>
+            <div class="customize" hidden>
+                <label>&nbsp;</label>
+                <select class="date-select" name="freeMeCycle">
+                    <option value="10" selected>天</option>
+                    <option value="20" <if condition="$config['free']['me'][cycle] eq 20"> selected</if>>周
+                    </option>
+                    <option value="30" <if condition="$config['free']['me'][cycle] eq 30"> selected</if>>月
+                    </option>
+                </select>
+                <input class="date-input" name="freeMeNumber" type="number" placeholder="输入篇数" value="{$config['free']['me'][number]}">
+            </div>
+        </div>
+        <div class="MaterialCenterLabel-foot">
+            <button type="button" id="submit" class="btn-confirm" style="border:none;">保存</button>
+        </div>
+    </form>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.js"></script>
+<script>
+    var subForm = function () {
+        $form = $("#form");
+        $submit = $("#submit");
+        var submit = function () {
+            var data = getInput();
+            $.post('MaterialCenterLabel/updateConfig', { data: data }, function (res) {
+                $.dialog.tips(res.message);
+            }, 'json');
+        }
+        var getInput = function () {
+            var data = {};
+            var t = $form.serializeArray();
+            $.each(t, function () {
+                data[this.name] = this.value;
+            });
+            var input = [];
+            input[0] = { id: data.freeHeId, cycle: data.freeHeCycle, number: data.freeHeNumber, status: data.freeHeSource, stint: data.freeHeStint, };
+            input[1] = { id: data.freeMeId, cycle: data.freeMeCycle, number: data.freeMeNumber, status: data.freeMeSource, stint: data.freeMeStint, };
+            input[2] = { id: data.payHeId, cycle: data.payHeCycle, number: data.payHeNumber, status: data.payHeSource, stint: data.payHeStint, };
+            input[3] = { id: data.payMeId, cycle: data.payMeCycle, number: data.payMeNumber, status: data.payMeSource, stint: data.payMeStint, };
+            for (var index in input) {
+                console.log(input[index].status);
+                if (input[index].status == undefined) {
+                    input[index].status = 10;
+                } else {
+                    input[index].status = 20;
+                }
+            }
+            return input;
+        };
+        var initRadio = function () {
+            $('input:radio:checked').each(function () {
+                if ($(this).val() == 20) {
+                    $(this).parent().parent().parent().find('.customize').show();
+                } else {
+                    $(this).parent().parent().parent().find('.customize').hide();
+                }
+            })
+        }
+        var init = function () {
+            $submit.click(submit);
+            initRadio();
+            $('input:radio').click(initRadio);
+        }
+        init();
+        return {}
+    }
+    subForm();
+    var lables = function () {
+        var onLoad = function () {
+            $.post('MaterialCenterLabel/list', {}, function (res) {
+                var data = res.rows;
+                console.log(data)
+                MaterialCenterLabel.tagsListAll = data;
+            }, 'json');
+        }
+        var init = function () {
+            onLoad();
+        }
+        init();
+    }
+    lables();
+    var MaterialCenterLabel = new Vue({
+        el: "#MaterialCenterLabel",
+        data: {
+            tagsListAll: []
+        },
+        methods: {
+            // 读取数据展示标签样式
+            is_Active(isActive) {
+                if (isActive == "20") {
+                    return 'tags-item tags-item-active'
+                } else {
+                    return 'tags-item'
+                }
+            },
+            // 标签点击对应数据改变
+            Action_click(index) {
+                var id = MaterialCenterLabel.tagsListAll[index].id
+                var status = MaterialCenterLabel.tagsListAll[index].status;
+                console.log(status)
+                $.post('MaterialCenterLabel/updatStatus', { id: id }, function (res) {
+                    $.dialog.tips(res.message);
+                    if (res.error == 0) {
+                        if (status == 10) {
+                            MaterialCenterLabel.$set(MaterialCenterLabel.tagsListAll[index], 'status', "20");
+                        } else if (status == 20) {
+                            MaterialCenterLabel.$set(MaterialCenterLabel.tagsListAll[index], 'status', "10");
+                        }
+                    }
+                }, 'json')
+            }
+        }
+    })
+    function autoHeight(){
+        var top = $("#MaterialCenterLabel").height() + 130;
+        $("#configs-info").css("height",`calc(100% - ${top}px)`);
+    }
+    autoHeight()
+</script>

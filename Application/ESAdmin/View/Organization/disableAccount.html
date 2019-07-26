@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            width: 500px;
+            text-align: center;
+        }
+        .ok{
+            float:right;
+            width: 115px;
+            border:1px solid #368bfe;
+            border-radius: 5px;
+            cursor: pointer;
+            color:#368bfe;
+            line-height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h3>禁用账户成功！</h3>
+        <p>被禁用的账号可在“已禁用账户”中重新启用</p>
+        <p>
+            <span class="ok">好的,了解了</span>
+        </p>
+    </div>
+</body>
+<script>
+    $(".ok").on("click",function(){
+        closeDialog();
+    })
+</script>
+</html>

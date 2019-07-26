@@ -1,0 +1,214 @@
+<style>
+    .red_required {
+        color: red;
+        font-size: 21px;
+        padding: 0 2.5px
+    }
+
+    .row {
+        margin: 10px 0;
+        white-space: nowrap;
+        display: flex;
+    }
+
+    .caption {
+        color: #676767;
+        white-space: nowrap;
+        text-align: right;
+        width: 120px;
+        margin-right: 10px;
+    }
+
+    .inputbox input {
+        width: 300px;
+    }
+
+    .inputbox textarea {
+        width: 290px;
+        height: 120px;
+        resize: none;
+        outline: none;
+        border: 1px solid #d3d3d3;
+        padding: 5px;
+    }
+
+    textarea::-webkit-scrollbar {
+        width: 8px;
+        background-color: #eee;
+        border-radius: 4px;
+    }
+
+    textarea::-webkit-scrollbar-thumb {
+        background: #b8b4b4;
+        border-radius: 4px;
+    }
+</style>
+
+<div id="manual_added" style="width: 920px;">
+    <div style="width: 100%;height: 570px;">
+        <div class="row">
+            <div class="caption"><span class="red_required">*</span>参赛名称：</span></div>
+            <div class="inputbox">
+                <input name="name" class="easyui-validatebox" placeholder="请输入参赛名称" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="caption"><span class="red_required">*</span>联系人：</span></div>
+            <div class="inputbox">
+                <input name="name" class="easyui-validatebox" placeholder="请输入联系人" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="caption"><span class="red_required">*</span>联系电话：</span></div>
+            <div class="inputbox">
+                <input name="name" class="easyui-validatebox" placeholder="请输入联系电话" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="caption">参赛介绍：</div>
+            <div class="inputbox">
+                <textarea id="" name="name" cols="30" rows="6" placeholder="请输入参赛介绍"></textarea>
+            </div>
+        </div>
+        <div class="row" style="margin: 5px 0;">
+            <div class="caption"><span class="red_required">*</span>上传封面：</div>
+            <div style="position: relative;">
+                <div class="btn-speed" style="margin: 0;">选择图片</div>
+                <input id="update_coverImg" type="file"
+                    style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;opacity: 0;" />
+            </div>
+        </div>
+        <div style="width: 100%;display:flex;align-items: center;">
+            <div class="caption"></div>
+            <div v-if="coverImgUrl" style="width: 180px;height: 120px;border: 1px solid #d3d3d3;">
+                <img style="width: 100%;height: 100%;" :src="coverImgUrl" alt="">
+            </div>
+        </div>
+        <div class="row" style="margin: 5px 0;">
+            <div class="caption">其它图片：</div>
+            <div style="position: relative;">
+                <div class="btn-speed" style="margin: 0;">选择图片</div>
+                <input id="update_orderImg" type="file"
+                    style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;opacity: 0;" />
+            </div>
+        </div>
+        <div style="width: 100%;display:flex;align-items: center;">
+            <div class="caption"></div>
+            <div style="display: flex;flex-wrap: wrap;">
+                <div v-for="item in allImgList.slice(1)"
+                    style="width: 110px;height: 90px;border: 1px solid #d3d3d3;margin:  5px;">
+                    <img style="width: 100%;height: 100%;" :src="item.url" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="padding: 20px 0;text-align: center;border-top:1px solid #d3d3d3; ">
+        <div class="btn-confirm" style="margin: 0 10px;">预览</div>
+        <div class="btn-confirm" style="margin: 0 10px;">提交</div>
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    function updateImg(file) {
+        var URL = '';
+        var formData = new FormData();
+        formData.append('file', file);
+        $.ajax({
+            url: "/ComUploads/uploadsImg",
+            type: "post",
+            data: formData,
+            contentType: false,
+            processData: false,
+            async: false,
+            mimeType: "multipart/form-data",
+            dataType: 'json',
+            success: function (data) {
+                URL = data.data.images[0].url;
+            },
+        });
+        return URL;
+    }
+    var manual_added = new Vue({
+        el: "#manual_added",
+        data: {
+            coverImgUrl: "",
+            allImgList: []
+        },
+        mounted() {
+            // 上传封面
+            $("#update_coverImg").change(function () {
+                var oFiles = $(this).get(0).files;
+                $(oFiles).each(function (index, obj) {
+                    var url = updateImg(obj);
+                    if (url == false) {
+                        $.dialog.alert('上传失败');
+                        return false;
+                    };
+                    var _file = this;
+                    if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                        var reader = new FileReader();
+                        reader.readAsDataURL(this);
+                        reader.onload = function () {
+                            manual_added.coverImgUrl = this.result;
+                            if (manual_added.allImgList.length == 0) {
+                                manual_added.allImgList.unshift({
+                                    url: this.result,
+                                    urlPath: url,
+                                    type: "image",
+                                    src: reader.result,
+                                    file: _file,
+                                    file_name: _file.name
+                                });
+                            } else {
+                                manual_added.allImgList.splice(0, 1, {
+                                    url: this.result,
+                                    urlPath: url,
+                                    type: "image",
+                                    src: reader.result,
+                                    file: _file,
+                                    file_name: _file.name
+                                });
+                            }
+                        }
+                    }
+                })
+            })
+            // 上传其他图片
+            $("#update_orderImg").change(function () {
+                if (manual_added.allImgList.length == 0) {
+                    $.dialog.tips("请先选择封面");
+                    return false;
+                }
+                if (manual_added.allImgList.length == 7) {
+                    $.dialog.tips("最多选择六张图片");
+                    return false;
+                }
+                var oFiles = $(this).get(0).files;
+                $(oFiles).each(function (index, obj) {
+                    var url = updateImg(obj);
+                    // console.log(url)
+                    if (url == false) {
+                        $.dialog.alert('上传失败');
+                        return false;
+                    };
+
+                    var _file = this;
+                    if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                        var reader = new FileReader();
+                        reader.readAsDataURL(this);
+                        reader.onload = function () {
+                            manual_added.allImgList.push({
+                                urlPath: url,
+                                url: this.result,
+                                type: "image",
+                                src: reader.result,
+                                file: _file,
+                                file_name: _file.name
+                            })
+                        }
+                    }
+                })
+            })
+        }
+    })
+</script>

@@ -1,0 +1,80 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/attachment.css" rel="stylesheet" />
+<style>
+.caption{
+    width: 100px;
+    height: 32px;
+    line-height: 32px;
+    text-align: right;
+    color: #333;
+}
+.btn-item-remove {
+    color: #fff;
+    background-color: red;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-weight: 700;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+#feedback-topbox textarea{
+    width: 350px;
+    height: 380px;
+    padding: 5px;
+    outline: none;
+    resize: none;
+    border: 1px solid #d3d3d3;
+}
+
+#feedback-topbox textarea::-webkit-scrollbar {
+    width: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+}
+
+#feedback-topbox textarea::-webkit-scrollbar-thumb {
+    background: #b8b4b4;
+    border-radius: 4px;
+}
+</style>
+
+<div id="feedback" style="width: 500px;">
+    <div id="feedback-topbox">
+        <form>
+            <div style="display: flex;align-items: flex-start;"> 
+                <div style="text-align: right;width: 100px;"><span style="color: red;">*</span>取消原因：</div>
+                <textarea name="reason" id="" cols="20" rows="8" placeholder="请输入活动关闭的原因"></textarea>
+                <input type="hidden" name="id" value="{$model.id}" />
+            </div>
+        </form>
+    </div>
+    <div style="padding: 20px 0;text-align: center;">
+        <div class="btn-confirm tjbtn" onclick="doloseMeeting();" >确认</div>
+        <div class="btn-cancel" onclick="closeDialog('closeMeeting')">取消</div>
+    </div>
+</div>
+
+<script>
+    function doloseMeeting() {
+        var id = $("input[name='id']").val();
+        var reason = $("textarea[name='reason']").val();
+        $.ajax({
+            url: "YhMeeting/doCloseMeeting",
+            async: true,
+            type: 'post',
+            data: {id: id,reason:reason},
+            dataType: 'json',
+            success: function (res) {
+                if (res.code == 0) {
+                    yhMeeting.refreshVotes();
+                    closeDialog('closeMeeting');
+                    $.dialog.alert('关闭成功!');
+                }
+                $.dialog.alert(res.message)
+            }, error: function () {
+            }
+        });
+    }
+</script>

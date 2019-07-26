@@ -1,0 +1,41 @@
+<div class="detailcontainer" id="ComArticle-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="ComArticle-dataform" method="post" name="ComArticle-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_TITLE}：</span></div>
+                <div class="inputbox_x2">
+                    <input name="name" class="easyui-validatebox"   data-options="required:true" value="{$model.name}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_CATEGORY}：</span></div>
+                <div class="inputbox">
+                    <select name="category_id" class="chosen-select" data-options="all:true,value:'{$model.category_id}',search_key_url:'ComArticleCategory/keyNameList/'">
+                        <option value="0">--选择类别--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div style="border-bottom: 1px solid #ccc;padding-bottom: 5px;width:100%;text-align: right">
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button editor-edit-botton" plain="true" icon="fa-edit fa-lg">内容编辑</a>
+                </div>
+                <div id="article-content" style="min-height: 200px;max-height: 400px; overflow: auto">{$model.content|html_entity_decode}</div>
+                <input name="content" type="hidden" value="{$model.content}"/>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="ComArticle" />
+</div>
+<script type="text/javascript">
+    $(function() {
+        var $dataForm = getDataForm("ComArticle");
+        $(".editor-edit-botton").click(function(){
+            var source = $("#article-content").html();
+            openEditor("内容编辑", source, function(content){
+                $("#article-content").html(content);
+                $dataForm.find("input[name=content]").val(content);
+            });
+        });
+    });
+</script>

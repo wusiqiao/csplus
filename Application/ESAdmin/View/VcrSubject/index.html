@@ -1,0 +1,398 @@
+<style>
+    .datagrid-view {
+        margin-left: 0;
+    }
+ </style>
+ <div class="content" id="intelligent">
+    <div class="main-content">
+        <div class="easyui-tabs" id="subject-tabs">
+            <div title="全部" style="padding:10px 0;overflow: hidden;">
+                <div class="search-form" style="float: right;">
+                    <div id="VcrSubject-toolbar">
+                        <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                            <input style="width:300px;" type="text" name="name" placeholder="请输入科目名称"/><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+                            <input type="hidden" class="easyui-validatebox filter-field" name="q-id" />
+                        </div>
+                        <!--<div><label>科目名称:</label><input type="text" class="easyui-validatebox filter-field" name="ql-name" /></div>-->
+                        <!--<div><label>科目类别:</label><input type="text" class="easyui-validatebox filter-field" name="q-type_id" /></div>-->
+                        <!-- <input type="submit" value="查询" class="btn-submit square-btn"/> -->
+                        <input type="hidden" name="subject_type" class="easyui-validatebox filter-field" value="">
+                    </div>
+                </div>
+                <div>
+                    <div class="opt-group">
+                        <if condition="($permissions.add eq 1) ">
+                            <a href="javascript:void(0)" class="add-btn blue-btn"  onclick="action_add('VcrSubject','企业科目')">新增</a>
+                        </if>
+                        <if condition="($permissions.delete eq 1) ">
+                            <a href="javascript:void(0)" class="add-btn blue-btn"  onclick="deleteSubject('VcrSubject')">删除</a>
+                        </if>
+                        <a class="import-btn blue-btn opt-import" onclick="showSubjectImportDialog(this)" href="javascript:;">导入</a>
+                        <a class="export-btn blue-btn"  onclick="exportSubject(1)">导出企业科目</a>
+                        <a class="export-btn blue-btn"  onclick="exportSubject(2)">导出标准科目</a>
+                    </div>
+                    <div id="screen" style="width:100%;height:54px;line-height: 54px;display: flex;align-items: center;">
+                        <div class="btn-label-label">企业科目类型：</div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_CAPITAL}" style="width:100px;padding:0;">资产<span style="color: red"></span></div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_DEPT}" style="width:100px;padding:0;">负债<span style="color: red"></span></div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_RIGHTS}" style="width:100px;padding:0;">权益<span style="color: red"></span></div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_COST}" style="width:100px;padding:0;">成本<span style="color: red"></span></div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_INCOME}" style="width:100px;padding:0;">损益<span style="color: red"></span></div>
+                    </div>
+                    <div class="intel-done">
+                        <table id="VcrSubject-datagrid" class="treegrid" width="100%" cellspacing="0"
+                               data-options="url:'/VcrSubject/list',fit:false,pagination:false,
+                                onContextMenu:function(e,row){
+                                    e.preventDefault();
+                                        $(this).datagrid('unselectAll');
+                                        $(this).treegrid('select',row.id);
+                                        $('#box_VcrSubject').menu('show', {
+                                        left: e.pageX,
+                                        top: e.pageY
+                                    });}">
+                            <thead>
+                            <tr>
+                                <th data-options="field:'ck',checkbox:true"></th>
+                                <th data-options="field:'id',width:0,hidden:true"></th>
+                                <th data-options="field:'no',align:'left'" width="15%">科目编号</th>
+                                <th data-options="field:'name',align:'left'" width="28%">企业科目名称</th>
+                                <!--<th data-options="field:'type_name',align:'left'" width="20%">科目类型 </th>-->
+                                <th data-options="field:'std_subject_name',align:'left'" width="12%">标准科目名称</th>
+                                <th data-options="field:'map_state',align:'center',formatter:format_subject_mapping_status" width="10%">匹配状态</th>
+                                <th data-options="field:'op',align:'center',formatter:format_subject_operate" width="30%">操作</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div title="已匹配">
+                <div class="intel-done">
+                    <div class="search-form" style="float: right;">
+                        <div id="VcrSubjectMaped-toolbar">
+                            <input type="hidden" name="maped_subject_type" class="easyui-validatebox filter-field" value="">
+                        </div>
+                    </div>
+                    <div id="intel-done-screen" style="width:100%;height:54px;line-height: 54px;display: flex;align-items: center;">
+                        <div class="btn-label-label">企业科目类型：</div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_CAPITAL}" style="width:100px;padding:0;">资产</div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_DEPT}" style="width:100px;padding:0;">负债</div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_RIGHTS}" style="width:100px;padding:0;">权益</div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_COST}" style="width:100px;padding:0;">成本</div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_INCOME}" style="width:100px;padding:0;">损益</div>
+                    </div>
+                    <table id="VcrSubjectMaped-datagrid" class="treegrid" width="100%" cellspacing="0" data-options="url:'/VcrSubject/mapedList',fit:false,pagination:false,collapsible: false">
+                        <thead>
+                        <tr>
+                            <th data-options="field:'id',width:0,hidden:true"></th>
+                            <th data-options="field:'no',align:'center'" width="15%">科目编号</th>
+                            <th data-options="field:'name',align:'left'" width="30%">企业科目名称</th>
+                            <!--<th data-options="field:'type_name',align:'left'" width="20%">科目类型</th>-->
+                            <th data-options="field:'std_subject_name',align:'left'" width="10%">标准科目名称</th>
+                            <th data-options="field:'op',align:'center',formatter:format_subject_unmapping" width="45%">操作</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div title="未匹配">
+                <div class="intel-done">
+                    <div class="search-form" style="float: right;">
+                        <div id="VcrSubjectUnMap-toolbar">
+                            <input type="hidden" name="unMap_subject_type" class="easyui-validatebox filter-field" value="">
+                        </div>
+                    </div>
+                    <div id="unintel-screen" style="width:100%;height:54px;line-height: 54px;display: flex;align-items: center;">
+                        <div class="btn-label-label">企业科目类型：</div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_CAPITAL}" style="width:100px;padding:0;">资产<span style="color: red"></span></div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_DEPT}" style="width:100px;padding:0;">负债<span style="color: red"></span></div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_RIGHTS}" style="width:100px;padding:0;">权益<span style="color: red"></span></div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_COST}" style="width:100px;padding:0;">成本<span style="color: red"></span></div>
+                        <div class="btn-label" data-value="{$Think.const.SUBJECT_CATEGORY_INCOME}" style="width:100px;padding:0;">损益<span style="color: red"></span></div>
+                    </div>
+                    <table id="VcrSubjectUnMap-datagrid" class="treegrid" width="100%" cellspacing="0" data-options="url:'/VcrSubject/unMapList',fit:false,pagination:false,collapsible: false">
+                        <thead>
+                        <tr>
+                            <th data-options="field:'id',width:0,hidden:true"></th>
+                            <th data-options="field:'no',align:'center'"  width="15%">科目编号</th>
+                            <th data-options="field:'name',align:'left'"  width="30%">企业科目名称</th>
+                            <!--<th data-options="field:'type_name',align:'left'"  width="30%">科目类型</th>-->
+                            <th data-options="field:'op',align:'center',formatter:format_subject_mapping"  width="55%">操作</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>
+
+ <!--<div class="dialog-temp" id="importDialog">
+     <div class="importTax">
+         <form  action="{$Think.const.CONTROLLER_NAME}/import"  id="subject-import-form" method="post" enctype="multipart/form-data" style="width:360px;position: relative">
+             <input type="file" id="subject-file" name="subject_file" accept="*.xls,*.xlsx,*.csv" class="easyui-file" title="企业科目："/>
+             <div  style="padding: 10px 5px 0px 0px; margin-top: 10px">
+                 <input type="checkbox" class="css-checkbox" id="reset_data" name="reset_data" value="1" />
+                 <label class="css-label" for="reset_data"><span style="padding-left: 5px">清除旧数据（如果只是科目更新，请勿勾选此项）</span></label>
+             </div>
+         </form>
+
+         <div class="btn-group">
+             <input class="blue-btn" type="button" value="导入" onclick="importSubject()"/>
+             <input class="square-btn" type="button" value="取消" onclick="closeDialog();"/>
+         </div>
+     </div>
+ </div>-->
+
+ <div class="dialog-temp" id="cancelDialog">
+     <div class="cancel-content">
+         <p>取消匹配，科目重新退回到未匹配列表，需重新人工匹配！</p>
+         <div class="btn-group">
+             <label><span class="radio-button"><span class="checked"></span><input type="hidden" value="1" name="" /></span>我以明白，无需再次提示</label>
+             <input class="blue-btn" type="button" value="确定" onclick="disMappingSubject()"/>
+             <input class="square-btn" type="button" value="取消" onclick="closeDialog();"/>
+         </div>
+     </div>
+ </div>
+ <!--右键菜单-->
+ <div id="box_{$Think.const.CONTROLLER_NAME}" class="easyui-menu" style="width:120px;">
+     <if condition="($permissions.add eq 1) OR ($permissions._IS_ADMIN_ eq 1)">
+         <div data-options="iconCls:'icon-add'" onclick="action_add('VcrSubject','企业科目')" >新增</div>
+     </if>
+ </div>
+<script type="text/javascript">
+    var active_datagrid = "#VcrSubject-datagrid";
+    $(function(){
+        autocompleteAjaxEx($(".search-form input[name='ql-name']"), "/VcrSubject/autocomplete/type/1/search/name+querykey/result/name", {
+            onSelected: function(row){
+                doSearchQuery('VcrSubject');
+            }
+        });
+        autocompleteAjaxEx($(".search-form input[name='q-type_id']"), "/VcrSubject/getSubjectTypes", {
+            onSelected: function(row){
+                $(".search-form input[name='q-type_id']").val(row.id);
+                doSearchQuery('VcrSubject');
+                $(".search-form input[name='q-type_id']").val(row.name);
+            }
+        });
+        autocompleteAjaxEx($(".search-form input[name='name']"), "/VcrSubject/autocomplete/type/1/search/name+querykey/result/name/", {
+            onSelected: function(row){
+                $("input[name='q-id']").val(row.id);
+                doSearchQuery('VcrSubject');
+            }
+        });
+        initSubjectTreeGrid("#VcrSubject-datagrid");
+        initSubjectTabs();
+        setTabTitle();
+    });
+    function initSubjectTabs(){
+        $('#subject-tabs').tabs({
+            onSelect:function(title, index){
+                switch (index) {
+                    case 1:
+                        active_datagrid = "#VcrSubjectMaped-datagrid";
+                        initSubjectTreeGrid(active_datagrid);
+                        break;
+                    case 2:
+                        active_datagrid = "#VcrSubjectUnMap-datagrid";
+                        initSubjectTreeGrid(active_datagrid);
+                        break;
+                    default:
+                        active_datagrid = "#VcrSubject-datagrid";
+                }
+            }
+        });
+    }
+    function setTabTitle(){
+        var tab_titles = ["全部","已匹配","未匹配"];
+        $.post("/VcrSubject/getGroupCount", function (result) {
+            for(var index = 0; index<3; index++) {
+                var tab = $('#subject-tabs').tabs('getTab', index);
+                $('#subject-tabs').tabs('update', {
+                    tab: tab,
+                    options: {title: tab_titles[index] + result[index] + "条"}
+                });
+            }
+        },"json");
+    }
+    function initSubjectTreeGrid(target) {
+        var dataOptions = {
+            onDblClickRow: function (row) {
+               // action_view("VcrSubject", "企业科目");
+            },
+            onLoadSuccess: function(row, resData){
+                alignTree();
+            }
+        };
+        $(target).treegrid(dataOptions);
+    }
+
+    function showSubjectImportDialog(){
+        if("{$ent_type_id}" == "" || "{$ent_type_id}" == null){
+            $.dialog.alert("请先进行参数设置！");
+            return false;
+        }
+        createDialog("VcrSubject/import","企业科目导入");
+        /*var html = $("#importDialog").html();
+        $.dialog({max:false,min:false, title: "企业科目导入", content: html});
+        parseInputFile("#subject-import-form");
+        $("input[name='reset_data']").change(function(){
+            if ($(this).prop("checked") == true){
+                $.dialog.alert("勾选此项，原有的科目将被清除，一般只有导入错误才选择此项");
+            }
+        });*/
+    }
+    function showDisMappingDialog(){
+        var html = $("#cancelDialog").html();
+        $.dialog({max:false,min:false, title: "取消科目匹配", content: html});
+    }
+    function showMappingDialog(subject_id){
+        createDialog("/VcrSubject/mapping/subject_id/"+ subject_id, "科目匹配","dlg-subject-mapping", function(){
+
+        });
+    }
+
+    function importSubject() {
+        var customer = $(".page-selected .company-name").text();
+        if (customer != "") {
+            action_import("subject-file", "VcrSubject/import", "确定导入客户【" + customer + "】的科目资料？", function () {
+                setTimeout('getDataGrid("{$Think.const.CONTROLLER_NAME}").treegrid("reload")', 2000);
+            })
+        }
+    }
+
+    function disMappingSubject(){
+        var rows = $(active_datagrid).treegrid('getSelections');
+        if (rows.length > 0){
+            $.post("/VcrSubject/disMapping",{id: rows[0].id}, function (result) {
+                closeDialog();
+                var currentRow = rows[0];
+                currentRow.std_subject_id = null;
+                currentRow.std_subject_name = null;
+                var rowData = {id: currentRow.id, row: currentRow};
+                if($("#VcrSubject-datagrid").treegrid("find", rowData.id)){
+                    $("#VcrSubject-datagrid").treegrid("update", rowData);
+                    alignTree();
+                }
+                if (active_datagrid == "#VcrSubjectMaped-datagrid") {
+                    handlerCurrentRow(active_datagrid,currentRow,rowData);
+                }else{
+
+                }
+                $.dialog.tips(result.message);
+                setTabTitle();
+                getSubjectTypeCount();
+            },"json");
+        }
+    }
+
+    function handlerCurrentRow(active_datagrid,currentRow,rowData){
+        if(currentRow.level == 1){
+            //如果是一级节点，则判断节点是否还有未匹配子节点，如果有则更新节点，否则移除节点
+            if(currentRow.children == undefined || (currentRow.children != undefined && currentRow.children.length == 0)){
+                $(active_datagrid).treegrid('remove', currentRow.id);
+            }else{
+                $(active_datagrid).treegrid('update', rowData);
+            }
+        }else{
+            //如果不是一级节点，则判断父节点是否还有未匹配子节点，如果有则移除子节点，否则移除父节点
+            var length = $(active_datagrid).treegrid('find', currentRow.parent_id).children.length;
+            if(length == 1){
+                $(active_datagrid).treegrid('remove', currentRow.parent_id);
+            }else{
+                $(active_datagrid).treegrid('remove', currentRow.id);
+            }
+        }
+    }
+
+    function exportSubject(type){
+        if("{$ent_type_id}" == "" || "{$ent_type_id}" == null){
+            $.dialog.alert("请先进行参数设置！")
+        }else{
+            $.dialog.confirm("是否确认导出？",function () {
+                $.dialog.tips("请稍后...",2);
+                window.location.href = "/VcrSubject/exportSubject/type/"+type;
+            })
+        }
+    }
+
+    $(".view-type").on("click",function(){
+        $(this).addClass("btn-screening-on").siblings().removeClass("btn-screening-on");
+        $("input[name='q-type_id']").val($(this).data("id"));
+        doSearchQuery("VcrSubject");
+    });
+
+    function deleteSubject(frameId){
+        action_delete(frameId);
+    }
+
+    getDataGrid("VcrSubject").bind("afterRefresh",function(event,data){
+        alignTree();
+        getSubjectTypeCount();
+        setTabTitle();
+    });
+
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+    $('#screen .btn-label').click(function () {
+        if(!$(this).hasClass('btn-label-on')){
+            $(this).addClass('btn-label-on').siblings().removeClass('btn-label-on');
+            $("input[name='subject_type']").val($(this).data("value"));
+        }else{
+            $(this).removeClass('btn-label-on');
+            $("input[name='subject_type']").val("");
+        }
+        doSearchQuery("VcrSubject");
+    });
+    $('#intel-done-screen .btn-label').click(function () {
+        if(!$(this).hasClass('btn-label-on')){
+            $(this).addClass('btn-label-on').siblings().removeClass('btn-label-on');
+            $("input[name='maped_subject_type']").val($(this).data("value"));
+        }else{
+            $(this).removeClass('btn-label-on');
+            $("input[name='maped_subject_type']").val("");
+        }
+        doSearchQuery("VcrSubjectMaped");
+    });
+    $('#unintel-screen .btn-label').click(function () {
+        if(!$(this).hasClass('btn-label-on')){
+            $(this).addClass('btn-label-on').siblings().removeClass('btn-label-on');
+            $("input[name='unMap_subject_type']").val($(this).data("value"));
+        }else{
+            $(this).removeClass('btn-label-on');
+            $("input[name='unMap_subject_type']").val("");
+        }
+        doSearchQuery("VcrSubjectUnMap");
+    });
+    $(function(){
+        getSubjectTypeCount();
+    });
+
+    function getSubjectTypeCount(){
+        $.post("VcrSubject/getSubjectTypeCount",function(result){
+            for(k in result){
+                $('#screen .btn-label').eq(k-1).find("span").text(`（${result[k]}）`)
+                $('#unintel-screen .btn-label').eq(k-1).find("span").text(`（${result[k]}）`)
+            }
+        },'json')
+    }
+
+    function alignTree(){
+        $(".datagrid-view2 .datagrid-body").find(".datagrid-row").each(function () {
+            var id = $(this).attr("node-id");
+            var row = $("#VcrSubject-datagrid").treegrid("find",id);
+            var length = $(this).find(".tree-indent").length;
+            if(row != null && (row.level -1) != length){
+                $(this).find(".tree-indent").each(function(e){
+                    if(e >= row.level - 1 ){
+                        $(this).hide();
+                    }
+                })
+            }
+        })
+    }
+</script>

@@ -1,0 +1,146 @@
+<style>
+    .table td {
+        text-align: center;
+        border: 1px silver solid;
+        padding: 5px;
+    }
+
+    .table input {
+        width: 95%;
+    }
+    .note {
+        width: 50%;
+    }
+    .width-25 {
+        width: 25%;
+    }
+    .th td {
+        padding: 15px;
+    }
+    .form-actions{
+        height: auto;
+        padding: 20px 0;
+    }
+    .icon-down{
+        float: left;
+        width: 16px;
+        height: 10px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png");
+        background-size: 100% 100%;
+        margin-right:15px;
+        transition: transform .5s;
+    }
+    .detailcontainer::-webkit-scrollbar {
+        width: 8px;
+        background-color: #eee;
+        border-radius: 4px;
+    }
+    .detailcontainer::-webkit-scrollbar-thumb{
+        background: #b8b4b4;
+        border-radius: 4px;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="width: 70vw;height: 60vh;overflow-y: auto;position: relative;">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post"
+          name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="row" style="display: flex;align-items: center;border-bottom: 1px solid #d3d3d3;padding:10px 0;">
+            <div class="caption required"><span>银行对账单模板名称：</span></div>
+            <div class="inputbox_x2" style="margin-left: 10px;">
+                <input name="name" class="easyui-validatebox" style="width: 270px;" data-options="required:true" value="{$model.name}" placeholder="请输入模板名称"/>
+                <input name="id" type="hidden" class="easyui-validatebox" value="{$model.id}"/>
+            </div>
+            <div style="color: red;margin-left: 20px;">示例：中国建行--厦门</div>
+        </div>
+        <table class="table">
+            <tr>
+                <td class="required">{$Think.lang.START}</td>
+                <td class="required">{$Think.lang.DEAL_TIME}</td>
+                <td class="required">{$Think.lang.INCOME}</td>
+                <td class="required">{$Think.lang.DISBURSEMENT}</td>
+                <td class="required">{$Think.lang.ACCOUNT}</td>
+                <td class="">{$Think.lang.SUMMARY}</td>
+                <td class="">{$Think.lang.REMARKS}</td>
+                <td class="">{$Think.lang.MARK}</td>
+            </tr>
+            <tr>
+                <td>
+                    <input name="start" class="easyui-validatebox" data-options="required:true" value="{$model.start}" placeholder="请输入行号"/>
+                </td>
+                <td>
+                    <input name="deal_time" class="easyui-validatebox" data-options="required:true"
+                           value="{$model.deal_time}" placeholder="请输入列号"/>
+                </td>
+                <td>
+                    <input name="income" class="easyui-validatebox" data-options="required:true"
+                           value="{$model.income}" placeholder="请输入列号"/>
+                </td>
+                <td>
+                    <input name="disbursement" class="easyui-validatebox" data-options="required:true"
+                           value="{$model.disbursement}" placeholder="请输入列号"/>
+                </td>
+                <td>
+                    <input name="account" class="easyui-validatebox" data-options="required:true"
+                           value="{$model.account}" placeholder="请输入列号"/>
+                </td>
+                <td>
+                    <input name="summary" class="easyui-validatebox"
+                           value="{$model.summary}" placeholder="请输入列号"/>
+                </td>
+                <td>
+                    <input name="remarks" class="easyui-validatebox"
+                           value="{$model.remarks}" placeholder="请输入列号"/></td>
+                <td>
+                    <input name="mark" class="easyui-validatebox" value="{$model.mark}" placeholder="请输入列号"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+    <div class="tableForm" style="width: 100%;">
+        <div onclick="showAnlie(this)" style="background: #ccc; height: 36px; line-height: 36px;padding-left: 15px;display: flex;justify-content: space-between;align-items: center;cursor: pointer;">
+            <span>对账单模板案例</span>
+            <i class="icon-down"></i>
+        </div>
+        <div id="anli" style="width: 100%;display: none;">
+            <div style="display: flex;align-items: center;padding:10px 0;">
+                <div class="caption required"><span>银行对账单模板名称：</span></div>
+                <div class="inputbox_x2" style="margin-left: 10px;">
+                    <input name="name" class="easyui-validatebox" style="width: 270px;" data-options="required:true" value="中国建行--厦门" readonly/>
+                </div>
+            </div>
+            <img style="width: 100%;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/bg/bg-Guide.png" alt="">
+        </div>
+    </div>
+</div>
+<script>
+    function showAnlie(ele){
+        if($("#anli").css("display") == "none"){
+            $("#anli").show();
+            $(ele).find("i.icon-down").css("transform","rotate(180deg)");
+        }else{
+            $("#anli").hide(); 
+            $(ele).find("i.icon-down").css("transform","rotate(0deg)");
+        }
+    }
+
+    $(".ui_title").each(function(){
+        var text = $(this).text();
+        text = text.trim();
+        var content = '';
+        for(var i = 0; i < text.length; i++){
+            if(text[i] == '当' && text[i + 1] == '前' && text[i + 2] == '客' && text[i + 3] == '户'){
+                break;
+            }
+
+            content += text[i];
+        }
+
+        $(this).text(content);
+    });
+
+    (function(){
+       if( '{$model["branch_id"]}' == '0'){
+           $(".modal-save-btn").text('另存为');
+       }
+    })()
+</script>

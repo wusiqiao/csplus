@@ -1,0 +1,83 @@
+<style>
+    textarea{
+        vertical-align:middle
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="width: 650px">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform" >
+        <div class="tableForm">
+            <input name="id" type="hidden" value="{$model.id}">
+            <div class="row" style="margin-bottom: 25px">
+                <div class="caption"><span><span style="color: red;font-size: 21px;padding: 5px">*</span>推广名称：</span></div>
+                <div class="inputbox">
+                    <input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" />
+                </div>
+                <span style="color: grey;margin-left: 20px">*输入推广人或推广的物品信息</span>
+            </div>
+            <div class="row" style="margin-bottom: 25px">
+                <div class="caption"><span>联系电话：</span></div>
+                <div class="inputbox">
+                    <input name="contacts" class="easyui-validatebox"  value="{$model.contacts}" />
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 25px">
+                <div class="caption"><span>公司名称：</span></div>
+                <div class="inputbox">
+                    <input name="company_name" class="easyui-validatebox" value="{$model.company_name}" />
+                </div>
+            </div>
+            <div id="app">
+            <div class="common-title">添加信息：</div>
+                <div class="row">
+                    <div class="caption wd-120"><span><span style="color: red;font-size: 21px;padding: 5px">*</span>跳转链接：</span></div>
+                    <input name="marketing_url" type="text" class="easyui-validatebox" v-model="url" :readonly="id==''?false:true" placeholder="https://" value="{$model.marketing_url}" required>
+                    <a href="javascript:void(0)" class="common-blue-btn detail-add" style="width:auto" plain="true" onclick="linkshow()"  v-show="id==''">添加链接</a>
+                    <span style="color: grey;margin-left: 0px">*可将商品、广告等链接加入二维码中</span>
+                </div>
+
+                <div class="row" style="margin-bottom: 10px">
+                    <div class="caption wd-120"><span>文字描述：</span></div>
+                    <div class="inputbox_x2">
+                            <textarea name="marketing_content" type="text" class="easyui-validatebox" style="width:100%" placeholder="请输入文字描述">{$model.marketing_content}</textarea>
+                    </div>
+                </div>
+            </div>
+            <!--<neq name="model.marketing_url" value="">
+                <div class="common-title">
+                    <span style="margin-right: 20px">二维码：</span>
+                    <a href="javascript:void(0)" class="common-blue-btn detail-add" style="width:auto" plain="true" onclick="testDownload('{$model.id}')">下载</a>
+                </div>
+                <div style="text-align: center;padding: 15px">
+                    <img src="{$WxQrcode}" style="width: 200px;height: 200px">
+                </div>
+            </neq>-->
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html" controller="ComBusinessCard" />
+
+</div>
+<script src="/{$Think.MODULE_PATH}Public/minicolors/jquery.minicolors.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            url:'{$model.marketing_url}',
+            id:'{$model.id}'
+        },
+        methods:{
+            linkShow(){
+                createDialog('{$Think.const.CONTROLLER_NAME}/linkShow', '功能链接','dlg-link-select');
+            },
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    function linkshow(){
+            createDialog('WxBranchTemplate/linkShow', '功能链接','dlg-link-select');
+    }
+    function testDownload($id){
+        window.location.href = "ComBusinessCard/download?id="+$id;
+    }
+</script>

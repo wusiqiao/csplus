@@ -1,0 +1,42 @@
+<div class="tableForm" style="width: 450px" >
+	<form id="invoiceApply-form">
+		<input name="id"  type="hidden"  value="{$model.id}">
+		<div class="row">
+			<div style="text-align: center"><span><span style="color: red;font-size: 16px;padding-left: 10px">*</span>发票需求日期：</span>
+				<input name="plan_day" class="easyui-datebox" value="" required data-options="prompt:'请选择日期',editable:false">
+			</div>
+		</div>
+		<div class="row">
+			<div style="text-align: center"><span><span style="color: red;font-size: 16px;padding-left: 10px">*</span>申请发票金额：</span>
+				<input name="plan_money" type="number" class="easyui-validatebox" placeholder="请输入金额" required/>
+			</div>
+		</div>
+		<div style="text-align: center">
+			<a href="javascript:void(0)" class="common-blue-btn" onclick="Apply(this)">确定</a>
+			<a href="javascript:void(0)" class="common-red-btn" onclick="closeDialog()">取消</a>
+		</div>
+	</form>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+	function Apply(){
+		showMaskLayer();
+		var money = $("input[name='plan_money']").val();
+		if(money <= 0){
+		    $.dialog.alert("请输入正确的金额");
+            hideMaskLayer();
+		    return false;
+		}
+		var data = $("#invoiceApply-form").serializeArray();
+		$.post("ComAgreement/invoiceApply",data,function(result){
+			hideMaskLayer();
+			if(result.error == 0){
+                closeDialog();
+                $.dialog.tips(result.message);
+			}else{
+			    $.dialog.alert(result.message);
+			}
+		},"json");
+	}
+</script>
+

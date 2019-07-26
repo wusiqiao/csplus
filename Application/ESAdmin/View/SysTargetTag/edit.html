@@ -1,0 +1,186 @@
+<style>
+    .removeToggle{
+        display: none;
+    }
+</style>
+<div class="detailcontainer" id="SysTargetTag-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="SysTargetTag-dataform" method="post" name="SysTargetTag-dataform">
+        <if condition="add eq $Think.__FORM_ACTION__">
+            <div class="tableForm">
+                <input name="id" type="hidden" value="{$model.id}">
+                <div class="row">
+                    <div class="caption"><span>{$Think.lang.FLD_VALUE}：</span></div>
+                    <div class="inputbox_x2">
+                        <input name="value" class="easyui-validatebox" value="{$model.value}" required="" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" />
+                    </div>
+                </div>
+            </div>
+            <include file="./Application/Common/Layout/Default/detail_toolbar.html" controller="SysTargetTag" />
+            <else />
+            <div class="group-addition" style="height:650px">
+                <div class="action-btn">
+                    <a href="javascript:void(0)" class="common-blue-btn" onclick="selectUser()" icon="fa fa-plus fa-lg" >添加用户</a>
+                    <a class="common-blue-btn" href="javascript:void(0)" onclick="removeToggle()">移除用户</a>
+                </div>
+                <input name="id" type="hidden" value="{$model.id}">
+                <div class="input-line">
+                    <label for="">标签名称：</label>
+                    <input name="value" class="easyui-validatebox" value="{$model.value}" required="" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" autofocus="autofocus" onkeyup="this.value=this.value.replace(/\s+/g,'')" />
+                                            <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" style="margin-left:10px" onclick="editAction()">修改名称</a>
+                </div>
+                
+                <div id="mainContent" class="common-table"  style="overflow-y: auto;height:450px">
+                    <div class="tabel-title">
+                        <div class="checkbox-space"></div>
+                        <div>头像</div>
+                        <div>昵称</div>
+                        <div>备注</div>
+                        <div>绑定手机</div>
+                        <div>分组</div>
+                        <div class="tag">标签</div>
+                        <div class="company-detail">所属公司</div>
+                    </div>
+                    <div>
+                        <ul class="table-items">
+                            <li v-for="(item,index) in item_list">
+                                <div class="checkbox-space">
+                                    <input type="checkbox" name="user_id[]" :value="item.id" style="width: 25px;height: 25px" class="removeToggle" />
+                                </div>
+                                <div>
+                                    <img :src="item.head_pic" height="40px" />
+                            </div>
+                                    <div>{{item.name}}</div>
+                                    <div>{{item.comments}}</div>
+                                    <div>{{item.mobile}}</div>
+                                    <div>{{item.group_name}}</div>
+                                    <div class="tag">{{item.tags_value}}</div>
+                                    <div class="company-detail">{{item.company_names}}</div>
+                            </li>
+                            <!--                     <li>
+                            <div class="checkbox-space">
+                                <input type="checkbox" />
+                            </div>
+                            <div>
+                                <img src="http://thirdwx.qlogo.cn/mmopen/B2EfAOZfS1iaoXgE081K9WnPgicrwFpnMiazBVLvFzrjSyoRm2OMBfdkibFx97FFp8QyIfgNYmRicVEUY3SOd7Y3gicnpfD2JHl3uw/132" alt="" width="40px" height="40px" />
+                            </div>
+                                <div>张小A</div>
+                                <div>有钱人</div>
+                                <div>18020602060</div>
+                                <div>业务员A</div>
+                                <div class="tag">湖里区，公司变更</div>
+                                <div class="company-detail">厦门依依不舍公司</div>
+                        </li> -->
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex-between-center bottom-action-bar removeToggle">
+                    <div>
+                        <input id="checkAll" type="checkbox"  />
+                        <label for="checkAll">全选/反选</label>
+                    </div>
+                    <div class="flex-end-center">
+                        <div id="checkedNum">已选0条</div>/<div id="totalNum">共条</div>
+                        <a class="common-blue-btn" href="javascript:void(0)" style="margin-left: 10px" onclick="removeUser()">确认</a>
+                        <!-- <div class="common-blue-btn" style="margin-left: 15px;">确认</div> -->
+                    </div>
+                </div>
+            </div>
+        </if>
+    </form>
+    <!-- <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="SysTargetTag" /> -->
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script type="text/javascript">
+var user_vue = new Vue({
+    el: "#mainContent",
+    data: {
+        item_list: []
+    }
+});
+
+function queryUserData() {
+    $.getJSON("{$Think.const.CONTROLLER_NAME}/getUserByTag/tag/{$model.id}", function(result) {
+        user_vue.item_list = result;
+        $("#checkedNum").text("已选0条");
+        $("#totalNum").text("共" + result.length + "条");
+        $("input[name='user_id[]']").prop("checked", false);
+    }, "json");
+
+}
+
+$(function() {
+    var $custom_actions = $('#SysTargetTag-actions-custom');
+    if ($custom_actions.length > 0) {
+        $custom_actions.appendTo($('#SysTargetTag-form-actions')).show();
+    }
+    queryUserData();
+});
+
+function selectUser() {
+    createDialog('{$Think.const.CONTROLLER_NAME}/userList/tag/{$model.id}', '用户选择', 'dlg-users-select');
+}
+$("#checkAll").change(function() {
+    $("input[name='user_id[]']").prop("checked", $(this).prop("checked"));
+    // alert("");
+});
+$(document).on('change', 'input[type="checkbox"]', function() {
+    num = 0;
+    $("input[name='user_id[]']:checkbox:checked").each(function() {
+        num += 1;
+    })
+    $("#checkedNum").text("已选" + num + "条");
+    // alert("!!!");
+})
+
+
+function removeToggle() {
+    $(".removeToggle").toggle();
+}
+function removeHide() {
+    $(".removeToggle").hide();
+}
+function removeUser() {
+    var user_ids = [];
+    $("input[name='user_id[]']:checkbox:checked").each(function() {
+        user_ids.push($(this).val());
+    })
+    if (user_ids.length > 0) {
+        $.post('{$Think.const.CONTROLLER_NAME}/removeUser/tag/{$model.id}', { user_ids: user_ids }, function(result) {
+            hideMaskLayer();
+            if (result.code == 0) {
+                $.dialog.tips(result.message);
+                 getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                queryUserData();
+            } else {
+                $.dialog.tips(result.message);
+                return false;
+            }
+        }, 'json')
+    }else{
+        alert("请至少勾选一位用户")
+    }
+}
+function editAction(){
+    // var data = $("#SysTargetGroup-dataform").serializeArray();
+    var id  = $("input[name='id']").val();
+    var value = $("input[name='value']").val();
+    if (value != "" ) {
+        
+        $.post('{$Think.const.CONTROLLER_NAME}/update/'+ id, {id:id,value:value}, function(result) {
+            // hideMaskLayer();
+            if (result.code == 0) {
+                 getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                queryUserData();
+                $.dialog.tips("修改成功");
+            } else {
+                $.dialog.tips(result.message);
+                return false;
+            }
+            
+        }, 'json')
+    }else{
+        alert("分组名称不为空");
+    }
+}
+</script>

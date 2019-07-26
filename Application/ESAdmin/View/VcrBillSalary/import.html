@@ -1,0 +1,137 @@
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/js/xlsx.full.min.js'></script>
+<div class="detailcontainer" id="import-detailcontainer" style="width:480px; height:300px;margin-top: 20px">
+    <form  action="{$Think.const.CONTROLLER_NAME}/import"  id="import-form" method="post" enctype="multipart/form-data">
+        <div class="title required">工资册</div>
+        <div class="input"   style="position: relative;">
+        <input type="file" id="salary-file" name="salary_file" accept="*.xls,*.xlsx" class="easyui-file"/>
+        </div>
+        <div class="pay-type-row source-input">
+            <fieldset style="border:1px #ccc solid;margin:0;border-radius:5px">
+                <legend>付款方式</legend>
+                <div class="input" style="padding:0px 5px 0px;float:left;width:40%">
+                    <label><input name="cashpayed" type="radio" value="1" default="true">现金已付</label>
+                    <label><input name="cashpayed" type="radio" value="0">银行转账</label>
+                </div>
+                <div class="input" style="padding:0px 0px;width:50%;float:left">
+                    <select name="bank_subject" style="width: 100%;" class="chosen-select"
+                            data-options="all:true,textField:'name',idField:'id',search_key_url:'VcrSubject/getBankSubject/'">
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+        <div class="title required kjqj">会计期间</div>
+        <div class="input">
+            <!--<input type="text" name="source_date" style="width:100%"  class="easyui-datebox easyui-validatebox" data-options="formatter:formatDate" value="{$model.source_date}">-->
+            <select class="chosen-select" style="width:100%;" name="accounting_section" data-value="{$model.accounting_section}"></select>
+        </div>
+        <div class="departments" style="display:block;padding: 10px 0px">
+            <span class="departments-value"></span>
+        </div>
+        <div class="title">发放部门</div>
+        <div class="input">
+            <select id ="fee_department"  class="chosen-select" style="width:100%;" name="fee_department[]" data-value="{$model.fee_department}" multiple>
+                <option selected="true" value="{$Think.const.FEE_DEPATMENT_MANAGE}">管理部门</option>
+                <option value="{$Think.const.FEE_DEPATMENT_SALES}">销售部门</option>
+                <option value="{$Think.const.FEE_DEPATMENT_RD}">研发部门</option>
+                <option value="{$Think.const.FEE_DEPATMENT_PRODUCTION}">生产部门</option>
+                <option value="{$Think.const.FEE_DEPATMENT_BUILDING}">施工部门</option>
+            </select>
+        </div>
+    </form>
+    <div class="form-actions" style="margin-top: 10px">     
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="action_salaryimport()">导入</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">取消</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var SheetNun = 0;
+    $(function () {
+        create_ccounting_section($("select[name=accounting_section]"));
+
+        var xlsxData;//读取完成的数据
+        var rABS = true; //是否将文件读取为二进制字符串
+        
+        /**
+         * 表格文件文件上传
+         * @param obj
+         */
+        $(".input").on("change",".easyui-file",function(){
+            var obj = this;
+            if(!obj.files) {
+                return;
+            }
+            var file = obj.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var data = e.target.result;
+                if(rABS) {
+                    xlsxData = XLSX.read(btoa(fixData(data)), {//手动转化
+                        type: 'base64'
+                    });
+                } else {
+                    xlsxData = XLSX.read(data, {
+                        type: 'binary'
+                    });
+                }
+                // xlsxData.SheetNames[0]是获取Sheets中第一个Sheet的名字
+                // xlsxData.Sheets[Sheet名]获取第一个Sheet的数据
+                var obj = xlsxData.SheetNames;
+                SheetNun = obj.length;
+                if (SheetNun > 1) {
+                    var rst = "";
+                    obj.forEach(function (value, index, array) {
+                        rst += value + " / ";
+                    });
+                    rst = rst + " 请按顺序选择以下对应部门"
+                    $(".departments").find("span").html("工资册包含" + SheetNun + "个部门：" + rst);
+                }
+            };
+            if(rABS) {
+                reader.readAsArrayBuffer(file);
+            } else {
+                reader.readAsBinaryString(file);
+            }
+        });
+
+        /**
+         * 文件流转BinaryString
+         * @param data
+         * @returns {string}
+         */
+        function fixData(data) {
+            var o = "";
+            var l = 0;
+            var w = 10240;
+            for(; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+            o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+            return o;
+        }
+
+    });
+    function action_salaryimport() {
+        var customer = $("#customer-info").text();
+        var accounting_section = $("#import-form").find("select[name=accounting_section]").val();
+        var fee_department = $("#fee_department").val();
+        var str = "";
+        if (fee_department!=null) {
+            if (SheetNun!=fee_department.length) {
+                str = "工资册包含部门与发放部门数量不一致！";
+            }
+            if (customer != "") {
+                action_import("salary-file", "VcrBillSalary/import", str+"确定导入客户【" + customer + "】"+ accounting_section + "月份的工资数据？", function () {
+                    setTimeout('getDataGrid("VcrBill").datagrid("reload")', 1000);
+                });
+                // setInterval(function(){
+                //     $.post("http://zp.caisuikx.com/VcrSubject/getProcess", function(result){
+                //         $(".kjqj").html(result);
+                //     })
+                // }, 1000);
+            }   
+        }else{
+            alert("发放部门不能为空");
+        }
+
+    }
+</script>

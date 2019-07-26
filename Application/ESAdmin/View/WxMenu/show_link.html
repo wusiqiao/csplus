@@ -1,0 +1,77 @@
+<!-- 商城链接选择弹窗 -->
+<div id="MallLink-select-edit" class="easyui-draggable" data-options="handle:'#MallLinkselect-edit-hd'" >
+
+    <div class="MallLinkselect-edit-bd">
+        <div class="c-header" style="margin:10px 0px 0">
+            <span class="tab-span on" onclick="MallClick(event)">商城页面</span>
+            <span class="tab-span" onclick="CommodityClick(event)">商品</span>
+            <span class="tab-span" onclick="PromotionClick(event)">推广</span>
+        </div>
+        <!-- 商城页面 -->
+        <div id="Mall-page">
+            <volist name="others" id="other">
+                <div class="link-box">
+                    <div class="link-box-text" style="color: #35323b;font-size: 16px;line-height: 16px;margin: 0 8px;">{$other.title}</div>
+                    <div style="height: 32px;padding:0 8px;margin: 17px 0;">
+                        <span class="link-box-left" title="{$other.url}">{$other.url}</span>
+                        <span class="link-box-right" onclick="addLink('{$other.url}','{$other.title}')">选择该链接</span>
+                    </div>
+                </div>
+            </volist>
+        </div>
+        <!-- 商品 -->
+        <div id="Commodity-page" style="display:none;">
+            <volist name="products" id="product">
+                <div class="Commodity-box" >
+                    <div style="height:83px">
+                        <div class="Commodity-box-img"><img style="width:100%;" src="{$product.product_pic}" alt=""></div>
+                        <div class="Commodity-box-txt">
+                            <div class="Commodity-box-title">{$product.product_title}</div>
+                            <div class="Commodity-box-content" title="{$product.product_desc}">{$product.product_desc}</div>
+                            <div class="Commodity-box-price">{$product.view_price}</div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 32px;margin: 20px 0;">
+                        <span class="link-box-left" title="{$product.url}">{$product.url}</span>
+                        <span class="link-box-right" onclick="addLink('{$product.url}','{$product.product_title}')">选择该链接</span>
+                    </div>
+                </div>
+            </volist>
+        </div>
+        <!-- 推广 -->
+        <div id="Promotion-page" style="display:none;">
+            <volist name="tweets" id="tweet">
+                <div class="Commodity-box">
+                    <div style="height:83px">
+                        <div class="Commodity-box-img"><img src="{$tweet.pic}" alt=""></div>
+                        <div class="Commodity-box-txt">
+                            <div style="margin-bottom: 47px;" class="Commodity-box-content" title="{$tweet.title}">{$tweet.title}</div>
+                            <div style="width: 100%;height: 20px;line-height: 20px;">
+                                <div class="link-focus">
+                                    <span class="icon-focus"></span>
+                                    <span class="num-focus">{$tweet.eye}</span>
+                                </div>
+                                <div class="link-share">
+                                    <span class="icon-share"></span>
+                                    <span class="num-share">{$tweet.share}</span>
+                                </div>
+                                <div class="link-date">{$tweet.time}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 32px;margin: 20px 0;">
+                        <span class="link-box-left" title="{$tweet.url}">{$tweet.url}</span>
+                        <span class="link-box-right" onclick="addLink('{$tweet.url}','{$tweet.title}')">选择该链接</span>
+                    </div>
+                </div>
+            </volist>
+        </div>
+    </div>
+</div>
+<script>
+    function addLink(inc,title){
+        $('.custom-link').val(inc);
+        $('#link-value-text').text(title);
+        closeDialog('material-link-dialog')
+    }
+</script>

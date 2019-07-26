@@ -1,0 +1,104 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id" type="hidden" value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span><span style="color: red;font-size: 21px;padding: 5px">*</span>{$Think.lang.SUNDRY_NAME}：</span></div>
+                <div class="inputbox">
+                    <input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" />
+                </div>
+                <div class="caption"><span>客户公司：</span></div>
+                <div class="inputbox">
+                    <select id="customer_company" name="customer_company" class="chosen-select" data-options="all:true,value:'{$model.customer_company}',search_key_url:'ComCompany/keyNameList/'" <if condition="$model.status neq null">disabled</if> >
+                        <option value="{$model.branch.value}">{$model.branch.text}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.SUNDRY_NO}：</span></div>
+                <div class="inputbox">
+                    <input name="no" class="easyui-validatebox" data-options="required:true" value="{$model.no}" />
+                </div>
+                <!-- <div > -->
+                    <div style="display:none" class="caption lender"><span>出借人：</span></div>
+                    <div style="display:none" class="inputbox lender">
+                        <select name="lender" class="chosen-select customer-select" data-options="all:true,search_key_url:'ComSundryOrder/UserList/'">
+                            <option value="">请选择人员</option>
+                        </select>
+                    </div>
+                <!-- </div> -->
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.SUNDRY_STATUS}：</span></div>
+                <div class="inputbox">
+                    <select id="status" name="status" class="chosen-select" data-value="{$model.status}" <if condition="$model.status neq null">disabled</if> >
+                        <option value=""> </option>
+                        <option value="2" selected>未借用</option>
+                        <option value="0">借用中</option>
+                        <option value="1">已归还</option>
+                    </select>
+                </div>
+                <div class="caption"><span><span style="color: red;font-size: 21px;padding: 5px">*</span>{$Think.lang.SUNDRY_POSITION}：</span></div>
+                <div class="inputbox">
+                    <input name="position" class="easyui-validatebox" data-options="required:true" value="{$model.position}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.SUNDRY_USER}：</span></div>
+                <div class="inputbox">
+                    <select id="user_id" name="user_id" class="chosen-select" data-options="all:true,value:'{$model.user_id}',search_key_url:'ComSundryOrder/UserList/'" disabled="disabled">
+                        <option value="">请选择人员</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.LAST_BORROW_DATE}：</span></div>
+                <div class="inputbox">
+                    <input name="last_borrow_date" class="easyui-validatebox" readonly="true" value="{$model.last_borrow_date}" />
+                </div>
+                <div class="caption"><span>{$Think.lang.LAST_RETURN_DATE}：</span></div>
+                <div class="inputbox">
+                    <input name="last_return_date" class="easyui-validatebox" readonly="true" value="{$model.last_return_date}" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html" controller="ComSundry" />
+</div>
+<script type="text/javascript">
+$('#customer_company').chosen().change(function() {
+    var branch_id = $(this).children('option:selected').val();
+    var url = "__MODULE__/ComSundryOrder/customerList/branch_id/" + branch_id;
+    if (branch_id > 0) {
+        $(".customer-select option").remove();
+        $.ajax({
+            url: url,
+            success: function(data) {
+                data = $.parseJSON(data);
+                var html = '<option value="">请选择人员</option>';
+                $.each(data, function(k, v) {
+                    html += '<option value="' + v.value + '">' + v.text + '</option>';
+                });
+                $(".customer-select").html(html);
+                $(".customer-select").trigger("chosen:updated");
+            }
+        });
+    }
+})
+$('#status').chosen().change(function() {
+    var status = $("#status").children('option:selected').val();
+    if (status == 0) {
+        $(".lender").show();
+        // $("#user_id").removeAttr("disabled");
+        $("#user_id").prop("disabled",false);
+        $("#user_id").trigger("chosen:updated");
+        // console.log( $("#user_id").attr("disabled"));
+    } else {
+        $(".lender").hide();
+        $("#user_id").prop("disabled","disabled");
+        $("#user_id").trigger("chosen:updated");
+        // console.log( $("#user_id").attr("disabled"));
+
+    }
+})
+</script>

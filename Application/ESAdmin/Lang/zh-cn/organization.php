@@ -1,0 +1,32 @@
+<?php
+return array
+(   
+    "FLD_NO" => "人员编号",
+    "FLD_SEX" => "性别",
+    "FLD_BIRTHDAY" => "出生日期",
+    "FLD_HEAD_PIC" => "头像",
+    "FLD_LINKNAME" => "昵称",
+    "FLD_STAFF_NAME" => "姓名",
+    "FLD_TELPHONE" => "联系电话",
+    "FLD_MOBILE" => "绑定手机",
+    "FLD_EMAIL" => "邮箱",
+    "FLD_QQ" => "QQ",
+    "FLD_REMARK" => "备注",
+    "FLD_LOGIN_COUNT" => "登录次数",
+    "FLD_LAST_TIME" => "最后登录时间",
+    "FLD_IS_LEADER" => "超级用户",
+    "FLD_DAC_TYPE" => "可见范围",
+    "FLD_POSITION" => "职位",
+    "FLD_USER_TYPE" => "用户类型",
+    "FLD_DAC_SPACE" =>"权限范围",
+    "FLD_INCLUDE_ALL" =>"含下属部门",
+    "FLD_DEPARTMENT" => "所在公司",
+    "FLD_GROUP" => "分组",
+    "FLD_TAG" => "标签",
+    "ENUM_SEX_0" => "男",
+    "ENUM_SEX_1" => "女",
+    "ENUM_DAC_TYPE_0" =>"所在部门",
+    "ENUM_DAC_TYPE_1" =>"指定部门",
+    "ENUM_DAC_TYPE_9" =>"创建人",
+    "FLD_DEPARTMENT_NAME" => "部门名称"
+);

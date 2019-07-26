@@ -1,0 +1,1453 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}/Public/css/step.css">
+    <style>
+        #edui_fixedlayer{
+            z-index: 2333 !important;
+        }
+        #upload_ue{
+            display: none;
+        }
+        /*step start*/
+        .step-tabs{
+            padding-top: 60px;
+        }
+        .step-tabs ul li{
+            float: left;
+            position: relative;
+            color: #b7b7b7;
+            margin-bottom: 35px;
+        }
+        .step-tabs ul .step-first{
+            margin-left: 8%;
+            width: 20%;
+        }
+        .step-tabs ul .step-process{
+            width: 15%;
+        }
+        .step-tabs ul .step-end{
+            width: 10%;
+        }
+        .step-tabs ul{
+            position: relative;
+        }
+        .step-tabs ul .step-complate .step-content .step-ui{
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: #FFFFFF;
+            border: 1.5px solid #0099FF;
+            border-radius: 25px;
+        }
+        .step-tabs ul .step-complate .step-content .step-ui:after{
+            content: '✓';
+            font-size: 17px;
+            margin-left: 6px;
+            color: #0099FF;
+        }
+        .step-tabs ul .step-now .step-content .step-ui{
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: #0099FF;
+            border-radius: 25px;
+        }
+        .step-tabs ul .step-dont .step-content .step-ui{
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #E9E9E9;
+            border-radius: 25px;
+            margin-top: 2px;
+        }
+        .step-tabs ul .step-complate .step-line{
+            width: 100%;
+            background-color: #0099FF;
+            height: 5px;
+            position: absolute;
+            margin-top: 10px;
+            margin-left: 10%;
+        }
+        .step-tabs ul .step-now .step-line{
+            width: 100%;
+            background-color: #E9E9E9;
+            height: 5px;
+            position: absolute;
+            margin-top: 10px;
+            margin-left: 10%;
+        }
+        .step-tabs ul .step-dont .step-line{
+            width: 100%;
+            background-color: #E9E9E9;
+            height: 5px;
+            position: absolute;
+            margin-top: 10px;
+            margin-left: 10%;
+        }
+        .step-tabs ul li .step-content .content-title{
+            padding-top: 28px;
+            margin-left: -12%;
+            text-align: center;
+            position: absolute;
+        }
+        .step-tabs ul .step-now .step-content .content-tip{
+            display:block !important;
+            margin-left: -42%;
+            text-align: center;
+            position: absolute;
+            margin-top: 48px;
+            width: 100%;
+            font-size: 12px;
+        }
+        .step-hidden{
+            display: none;
+        }
+        /*tableForm*/
+        .step-block{
+            height: 320px;
+            overflow-y: scroll;
+            margin-top: 100px;
+            margin-left: 25px;
+        }
+        /*step end*/
+        /*topic Start*/
+        .topic-header{
+            border-bottom: 1px solid #e1e4e8;
+            border-radius: 3px;
+            height: 35px;
+            text-align: center;
+            color:#586069;
+        }
+        .topic-header .topic-tip{
+            width: 50%;
+            line-height: 35px;
+            float: left;
+            text-align: left;
+        }
+        .topic-header .topic-content{
+            width: 0px;
+            line-height: 35px;
+            float: left;
+        }
+        .topic-list .topics-single{
+            border-bottom: 1px solid #eaecef;
+            border-radius: 3px;
+            text-align: center;
+            color:#586069;
+            float:left;
+            width:100%;
+            position: relative;
+        }
+        .topic-list .topics-single .topic-tip{
+            width: 50%;
+            line-height: 35px;
+            float: left;
+        }
+        .topic-list .topics-single .topic-content{
+            width: 50%;
+            line-height: 35px;
+            height: 90%;
+            padding-top: 0.5%;
+            overflow-y: auto;
+            text-align: left;
+            padding-left: 40%;
+        }
+        .topic-list .topics-single .topic-content .topic-tips{
+            display: -webkit-inline-flex;
+            background-color: #ccc;
+            color: #fff;
+            border-radius: 3px;
+            height: 25px;
+            line-height: 25px;
+            padding: 0 4%;
+            margin-right: 1%;
+            margin-bottom: 1%;
+            float: left;
+            position: relative;
+        }
+        .topic-list .topics-single .topic-content .topic-tips .tips-close{
+            position: absolute;
+            top:0px;
+            right:0px;
+            color:red;
+        }
+        .topic-list .topics-single .topic-tip .topic-title{
+            width:  80%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            float: left;
+        }
+        .topic-list .topics-single .topic-tip .topic-title .topic-create-sub{
+            width: 95%;
+            margin-top: 4px;
+            border: 1px solid #CCCCCC;
+            border-radius: 3px;
+        }
+        .topic-list .topics-single input[type=text]{
+            width: 95%;
+            margin-top: 4px;
+            padding: 6px 0px 6px 5px;
+            color: #555555;
+            background-color: #ffffff;
+            background-image: none;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        }
+        .topic-list .topics-single .topic-tip .topic-title .disabled{
+            background-color: #fff;
+            border: 1px solid #fff;
+            text-align: center;
+        }
+        .topic-list .topics-single .topic-tip .topic-edit{
+            height: 36px;
+            padding-bottom: 0px;
+            line-height: 36px;
+            float:left;
+            text-align: left;
+        }
+        .topic-list .topics-single .topic-tip-remove{
+            position: absolute;
+            top:2px;right:10px;
+            cursor: pointer;
+        }
+        .topic-list .topics-single .topic-tip-remove .btn-dete:hover{
+            color: red !important;
+        }
+        .topic-list .topics-single .topic-tip .topic-edit .btn-success{
+            padding: 4px;
+
+            border-radius: 4px;
+        }
+        .topic-list .topics-single .topic-tip .topic-edit .btn-add{
+            padding: 4px;
+
+            border-radius: 4px;
+        }
+        .topic-list .topics-single .topic-tip .topic-edit .btn-dete{
+            padding: 4px;
+
+            border-radius: 4px;
+        }
+        .topic-list .topics-single .topic-tip .topic-edit .btn-save{
+            padding: 4px;
+
+            border-radius: 4px;
+        }
+        .step-cased-show {
+            /*height: 136px;*/
+            /*overflow-y: auto;*/
+        }
+        .step-cased-show .cased-all{
+            width: 78%;
+            /* overflow-y: auto; */
+        }
+        .step-cased-show .cased-list{
+            width: 100%;
+            float: right;
+        }
+        .step-cased-show .cased-list header{
+            display: -webkit-inline-box;
+            font-size: 15px;
+            font-weight: 900;
+            width: 20%;
+            text-align: center;
+        }
+        .step-cased-show .cased-list .cased-tips{
+            /*display: -webkit-inline-box;*/
+            margin-left: 2%;
+            width: 78%;
+            overflow-x: auto;
+            float: right;
+        }
+        .step-cased-show .cased-list .cased-tips ul{
+            width: 999px;
+        }
+        .step-cased-show .cased-list .cased-tips li{
+            padding: 0px 5px;
+            background-color: #464cc4;
+            color: #fff;
+            border-radius: 3px;
+            height: 25px;
+            line-height: 25px;
+            margin-right: 1%;
+            margin-bottom: 1%;
+            float: left;
+        }
+        .cased-setting-list .cased-all{
+            width: 100%;
+            height: 300px;
+            /* overflow-y: auto; */
+            float: left;
+
+        }
+        .cased-setting-list .cased-all .cased-header{
+
+        }
+        .cased-contents{
+            border-collapse: collapse;
+            position: relative;
+            width: 100%;
+        }
+        .cased-contents tr th{
+            border: 1px solid #999;
+            padding: 5px;
+            text-align: center;
+        }
+        .cased-contents tr td{
+            border: 1px solid #999;
+            padding: 5px;
+            color: #999;
+            text-align: center;
+        }
+        .cased-contents tr td input{
+            width: 96%;
+            padding: 0;
+        }
+        .th-input{
+            width: 95px !important;
+        }
+        .step-pro-mes img{
+            max-width: 100%;
+        }
+        /*topic End*/
+        /*radio Start*/
+        .checkbox-success {
+            margin-bottom: 5px;
+        }
+        .checkbox label::before {
+            content: "";
+            display: inline-block;
+            position: relative;
+            width: 17px;
+            height: 17px;
+            left: 0;
+            margin-left: 0px;
+            border: 1px solid #cccccc;
+            border-radius: 3px;
+            background-color: #fff;
+            -webkit-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+            -o-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+            transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+
+        }
+        .checkbox label.checked::before{
+            content: "";
+            display: inline-block;
+            position: relative;
+            width: 17px;
+            height: 17px;
+            left: 0;
+            margin-left: 0px;
+            border-radius: 3px;
+            -webkit-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+            -o-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+            transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+            background-color: #0099FF;
+            border-color: #0099FF;
+        }
+        .checkbox {
+            padding-left: 5px;
+        }
+        .checkbox label {
+            display: inline-block;
+            vertical-align: middle;
+            position: relative;
+            padding: 2px 10px;
+            margin-left: -4px;
+            /* display: none; */
+            margin-top: 7px;
+            /*radio End*/
+        }
+        .checkbox label.checked::after {
+            display: inline-block;
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 0;
+            top: 0;
+            margin-left: 8.2px;
+            padding-left: 3px;
+            padding-top: 3px;
+            font-size: 11px;
+            color: #fff;
+            content: "✔";}
+        .action-topic-add{
+            width: 100%;
+            text-align: center;
+            height: 40px;
+        }
+    </style>
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm" style="width:700px;height:480px">
+            <div class="step-tabs">
+                <ul class="step-ul">
+                    <li class="step-now step-first" data-Serial="1">
+                        <div class="step-line"></div>
+                        <div class="step-content">
+                            <span class="step-ui"></span>
+                            <span class="content-title">创建服务</span>
+                            <span class="content-tip step-hidden">
+                                输入服务名称<br/>
+                                选择服务类别
+                            </span>
+                        </div>
+                    </li>
+                    <li class="step-dont step-process" data-Serial="2">
+                        <div class="step-line"></div>
+                        <div class="step-content">
+                            <span class="step-ui"></span>
+                            <span class="content-title">添加选项</span>
+                            <span class="content-tip step-hidden">
+                                添加自定义服务选项，如:公司规模、服务期限等
+                            </span>
+                        </div>
+                    </li>
+                    <li class="step-dont step-process" data-Serial="3">
+                        <div class="step-line"></div>
+                        <div class="step-content">
+                            <span class="step-ui"></span>
+                            <span class="content-title">设置价格</span>
+                            <span class="content-tip step-hidden">
+                                根据已添加选项<br>
+                                选择需要的服务类型
+                            </span>
+                        </div>
+                    </li>
+                    <li class="step-dont step-process" data-Serial="4">
+                        <div class="step-line"></div>
+                        <div class="step-content">
+                            <span class="step-ui"></span>
+                            <span class="content-title">设置流程</span>
+                            <span class="content-tip step-hidden">
+                                设置服务流程
+                            </span>
+                        </div>
+                    </li>
+                    <li class="step-dont step-process" data-Serial="5">
+                        <div class="step-line"></div>
+                        <div class="step-content">
+                            <span class="step-ui"></span>
+                            <span class="content-title ">服务详情</span>
+                            <span class="content-tip step-hidden">补充服务详细描述</span>
+                        </div>
+                    </li>
+                    <li class="step-dont step-end" data-Serial="6">
+                        <div class="step-line-end"></div>
+                        <div class="step-content">
+                            <span class="step-ui"></span>
+                            <span class="content-title ">完成</span>
+                            <span class="content-tip step-hidden">补充服务备注、服务图示</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="step-block-all">
+                <div class="tableForm step-block"  v-bind="1">
+                    <input name="id"  type="hidden"  value="{$model.id}">
+                    <input name="branch_id"  type="hidden"  value="{$model.branch_id}">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.PRO_NAME}：</span></div>
+                        <div class="inputbox_x2"><input name="product_title" class="easyui-validatebox" data-options="required:true" value="{$model.product_title}" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.PRO_CATEGORY}：</span></div>
+                        <div class="inputbox" style="width:43%">
+                            <select name="category_pid" class="chosen-select categorys" data-options="required:true" data-value="{$model.category_pid}" style="width:100%">
+                                <volist name="categorys" id="vo">
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                </volist>
+                            </select>
+                        </div>
+                        <div class="inputbox" style="width:40%">
+                            <select name="category_id" class="chosen-select categorys-children" data-options="required:true" data-value="{$model.category_id}" style="width:100%">
+                                <volist name="categorys_children" id="vo">
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                </volist>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="tableForm step-block" style="display: none;" v-bind="2">
+                    <div class="row" id="topic-options" style="height: 260px;overflow-y: auto;">
+                        <div class="topic-header">
+                            <div class="topic-tip"  style="width:40%">服务选项</div>
+                            <div class="topic-tip"  style="width:50%">添加选项值（回车键添加，TAB键换行）</div>
+                            <div class="topic-content" style="width:10%">删除</div>
+                        </div>
+                        <div class="topic-list template-topic" >
+                            <volist name="topics" id="vo">
+                                <div class="topics-single" >
+                                    <div class="topic-tip"  style="width:40%">
+                                        <div class="topic-title" v-id="{$vo.id}">
+                                            <input type="text" value="{$vo.name}"  class="topic-sub  easyui-validatebox">
+                                        </div>
+                                    </div>
+                                    <div class="topic-tip"  style="width:50%">
+                                        <div class="topic-title">
+                                            <input type="text" class="topic-create-sub easyui-validatebox">
+                                        </div>
+                                        <div class="topic-edit">
+                                            <i class="btn-add fa fa-plus-square-o fa-2x" data-tips="{$vo.vr}"></i>
+                                        </div>
+                                    </div>
+                                    <div class="topic-content">
+                                        <volist name="vo.children" id="v">
+                                            <div class="topic-tips" v-id="{$v.id}"><span>{$v.name}</span><span class="tips-close"> <i class="btn-dete1 fa fa-minus-circle fa-lg"></i></span></div>
+
+                                        </volist>
+                                    </div>
+                                    <div class="topic-tip-remove">
+                                        <i class="btn-dete fa fa-trash-o fa-2x" style="color:#ccc"></i>
+                                    </div>
+                                </div>
+                            </volist>
+                        </div>
+                    </div>
+                    <div class="action-topic-add"><i class="btn-dete fa fa fa-plus-circle fa-3x" style="color:#00afff;cursor: pointer"></i></div>
+                </div>
+                <div class="tableForm step-block" style="display: none"  v-bind="3">
+                    <div class="row step-cased-show" >
+                        <div class="cased-all">
+                            <div class="cased-list">
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row step-cased-show" >
+                        <div class="cased-setting-list">
+                            <header style="font-weight: bold;padding: 5px">填写服务选项对应的价格，取消勾选不需要的服务类型，<span style="color: red">不填或填零则表示价格面议</span></header>
+                            <div class="cased-all">
+                                <table class="cased-contents">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tableForm step-block" style="height: 335px;margin-top: 90px;overflow-y: auto;display: none" v-bind="4">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.PRO_SERVICE_FLOW}：</span></div>
+                        <div class="inputbox">
+                            <input name="is_step" type="radio" value="{$Think.const.PRO_STEP_ON}"  data-value="{$model.is_step}" />开启
+                            <input name="is_step" type="radio" value="{$Think.const.PRO_STEP_OFF}" data-value="{$model.is_step}" default="true"/>关闭
+                        </div>
+                    </div>
+                    <input type="hidden" name="step_flow" id="step_flow" value="{$model.step_flow}" />
+                    <div bind-radio="is_step" <neq name="model.is_step" value="1">style="display:none"</neq>>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.PRO_STEP_ADD}：</span></div>
+                        <div class="inputbox" style="width:70%">
+                            <input id="add_step"   style="width: 48%" class="easyui-validatebox easyui-tooltip"  />
+                            <button type="button" class="step-button" style="margin-left:20% " onclick="addStep(this);">
+                                <span style="padding: 10px;">添加</span>
+                                <!-- <span class="step-add-icon l-btn-icon"></span> -->
+                            </button>
+                        </div>
+                    </div>
+                    <div class="the_step_show">
+                        <div class="row">
+                            <div class="caption"><span>{$Think.lang.PRO_STEP_SHOW}：</span></div>
+                        </div>
+                        <div class="row step">
+                            <div class="step_slider" bind-number="{$model.countStep}">
+                                <ul>
+                                    <volist name="model.step_view" id="vo">
+                                        <li >
+                                            <div class="step_del" bind-step="{$vo.level}" onclick="stepDel(this);"></div>
+                                            <eq name="vo.level" value="1">
+                                                <div class="cbp_tmicon"></div>
+                                            </eq>
+                                            <div class="step_tmlabel">
+                                                <h2>{$vo.name}</h2>
+                                                <p>{$vo.value}</p>
+                                            </div>
+                                        </li>
+                                    </volist>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="tableForm step-block step-pro-mes"  style="margin-top: 70px;display: none"  v-bind="5">
+                    <div>
+                        <div style="border-bottom: 1px solid #ccc;padding-bottom: 5px"><a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button editor-edit-botton" plain="true" icon="fa-edit fa-lg">编辑</a></div>
+                        <div style="overflow: auto;height: 305px;" class="step-pro-mes">
+                            <!--<textarea name="content" id="product-content">{$content|html_entity_decode}</textarea>-->
+                            <div id="product-content">{$model.content|html_entity_decode}</div>
+                            <input name="content" type="hidden" value="{$model.content}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="tableForm step-block" style="display: none" v-bind="6">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.PRO_SHELVES}：</span></div>
+                        <div class="inputbox">
+                            <!-- <input type="hidden" name="state" value="0" /> -->
+                            <input name="state" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.state}"  default="true"/></div>
+                    </div>
+                    <!--<div class="row">-->
+                        <!--<div class="caption"><span>{$Think.lang.PRO_IS_NUMBER}：</span></div>-->
+                        <!--<div class="inputbox">-->
+                            <!--&lt;!&ndash; <input type="hidden" name="state" value="0" /> &ndash;&gt;-->
+                            <!--<input name="is_number" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.is_number}" /></div>-->
+                    <!--</div>-->
+                    <div class="row">
+                        <div class="caption block"><span>{$Think.lang.FLD_COMMENTS}：</span></div>
+                        <div class="inputbox_x2"><textarea name="product_desc" class="easyui-validatebox">{$model.product_desc}</textarea></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.PRO_PRODUCT_PIC}：</span></div>
+                        <div class="inputbox">
+                            <input type="text" class="easyui-validatebox" id="product_pic" name="product_pic"  value="{$model.product_pic}"/>
+                        </div>
+                        <a href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="upImage();">上传图片</a>
+                        <a href="{$model.product_pic}"
+                           class="easyui-linkbutton fontawesome-icon-button"
+                           plain="true"
+                           target="_blank"
+                        <empty name="model.product_pic">
+                            style="display: none"
+                        </empty>
+                        id="show_pic">查看图片</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div id="live_input" style="display: none">
+
+    </div>
+    <input type="hidden" id="attrs" value='{$attrs}'/>
+    </form>
+    <li id="template-1"  style="display:none">
+        <div class="step_del" bind-step="{%index_num%}" onclick="stepDel(this);"></div>
+        <div class="cbp_tmicon"></div>
+        <div class="step_tmlabel">
+            <h2>{%step_num%}</h2>
+            <p>{%step_view%}</p>
+        </div>
+    </li>
+    <li id="template-2" style="display:none">
+        <div class="step_del" bind-step="{%index_num%}" onclick="stepDel(this);"></div>
+        <div class="step_tmlabel">
+            <h2>{%step_num%}</h2>
+            <p>{%step_view%}</p>
+        </div>
+    </li>
+<div id="template-topic" style="display:none">
+    <div class="topics-single">
+        <div class="topic-tip" style="width:40%">
+            <div class="topic-title">
+                <input type="text" value=""  class="topic-sub">
+            </div>
+        </div>
+        <div class="topic-tip"  style="width:50%">
+            <div class="topic-title">
+                <input type="text" class="topic-create-sub">
+            </div>
+            <div class="topic-edit">
+                <i class="btn-add fa fa-plus-square-o fa-2x" data-tips=""></i>
+            </div>
+        </div>
+        <div class="topic-content">
+        </div>
+        <div class="topic-tip-remove">
+            <i class="btn-dete fa fa-trash-o fa-2x" style="color:#ccc"></i>
+        </div>
+    </div>
+</div>
+        <div class="cased-list" id="cased-list-template" style="display:none">
+            <div class="" style="width: 100%">
+                <header>{%title%}</header>
+                <div class="cased-tips">
+                    <ul>
+                        {%content%}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <div class="form-actions" id='[controller]-form-actions'>
+        <div class='actions-sysdefault'>
+            <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+                <a href="javascript:void(0)" id="prevStep" class="easyui-linkbutton fontawesome-icon-button" plain="true" >上一步</a>
+                <a href="javascript:void(0)" id="nextStep" class="easyui-linkbutton fontawesome-icon-button" plain="true" >下一步</a>
+                <a href="javascript:void(0)" id="saveStep" class="easyui-linkbutton fontawesome-icon-button btn-update" plain="true" icon="fa-save fa-lg" style="display: none" onclick="action_update('{$Think.const.CONTROLLER_NAME}')">保存</a>
+            </if>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function() {
+            var $custom_actions = $('#{$Think.const.CONTROLLER_NAME}-actions-custom');
+            if ($custom_actions.length > 0){
+                $custom_actions.appendTo($('#{$Think.const.CONTROLLER_NAME}-form-actions')).show();
+            }
+        });
+    </script>
+</div>
+<script src="{$Think.const.JS_URL}ajaxfileupload.js" type="text/javascript"></script>
+<!--添加上传图片 start-->
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editorUploadImages/js/ueditor.config.js"></script>
+<script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editorUploadImages/js/ueditor.all.js"></script>
+<script type="text/plain" id="upload_ue"></script>
+<!--添加上传图片 end-->
+<!--流程模块 Start-->
+<script>
+
+    $('#nextStep').on('click',function(){
+        var nowStep =    $('.step-tabs').find('ul > .step-now');
+        var dataSerial = nowStep.attr('data-Serial');
+        if (!validated(nowStep)){
+            return false;
+        }
+        stepSave(nowStep,'next');
+        stepBlockToggle(parseInt(dataSerial) + 1);
+    })
+    $('#prevStep').on('click',function(){
+        var nowStep =    $('.step-tabs').find('ul > .step-now');
+        var dataSerial = nowStep.attr('data-Serial');
+        stepSave(nowStep,'prev');
+        stepBlockToggle(parseInt(dataSerial) - 1);
+    })
+    $('.topic-list').on('click','.tips-close',function(){
+        var tips = $(this).parents('.topic-content').prev().find('.topic-edit > .btn-add');
+        var tipValue = $(this).prev('span').text();
+        var tipsAll = tips.attr('data-tips').split('&|');
+        var index = tipsAll.indexOf(tipValue);
+        if (index > -1) {
+            tipsAll.splice(index,1);
+        }
+        tips.attr('data-tips',tipsAll.join('&|'));
+        $(this).parent('div').remove();
+    });
+    $('.action-topic-add').on('click', function(){
+        // var optionInput = $(this).parents('.option-div').prev('.inputbox').children('input');
+        // var optionValue = myTrim(optionInput.val());
+        // if( optionValue == ''){
+        //     $.dialog.tips('添加服务选项名称不能为空');
+        //     return false;
+        // }
+        // //获取已存在的服务选项
+        // var optionsList = $('#topic-options').find('.topic-list > .topics-single > .topic-tip > .topic-title > .topic-sub').map(function () {
+        //     return $(this).val();
+        // }).get();
+        // if($.inArray(optionValue,optionsList) !== -1){
+        //     $.dialog.tips('添加服务选项名称已存在');
+        //     return false;
+        // }else{
+        //     var data = {'value':optionValue};
+        //     var html = parseTemplate('template-topic',data);
+        //     $('#topic-options > .topic-list').append(html);
+        // }
+        var row = $('.topic-list .topics-single:last');
+        if (row.length > 0){
+            var input = row.find('.topic-sub');
+            if ($.trim(input.val()) == '') {
+                $.dialog.tips("类型不能为空!");
+                input.focus();
+                return false;
+            }
+            if (row.find('.topic-tips').length == 0) {
+                $.dialog.tips("请添加完善选项值!");
+                row.find(".topic-create-sub").focus();
+                return false;
+            }
+        }
+        var html = $("#template-topic").html();
+        $('#topic-options > .topic-list').append(html);
+        $('#topic-options > .topic-list').find(".topic-sub:last").focus();
+    })
+
+
+    $('.topic-list').on('click','.btn-dete',function(){
+        
+        var _this = $(this);
+        $.dialog.confirm('是否删除该服务选项?', function(){
+            var list = _this.parents('.topic-list');
+            _this.parents('.topics-single').remove();
+            list.find(".option_type_add:last").show();
+        });
+
+    });
+    $('.topic-list').on('keydown','.topic-sub',function(){
+        var e = event || window.event;
+        if(e && e.keyCode==13){
+            $(this).parents('.topics-single').find(".topic-create-sub").focus();
+        };
+    });
+    $('.topic-list').on('keydown','.topic-create-sub',function(){
+        var e = event || window.event;
+        if(e.keyCode==13){
+            $(this).parents('.topic-tip').find(".btn-add").click();
+        }else{
+            if (e.keyCode == 9){ //tab键
+                $(".action-topic-add").click();
+                return false;
+            }
+        }
+    });
+    $('.topic-list').on('click','.btn-add',function(){
+        var input  = $(this).parent('.topic-edit').prev('.topic-title').children('input').val();
+        var tipsStr= $(this).attr('data-tips');
+        var tipsAll= tipsStr.split('&|');
+
+        if(myTrim(input) == ''){
+            $.dialog.tips("选项值不能为空!");
+            return false;
+        }
+        if($.inArray(myTrim(input),tipsAll) !== -1){
+            $.dialog.tips("该选项值已存在!");
+            return false;
+        }else{
+            var nowTips = tipsStr == '' ?  myTrim(input) : $(this).attr('data-tips')+'&|'+myTrim(input);
+            var addTips = '<div class="topic-tips"><span>'+myTrim(input)+'</span><span class="tips-close"><i class="btn-dete1 fa fa-minus-circle fa-lg"></i></span></div>';
+            $(this).attr('data-tips',nowTips);
+            $(this).parents('.topic-tip').next('.topic-content').append(addTips);
+            $(this).parent('.topic-edit').prev('.topic-title').children('input').val('');
+        }
+    });
+    $('.cased-all').on('click','label',function(e){
+        if($(this).hasClass('checked')){
+            $(this).removeClass('checked');
+        }else{
+            $(this).addClass('checked');
+        }
+    })
+    function myTrim(x) {
+        return x.replace(/^\s+|\s+$/gm,'');
+    }
+    function validated(nowStep){
+        var dataSerial    = nowStep.attr('data-Serial');
+        var dataBlockAll  = $('.step-block-all');
+        var blockForm     = dataBlockAll.find('.step-block[v-bind='+dataSerial+']');
+        switch (parseInt(dataSerial)){
+            case 1:
+                return blockForm.form('validate');
+                break;
+            case 2:
+                if(settlementOptions(blockForm)) {
+                    setCaseTopics();
+                    return true;
+                }else{
+                    return false;
+                }
+
+                break;
+            case 3:
+                if(setCaseOptions(blockForm)) {
+                    setCaseTopicsLists(blockForm);
+                    return true;
+                }else{
+                    return false;
+                }
+                return true;
+                break;
+            case 4:
+                return setStepFlow();
+                break;
+            case 5:
+                return true;
+                break;
+            default:
+                return true;
+                break;
+
+        }
+
+    }
+    //第二阶段
+    function settlementOptions(obj){
+        var topicsSingle = obj.find('#topic-options > .topic-list > .topics-single');
+        if(topicsSingle.length == 0){
+            $.dialog.tips("请添加服务选项!!");
+            return false;
+        }
+        //自动添加
+        if (topicsSingle.length > 0){
+            if ($.trim(topicsSingle.find(".topic-create-sub").val()) != ""){
+                topicsSingle.find(".btn-add:last").click();
+            }
+        }
+        var result = true;
+        var data   = topicsSingle.map(function () {
+           var title =  $(this).find('.topic-tip > .topic-title > .topic-sub').val();
+           var content = $(this).find('.topic-tip > .topic-edit > .btn-add').attr('data-tips');
+           if(title == "" || !title){
+               result = false;
+               $.dialog.tips("类型不能为空!!");
+               return false;
+           }else if(content == '' || !content){
+               result = false;
+               $.dialog.tips(title+"选项不能没有选项值!!");
+               return false;
+           }else{
+               return{
+                   'title': title,
+                   'children': content
+               };
+           }
+        }).get();
+        setLocalStorage(data);
+        return result
+    }
+    //第三阶段
+    function setCaseOptions(obj){
+        var topics = obj.find('.step-cased-show > .cased-setting-list > .cased-all > .cased-contents > tbody > .set-case-lists > td > .checkbox-success > .checked');
+        if(topics.length == 0){
+            $.dialog.tips("至少设置一项定价!!");
+            return false;
+        }
+        var tip = true;
+        topics.each(function(){
+            var discountValue = parseFloat($(this).parents('.set-case-lists').find('td[v-bind=discount] input').val());
+            var originaValue = parseFloat($(this).parents('.set-case-lists').find('td[v-bind=origina] input').val());
+            console.log(discountValue);
+            console.log(originaValue);
+            if(discountValue == 0 || discountValue == '' || isNaN(discountValue)){
+                if(originaValue > 0){
+                    tip = false;
+                    $.dialog.tips("原价必须大于优惠价!!");
+                    return false;
+                }
+            }else if(discountValue > 0 && originaValue > 0 && originaValue <= discountValue){
+                tip = false;
+                $.dialog.tips("原价必须大于优惠价!!");
+                return false;
+            }
+        })
+        return tip;
+    }
+    //第四阶段
+    function setStepFlow(){
+        var priceType = $('input[name=is_step]:checked').val();
+        var CashNegotiable = '{$Think.const.PRO_STEP_ON}';//开启
+        var stepValue = $('input[name=step_flow]').val();
+        if(priceType == CashNegotiable && stepValue == ''){
+            $.dialog.tips("请输入服务流程!!");
+            return  false;
+        }
+        return true;
+    }
+    //获取 解析 attrs json
+    function handlerAttrsJson(){
+        var attrData = $('#attrs').val();
+        if(attrData == ''){
+            return false;
+        }
+        return $.parseJSON(attrData);
+    }
+    //设置localStorage
+    function setLocalStorage(data,itemValue ='_topics'){
+        data = $.isArray(data) ? JSON.stringify(data):data ;
+        localStorage.setItem(itemValue,data);
+    }
+    //获取localStorage
+    function getLocalStorage(type = 'json'){
+        var itemValue = '_topics';
+        var value     = localStorage.getItem(itemValue);
+        return type == 'json' ? value : $.parseJSON(value);
+    }
+    //设置第三项
+    function setCaseTopics(){
+        var itemArray = getLocalStorage('array');
+        var htmlShow      = '';
+        var htmlTr        = '<tr><th style="width: 15px">　　</th>';
+        var htmlTd        = '';
+        var itemChildren  = [];
+        for (var i = 0;i < itemArray.length ; i++){
+            var complateChildren = itemArray[i].children.split('&|');
+            var lis              = '';
+            itemChildren.push(complateChildren);
+            for (var a = 0;a < complateChildren.length; a++ ){
+                lis +='<li>'+complateChildren[a]+'</li>';
+            }
+            htmlTr       += '<th>'+itemArray[i].title+'</th>';
+            htmlShow     += parseTemplate('cased-list-template',{'title':itemArray[i].title,'content':lis});
+        }
+        htmlTr += '<th class="th-input">优惠价</th>';
+        htmlTr += '<th class="th-input">原价（选填）</th>';
+        htmlTr += '</tr>';
+        var childrens = handlerArrayTree(itemChildren);
+        var valued_all= handlerAttrsJson();
+
+        for (var i = 0;i < childrens.length ; i++){
+           var cAll = (childrens[i].indexOf('&|') != -1) ? childrens[i].split('&|') : [childrens[i]];
+           var valued_list = [];
+           var isValue = false;
+           var index   = [];
+           if(valued_all){
+               for(var a = 0;a < cAll.length;a++){
+                   valued_list.push({
+                       'title':itemArray[a].title,
+                       'value':cAll[a]
+                   })
+               }
+               for(var c = 0;c < valued_all.length ; c++){
+                   for(var a = 0;a < valued_all[c]['content'].length;a++){
+                       var isIn = false;
+                       for (var b=0;b < valued_list.length;b++){
+                           if(valued_all[c]['content'][a].title == valued_list[b].title && valued_all[c]['content'][a].value == valued_list[b].value){
+                               isIn = true;
+                               break;
+                           }
+                       }
+                       if(!isIn){
+                           break;
+                       }else if(a + 1 == valued_all[c]['content'].length){
+                           index = valued_all[c];
+                           isValue = true;
+                       }
+                   }
+               }
+           }else{
+               isValue = true;
+           }
+           htmlTd +='<tr class="set-case-lists"><td><div class="checkbox checkbox-success">';
+           if(isValue){
+               htmlTd +='<label class="checked" for="radio_'+i+'"></label></div></td>';
+           }else{
+               htmlTd +='<label for="radio_'+i+'"></label></div></td>';
+           }
+           for (var a = 0 ; a < cAll.length;a++){
+               htmlTd += '<td v-bind="'+itemArray[a].title+'">'+cAll[a]+'</td>';
+           }
+           htmlTd += '<td v-bind="discount"><input  type="number" value="'+index.discount+'"></td><td v-bind="origina"><input type="number" value="'+index.origina+'"></td>';
+           htmlTd += '</tr>';
+        }
+        htmlTd +='</tr>';
+        $('.cased-all > .cased-list ').html(htmlShow);
+        $('.cased-all > .cased-contents').html(htmlTr + htmlTd);
+    }
+    //设置第四项(设置input)
+    function setCaseTopicsLists(obj){
+        var perx       = "'"+new Date().getTime()+"'";
+        perx           = perx.substring(7,3);
+        var TopicArray = getLocalStorage('array');
+        var caseArray  = []
+        var caseDom    = obj.find('.step-cased-show > .cased-setting-list > .cased-all > table > tbody > .set-case-lists td > .checkbox-success > .checked');
+        var caseList   = caseDom.map(function(){
+                            var tdAll  = $(this).parent('div').parent('td').nextAll('td');
+                            var res = tdAll.map(function(){
+                                var tempArray = [];
+                                var theKey   = $(this).attr('v-bind');
+                                var theValue = $.inArray(theKey,['discount','origina']) == -1 ? $(this).text() : $(this).children('input').val();
+                                return theKey+'&'+perx+'|'+theValue;
+                            }).get();
+                            return res.join('&'+perx+',');
+                        }).get();
+        var html = '';
+        for (var i= 0;i< caseList.length;i++){
+            var parseCase = caseList[i].split('&'+perx+',');
+            var parseCaseChildren = [];
+            for (var a=0;a<parseCase.length;a++){
+                var temp = [];
+                var tempValue = parseCase[a].split('&'+perx+'|');
+                parseCaseChildren.push(tempValue);
+            }
+            html += '<input name="product_attribute[]" value=\''+JSON.stringify(parseCaseChildren)+'\'/>';
+        }
+        for(var i= 0;i < TopicArray.length;i++){
+            html += '<input name="product_options[]" value=\''+JSON.stringify(TopicArray[i])+'\'/>';
+        }
+        $('#live_input').html('');
+        $('#live_input').append(html);
+    }
+    function handlerArrayTree(data){
+        var result = [];
+        if(data.length == 1){
+            for (var i=0;i<data[0].length;i++){
+                result.push(data[0][i]);
+            }
+            return result;
+        }
+        for (var i = 0;i < data.length - 1;i++){
+            if(i == 0){
+               var tip = data[i];
+            }else{
+               var tip = result;
+            }
+            var temp = [];
+            for (var a = 0;a < tip.length;a++){
+                for(var n = 0;n < data[i+1].length;n++){
+                    temp.push(tip[a]+'&|'+data[i+1][n]);
+                }
+            }
+            result = temp;
+        }
+        return result;
+    }
+    function stepBlockToggle(step){
+        var index = $('.step-block-all .step-block[v-bind='+step+']');
+        index.show();
+        index.siblings('.step-block').hide();
+    }
+    function stepSave(obj,name){
+        switch (name){
+            case 'next':
+                if(obj.nextAll('li').length > 0){
+                    obj.addClass('step-complate').removeClass('step-now');
+                    obj.next('li').removeClass('step-dont').addClass('step-now');
+                    obj.nextAll('li').length == 1 ?handlerStepButton(name,'end'): handlerStepButton(name);
+                }
+                break;
+            case 'prev':
+                if(obj.prevAll('li').length > 0) {
+                    obj.addClass('step-dont').removeClass('step-now');
+                    obj.prev('li').removeClass('step-complate').addClass('step-now');
+                    obj.prevAll('li').length == 1 ?handlerStepButton(name,'end'): handlerStepButton(name);
+                }
+                break;
+        }
+    }
+    function handlerStepButton(name,inc = 'ing'){
+        var Suffix = 'Step';
+        var prev   = 'prev';
+        var next   = 'next';
+        var save   = 'save';
+        if(inc  != 'end'){
+            $('#'+prev+Suffix).show();
+            $('#'+next+Suffix).show();
+            $('#'+save+Suffix).hide();
+        }else{
+            $('#'+name+Suffix).hide();
+            if(name == 'next'){
+                $('#'+save+Suffix).show();
+            }
+        }
+    }
+</script>
+<!--流程模块 End-->
+<!--上传图片模块-->
+<script type="text/javascript">
+    var _editor;
+    var _editor2;
+    $(function() {
+        //重新实例化一个编辑器，防止在上面的editor编辑器中显示上传的图片或者文件
+        _editor = UE.getEditor('upload_ue',
+            {
+                upload_model: "product",
+                UEDITOR_HOME_URL:'__ROOT__Application/ESAdmin/Public/editorUploadImages/js/',
+            });
+        _editor.ready(function () {
+            //隐藏编辑器，因为不会用到这个编辑器实例，所以要隐藏
+            _editor.hide();
+            //侦听图片上传
+            _editor.addListener('beforeInsertImage', function (t, arg) {
+                //将地址赋值给相应的input,只去第一张图片的路径
+                $("#product_pic").attr("value", arg[0].src);
+                //图片预览
+                $("#show_pic").attr("href", arg[0].src);
+                $("#show_pic").show();
+            })
+        });
+    });
+    //弹出图片上传的对话框
+    function upImage() {
+        var myImage = _editor.getDialog("insertimage");
+        myImage.open();
+    }
+</script>
+<!--categorys-children-->
+<script type="text/javascript">
+    $('.categorys').chosen().change(function(){
+        var categoryPid = $(this).val();
+        $.post('__MODULE__/ComProduct/getTwoLevelLists.html',{pid:categoryPid},function(data){
+            if(data.error == 0){
+                var html = '';
+                var view = '';
+                for (var i = 0 ; i < data.data.length;i++){
+                    html += '<option value="'+data.data[i]['id']+'">'+data.data[i]['name']+'</option>';
+                    // view += '<li class="active-result" data-option-array-index='+i+' style="">'+data.data[i]['name']+'</li>'
+                }
+                $('.categorys-children').html(html);
+                $('.categorys-children').trigger("chosen:updated");
+            }else{
+                $.dialog.tips("数据丢失,请刷新重试");
+            }
+        },'JSON')
+    });
+    //添加验证信息
+    $.extend($.fn.validatebox.defaults.rules, {
+        compare:{
+            validator: function (value,param) {
+                return parseFloat($('input[name='+param[0]+']').val()) > parseFloat($('input[name='+param[1]+']').val());
+            },
+            message: '{$Think.lang.PRO_CASHED}不能小于{$Think.lang.PRO_CASHING}'
+        }
+    });
+    $('#product_pic_button').filebox({
+        onChange : function(e) {
+            var file = $(this).next().find('input[id^="filebox_file_id_"]');
+            var fileId = file.attr('id');
+            handleUploadFile(file,fileId,'product_pic');
+        }
+    });
+    function handleUploadFile(obj,fileId,pushId){
+        var files = $(obj).get(0).files[0];//获取图片信息
+        var push  = $('#'+pushId);
+        var index = $(obj);
+        var maxfilesize = 1024 * 1024 * 5;//最大文件大小设置为2M
+        if (files.size > maxfilesize) {
+            $.dialog.tips("文件大小最多只能5M,请重新上传");
+            return false;
+        }
+        if (files.type != 'image/jpeg' && files.type != 'image/jpg' && files.type != 'image/gif' && files.type != 'image/png') {
+            $.dialog.tips("文件类型只能是jpeg/jpg/gif/png类型");
+            return false;
+        }
+        $.ajaxFileUpload({
+            url: '__MODULE__/Upload/Index/t/1.html',
+            secureuri: false,
+            fileElementId: fileId, //上传控件ID
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 1) {
+                    $.dialog.tips(data.message);
+                } else {
+                    // $('#'+fileId).prev().attr('',data.pic)
+                    $('#show_'+pushId).attr('href',data.pic);
+                    $('#show_'+pushId).show();
+                    push.attr('value',data.pic);
+                    $.dialog.tips(data.message);
+
+                }
+            }
+        });
+    }
+    $(function(){
+        var $dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+            $dataForm.bind("beforeUpdate", function () {
+                beforeInspect();
+            });
+        $("input[name=price_type]").change(function(){
+            var CashValue = $(this).val();
+            var CashName  = 'price_type';
+            var CashNegotiable = '{$Think.const.PRO_CASHTYPE_NEGOTIABLE}';//面议
+            if(CashValue == CashNegotiable){
+                $("div[bind-radio="+CashName+"]").hide();
+                $("div[bind-radio="+CashName+"]").find('input').each(function(){
+                    $(this).validatebox('remove');
+                });
+            }else{
+                $("div[bind-radio="+CashName+"]").show();
+                $("div[bind-radio="+CashName+"]").find('input').each(function(){
+                    $(this).validatebox('reduce');
+                });
+            }
+        });
+
+        $("input[name=is_step]").change(function(){
+
+            var CashValue = $(this).val();
+            var CashName  = 'is_step';
+            var CashNegotiable = '{$Think.const.PRO_STEP_ON}';//开启
+            if(CashValue == CashNegotiable){
+                $("div[bind-radio="+CashName+"]").show();
+            }else{
+                $("div[bind-radio="+CashName+"]").hide();
+            }
+        });
+        // 选择服务类型修改和载入服务流程
+        $("select[name=category_id]").change(function(){
+            var CategoryId = $(this).val();
+            $.post('__MODULE__/index.php/ComProduct/getCateStepList',{category_id:CategoryId},function(request){
+                var html = '';
+                $('.step_slider > ul').empty();
+                setStepInputData('empty');
+                if(request.error == 0){
+                    for(i = 0 ; i < request.list.length;i++){
+                        html += (i == 0) ? parseTemplate('template-1',request.list[i]) : 
+                                           parseTemplate('template-2',request.list[i]);
+                    }
+                    setStepInputData('all',request.list);
+                    $('.step_slider').attr('bind-number',request.list.length);
+                    $('.step_slider > ul').append(html);
+                }
+            },'json')
+        });
+        $dataForm.find(".editor-edit-botton").click(function(){
+            var source = $("#product-content").html();
+            openEditor("详情编辑", source, function(content){
+                $("#product-content").html(content);
+                $dataForm.find("input[name=content]").val(content);
+            });            
+        });
+        //如果是新增，默认添加一个服务选项
+        initialTopics($dataForm.find("input[name=id]").val());
+    });
+    function initialTopics(product_id){
+        if (product_id == "" || product_id == undefined){
+            $('.action-topic-add').click();
+            $('#topic-options .topics-single .topic-sub').val("服务周期");
+            $('#topic-options .topics-single .topic-create-sub').val("每次");
+        }
+    }
+    //提交前检查
+    function beforeInspect(){
+        var priceType = $('input[name=is_step]:checked').val();
+        var CashNegotiable = '{$Think.const.PRO_STEP_ON}';//开启
+        var stepValue = $('input[name=step_flow]').val();
+        if(priceType == CashNegotiable && stepValue == ''){
+            throw '请输入服务流程'; 
+        }
+    }
+    //步骤添加
+    function addStep(obj){
+        var TheIndex = (parseInt($(".step_slider").attr('bind-number')) >= 0 ? parseInt($(".step_slider").attr('bind-number')) : 0) + 1;
+        var TheValue = $.trim($("#add_step").val());
+        var Html     = '';
+        var isRepeat = getTheStepRepeat(TheValue);
+        
+        if(isRepeat){
+            $('#add_step').tooltip({
+                showEvent : 'dd',
+                position : 'right',
+                content: '<span>步骤重复!</span>',
+                onShow: function(){
+                    $(this).tooltip('tip').css({
+                        backgroundColor: '#FFFFCC',
+                        borderColor: '#CC9933',
+                        color: '#272822'
+                    });
+                }
+            });
+            $('#add_step').tooltip('show');
+            setTimeout(function(){
+                $('#add_step').tooltip('hide');
+            },2000);
+            return false;
+        }
+        if(TheValue != ''){
+            TheData = {index_num:TheIndex.toString(),step_num:intTransCh(TheIndex),step_view:TheValue};
+            Html    = (TheIndex == 1) ? parseTemplate('template-1',TheData) : parseTemplate('template-2',TheData);
+            //Html    = parseTemplate('template-'+TheIndex,TheData);
+            $('.step_slider > ul').append(Html);
+            $('.step_slider > ul').children().last().removeAttr('id');
+            $(".step_slider").attr('bind-number',TheIndex);
+            setStepInputData('add',TheValue);
+        }else{
+            $('#add_step').tooltip({
+                showEvent : 'dd',
+                position : 'right',
+                content: '<span>不能为空!</span>',
+                onShow: function(){
+                    $(this).tooltip('tip').css({
+                        backgroundColor: '#FFFFCC',
+                        borderColor: '#CC9933',
+                        color: '#272822'
+                    });
+                }
+            });
+            $('#add_step').tooltip('show');
+            setTimeout(function(){
+                $('#add_step').tooltip('hide');
+            },2000);
+        }
+    }
+    //删除步骤
+    function stepDel(obj){
+        if ($.dialog.confirm("确认删除此步骤", function () {
+            var TheIndex = parseInt($(obj).attr('bind-step'));
+            var TheNumber = parseInt($(".step_slider").attr('bind-number')) >= 0 ? parseInt($(".step_slider").attr('bind-number')) : 0;
+            var TheSiblings = $(obj).parent('li').nextAll('li');
+            var TheValue = $(obj).siblings('.step_tmlabel').find('h2').text();
+            setStepInputData('del',TheValue);
+            $(obj).parent('li').remove();
+            $('.step_slider').attr('bind-number',TheNumber - 1);
+            if(TheNumber >　1){
+                TheSiblings.each(function(){
+                    var NextIndex = $(this).children('.step_del').attr('bind-step');
+                    var NewIndex  = parseInt(NextIndex) - 1;
+                    if(NewIndex == 1){
+                        var Header = '<div class="cbp_tmicon"></div>';
+                        $(this).children('.step_del').after(Header);
+                    }
+                    $(this).find('.step_del').attr('bind-step',NewIndex);
+                    $(this).find('.step_tmlabel > h2').text(intTransCh(NewIndex));
+                })
+            }
+        }));
+    }
+    //判断重复值
+    function getTheStepRepeat(value){
+       var defaultDivision = '&,';
+       var TheData  = $('input[name=step_flow]').val();
+       TheData  = TheData.split(defaultDivision);
+       if($.inArray(value,TheData) >= 0){
+           return true;
+       }else{
+           return false;
+       }
+    }
+    //在input中添加步骤 0 
+    function setStepInputData(){
+        var defaultDivision = '&,';
+        switch (arguments[0]) {
+            case 'add':
+                var TheValue = $.trim(arguments[1]);
+                var TheData  = $('input[name=step_flow]').val();
+                TheData      += (TheData == '') ? TheValue : defaultDivision + TheValue;
+                $('input[name=step_flow]').val(TheData);
+                break;
+            case 'del':
+                var TheData  = $('input[name=step_flow]').val();
+                var TheValue = $.trim(arguments[1]);
+                TheData  = TheData.split(defaultDivision);
+                TheData.splice(TheValue,1);
+                TheData   = TheData.join(defaultDivision);
+                $('input[name=step_flow]').val(TheData);
+                break;
+            case 'all':
+                var TheValueAll = arguments[1];
+                var TheSting    = '';
+                for(i=0;i<TheValueAll.length;i++){
+                    if(TheSting != ''){
+                        TheSting += defaultDivision;
+                    }
+                    TheSting += $.trim(TheValueAll[i]['step_view'])
+                }
+                $('input[name=step_flow]').val(TheSting);
+                break;
+            case 'empty':
+                $('input[name=step_flow]').val('');
+                break;
+            default:
+                break;
+        }
+    }
+    //数字转换
+    function intTransCh(number) {
+        number = parseInt(number);
+        var ch = new Array();
+        ch = {
+            1: '一',2: '二',3: '三',4: '四',5: '五',6: '六',7: '七',8: '八',9: '九',10: '十',
+            11: '十一',12: '十二',13: '十三',14: '十四',15: '十五',16: '十六',17: '十七',18: '十八',
+            19: '十九',20: '二十',21: '二十一',22: '二十二',23: '二十三',24: '二十四',25: '二十五',26: '二十六',
+            27: '二十七',28: '二十八',29: '二十九',30: '三十',31: '三十一',32: '三十二',33: '三十三',34: '三十四',35: '三十五',
+            36: '三十六',37: '三十七',38: '三十八'
+        }
+        return '第'+ch[number]+'步';
+    }
+
+    function parseTemplate(target, jsobject){
+        var tpl = $("#"+target).prop("outerHTML").replace("display:none","");
+        var reg = new RegExp("\{%([^%}]*)?%\}", "g");
+        var matchs = tpl.match(reg);
+        if (matchs != null) {
+            for (var i = 0; i < matchs.length; i++) {
+                var key = matchs[i].replace("{%", "").replace("%}", "");
+                var val = jsobject.hasOwnProperty(key)?jsobject[key] : "";
+                tpl = tpl.replace(matchs[i], val);
+            }
+            return tpl;
+        }
+        return "";
+    }
+
+
+</script>

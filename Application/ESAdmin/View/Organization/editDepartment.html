@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <form action="">
+        <div class="tableForm" style="width:540px;">
+            <div class="row">
+                <div class="caption"><span><span style="color:#FF0000">*</span>部门名称：</span></div>
+                <div class="inputbox">
+                    <input name="staff_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                </div>
+            </div>
+        </div>
+        <div class="form-actions" id='Organization-form-actions'>
+            <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="adjustDept()">保存</a>
+                <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

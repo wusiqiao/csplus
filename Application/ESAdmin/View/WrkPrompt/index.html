@@ -1,0 +1,474 @@
+<script>
+    function formatComCompanyName(value, row) {
+        if(value == null||value == ""){
+            return "-"
+        }else{
+            return `<div style="width:182px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+        }
+    }
+    function formatCustomer(value) {
+        if(value == null||value == ""){
+            return "-"
+        }else{
+            return `<div style="width:80px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+        }
+    }
+    function formatAgreementName(value) {
+        if(value == null||value == ""){
+            return "-"
+        }else{
+            return `<div style="width:150px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+        }
+    }
+    function formatStatus(value,row){
+        var scale_text = ["未收","部分已收","全部收取","逾期冻结"];
+        return scale_text[parseInt(value)];
+    }
+    function formatPrompt(value,row){
+        var scale_text = ["未催款","已催款","已取消","未查看",'已查看'];
+        return scale_text[parseInt(value)];
+    }
+    function formatMode(value,row){
+        var scale_text = ["自动","人工"];
+        return scale_text[parseInt(value)];
+    }
+    function formatToDateTime(value, row, index){
+        if(!value) {
+            return "-";
+        }else{
+            var date = new Date();
+            date.setTime(value * 1000);
+            var y = date.getFullYear();    
+            var m = date.getMonth() + 1;    
+            m = m < 10 ? ('0' + m) : m;    
+            var d = date.getDate();    
+            d = d < 10 ? ('0' + d) : d;    
+            var h = date.getHours();  
+            h = h < 10 ? ('0' + h) : h;  
+            var minute = date.getMinutes();  
+            var second = date.getSeconds();  
+            minute = minute < 10 ? ('0' + minute) : minute;    
+            second = second < 10 ? ('0' + second) : second; 
+            // return y+'-'+m+'-'+d+' '+h+':'+minute+':'+second;
+            return y+'-'+m+'-'+d+' '+h+':'+minute;
+        }
+    }
+</script>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .bgWhite{
+        height: auto;
+        background-color: #ffffff;
+    }
+    .btnOn{
+        color: #ffffff !important;
+        background-color: #529bfd !important;
+        border: 1px solid #529bfd !important;
+    }
+    .btnOn:hover{
+        background-color: #6eacfe !important;
+    }
+    .spanBtn{
+        border-radius: 0px !important;
+        border: 1px solid #d3d3d3;
+    }
+    .btn-screening-label {
+        float: left;
+        width: 105px;
+        height: 54px;
+        line-height: 54px;
+        text-align: right;
+    }
+    #user-defined-time {
+        height: 54px;
+        line-height: 54px;
+        min-width: 272px;
+        position: absolute;
+        right: -10px;
+        top: -1px;
+    }
+    .btn-screening-input {
+        float: left;
+        height: 32px;
+        margin: 11px 0px 11px 0px;
+    }
+    @media screen and (max-width:1920px) {
+        .btn-screening-input input {
+            width: 270px !important;
+        }
+    }
+
+    @media screen and (max-width:1680px) {
+        .btn-screening-input input {
+            width: 240px !important;
+        }
+    }
+
+    @media screen and (max-width:1580px) {
+        .btn-screening-input input {
+            width: 210px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    @media screen and (max-width:1470px) {
+        .btn-screening-input input {
+            width: 190px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    @media screen and (max-width:1400px) {
+        .btn-screening-input input {
+            width: 170px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    @media screen and (max-width:1330px) {
+        .btn-screening-input input {
+            width: 150px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    .panel-noscroll {
+        overflow: unset;
+    }
+</style>
+<div class="maincontainer" id="WrkReceivables-maincontainer" style="height:100%">
+    <div class="content-wrap" style="padding-left:0px;height: 100%;">
+<!--         <div class="bgWhite">
+            <div class="c-header" style="margin:2px 15px 0">
+                <span class="tab-span on" data-id='1'>催款计划</span>
+                <span class="tab-span" data-id='0'>催款提醒</span>
+            </div>
+        </div> -->
+        <!-- <span onclick="addPrompt(1,1)">新增催款计划(有计划)</span>  -->
+        <!-- <span onclick="addPrompt(405,0)">新增催款计划(无计划)</span>  -->
+        <div class="c-select" style="background:white;padding: 17px 0 10px 18px;">
+        	<?php 
+				$now = date('Y-m-d');
+				$week_begin = date('Y-m-d',time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600);
+				$week_end = date('Y-m-d',time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600);
+				$mounth_begin = date('Y-m-1');
+      			$mounth_end = date('Y-m-t');
+            ?>
+            <div class="search-table">
+                <div id="search-date" style="width:900px;height:54px;line-height: 54px;position: relative;">
+                    <div class="btn-screening-label">查看时间：</div>
+                    <span class="btn-screening btn-screening-on" data-id='0'>全部</span>
+                    <span class="btn-screening" data-id='1'>今日</span>
+                    <span class="btn-screening" data-id='2'>本周</span>
+                    <span class="btn-screening" data-id='3'>本月</span>
+                    <span class="btn-screening" data-id='4'>自定义</span>
+                    <div id="user-defined-time" style="display: none;">
+                        <input style="width: 122px;" id="day_start" class="easyui-datebox filter-field datebox-f combo-f textbox-f" value="" textboxname="qdr-create_time" style="display: none;" comboname="qdr-create_time">－
+                        <input style="width: 122px;" id="day_end" class="easyui-datebox filter-field datebox-f combo-f textbox-f" value="" textboxname="qdr-create_time" style="display: none;" comboname="qdr-create_time">
+                    </div>
+                </div>
+                <div class="plan" id="search-status" style="width:800px;height:54px;line-height: 54px;position: relative;">
+                    <div class="btn-screening-label">催款计划状态：</div>
+                    <span class="btn-screening btn-screening-on" data-id='all'>全部</span>
+                    <span class="btn-screening" data-id='0'>未催收</span>
+                    <span class="btn-screening" data-id='1'>已催收</span>
+                    <span class="btn-screening" data-id='2'>已取消</span>
+                </div>
+                <div class="remind" id="remind-status" style="width:800px;height:54px;line-height: 54px;position: relative;">
+                    <div class="btn-screening-label">催款提醒状态：</div>
+                    <span class="btn-screening btn-screening-on" data-id='all'>全部</span>
+                    <span class="btn-screening" data-id='3'>未查看</span>
+                    <span class="btn-screening" data-id='4'>已查看</span>
+                    <span class="btn-screening" data-id='1'>已催收</span>
+                </div>
+                <div style="min-width:850px;height:54px;line-height: 54px;position: relative;">
+                    <div class="btn-screening-label">公司名称：</div>
+                    <div class="btn-screening-input">
+                        <input name="company_name" data-name="company_id" class="easyui-validatebox filter-field" value="" placeholder="请输入公司名称" />
+                    </div>
+                    <div class="btn-screening-label">合同名称：</div>
+                    <div class="btn-screening-input">
+                        <input name="contract_name" class="easyui-validatebox filter-field" value="" data-name="contract_id" placeholder="请输入合同名称" />
+                    </div>
+                    <div style="width: 160px;" class="btn-screening-label">催款商户负责人：</div>
+                    <div class="btn-screening-input">
+                        <input name="leader_name" data-name="leader_id" class="easyui-validatebox filter-field" value="" placeholder="请输入催款商户负责人" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class ="plan" id="planList" style="height:calc(100% - 190px);width:99%;position:relative;">
+            <table id="WrkPrompt-datagrid" fitColumns="true" class="datagrid" data-options="
+                url:'WrkPrompt/list/is_related/1',
+                pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+                pageSize:<empty name='pagesize'>10<else/>{$pagesize}</empty>,
+                toolbar:'#WrkPrompt-toolbar',
+                pageNumber:1,
+                checkOnSelect:true,
+                singleSelect:false,
+                border:true,
+                onRowContextMenu: function (e, rowIndex, rowData) {
+                    $(this).datagrid('clearSelections');
+                    $(this).datagrid('selectRow', rowIndex);
+                e.preventDefault();
+                    $('#box_WrkPrompt').menu('show', {
+                        left: e.pageX,
+                        top: e.pageY
+                    });
+                    }">
+                <thead>
+                    <tr>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'contract_no',width:160,align:'left'">{$Think.lang.PROMPT_CONTRACT_NO}</th>
+                        <th data-options="field:'company_name',width:280,align:'left',formatter:formatComCompanyName">公司名称</th>
+                        <th data-options="field:'customer_leader_name',width:160,align:'left',formatter:formatCustomer">{$Think.lang.PROMPT_CUSTOMER_PRINCIPAL}</th>
+                        <th data-options="field:'contract_name',width:240,align:'left',formatter:formatAgreementName">{$Think.lang.PROMPT_CONTRACT_NAME}</th>
+                        <th data-options="field:'leader_id',width:160,align:'left',formatter:formatCustomer">{$Think.lang.PROMPT_MERCHANT_PRINCIPAL}</th>
+                        <th data-options="field:'receivable_status',width:160,align:'left',formatter:formatStatus">{$Think.lang.RECEIVABLES_STATUS}</th>
+                        <th data-options="field:'prompt_date',width:180,align:'left',formatter:formatToDateTime">{$Think.lang.PROMPT_PLAN_DATE}</th>
+                        <th data-options="field:'press_last_date',width:180,align:'left',formatter:formatToDateTime">{$Think.lang.PROMPT_LAST_DATE}</th>
+                        <th data-options="field:'status',width:100,align:'left',formatter:formatPrompt">{$Think.lang.PROMPT_STATUS}</th>
+                        <!-- <th data-options="field:'press_mode',width:120,align:'left',formatter:formatMode">{$Think.lang.PROMPT_PRESS_MODE}</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                </thead>
+            </table>
+            <div id="empty-notice" style="color: rgb(180, 180, 180);display:none;width:100%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 40px;font-size: 20px">暂无数据</div>
+        </div>
+        <!-- 催款提醒列表 -->
+        <!-- <div class = "remind" id="remindList" style="height:380px;width:99%">
+            <table id="WrkPrompt2-datagrid" class="easyui-datagrid datagrid" data-options="
+           url:'WrkPrompt/list',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:false,
+           border:true">
+                <thead>
+                    <tr>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'contract_no',width:120,align:'left'">{$Think.lang.PROMPT_CONTRACT_NO}</th>
+                        <th data-options="field:'company_name',width:120,align:'left'">{$Think.lang.PROMPT_CONTRACT_NAME}</th>
+                        <th data-options="field:'customer_leader_id',width:120,align:'left'">{$Think.lang.PROMPT_CUSTOMER_PRINCIPAL}</th>
+                        <th data-options="field:'contract_name',width:120,align:'left'">{$Think.lang.PROMPT_CONTRACT_NAME}</th>
+                        <th data-options="field:'leader_id',width:120,align:'left'">{$Think.lang.PROMPT_MERCHANT_PRINCIPAL}</th>
+                        <th data-options="field:'prompt_date',width:120,align:'left',formatter:formatToDateTime">提醒催款日期</th>
+                        <th data-options="field:'press_last_date',width:120,align:'left',formatter:formatToDateTime">{$Think.lang.PROMPT_LAST_DATE}</th>
+                        <th data-options="field:'status',width:120,align:'left',formatter:formatPrompt">{$Think.lang.PROMPT_STATUS}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                </thead>
+            </table>
+        </div> -->
+    </div>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+$(function() {
+    initial_easyui_grid("WrkPrompt", "{$title}");
+});
+
+$('.c-header .tab-span').click(function() {
+    $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+    var id = $(this).attr("data-id");
+    if (id==1) {
+    	$(".plan").show();
+    	$(".remind").hide();    
+    	queryPrompt();
+    } else {
+    	$(".plan").hide();
+    	$(".remind").show();
+    	queryPrompt2();
+    }
+});
+
+$('#search-status .btn-screening').click(function() {
+    $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+    queryPrompt();
+});
+$('#remind-status .btn-screening').click(function() {
+
+    $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+    queryPrompt2();
+});
+
+$('#search-date .btn-screening').click(function() {
+    if ($(this).text() == "自定义") {
+        $(`#user-defined-time`).show();
+    } else {
+        $(`#user-defined-time`).hide();
+    }
+    $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+    var id = $('#search-date .btn-screening-on').attr("data-id");
+    if (id == 1) {
+    	$('#day_start').datebox('setValue','{$now}');
+    	$('#day_end').datebox('setValue', '{$now}');
+    }else if(id == 2){
+    	$('#day_start').datebox('setValue', '{$week_begin}');
+    	$('#day_end').datebox('setValue', '{$week_end}');
+    }else if(id == 3){
+    	$('#day_start').datebox('setValue', '{$mounth_begin}');
+    	$('#day_end').datebox('setValue', '{$mounth_end}');
+    }else if (id == 4 || id == 0) {
+        $('#day_start').datebox('setValue', '');
+        $('#day_end').datebox('setValue', '');
+    }
+    queryPrompt();
+    queryPrompt2();
+});
+
+$(function() {
+	$(".remind").hide();
+    autocompleteAjax($("input[name='company_name']"), "WrkReceivables/companyList", function(item) {
+		$("#customer_leader").load('WrkReceivables/ajax/branch_id/'+item.id);
+        queryPrompt();
+    });
+    autocompleteAjax($("input[name='contract_name']"), "WrkReceivables/agreementList", function(item) {
+        queryPrompt();
+    });
+    autocompleteAjax($("input[name='leader_name']"), "WrkReceivables/staffList", function(item) {
+        queryPrompt();
+    });
+    calculateH();
+
+    $("input[name='contract_name']").on("change", function () {
+        if ($("input[name='contract_name']").length > 0 && $("input[name='contract_name']").val() == "") {
+            $("input[name='contract_id']").val("");
+            queryPrompt();
+        }
+    });
+    $("input[name='company_name']").on("change", function () {
+        if ($("input[name='company_name']").length > 0 && $("input[name='company_name']").val() == "") {
+            $("input[name='company_id']").val("");
+            queryPrompt();
+        }
+    });
+    $("input[name='leader_name']").on("change", function () {
+        if ($("input[name='leader_name']").length > 0 && $("input[name='leader_name']").val() == "") {
+            $("input[name='leader_id']").val("");
+            queryPrompt();
+        }
+    })
+})
+
+    function calculateH(){
+        var winH = $('.maincontainer').height();
+        var H1 = $('.c-header').height();
+        var H2 = $('.c-select').height() + 57;
+        var rst = (winH - H1 - H2);
+        $('#planList').css('height',rst);
+        $('#remindList').css('height',rst);
+    }
+
+function queryPrompt(){
+	var company_id = '';
+	var leader_id = '';
+    var contract_id = '';
+	var customer_leader_id = '';
+	if ($("input[name='company_name']").val()!='') {
+		company_id = $("input[name='company_id']").val();
+	}
+    if ($("input[name='contract_name']").val()!='') {
+        contract_id = $("input[name='contract_id']").val();
+    }
+	if ($("input[name='leader_name']").val()!='') {
+		leader_id = $("input[name='leader_id']").val();
+	}
+	if ($("input[name='customer_leader_name']").val()!='') {
+		customer_leader_id = $("input[name='customer_leader_id']").val();
+	}
+
+	var status = $('#search-status .btn-screening-on').attr("data-id");
+	var begin_date = $('#day_start').datebox('getValue');
+	var end_date = $('#day_end').datebox('getValue');
+	$('#WrkPrompt-datagrid').datagrid('load',{
+		company_id:company_id,
+		leader_id:leader_id,
+        contract_id:contract_id,
+		customer_leader_id:customer_leader_id,
+		status:status,
+		begin_date:begin_date,
+		end_date:end_date		
+	});
+}
+
+$('#WrkPrompt-datagrid').bind("onLoadSuccess",function(event,data){
+    if (data.total == 0) {
+        $('#empty-notice').show();
+    }else{
+        $('#empty-notice').hide();
+    }
+});
+
+function queryPrompt2(){
+	var company_id = '';
+	var leader_id = '';
+	var customer_leader_id = '';
+	if ($("input[name='company_name']").val()!='') {
+		company_id = $("input[name='company_id']").val();
+	}
+	if ($("input[name='leader_name']").val()!='') {
+		leader_id = $("input[name='leader_id']").val();
+	}
+	if ($("input[name='customer_leader_name']").val()!='') {
+		customer_leader_id = $("input[name='customer_leader_id']").val();
+	}
+
+	var status = $('#remind-status .btn-screening-on').attr("data-id");
+	var begin_date = $('#day_start').datebox('getValue');
+	var end_date = $('#day_end').datebox('getValue');
+	$('#WrkPrompt2-datagrid').datagrid('load',{
+		company_id:company_id,
+		leader_id:leader_id,
+		customer_leader_id:customer_leader_id,
+		status:status,
+		begin_date:begin_date,
+		end_date:end_date		
+	});
+}
+
+$('#day_start').datebox({onSelect: function(){
+	queryPrompt();
+	queryPrompt2();
+}});
+$('#day_end').datebox({onSelect: function(){
+    queryPrompt();
+    queryPrompt2();
+}});
+
+function addPrompt(id,is_related) {
+    createDialog("{$Think.const.CONTROLLER_NAME}/addPrompt/contract_id/" + id+"/is_related/"+is_related, '新增催款计划', 'dlg-edit-prompt');
+}
+
+$("#WrkPrompt2-datagrid").datagrid({
+    onDblClickRow: function (index, row) {
+    	// _detail("WrkPrompt2","编辑催款计划");
+		$.get("WrkPrompt/detail/id/" + row.id+"/prompt_item_id/"+row.prompt_item_id+"/status/"+row.status,
+            function (data, status) {
+                var dlg = $.dialog({
+                    id:'dlg-edit-prompt',
+                    title: '_编辑催款计划',
+                    autoSize: true,
+                    content: data,
+                    lock: false,
+                    max: false,
+                    min: false,
+                    parent: this
+                });
+                parseForm();
+            }
+        );
+    }
+})
+</script>
+

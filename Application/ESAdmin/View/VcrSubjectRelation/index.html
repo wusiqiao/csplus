@@ -1,0 +1,25 @@
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:200,align:'left'">系统科目</th>
+        <th data-options="field:'no',width:120,align:'left',sortable:true">{$Think.lang.FLD_ID}</th>        
+        <th data-options="field:'full_name',width:240,align:'left'">{$Think.lang.FLD_FULL_NAME}</th>
+        <th data-options="field:'type_name',width:120,align:'left'">{$Think.lang.FLD_TYPE_NAME}</th>
+        <th data-options="field:'user_subject_name',width:120,align:'left'">对应企业科目</th>
+        <th data-options="field:'sort',width:120,align:'left'">{$Think.lang.FLD_SORT}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+    <if condition="($permissions.detail eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:auto" icon="fa-plus fa-lg" plain="true" onclick="action_subject_autorelative()">自动映射</a><div class="btn-separator"></div>
+    </if>    
+</div>
+<script>
+    function action_subject_autorelative(){
+        $.post("/VcrSubjectRelation/RelativeAll", {}, function(ret){
+            $.dialog.tips(ret.message);
+        },"json");
+    }
+</script>

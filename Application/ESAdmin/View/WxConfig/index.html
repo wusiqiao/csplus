@@ -1,0 +1,226 @@
+<style>
+    .tableForm{width:98%}
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="margin: 10px;background: #fff;width:70vw;border:1px solid #ccc;">
+    <form action="WxConfig/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-section">
+            <div class="easyui-section-item" style="position: relative !important;">
+                <div class="tab-header"><span>微信基本资料</span></div>
+                <div class="tableForm" style="width: 55vw;">
+                    <input name="id" type="hidden" value="{$model.id}">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_APPID_ID}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="appid" placeholder="{$Think.lang.WX_APPID_ID_TIP}" class="easyui-validatebox" value="{$model.appid}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_ENCODING_AESKEY}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="encoding_aeskey" placeholder="{$Think.lang.WX_ENCODING_AESKEY_TIP}" class="easyui-validatebox" value="{$model.encoding_aeskey}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_APPSECRET}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="appsecret" placeholder="{$Think.lang.WX_APPSECRET_TIP}" class="easyui-validatebox" value="{$model.appsecret}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_TOKEN}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="token" placeholder="{$Think.lang.WX_TOKEN_TIP}" class="easyui-validatebox" value="{$model.token}" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_CONFIG_URL}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="url" placeholder="{$Think.lang.url}" class="easyui-validatebox" value="{$model.url}" readonly />
+                        </div>
+                    </div>
+                    <!--<div class="row">-->
+                        <!--<div class="caption block"><span>关注自动回复：</span></div>-->
+                        <!--<div class="inputbox_x2">-->
+                            <!--<textarea name="wx_auto_reply"  rows="8">{$model.wx_auto_reply}</textarea>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                </div>
+                <div style="width: 14vw; position: absolute;border: 1px solid #ccc; text-align: center; left:55vw; top:50px">
+                    <img src="{$WxQrcode}" alt="" width="100%">
+                </div>
+            </div>
+            <!--
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>微信支付</span></div>
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_PAY_OPEN}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="wxpay_open" class="easyui-validatebox" type="checkbox" value="1" data-value="{$model.wxpay_open}" />
+                            <span style="color: red">备注:如果商户号或PAY_KEY未填写,系统将自动关闭支付功能</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_MCHID}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="wx_mchid" placeholder="{$Think.lang.WX_MCHID_TIP}" class="easyui-validatebox" value="{$model.wx_mchid}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_PAY_KEY}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="wx_pay_key" placeholder="{$Think.lang.WX_PAY_KEY_TIP}" class="easyui-validatebox" value="{$model.wx_pay_key}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            -->
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>微信推送模板</span></div>
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_SERVICE_FLOW_TEMPLATE}：</span></div>
+                        <div class="inputbox_x2">
+                            <input <if condition="$model.wx_notice_service_flow eq ''"> style="width: 70%"</if> name="wx_notice_service_flow" readonly="readonly" placeholder="{$Think.lang.WX_SERVICE_FLOW_TEMPLATE_TIP}" class="easyui-validatebox" value="{$model.wx_notice_service_flow}" />
+                            <if condition="$model.wx_notice_service_flow eq ''">
+                                <span class="easyui-linkbutton fontawesome-icon-button" onclick="templateAutomation(this);" data-type="serviceFlow">自动获取</span>
+                            </if>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_TOOL_SEND_TEMPLATE}：</span></div>
+                        <div class="inputbox_x2">
+                            <input <if condition="$model.wx_notice_tool_send eq ''"> style="width: 70%"</if> name="wx_notice_tool_send" readonly="readonly" placeholder="{$Think.lang.WX_TOOL_SEND_TEMPLATE_TIP}" class="easyui-validatebox" value="{$model.wx_notice_tool_send}" />
+                            <if condition="$model.wx_notice_tool_send eq ''">
+                                <span class="easyui-linkbutton fontawesome-icon-button" onclick="templateAutomation(this);" data-type="toolSend">自动获取</span>
+                            </if>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_NOTICE_BORROW_APPLY_TEMPLATE}：</span></div>
+                        <div class="inputbox_x2">
+                            <input style="width: 70%" name="wx_notice_borrow_apply" readonly="readonly" placeholder="{$Think.lang.WX_NOTICE_BORROW_APPLY_TEMPLATE_TIP}" class="easyui-validatebox" value="{$model.wx_notice_borrow_apply}" />
+                                <span class="easyui-linkbutton fontawesome-icon-button" onclick="templateAutomation(this);" data-type="borrowApply">自动获取</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_NOTICE_BORROW_TRANSFER_TEMPLATE}：</span></div>
+                        <div class="inputbox_x2">
+                            <input style="width: 70%"  name="wx_notice_transfer_apply" readonly="readonly" placeholder="{$Think.lang.WX_NOTICE_BORROW_TRANSFER_TEMPLATE_TIP}" class="easyui-validatebox" value="{$model.wx_notice_transfer_apply}" />
+                            <span class="easyui-linkbutton fontawesome-icon-button" onclick="templateAutomation(this);" data-type="transferApply">自动获取</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_NOTICE_RETURN_TEMPLATE}：</span></div>
+                        <div class="inputbox_x2">
+                            <input  style="width: 70%" name="wx_notice_return" readonly="readonly" placeholder="{$Think.lang.WX_NOTICE_RETURN_TEMPLATE_TIP}" class="easyui-validatebox" value="{$model.wx_notice_return}" />
+                            <span class="easyui-linkbutton fontawesome-icon-button" onclick="templateAutomation(this);" data-type="return">自动获取</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_NOTICE_BIND_COMPANY_TEMPLATE}：</span></div>
+                        <div class="inputbox_x2">
+                            <input style="width: 70%"  name="wx_notice_bind_company" readonly="readonly" placeholder="{$Think.lang.WX_NOTICE_BIND_COMPANY_TIP}" class="easyui-validatebox" value="{$model.wx_notice_bind_company}" />
+                            <span class="easyui-linkbutton fontawesome-icon-button" onclick="templateAutomation(this);" data-type="bindCompany">自动获取</span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.WX_NOTICE_INFORMATION}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="wx_notice_information" placeholder="{$Think.lang.WX_NOTICE_INFORMATION_TIP}" class="easyui-validatebox" value="{$model.wx_notice_information}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>小程序设置</span></div>
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption"><span>APPID：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="xcx_appid" placeholder="小程序appid" class="easyui-validatebox" value="{$model.xcx_appid}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>APPKEY：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="xcx_appsecret" placeholder="小程序appsecret" class="easyui-validatebox" value="{$model.xcx_appsecret}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+            <div class='actions-sysdefault'>
+                <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+                    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg" onclick="saveComStoreForm()">保存</a>
+                </if>
+                <!--<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog('[controller]')">关闭</a>-->
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+parseForm($("#{$Think.const.CONTROLLER_NAME}-detailcontainer"));
+//new wxpay_open
+$('input[name=wxpay_open]').on('click', function() {
+    var wxPayOpen = $('input[name=wxpay_open]:checked').val();
+    if (wxPayOpen == 1) {
+        var wx_pay_key = $('input[name=wx_pay_key]').val();
+        var wx_mchid = $('input[name=wx_mchid]').val();
+        if ($.trim(wx_pay_key) == '' || $.trim(wx_mchid) == '') {
+            $(this).prop('checked', false);
+            $.dialog.tips('请填写商户号和PAY_KEY');
+        }
+    }
+})
+var defaultCity = $('#cc').data('value');
+
+function templateAutomation(obj) {
+    if ($.dialog.confirm("确认自动获取？", function(){
+        var index = $(obj);
+        var templateType = index.data('type');
+        $.post('WxConfig/getTemplate', { type: templateType }, function(request) {
+            if (request.error == 0) {
+                var template = request.data;
+                index.prev('input').val(template);
+                index.hide();
+                $.dialog.tips(request.message);
+
+            } else {
+                $.dialog.tips(request.message);
+            }
+        }, 'json')
+    }));
+}
+
+function saveComStoreForm() {
+    showMaskLayer();
+    var dataForm = getDataForm("WxConfig");
+    dataForm.trigger("Update"); //触发子表grid获取数据，如果没有子表，不需要触发。
+    dataForm.form('submit', {
+        url: dataForm.attr("action"),
+        onSubmit: function() {
+            var validate = $(this).form('validate');
+            if (!validate) {
+                hideMaskLayer();
+                //$.dialog.alert("请输入必填项！");
+            }
+            return validate;
+        },
+        success: function(ret) {
+            var result = $.parseJSON(removeJsonQuote(ret));
+            if (result.code === 0) {
+                $.dialog.tips("保存成功！");
+                //刷新窗体
+                dataForm.find("input[name=id]").val(result.message.id);
+                dataForm.attr("action", "WxConfig/update");
+            } else {
+                $.dialog.tips(result.message);
+            };
+            hideMaskLayer();
+        }
+    });
+}
+</script>

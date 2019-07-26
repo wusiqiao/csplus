@@ -1,0 +1,29 @@
+<script>
+    function formatIsShow(val){
+        return val == 10 ? '显示' : '不显示';
+    }
+</script>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/tree_header.html"  controller="SysGuide" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:200,align:'left'">{$Think.lang.FLD_NAME}</th>
+        <th data-options="field:'parent_name',width:200,align:'left'">{$Think.lang.FLD_PARENT_ID}</th>
+        <th data-options="field:'url',width:200,align:'left'">{$Think.lang.FLD_URL}</th>
+        <th data-options="field:'is_show',width:200,align:'left',formatter:formatIsShow">{$Think.lang.FLD_IS_SHOW}</th>
+        <th data-options="field:'parent_id',width:200,align:'left'">上级ID</th>
+        <th data-options="field:'sort',width:200,align:'left'">{$Think.lang.FLD_SORT}</th>
+
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="SysGuide" />
+    <script type="text/javascript">
+        $(function () {
+            re_bind_action_add("{$Think.const.CONTROLLER_NAME}", function () {
+                sysMenu_action_add("{$Think.const.CONTROLLER_NAME}");
+            });
+        });
+        function sysMenu_action_add(controllerName) {
+            action_tree_add(controllerName);
+        }
+    </script>
+</div>

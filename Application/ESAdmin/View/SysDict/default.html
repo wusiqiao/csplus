@@ -1,0 +1,28 @@
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="SysDict" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:120,align:'left'">{$Think.lang.FLD_DICT_ITEM}</th>
+        <th data-options="field:'comments',width:120,align:'left'">{$Think.lang.FLD_COMMENTS}</th>
+        <th data-options="field:'sort',width:120,align:'left'">{$Think.lang.FLD_SORT}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="SysDict" />
+    <script type="text/javascript">
+        $(function () {
+            getDataGrid("SysDict").datagrid();
+        });
+        re_bind_action_add("{$Think.const.CONTROLLER_NAME}", function () {
+            sysDict_action_add("{$Think.const.CONTROLLER_NAME}");
+        });
+        
+        function sysDict_action_add(controllerName, title) {
+            var rows = getDataGrid("SysDictRoot").datagrid('getSelections');
+            if (rows.length !== 1) {
+                $.dialog.tips('请先选择左侧的大类');
+                return false;
+            }
+            _add("SysDict", title, {"parent_id": rows[0].id});
+        }
+
+    </script>
+</div>

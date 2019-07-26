@@ -1,0 +1,67 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="height: 160px">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+
+            <div class="row">
+                <div class="caption"><span>企业类型：</span></div>
+                <div class="inputbox_x2">
+                    <input class="easyui-validatebox" name="ent_type_name" value="{$model.ent_type_name}"/>
+                    <input name="ent_type_id" type="hidden" value="{$model.ent_type_id}"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_PARENT_ID}：</span></div>
+                <div class="inputbox">
+                    <input name="parent_name" class="easyui-validatebox" type="text" value="{$model.parent_name}"/>
+                    <input name="parent_id" type="hidden" value="{$model.parent_id}"  />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_TYPE_NAME}：</span></div>
+                <div class="inputbox">
+                    <input name="type_name" class="easyui-validatebox" value="{$model.type_name}" />
+                    <input name="type_id" type="hidden" value="{$model.type_id}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption required"><span>{$Think.lang.FLD_NO}：</span></div>
+                <div class="inputbox"><input name="no" class="easyui-validatebox" data-options="required:true"  value="{$model.no}" /></div>
+                <div class="caption required"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" /></div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script>
+    var ent_type_id =  $(".tableForm input[name='ent_type_id']").val();
+    if (ent_type_id){
+        getParentSysSubject(ent_type_id);
+    }
+    autocompleteAjaxEx($(".tableForm input[name='ent_type_name']"), "/VcrSubject/getEnterpriceTypes", {
+        onSelected: function(row){
+            $(".tableForm input[name='ent_type_id']").val(row.id);
+            $(".tableForm input[name='parent_id']").val("");
+            $(".tableForm input[name='parent_name']").val("");
+            getParentSysSubject(row.id);
+        }
+    });
+    autocompleteAjaxEx($(".tableForm input[name='type_name']"), "/VcrSubject/getSubjectTypes", {
+        onSelected: function(row){
+            $(".tableForm input[name='type_id']").val(row.id);
+        }
+    });
+
+    function getParentSysSubject(ent_type_id){
+        $(".tableForm input[name='parent_name']").trigger("unautocomplete");
+        autocompleteAjaxEx($(".tableForm input[name='parent_name']"), "/VcrSysSubject/autocomplete/ent_type_id/"+ ent_type_id + "/search/name+querykey+no/result/name+no", {
+            onSelected: function(row){
+                $(".tableForm input[name='parent_id']").val(row.id);
+                $.post("/VcrSysSubject/getMaxNoByParent", {parent_id: row.id, ent_type_id: ent_type_id}, function(result){
+                    $(".tableForm input[name=no]").val(result);
+                });
+            },formatItem:function (row) {
+                return row.no + "-" + row.name;
+            }
+        });
+    }
+</script>

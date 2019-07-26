@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <style>
+            .grey{
+                background: #bfbfbf;
+                cursor: not-allowed;
+            }
+            .triangle{
+                position: relative;
+                width:15px;
+                height:10px;
+                left:3px;
+                transition: transform .5s;
+            }
+            .triangle.active{
+                transform:  rotate(180deg);
+            }
+            .readonly{
+                background-color: #f7f5f5 !important;
+                cursor: not-allowed;
+            }
+            .inputbox input {
+                float: left;
+                width: 270px;
+                height: 30px;
+            }
+            .caption {
+                float: left;
+                width: 160px;
+                line-height: 30px;
+                text-align: right;
+                color: #676767;
+            }
+            hr {
+                height: 1px;
+                border: none;
+                border-top: 1px solid #d3d3d3;
+            }
+            .details-section{
+                background: none;
+                text-indent: 0;
+            }
+            .txt{
+                padding-left: 13px;
+                font-weight: 700;
+                border-left:5px solid #529bfd; 
+            }
+            .options-table {
+                border-collapse: collapse;
+                margin: 0 0;
+                text-align: center;
+            }
+            .options-table td,
+            .options-table th {
+                border: 1px solid #cad9ea;
+                color: #666;
+                height: 30px;
+            }
+
+            .options-table thead,
+            .options-table th {
+                background-color: #f6f7fa;
+            }
+
+            .options-table tr:nth-child(even) {
+                background: #fbfafa;
+            }
+            .search-table .validatebox-text{
+                width: 270px;
+            }
+            .no-readonly input{
+                background:none !important;
+                cursor: text !important;
+            }
+            .invoice-txt{
+                width:740px !important;
+                border-radius: 1px;
+                border-color: #ccc;
+                background-color: #ffffff;
+                outline: none;
+                resize: none;
+            }
+        </style>
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+    </head>
+    <body>
+        <div class="details-wrap">
+            <div style="overflow-y:scroll;height:500px;padding-right: 10px" id="WrkInvoicePlan-div">
+                <form id="InvoicePlan-dataform">
+                <div class="details-section">
+                    <div class="details-content">
+                        <p style="height: 23px;line-height: 23px;margin: 23px 0 37px 38px;">
+                            <span class="txt">合同信息</span>
+                        </p>
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption">公司：</div>
+                                <div class="inputbox">
+                                    <input type="hidden" name="id" value="{$model.id}">
+                                    <input type="hidden" name="plan_id" value="{$model.id}">
+                                    <input type="hidden" name="ag_company_id" value="{$model.ag_company_id}">
+                                    <input type="hidden" name="attach_group" value="{$model.attach_group}">
+                                    <input name="company_name" class="easyui-validatebox readonly" readonly="true" value="{$model.ag_customer_branch}" />
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                <div class="caption">合同编号：</div>
+                                <div class="inputbox">
+                                    <input name="agreement_sn" class="easyui-validatebox readonly" readonly="true" value="{$model.ag_agreement_sn}" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption">合同名称：</div>
+                                <div class="inputbox">
+                                    <input name="agreement_name" class="easyui-validatebox readonly" readonly="true" value="{$model.ag_name}">
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                <div class="caption">合同金额：</div>
+                                <div class="inputbox">
+                                    <input name="agreement_money" class="easyui-validatebox readonly" readonly="true" value="{$model.ag_agreement_money}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption">合同开始日期：</div>
+                                <div class="inputbox">
+                                    <input name="start_time"  class="easyui-validatebox readonly" readonly="true" value="{$model.ag_start_time}" />
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                <div class="caption">合同结束日期：</div>
+                                <div class="inputbox">
+                                    <input name="finish_time"  class="easyui-validatebox readonly" readonly="true" value="{$model.ag_finish_time}" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="details-section">
+                    <div class="details-content">
+                        <p style="height: 23px;line-height: 23px;margin: 40px 0 25px 38px;">
+                            <span class="txt">开票信息</span>
+                        </p>
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption">开票客户负责人：</div>
+                                <div class="inputbox">
+                                    <input name="customer_user" class="easyui-validatebox readonly" readonly="true" value=""/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption"><span class="important" style="padding-right: 1px">*</span>开票商户负责人：</div>
+                                <div class="inputbox">
+                                    <if condition="$instance_permit lt 8">
+                                        <input type="text" name="" data-name="ql-leader_name" class="easyui-validatebox readonly" value="{$model.leader_name}" style="width: 270px" placeholder="输入用户名将自动搜索，请选择搜索结果" readonly>
+                                        <else/>
+                                        <input type="text" name="leader_name" data-name="ql-leader_name" class="easyui-validatebox" value="{$model.leader_name}" style="width: 270px" placeholder="输入用户名将自动搜索，请选择搜索结果">
+                                    </if>
+                                    <input type="hidden" value="{$model.leader_id}" name="leader_id">
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                <div class="caption">开票商户协作人：</div>
+                                <div class="inputbox">
+                                    <select name="collaborators[]" id="invoice_collaborators" class="chosen-select filter-field" data-options="all:true,value:'{$model.collaborators}',search_key_url:'ComCompany/queryModuleUsers/module/WrkInvoicePlan'" style="width: 270px; display: none;" multiple>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption">开票商户可见人：</div>
+                                <div class="inputbox">
+                                    <select name="visiblers[]" id="invoice_visiblers" class="chosen-select filter-field" data-options="all:true,value:'{$model.visiblers}',search_key_url:'ComCompany/queryModuleUsers/module/WrkInvoicePlan'" style="width: 270px; display: none;" multiple>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                
+                            </div>
+                        </div>
+
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption">开票备注：</div>
+                                <textarea class="invoice-txt" name="comments">{$model.comments}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption">开票附件：</div>
+                                <div id="upload" style="width: 200px;float: left;">
+                                    <if condition="($model.state neq 1) and ($model.state neq 2) and ($instance_permit egt 4)">
+                                        <a style="margin:0;" href="javascript:void(0)" class="common-blue-btn upload-btn btn-grey" onclick="uploadPlanAttach(this)">上传</a>
+                                    <else/>
+                                        <a style="margin:0;" href="javascript:void(0)" class="btn-speed-disable" title="您没有权限">上传</a>
+                                    </if>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-table" style="display:flex;margin:22px 0 22px 40px;">
+                            <div style="flex: 1">
+                                <input name="is_sendWX" class="css-checkbox" type="checkbox" value="1" id="is_sendWX" <if condition="$model.is_sendwx eq 1">checked</if>>
+                                <label for="is_sendWX" class="css-label">
+                                    <strong style="margin-left:5px;">开通客户端发票功能</strong>
+                                </label>
+                                <span style="color: #e91835;position: relative;display: inline-block;width: 300px;left: 10px">不开通则不通知客户，仅作商家内部管理</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="edit_div">
+                    <div class="details-section">
+                        <div class="details-content">
+                            <p style="height: 23px;line-height: 23px;margin: 40px 0 25px 38px;">
+                                <span class="txt">开票列表</span>
+                            </p>
+                            <div class="table-addInfo clearFix">
+                                <div style="margin:0 0 0px 32px;">
+                                    <if condition="$instance_permit egt 4">
+                                        <a href="javascript:void(0)" class="notshow btn-speed" onclick="invoice(this)">开票通知</a>
+                                        <a href="javascript:void(0)" class="notshow btn-speed" onclick="finishInvoice(this)">结束开票</a>
+                                        <if condition="$model.state neq 2">
+                                            <a href="javascript:void(0)" class="cancel-invoice-btn btn-speed" onclick="cancelInvoice(this)">发票作废</a>
+                                        </if>
+                                    <else/>
+                                        <a href="javascript:void(0)" class="btn-speed-disable" title="您没有权限">开票通知</a>
+                                        <a href="javascript:void(0)" class="btn-speed-disable" title="您没有权限">结束开票</a>
+                                    </if>
+                                </div>
+                                <table class="options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px;">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 50px"></th>
+                                        <th>开票日期</th>
+                                        <th>发票编号</th>
+                                        <th>发票金额</th>
+                                        <th>发票类型</th>
+                                        <th>发票签收人</th>
+                                        <th>发票状态</th>
+                                        <th>发票备注附件</th>
+                                    </thead>
+                                    <tbody id="record_table">
+                                        <tr v-for="item in invoice_record">
+                                            <template v-if="item.state == '作废'">
+                                                <td></td>
+                                                <td>{{item.invoice_day}}</td>
+                                                <td style="color: red">{{item.invoice_id}}</td>
+                                                <td style="color: red">{{item.invoice_sum}}</td>
+                                                <td>{{item.invoice_type}}</td>
+                                                <td>{{item.confirm_man}}</td>
+                                                <td style="color: red">{{item.state}}</td>
+                                                <td>
+                                                    <a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)' :data-group="item.attach_group" style="margin: 5px 0">查看</a>
+                                                </td>
+                                            </template>
+                                            <template v-else>
+                                                <td>
+                                                    <template v-if="item.state != '作废'">
+                                                        <input type='checkbox' class='css-checkbox' name='cancelCheckbox' :value='item.id' :id='"r"+item.id'>
+                                                        <label class='css-label' :for='"r"+item.id'></label>
+                                                    </template>
+                                                </td>
+                                                <td>{{item.invoice_day}}</td>
+                                                <td>{{item.invoice_id}}</td>
+                                                <td>{{item.invoice_sum}}</td>
+                                                <td>{{item.invoice_type}}</td>
+                                                <td>{{item.confirm_man}}</td>
+                                                <td>{{item.state}}</td>
+                                                <td>
+                                                    <a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)' :data-group="item.attach_group" style="margin: 5px 0">查看</a>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                        <tr v-if="invoice_record.length == 0">
+                                            <td colspan="8">暂无开票数据</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="details-content">
+                            <p class="line line-state" style="height: 15px;line-height: 15px;margin: 40px 0 25px 38px;color: #e91835;font-weight: 700;">
+                                <span class="txt invoice_state">合同开票状态（总）：
+                                    <if condition="($model.state eq 1) or ($model.state eq 2)">
+                                        <span class="state">已结束；</span>
+                                    已开总额：<span id="amount_paid">{$model.amount_paid}</span>；
+                                    结余总额：<span id="balance"></span>
+                                    <else/>
+                                    <span class="state">未结束；</span>
+                                    已开总额：<span id="amount_paid">{$model.amount_paid}</span>；
+                                    未开总额：<span id="unPaid"></span>
+                                     </if>
+                                </span>
+                                <input type="hidden" name="agreement_money" value="{$model.ag_agreement_money}">
+                                <span class="drop-down"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-section">
+                    <div class="details-content">
+                        <p style="height: 23px;line-height: 23px;margin: 40px 0 25px 38px;">
+                            <span class="txt" onclick="toggleTable(this)">开票日志</span>
+                        </p>
+                        <table id="log_table" class="options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px;">
+                            <thead>
+                                <td>序号</td>
+                                <td>操作人</td>
+                                <td>操作</td>
+                                <td>时间</td>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class="form-actions" id="InvoicePlan-form-actions" style="padding:30px 0 20px;border-top:1px solid #d3d3d3;">
+            <div class="actions-sysdefault" style="height:auto;">
+                <span id="modal-save-btn">
+                    <if condition="$instance_permit egt 4">
+                        <a href="javascript:void(0)" class="modal-save-btn btn-update notshow" plain="true" onclick="saveNoInvoicePlan(this)" style="margin-right: 20px">保存</a>
+                        <else/>
+                        <a href="javascript:void(0)" class="modal-save-btn" style="background-color: #bfbfbf" title="您没有权限更新此数据">保存</a>
+                    </if>
+                </span>
+                <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+            </div>
+        </div>
+        <script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+        <script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+        <script>
+            var planDetailvue = new Vue({
+            	el:".details-wrap",
+            	data:{
+            		invoice_record:[]
+            	}
+            });
+
+            $(function(){
+                autocompleteAjaxEx($("input[name='leader_name']"),"ComCompany/queryModuleUsers/module/WrkInvoicePlan",{
+                    formatItem(row){
+                        var mobile = row['mobile'];
+                        var item_text = $.format(
+                            "<div style='display: flex;flex-direction: row;font-size: 13px;padding: 5px'>" +
+                            "<div style='flex: 1'>姓名：<span style='color:#368bfe'>{0}</span></div>"+
+                            "<div style='flex: 1'>部门：<span style='color:#368bfe'>{1}</span></div>"+
+                            "</div>",
+                            [padLeft(row.name,8," "),row.branch_name]);
+                        return item_text;
+                    },
+                    onSelected:function(row){
+                        $("input[name='leader_id']").val(row.id);
+                        $("#invoice_visiblers option[value='"+row.id+"']").attr("selected",false);
+                        $("#invoice_collaborators option[value='"+row.id+"']").attr("selected",false);
+                        $("#invoice_collaborators").trigger("chosen:updated");
+                        $("#invoice_visiblers").trigger("chosen:updated");
+                    }
+                })
+            });
+
+            $(function(){
+               var is_visibler = "{$model.is_visibler}";
+               if(is_visibler == 1){
+                   $(".btn-grey").addClass("grey");
+                   //$(".common-btn-blue").addClass("grey");
+                   //$("#modal-save-btn").hide();
+                   //$("#upload").hide();
+               }
+            });
+
+            //获取开票未开、结余状态
+            function getInvoiceState(){
+                $.post("WrkInvoicePlanDetail/getInvoiceState",{plan_id:$("input[name='id']").val()},function(result){
+                    if(result.state == 1 || result.state == 2){
+                        var balance = result.amount_paid - result.agreement_money;
+                        var state = "已结束；";
+                        var state1 = "；结余金额：";
+                        $(".notshow").hide();
+                        $(".upload-btn").addClass("grey");
+                    }else{
+                        var balance = result.agreement_money - result.amount_paid;
+                        var state = "未结束；";
+                        var state1 = "；未开金额：";
+                        $(".notshow").show();
+                        $(".upload-btn").removeClass("grey");
+                    }
+                    var html = "合同开票状态（总）："+state+"已开总额：" + result.amount_paid +
+                        state1 + (balance > 0 ? balance:0) ;
+                    $(".line-state").html(html);
+                },'json')
+            }
+
+            function saveNoInvoicePlan(obj){
+                if(!$(obj).hasClass("grey")){
+                    $(obj).addClass("grey");
+                    var leader_id = $("input[name='leader_id']").val();
+                    if(leader_id == ""  || leader_id == 0){
+                        $(obj).removeClass("grey");
+                        $.dialog.tips("请选择开票商户负责人！");
+                        return false;
+                    }
+                    var data = $("#InvoicePlan-dataform").serialize();
+                    $.post("WrkInvoicePlan/saveInvNoPlan",data,function(result){
+                        $(obj).removeClass("grey");
+                        if(result.error != 1){
+                            $.dialog.focus.close();
+                            $.dialog.tips("更新成功！");
+                        }else{
+                            $.dialog.tips(result.message);
+                        }
+                        refreshDatagrid(getDataGrid("WrkInvoicePlan"));
+                    },'json')
+                }
+            }
+        </script>
+    <script>
+        function toggleTable(){
+            $("#log_table").fadeToggle();
+            $('.triangle').toggleClass('active');
+        }
+
+        $(function(){
+            //获取开票记录
+            getInvoiceRecord();
+            //获取开票总状态
+            getInvoiceState();
+            //获取开票日志
+            $.post("WrkInvoicePlan/getLog",{id:$("input[name='id']").val()},function get_log(result){
+                for (var i = 0; i < result.length; i++) {
+                    var html = "<tr><td>"+result[i].id+"</td><td>"+result[i].user_name+"</td><td>"+result[i].operation+"</td><td>"+result[i].create_time+"</td></tr>"
+                    $("#log_table").append(html);
+                }
+            },'json');
+        });
+
+        //获取开票记录
+        function getInvoiceRecord(){
+            $.post("WrkInvoicePlanDetail/getInvoiceRecord",{plan_id:$("input[name='id']").val()},function(result){
+                for(var i in result){
+                    if(result[i].state == 0){
+                        result[i].state = "作废";
+                    }else if(result[i].state == 1){
+                        result[i].state = "正常";
+                    }
+                    if(result[i].invoice_type == 0){
+                        result[i].invoice_type = "普通发票";
+                    }else if(result[i].invoice_type == 1){
+                        result[i].invoice_type = "增值税专用发票";
+                    }
+                }
+                planDetailvue.invoice_record = result;
+            },'json');
+        }
+
+        //结束开票
+        function finishInvoice(obj){
+            if(!$(obj).hasClass("grey")){
+                createDialog("WrkInvoicePlan/finishInvoice","结束开票","finishInvoice",{id:$("input[name='id']").val()});
+            }
+        }
+
+        function invoice(obj){
+            if(!$(obj).hasClass("grey")){
+                $(obj).addClass("grey");
+                var plan_id = $("input[name='plan_id']").val();
+                $.get("/WrkInvoicePlanDetail/invoice",{plan_id:plan_id,type:"WrkInvoicePlan"},function(result){
+                    $(obj).removeClass("grey");
+                    var options = {title: "开票通知", content:result, autoSize: true,data: {plan_id:plan_id},lock: true,max: false,min: false};
+                    var $dialog = $.dialog(options);
+                });
+            }
+        }
+
+        //发票作废
+        function cancelInvoice(obj){
+            if(!$(obj).hasClass("grey")) {
+                var checked = 0;
+                var ids = [];
+                planDetailvue.cancel_invoice = [];
+                $("#record_table input:checkbox:checked").each(function () {
+                    checked = 1;
+                    ids.push($(this).val());
+                });
+                if (checked != 0) {
+                    $(planDetailvue.invoice_record).each(function () {
+                        if ($.inArray(this.id, ids) != -1) {
+                            planDetailvue.cancel_invoice.push(this);
+                        }
+                    });
+                    createDialog("WrkInvoicePlanDetail/cancelInvoice", "作废发票", "cancelInvoice");
+                } else {
+                    $.dialog.tips("请至少勾选一条记录");
+
+                }
+            }
+        }
+        // $(function(){
+        //     $("#record_table input:checkbox").on("click",function(){
+        //         alert(1111)
+        //         var checked = 0;
+        //         $("#record_table input:checkbox:checked").each(function () {
+        //             checked = 1;
+        //         });
+        //         if (checked != 0) {
+        //             $(".cancel-invoice-btn").removeClass("btn-speed-disable");
+        //             $(".cancel-invoice-btn").addClass("btn-speed");
+        //         }else{
+        //             $(".cancel-invoice-btn").addClass("btn-speed-disable");
+        //             $(".cancel-invoice-btn").removeClass("btn-speed");
+        //         }
+        //     })
+        // })
+       
+
+        function uploadPlanAttach(obj){
+            if(!$(obj).hasClass("grey")){
+                var attach_group = $("input[name='attach_group']").val();
+                openAttachmentForm("开票附件备注",[{text:"开票附件备注",attach_group:attach_group}],function(){})
+            }
+        }
+
+        //开票记录查看附件
+        function showRecordAttach(obj){
+            //var attach_group = $(obj).data("group");
+            var attach_group = $("input[name='attach_group']").val();
+            openAttachmentForm("开票附件备注",[{text:"开票记录附件备注",attach_group:attach_group}],function(){
+            })
+        }
+
+        $("select[name='collaborators[]']").bind("chosen:beforeSelected", function(event, selected){
+            var leader_id = $("input[name='leader_id']").val();
+            if (selected.value == leader_id) {
+                $.dialog.tips("协作人不能和负责人重复！");
+                selected.cancel = true;
+            }
+            /*$("#invoice_visiblers option[value='"+selected.value+"']").attr("selected", false);//可见人
+            $("#invoice_visiblers").trigger("chosen:updated");*/
+            var visiblers = $("select[name='visiblers[]']").val();
+            if(visiblers != null && visiblers.indexOf(selected.value) != -1){
+                $.dialog.tips("协作人不能和可见人重复！");
+                selected.cancel = true;
+            }
+        });
+
+        $("select[name='visiblers[]']").bind("chosen:beforeSelected", function(event, selected){
+            var leader_id = $("input[name='leader_id']").val();
+            var collaborators = $("select[name='collaborators[]']").val();
+            if (selected.value == leader_id) {
+                $.dialog.tips("可见人不能和负责人重复！");
+                selected.cancel = true;
+            }else if(collaborators != null && collaborators.indexOf(selected.value) != -1){
+                $.dialog.tips("可见人不能和协作人重复！");
+                selected.cancel = true;
+            }
+        });
+
+        $(function(){
+            //获取公司客户端设置的开票负责人员
+            $.post("/WrkAgreement/getCompanyCustomer",{
+                company_id:$("input[name='ag_company_id']").val(),
+                module:"WrkInvoicePlan"
+            },function(result){
+                var html = "";
+                for(var i in result){
+                    html += (result[i]['staff_name'] == "" || result[i]['staff_name'] == null) ? (result[i]['name']+"；"):(result[i]['staff_name']+"；");
+                }
+                $("input[name=customer_user]").val(html);
+            },'json')
+        });
+    </script>
+    </body>
+</html>
+

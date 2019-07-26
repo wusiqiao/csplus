@@ -1,0 +1,57 @@
+<style>
+    .property-content{border: 1px #ccc solid;margin: 10px auto;padding: 10px 20px; width:80%}
+    .input-contents input[type=text]{width:98%}
+    .input-contents li{float: left; width:100%}
+    .input-contents li .title{padding: 5px 0px}
+    .input-contents .half-width{width: 49%;padding-right: 1%}
+    .input-contents .half-width .input{width:98%;}
+    .input-contents .third-width{width: 33%;padding-right: 0.3%}
+    .input-contents .third-two-width{width: 66%;padding-right: 0.3%}
+    .input-contents .third-width .input{width:98%;}
+    .input-contents textArea{width:100%;border-radius: 5px}
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer"> 
+    <form action="__CONTROLLER__/update" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform" enctype="multipart/form-data">
+        <div class="easyui-tabs">
+            <div title="参数设置" style="padding:10px" >                              
+                <div class="property-content">
+                    <div style="width:100%;background: #ccc;padding:10px 10px 10px 0;color:blue"><span style="padding-left:10px">关键字请以半角的分号";"分开</span></div>                      
+                    <ul class="input-contents">
+                        <li class="half-width">
+                            <div class="title">Banner图片库</div>
+                            <div class="input">
+                                <textarea name="banner_library" class="easyui-validatebox" rows="3">{$model.banner_library}</textarea>
+                            </div>
+                        </li> 
+                        <li class="half-width">
+                            <div class="title">服务类型图片库</div>
+                            <div class="input">
+                                <textarea name="category_library" class="easyui-validatebox" rows="3">{$model.category_library}</textarea>
+                            </div>
+                        </li> 
+                        <li class="half-width">
+                            <div class="title">默认头像图片库</div>
+                            <div class="input">
+                                <textarea name="pic_library" class="easyui-validatebox" rows="3">{$model.pic_library}</textarea>
+                            </div>
+                        </li> 
+                        <li class="half-width">
+                            <div class="title">登录展示图片库</div>
+                            <div class="input">
+                                <textarea name="login_banner_library" class="easyui-validatebox" rows="3">{$model.login_banner_library}</textarea>
+                            </div>
+                        </li> 
+                        <li class="half-width">
+                            <div class="title">产品展示图片库</div>
+                            <div class="input">
+                                <textarea name="product_library" class="easyui-validatebox" rows="3">{$model.product_library}</textarea>
+                            </div>
+                        </li>
+                    </ul>
+                <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="SysParam" />                    
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+    

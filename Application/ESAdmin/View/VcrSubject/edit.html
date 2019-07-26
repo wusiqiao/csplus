@@ -1,0 +1,82 @@
+<style>
+.tableForm .row {
+    margin: 8px auto;
+    width: 60%;
+}
+.tableForm .row .caption {
+    width: 23%;
+}
+.tableForm .row .inputbox {
+    width: 70%;
+}
+.form-actions {
+    padding: 30px 0;
+    height: auto;
+}
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+        
+            <div class="row">
+                <div class="caption required"><span>科目{$Think.lang.FLD_NO}：</span></div>
+                <div class="inputbox"><input name="no" class="easyui-validatebox" data-options="required:true"  value="{$model.no}" /></div>
+            </div>
+            <div class="row">
+                <div class="caption required"><span>科目{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" /></div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_PARENT_ID}：</span></div>
+                <div class="inputbox">
+                    <input name="parent_name" class="easyui-validatebox" type="text" value="{$model.parent_name}"/>
+                    <input name="parent_id" type="hidden" value="{$model.parent_id}"  />
+                    <!--<a class="common-blue-btn" onclick="VcrSubjectFunctions.showSelectDialog()">选择</a>-->
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>科目{$Think.lang.FLD_TYPE_NAME}：</span></div>
+                <div class="inputbox">
+                    <input name="type_name" class="easyui-validatebox" value="{$model.type_name}" />
+                    <input name="type_id" type="hidden" value="{$model.type_id}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>余额方向：</span></div>
+                <div class="inputbox">
+                    <span style="margin: 0 20px 0 0;">
+                        <input name="direction" type="radio" data-value="{$model.direction}" value="{$Think.const.DIRECTION_DEBIT}"/>借
+                    </span>
+                    <span style="margin: 0 20px 0 0;">
+                        <input name="direction" type="radio" data-value="{$model.direction}" value="{$Think.const.DIRECTION_CREDIT}"/>贷
+                    </span>
+                </div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script>
+
+    autocompleteAjaxEx($(".tableForm input[name='type_name']"), "/VcrSubject/getSubjectTypes", {
+        onSelected: function(row){
+            $(".tableForm input[name='type_id']").val(row.id);
+        }
+    });
+    autocompleteAjaxEx($(".tableForm input[name='parent_name']"), "/VcrSubject/autocomplete/search/name+querykey+no/result/name+no", {
+        onSelected: function(row){
+            $(".tableForm input[name='parent_id']").val(row.id);
+            $.post("/VcrSubject/getMaxNoByParent", {parent_id: row.id}, function(result){
+                $(".tableForm input[name=no]").val(result);
+            });
+        },formatItem:function (row) {
+            return row.no + "-" + row.name;
+        }
+    });
+    var VcrSubjectFunctions = {
+        showSelectDialog:function(){
+            createDialog("/VcrSubject/select");
+        }
+    }
+</script>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/css/comm.css">
+    <title>Title</title>
+</head>
+<style>
+    .icon-add,.icon-del{
+        background-color: #0b95ff;
+        border-color: #0b95ff;
+        color: #fff;
+        margin: initial;
+        padding: 5px 6px 3px;
+        border-radius: 5px;
+        top: 8px;
+        position: absolute;
+        height: 23px;
+        width: 27px;
+    }
+    .icon-del{
+        margin-left: 35px;
+    }
+    .search-table tr td span{
+        padding: 5px 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        color:#000;
+        border: 1px solid #9f9f9f;
+        margin: 5px 2px;
+        display: -webkit-inline-box;
+        float: left;
+    }
+    .search-table tr td .checked{
+        background-color: #0b95ff;
+        color:#fff;
+        border: 1px solid #0b95ff;
+
+    }
+    .item-wrap{
+        width: 800px !important;
+        height: 380px !important;
+        overflow-y: scroll;
+    }
+    .item-wrap::-webkit-scrollbar {
+        display: none;
+    }
+    .button{
+        background-color: #00AFFF;color: #fff;padding: 5px 20px;border-color: #00AFFF;display: -webkit-inline-box;border-radius: 2px
+    }
+    .bd-ff {
+        border-bottom: 1px solid #ddd;
+    }
+</style>
+<body>
+<div id="main-content">
+    <div style="padding: 0 10px;height: 566px;overflow-y: auto;">
+        <table class="search-table target" style="width: 850px;">
+            <tr>
+                <th style="width: 60px">昵称：</th>
+                <td>
+                    <input name="lk_name" value="" class="easyui-validatebox filter-field"  />
+                    <div class="button" onclick="search()">搜索</div>
+                </td>
+            </tr>
+            <!--<tr class="groups">-->
+                <!--<th style="width: 60px">分组：</th>-->
+                <!--<td colspan="6">-->
+                    <!--<volist name="groups" id="vo">-->
+                        <!--<span data-id="{$vo.id}">{$vo.value}({$vo.user_count})</span>-->
+                    <!--</volist>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <tr class="tags" bind="0">
+                <th style="width: 60px">标签：</th>
+                <td colspan="5">
+                    <volist name="tags" id="vo">
+                        <span data-id="{$vo.id}">{$vo.value}({$vo.user_count})</span>
+                    </volist>
+                </td>
+                <notempty name="tags">
+                    <td style="position: relative;width: 100px" colspan="1"><label class="l-btn-icon fa-plus fa-lg icon-add"></label></td>
+                </notempty>
+            </tr>
+            <tr>
+                <th style="color:red">提示：</th>
+                <td style="color:red">
+                    未关注用户无法进行模板通知的相关操作
+                </td>
+            </tr>
+        </table>
+        <div class="main-content"   v-cloak>
+            <table  style="width: 750px;">
+                <tr style="height: 50px;background-color: #f8f6f6;">
+                    <th class="item" width="60">
+                        <input type="checkbox" value="all" name="item_users" v-model="all_toggle"  @click="allChecked" data-ignore-uncheck="" class="item-select css-checkbox" id="tem_0_0">
+                        <label for="tem_0_0" class="css-label" style="margin-left: 5px;">全选</label>
+                    </th>
+                    <th class="item" width="60">编号</th>
+                    <th class="item" width="100">头像</th>
+                    <th class="item" width="110">昵称</th>
+                    <th class="item" width="100">备注</th>
+                    <th class="item" width="100">电话号码</th>
+                    <!--<th class="item" width="100">分组</th>-->
+                    <th class="item" width="100">标签</th>
+                </tr>
+            </table>
+            <div class="item-wrap"  style="height: 300px">
+                <div class="item-container">
+                    <div class="detailcontainer" id="WxBranchTemplate-detailcontainer" style="position: relative">
+                        <form id="WxBranchTemplate-form">
+                            <table style="width: 750px;">
+                                <colgroup>
+                                    <col width="71"></col>
+                                    <col width="71"></col>
+                                    <col width="119"></col>
+                                    <col width="131"></col>
+                                    <col width="119"></col>
+                                    <!--<col width="121"></col>-->
+                                    <col width="119"></col>
+                                </colgroup>
+                                <tr v-for="(item,index) in item_list" @tap="onItemTap(item)" :id="item.item_id" class="tag-list" v-bind:style="getListColor(index)" style="height: 50px">
+                                    <td class="item" style="padding-left: 5px;">
+                                        <input type="checkbox" :value="item.id" v-model="users" name="item_users" @change="singleChecked" data-ignore-uncheck="" class="item-select css-checkbox" :id="'tem_'+index+item.item_id">
+                                        <label :for="'tem_'+index+item.item_id" class="css-label"></label>
+                                    </td>
+                                    <td class="item">{{(index + 1)}}</td>
+                                    <td class="item"><img :src="item.head_pic" alt="" width="40px" height="40px"></td>
+                                    <td class="item">{{item.name}}</td>
+                                    <td class="item">
+                                        <template v-if="item.comments">{{item.comments}}</template>
+                                        <template v-else>-</template>
+                                    </td>
+                                    <td class="item">
+                                        <template v-if="item.mobile">{{item.mobile}}</template>
+                                        <template v-else>-</template>
+                                    </td>
+                                    <!--<td class="item">{{item.group_name}}</td>-->
+                                    <td class="item">
+                                        <template v-if="item.tag_name">{{item.tag_name}}</template>
+                                        <template v-else>-</template>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;margin: 15px 0;position: relative;padding-top: 10">
+        <div style="position: absolute;left: 30px;top: 10px;">
+            <input type="checkbox" value="all" name="item_users" v-model="all_toggle"  @click="allChecked" data-ignore-uncheck="" class="item-select css-checkbox" id="tem_0_1">
+            <label for="tem_0_1" class="css-label">全选</label>
+        </div>
+        <div style="text-align: center;">
+            <span>已选择{{usersCount}}人</span>
+            <span class="button" @click="submission">确认</span>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+<script src="/{$Think.APP_PATH}/EShop/Public/js/common.js"></script>
+
+<script type="text/javascript">
+    var users_vue = new Vue({
+        el: "#main-content",
+        data: {
+            item_list: [],
+            tags:[],
+            groups:[],
+            lk_name:'',
+            users:[],
+            all:false,
+            all_toggle:[],
+            user_total:[],
+            buffer:1000,
+            isInitialization:true,//是否是初始化状态
+            initialization_total:[]//用户列表 - Total
+        },
+        created:function(){
+            if (vue.users.length > 0) {
+                for(var i = 0;i < vue.users.length ; i++)
+                {
+                    this.users.push(vue.users[i]['id'])
+                }
+                this.selected = this.templates[0]['value'];
+            }
+        },
+        computed:{
+            usersCount(){
+                return this.users.length;
+            }
+        },
+        methods: {
+            onItemTap:function(item){
+            },
+            getListColor(index){
+                return (index % 2 == 0) ? 'background-color:#fdfdfd' : 'background-color:#faf9f9'
+            },
+            submission(){
+                var checkedUser = [];
+                for(var i = 0;i < this.initialization_total.length ; i++)
+                {
+                    if ($.inArray(this.initialization_total[i]['id'],this.users) !== -1){
+                        checkedUser.push(this.initialization_total[i]);
+                    }
+                }
+                console.log(this.users);
+                console.log(this.initialization_total);
+                vue.users = checkedUser;
+                closeDialog('dlg-users-select')
+            },
+            allChecked(){
+                this.all = !this.all;
+                if (this.all) {
+                    for(var i = 0;i < this.user_total.length ; i++)
+                    {
+                        if($.inArray(this.user_total[i]['id'],this.users) === -1){
+                            this.users.push(this.user_total[i]['id']);
+                        }
+                    }
+                } else {
+                    this.users = [];
+                }
+            },
+            singleChecked(){
+                if(this.users.length > 0 && (this.users.length != this.user_total.length))
+                {
+                    this.all = false;
+                    this.all_toggle = [];
+                }
+            }
+        }
+    });
+    function queryData($target, current_page) {
+        $.getJSON("{$Think.const.CONTROLLER_NAME}/getSendUser", { page: current_page ,lk_name:users_vue.lk_name,tags:users_vue.tags,groups:users_vue.groups}, function(result) {
+            users_vue.item_list = users_vue.item_list.concat(result.data);
+            users_vue.user_total = result.user_total;
+            if (users_vue.isInitialization){
+                users_vue.initialization_total = result.user_total;
+                users_vue.isInitialization = false;
+            }
+            if (users_vue.all){
+                users_vue.users = [];
+                for(var i = 0;i < result.user_total.length ; i++)
+                {
+                    users_vue.users.push(result.user_total[i]['id']);
+                    // if($.inArray(result.user_total[i]['id'],users_vue.users) === -1){
+                    //     users_vue.users.push(result.user_total[i]['id']);
+                    // }
+                }
+            }
+            $target.data("loading", false);
+        }, "json");
+    }
+    pullRefresh(".item-wrap", ".item-container", function($target, page){
+        queryData($target, page);
+    })
+    function search()
+    {
+        users_vue.lk_name = $('input[name=lk_name]').val();
+        users_vue.item_list = [];
+        users_vue.all = false;
+        users_vue.all_toggle = [];
+        pullRefresh(".item-wrap", ".item-container", function($target, page){
+            queryData($target, page);
+        })
+    }
+</script>
+<script>
+    $('.target').on('click','.groups > td > span,.tags > td > span',function(){
+        $(this).toggleClass('checked')
+        if ($(this).parents('tr').hasClass('tags')) {
+            handlerTargetInput()
+        }else {
+            handlerTargetInput('groups')
+        }
+    })
+    $('.target').on('click','.tags > td > .icon-add',function(){
+        var tdDoms = $(this).parent('td').prev('td');
+        if (tdDoms.find('.checked').length == 0) {
+            $.dialog.tips('至少选择一个标签！');
+            return false;
+        }
+        if (tdDoms.find('span:not(.checked)').length == 0) {
+            $.dialog.tips('元素不足，无法继续筛选！');
+            return false;
+        }
+        var bindNumber = $(this).parents('.tags').attr('bind');
+        var html = '';
+        bindNumber = parseInt(bindNumber)+1;
+        html+= '<tr class="tags" bind="'+bindNumber+'">';
+        html+= '<th>标签：</th>';
+        html+= '<td colspan="5">';
+        html+= '</td>';
+        html+= '<td style="position: relative;width: 100px"><label class="l-btn-icon fa-plus fa-lg icon-add"></label><label class="l-btn-icon fa-minus fa-lg icon-del"></label></td>';
+        html+= '</tr>';
+        $('.target').append(html);
+        $('.target ').find('.tags[bind='+bindNumber+'] > td:first').append(tdDoms.find('span:not(.checked)').clone(true));
+        tdDoms.find('span:not(.checked)').remove();
+        $(this).parent('td').hide();
+    })
+    $('.target').on('click','.tags > td > .icon-del',function(){
+        var tdDoms = $(this).parent('td').prev('td');
+        var bindNumber = $(this).parents('.tags').attr('bind');
+        bindNumber = parseInt(bindNumber)-1;
+        tdDoms.find('span').removeClass('checked');
+        $('.target ').find('.tags[bind='+bindNumber+'] > td:first').append(tdDoms.find('span').clone(true));
+        $(this).parents('.tags').remove();
+        $('.target ').find('.tags[bind='+bindNumber+'] > td:last').show()
+        handlerTargetInput();
+    })
+    function handlerTargetInput($type = 'tags'){
+        var html = '';
+        if ($type == 'tags') {
+            users_vue.tags = [];
+            $('.target').find('.tags > td > .checked').each(function(){
+                var bindValue = $(this).parents('tr').attr('bind');
+                console.log(bindValue)
+                // html += '<input name="tags['+bindValue+'][]" class="easyui-validatebox filter-field" value="'+$(this).data("id")+'">';
+                if (users_vue.tags[bindValue]) {
+                    if ($.inArray($(this).data("id"),users_vue.tags[bindValue]) === -1){
+                        users_vue.tags[bindValue].push($(this).data("id"));
+                    }
+                } else {
+                    users_vue.tags[bindValue] = [];
+                    users_vue.tags[bindValue][0] = $(this).data("id");
+                }
+            })
+            // $('#inputs').find('#tags-input').html(html)
+        } else {
+            users_vue.groups = [];
+            $('.target').find('.groups > td >  .checked').each(function(){
+                // html += '<input name="groups[]" class="easyui-validatebox filter-field" value="'+$(this).data("id")+'">';
+                users_vue.groups.push($(this).data("id"));
+            })
+            // $('#inputs').find('#groups-input').html(html)
+        }
+        if (users_vue.buffer === 1000) {
+            bufferSearch();
+        } else {
+            users_vue.buffer = 1000;
+        }
+    }
+    function bufferSearch()
+    {
+        if (users_vue.buffer > 0){
+            users_vue.buffer -= 100;
+            setTimeout(bufferSearch,100);
+        } else {
+            users_vue.buffer = 1000;
+            search();
+        }
+    }
+</script>
+</html>

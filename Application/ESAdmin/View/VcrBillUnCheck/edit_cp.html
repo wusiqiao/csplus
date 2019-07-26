@@ -1,0 +1,194 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<link rel="stylesheet" href="__ROOT__/{$Think.APP_PATH}/Public/uploader/uploader.css" />
+<style>
+    .property-content{border: 1px #ccc solid;margin: 10px auto;padding: 10px 20px; width:80%}
+    .input-contents input[type=text]{width:98%}
+    .input-contents li{float: left; width:100%}
+    .input-contents li .title{padding: 5px 0px}
+    .input-contents .half-width{width: 49%;padding-right: 1%}
+    .input-contents .half-width .input{width:98%;}
+    .input-contents .third-width{width: 33%;padding-right: 0.3%}
+    .input-contents .third-two-width{width: 66%;padding-right: 0.3%}
+    .input-contents .third-width .input{width:98%;}
+    .input-contents textArea{width:100%;border-radius: 5px}
+</style>
+<div class="detailcontainer full-screen" id="BillUnCheck-detailcontainer">
+    <div class="easyui-layout" data-options="border: true,fit:true">
+        <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="BillUnCheck-dataform" method="post" name="BillUnCheck-dataform">                        
+            <div data-options="region:'west',border:false" style="width:60%; height: 100%;border: 1px #ccc solid">
+                <div class="top-pannel" style="width:100%;height:10%;border-bottom: 1px #ccc solid;"> 
+                    <div class="kui-img-list" style="float:left">
+                        <input type="file" name="image_file[]" accept="image/*"  onchange="fileSelectHandler(this)" />                        
+                        <div class="kui-img-item capture">                          
+                            <img src="__ROOT__/{$Think.APP_PATH}/Public/images/image.png" />
+                        </div>                        
+                    </div>
+                </div>            
+                <div class="preview-image" style="height:80%;padding:0px;overflow: auto">
+                    <img src="" />
+                </div>
+            </div> 
+            <div data-options="region:'center',split:true,border:true" style="width: auto; height: 100%;border: 1px #ccc solid; border-left:none" >
+                <div class="property-content">                 
+                    <input name="id"  type="hidden"  value="{$model.id}">
+                    <ul class="input-contents">
+                        <li class="third-width">
+                            <div class="title">录入日期</div>
+                            <div class="input">
+                                <input type="text" name="bill_date" style="width:100%" class="easyui-datebox easyui-validatebox" data-options="required:true,formatter:formatDate" value="{$model.bill_date}">
+                            </div>
+                        </li>
+                        <li class="third-width">
+                            <div class="title">录入单号</div>
+                            <div class="input">
+                                <input type="text" name="bill_no" class="easyui-validatebox" data-options="required:true,formatter:formatDate" value="{$model.bill_no}">
+                            </div>
+                        </li>
+                                               <li  class="third-width">
+                            <div class="title">会计期间</div>
+                            <div class="input">
+                                <!--<input type="text" name="source_date" style="width:100%"  class="easyui-datebox easyui-validatebox" data-options="formatter:formatDate" value="{$model.source_date}">-->
+                                 <select class="chosen-select" style="width:100%;" name="accounting_section" data-value="{$model.accounting_section}"></select>
+                            </div>
+                        </li> 
+                        <li  class="third-width">
+                            <div class="input">
+                                <fieldset style="border:1px #ccc solid;margin:0;border-radius:5px"><legend>发票来源</legend>
+                                    <div style="line-height: 32px;">
+                                        <label><input name="source_flag" type="radio" value="0" data-value="{$model.source_flag}">外来</label>
+                                        <label><input name="source_flag" type="radio" value="1" data-value="{$model.source_flag}">自开</label>
+                                    </div>                                    
+                                </fieldset>
+                            </div>
+                        </li>  
+                        <li class="third-two-width fee-info">
+                            <div class="input">
+                                <fieldset style="border:1px #ccc solid;margin:0;border-radius:5px"><legend>发票归类</legend>                                    
+                                    <div style="line-height: 30px;">
+                                        <label><input name="is_fee" type="radio" value="1" data-value="{$model.is_fee}">费用</label>
+                                        <select class="chosen-select" style="width:120px;" name="fee_department" data-value="{$model.fee_department}">
+                                            <option value="manage">管理部门</option>
+                                            <option value="sales">销售部门</option>
+                                            <option value="finance">财务部门</option>
+                                            <option value="production">生产部门</option>
+                                            <option value="project">项目部门</option>
+                                        </select>
+                                        <label style="padding-left: 20px"><input name="is_fee" type="radio" value="0" data-value="{$model.is_fee}">其他</label>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div class="title"></div>
+                            <div class="input">
+                                <fieldset style="border:1px #ccc solid;margin:0;border-radius:5px"><legend>发票类型</legend>
+                                    <label><input name="tax_type" type="radio" value="0" data-value="{$model.tax_type}">非专用发票</label>
+                                    <label><input name="tax_type" type="radio" value="1" data-value="{$model.tax_type}">专用发票</label>
+                                </fieldset>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="title source_flag_title">销售方</div>
+                            <div class="input">
+                                <input type="text" class="easyui-validatebox" name="name" data-options="required:true" placeholder="" value="{$model.name}">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="title">货物或劳务、服务名称</div>
+                            <div class="input">
+                                <input type="text" class="easyui-validatebox" name="goods_name" data-options="required:true" placeholder="" value="{$model.goods_name}">
+                            </div>
+                        </li>
+                        <li class="third-width">
+                            <div class="title">未税金额</div>
+                            <div class="input">
+                                <input type="text" class="easyui-validatebox" name="amount" data-options="required:true,precision:2,validType:'number'" placeholder="" value="{$model.amount}">
+                            </div>
+                        </li>   
+                        <li class="third-width">
+                            <div class="title">税额</div>
+                            <div class="input">
+                                <input type="text" class="easyui-validatebox" name="tax_amount" data-options="precision:2,validType:'number'" placeholder="" value="{$model.tax_amount}">
+                            </div>
+                        </li>  
+                        <li class="third-width">
+                            <div class="title">价税合计</div>
+                            <div class="input">
+                                <input type="text"  style="background:#F8F8FF;border-radius: 0px" class="easyui-validatebox" name="total_amount" data-options="precision:2,validType:'number'" placeholder="" value="" readonly>
+                            </div>
+                        </li>  
+
+                        <li class="third-width">
+                            <div class="title">数量</div>
+                            <div class="input">
+                                <input type="text" class="easyui-validatebox" name="quantity" data-options="validType:'number'" placeholder="" value="{$model.quantity}">
+                            </div>
+                        </li>
+                        <li class="third-width">
+                            <div class="title">单价</div>
+                            <div class="input">
+                                <input type="text" class="easyui-validatebox" name="price" data-options="validType:'number'" placeholder="" value="{$model.price}">
+                            </div>
+                        </li>
+                        <li class="third-width">
+                            <div class="title">计量单位</div>
+                            <div class="input">
+                                <input type="text" class="easyui-validatebox" name="unit" data-options="" placeholder="货品的计量单位" value="{$model.unit}">
+                            </div>
+                        </li>                         
+                        <li>
+                            <div class="title">摘要</div>
+                            <div class="input">
+                                <textarea name="memo" rows="5" placeholder="">{$model.memo}</textarea>
+                            </div>
+                        </li>
+                    </ul>                                
+                    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="BillUnCheck" /> 
+                </div>
+            </div>            
+        </form> 
+    </div>         
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+    $(function () {
+        $("#BillUnCheck-detailcontainer").css({width: $(document).width() - 5 + 'px', height: $(document).height() - 20 + 'px'});
+        $(".ui_title_bar").css({width: '98%', padding: '0px'}); //微调
+        $(".ui_border").css({"border-radius": "0px"});
+        autocomplete($("input[name='name']"), '{$names}');
+        autocomplete($("input[name='goods_name']"), '{$goods_names}');
+        autocomplete($("input[name='unit']"), '{$unit_names}');
+        source_flag_change("{$model.source_flag}");
+        $("input[name=source_flag]").change(function () {
+            source_flag_change($(this).val());
+        });
+        $("input[name=amount]").change(function () {
+            calcTotalAmount();
+        });
+        $("input[name=tax_amount]").change(function () {
+            calcTotalAmount();
+        });
+        create_ccounting_section($("select[name=accounting_section]"));
+        calcTotalAmount();
+    });
+    function calcTotalAmount() {
+        var amount = parseFloat($("input[name=amount]").val());       
+        var tax_amount = parseFloat($("input[name=tax_amount]").val());
+        if (!isNaN(amount) && !isNaN(tax_amount)){
+            $("input[name=total_amount]").val((tax_amount + amount).toFixed(2));
+        }
+    }
+    function source_flag_change(value) {
+        var parent = $("input[name=source_flag]").parents("li");
+        if (value == "0") {              /*外来*/            
+            $(".source_flag_title").text("销售方");
+            parent.addClass("third-width");
+            $(".fee-info").show();                        
+        } else {    /*自开*/
+            $(".source_flag_title").text("购买方");
+            $(".fee-info").hide();
+            parent.removeClass("third-width");
+        }
+    }    
+</script>
+

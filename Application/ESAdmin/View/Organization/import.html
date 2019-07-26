@@ -1,0 +1,66 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <div class="tableForm">
+        <input name="id" type="hidden" value="{$model.id}">
+        <div class="row">
+            <div class="caption"><i class="fa fa-cloud-download"></i></div>
+            <div class="inputbox">
+                <span>下载模板</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="caption"></div>
+            <div class="inputbox_x2">
+                <div style="color:#545454">为提高导入的成功率，请下载并使用系统提供的模板。</div>
+                <p><a href="Organization/downloadTemplate" class="common-blue-btn" style="width:auto;" plain="true">下载模板</a></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="caption"><i class="fa fa-cloud-upload"></i></div>
+            <div class="inputbox">
+                <span>上传文件</span>
+            </div>
+        </div>
+        <div class="row">
+            <form id="import" action="Organization/import" method="post" enctype="multipart/form-data">
+                <div class="caption"></div>
+                <div class="inputbox_x2">
+                    <div style="color:#545454">仅支持xlsx.，xls.文件大小≤4M。</div>
+                    <div style="color:#545454">覆盖导入，导入文件数据与系统中客户名称重复时，将以导入文件数据更新至系统中。</div>
+                    <p><input name="excel" class="easyui-filebox" data-options="required:true" data-options="prompt:'上传文件'" style="width:50%" />
+                        <!--                     <input type="hidden" name="dept_id" value=""> -->
+                        <input type="button" onclick="actionImport()" class="common-blue-btn" value="导入" style="width:auto;margin-left:20px" /></p>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="caption"><i class="fa fa-cloud-download"></i></div>
+            <div class="inputbox">
+                <span>导出数据</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="caption"></div>
+            <div class="inputbox">
+                <a href="Organization/export" class="common-blue-btn" style="width:auto;" plain="true" >导出</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+function actionImport() {
+    var formData = new FormData($('#import')[0]);
+    formData.append('dept_id', dept_id); //添加新的键值对
+    $.ajax({
+        url: '/Organization/import',
+        type: 'POST',
+        cache: false,
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(result){
+            result = $.parseJSON( result);
+            $.dialog.tips(result.message);
+        }
+    });
+}
+</script>

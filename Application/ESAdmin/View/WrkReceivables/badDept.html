@@ -1,0 +1,28 @@
+<div class="detailcontainer" style="width:300px;height:200px">
+	<div class="row">
+		<input type="hidden" name="id" value="{$model.id}">
+	    <p>合同金额：<input type="text" class="easyui-validatebox" readonly="true" name="" value="{$model.total_amount}"></p>
+	    <p>付款金额：<input type="text" class="easyui-validatebox" readonly="true" name="" value="{$model.pay_amount}"></p>
+	    <p>坏账金额：<input type="text" class="easyui-validatebox" readonly="true" name="bad_dept_amount" value="{$model.unpay_amount}"></p>
+	</div>
+	<div align="center">
+		<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="badDeptSave()">确认</a>
+		<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>	
+	</div>
+</div>
+<script>
+    function badDeptSave() {
+        var bad_dept_amount = $("input[name='bad_dept_amount']").val();
+        showMaskLayer();
+        $.post("/WrkReceivables/badDept/id/{$model.id}",{bad_dept_amount:bad_dept_amount},function(result) {
+            hideMaskLayer();
+            $.dialog.tips(result.message);
+            if (result.code == 0) {
+                queryData3();
+                queryData5();
+                statistics();
+            	closeDialog("dlg-badDept");
+            }
+        }, "json");
+    }
+</script>

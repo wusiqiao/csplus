@@ -1,0 +1,62 @@
+<div class="detailcontainer" id="subject-import-detailcontainer" style="width:720px; height:360px;margin-top: 20px">
+    <form action="{$Think.const.CONTROLLER_NAME}/batchAdd" id="batchAdd-dataform" method="post" name="batchAdd-dataform">
+        <div class="tableForm">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_VALUE}1：</span></div>
+                <div class="inputbox">
+                    <input name="value" class="easyui-validatebox" onkeyup="this.value=this.value.replace(/\s+/g,'')" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_VALUE}2：</span></div>
+                <div class="inputbox">
+                    <input name="value" class="easyui-validatebox" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_VALUE}3：</span></div>
+                <div class="inputbox">
+                    <input name="value" class="easyui-validatebox" onkeyup="this.value=this.value.replace(/\s+/g,'')" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_VALUE}4：</span></div>
+                <div class="inputbox">
+                    <input name="value" class="easyui-validatebox" onkeyup="this.value=this.value.replace(/\s+/g,'')" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_VALUE}5：</span></div>
+                <div class="inputbox">
+                    <input name="value" class="easyui-validatebox" onkeyup="this.value=this.value.replace(/\s+/g,'')" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_VALUE}6：</span></div>
+                <div class="inputbox">
+                    <input name="value" class="easyui-validatebox" onkeyup="this.value=this.value.replace(/\s+/g,'')" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_VALUE}7：</span></div>
+                <div class="inputbox">
+                    <input name="value" class="easyui-validatebox" onkeyup="this.value=this.value.replace(/\s+/g,'')" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_VALUE}8：</span></div>
+                <div class="inputbox">
+                    <input name="value" class="easyui-validatebox" onkeyup="this.value=this.value.replace(/\s+/g,'')" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_VALUE}9：</span></div>
+                <div class="inputbox">
+                    <input name="value" class="easyui-validatebox" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_VALUE}10：</span></div>
+                <div class="inputbox">
+                    <input name="value" class="easyui-validatebox" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" style="margin-top: 10px">
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="action_batch_add('{$Think.const.CONTROLLER_NAME}')">确定</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">取消</a>
+        </div>
+    </div>
+</div>

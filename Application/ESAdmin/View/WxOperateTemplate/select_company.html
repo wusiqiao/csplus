@@ -1,0 +1,233 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/flatfoot.css?version={$version}" rel="stylesheet" />
+<style>
+    .maincontainer::-webkit-scrollbar,
+    .whole-list::-webkit-scrollbar{
+        display: none;
+    }
+    .whole-viewshow{
+        padding: 25px 125px;
+        font-family: MicrosoftYaHei;
+        font-size: 16px;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 20px;
+        letter-spacing: 0px;
+        color: #666666;
+    }
+    .whole-viewshow div{
+        margin: 1px 0 0 85px;
+        width: 450px;
+    }
+    .whole-small-div {
+        height: 40px;
+        padding: 10px 15px;
+        margin: initial;
+        float: left;
+    }
+    .whole-substance {
+        flex: 1;
+    }
+    .whole-list{
+        height: 95%;
+        width: 95% !important;
+        overflow-y: scroll
+    }
+    .whole-list div{
+        float: left;
+        width: 250px !important;
+        margin: 20px 0 0 10px;
+    }
+
+    .ipt_new{
+        width: 300px;
+    }
+
+    .whole-list::-webkit-scrollbar{
+        display: none;
+    }
+</style>
+<body>
+
+<div style="height: 100%;padding: 10px;background-color: #fff">
+    <div class="content-wrap" id="select" style="height: 90%">
+        <div class="c-select" style="height: 100%;">
+            <div class="whole-title">
+                <div class="title-tip bgb"></div>
+                <div class="title-message">创建通知消息</div>
+            </div>
+            <div class="whole-div" style="margin: 10px 25px 0 0;height: 30%;border: 1px solid #e3e3e3">
+                <div class="whole-substance">
+                    <div class="whole-viewshow" style="padding: 0px 10px;width: 100%;">
+                        <div  style="font-weight: 600;margin: 0 0 5px 0;"><i class="fa fa-eye fa-lg" style="color: #368bfe;margin-right: 10px;"></i>消息预览</div>
+                        <div style=";margin: 0 0;width: 100%;padding: 30px 0;">
+                            <div  v-for="(content , keys) in specifics.contents.example_records">
+                                <span v-if="content.key!=''">{{ content.key }}：</span>
+                                <span v-if="keys != 'first'">{{ specifics.contents.content_records[keys]['value']}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="whole-div" style="margin: 10px 25px 0 0;height: 50%;border: 1px solid #e3e3e3">
+                <div class="whole-substance" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+                    <div class="whole-viewshow detailcontainer"  style="padding: 0px 10px;height: 90%">
+                        <div style="font-weight: 600;margin: 0 0 0px 0;width: 100%;display: flex">
+                            <div style="flex: 1;margin: 1px 0 0 0px;"><i class="fa fa-th-large fa-lg" style="color: #368bfe;margin-right: 10px;"></i>公司列表</div>
+                            <div style="flex: 1;text-align: right;display: contents;">
+                                <div class="search_ipt" style="width: 250px;" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                                    <input type="text" v-model="keyword" placeholder="公司名称" class="filter-field ipt_new" name="SerachComPotential"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="getCompanySelect()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="whole-list" v-if="companys.length > 0">
+                            <div v-for="(company , keys) in companys">
+                                <span><input name="companys" type="checkbox" default="true"  :value="company.id" @click="getClickCheckBox()"  v-model="selects"/></span>
+                                <span>{{company.text}}</span>
+                            </div>
+                        </div>
+                        <div class="whole-list" style="display: flex;justify-content: center;align-items: Center;font-weight: 800;color: #bbb;" v-if="companys.length == 0">
+                            此筛选条件,暂无数据
+                        </div>
+                    </div>
+                    <div class="whole-viewshow detailcontainer"  style="padding: 10px 20px;height: 10%;display: flex">
+                        <div style="flex: 1;text-align: left;margin: 1px 0 0 0px;"><input  type="checkbox"  value="1" v-model="isAll" @click="allBox"/>全选</div>
+                        <div style="flex: 1;text-align: right">已选择{{selects.length}}家公司</div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div style="height: 5%" >
+        <div  style="text-align: center;">
+            <a href="javascript:;"  onclick="perv()" class="btn_bg_blue">返回上级</a>
+            <a href="javascript:;"  onclick="next()" class="btn_bg_blue">上一步：设置消息</a>
+            <a href="javascript:;"  onclick="appointOrUpdate()" class="btn_bg_blue">保存发送计划</a>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    // parseForm($("#{$Think.const.CONTROLLER_NAME}-detailcontainer"));
+    var companyVue = new Vue({
+        el: '#select',
+        data:{
+            specifics:'',
+            companys: [],
+            companysAll:[],
+            selects:[],
+            isAll:0,
+            tokenHash:'{$token_hash}',
+            keyword:''
+        },
+        created:function(){
+            setTimeout(function(){
+                getCompanySelect(true);
+            },200)
+        },
+        computed:{
+
+        },
+        methods: {
+            getClickCheckBox(){
+                console.log('selects : ' + this.selects.length + 'companysAll : ' + this.companysAll.length)
+                var obj = this;
+                setTimeout(function(){
+                    if (obj.selects.length != obj.companysAll.length) {
+                        obj.isAll = 0;
+                    }
+                },0)
+            },
+            allBox(){
+                // console.log(this.isAll);
+                if (!this.isAll) {
+                    this.selects = this.companysAll;
+                } else {
+                    this.selects = [];
+                }
+            },
+        }
+    });
+    // 初始化
+    $(function(){
+        if (getLocalStorage(companyVue.tokenHash)) {
+            companyVue.specifics = getLocalStorage(companyVue.tokenHash);
+            if (companyVue.specifics.companys){
+                setTimeout(function(){
+                    companyVue.selects = companyVue.specifics.companys;
+                },200)
+            }
+        } else {
+            $.dialog.alert('参数错误');
+            toggleType('{$Think.const.CONTROLLER_NAME}')
+        }
+        setTimeout(function(){
+            $("input[name='SerachComPotential']").keyup(function(){
+                getCompanySelect();
+            });
+        },200)
+    });
+    function perv(){
+        if (companyVue.specifics.id == 0) {
+            toggleType('{$Think.const.CONTROLLER_NAME}')
+        } else{
+            toggleType('{$Think.const.CONTROLLER_NAME}/send_premise/id/'+companyVue.specifics.id)
+        }
+    }
+    function next() {
+        toggleType('{$Think.const.CONTROLLER_NAME}/appoint_plan/token_hash/'+companyVue.tokenHash)
+    }
+    function appointOrUpdate()
+    {
+        if (companyVue.selects.length > 0){
+            companyVue.specifics.companys = companyVue.selects;
+            $.post('/{$Think.const.CONTROLLER_NAME}/select_company',companyVue.specifics,function(result){
+                if (result.error == 0) {
+                    localStorage.removeItem(companyVue.tokenHash);
+                    $.dialog.tips(result.message);
+                    setTimeout(function(){
+                        toggleType('{$Think.const.CONTROLLER_NAME}/plan')
+                    },1000)
+                } else {
+                    $.dialog.alert(result.message);
+                }
+            },'json')
+        } else {
+            $.dialog.alert('请至少选择一个公司');
+        }
+    }
+    function getCompanySelect(hasAll = false)
+    {
+        $.post('/{$Think.const.CONTROLLER_NAME}/treeCompany',{keyword:companyVue.keyword},function(result){
+            if (hasAll) {
+                companyVue.companysAll = [];
+                for (var i = 0;i < result.length ; i++ ){
+                    companyVue.companysAll.push(result[i].id);
+                }
+            }
+            companyVue.companys = result;
+            setTimeout(function(){
+                parseForm($("#{$Think.const.CONTROLLER_NAME}-detailcontainer"));
+            },200)
+        },'json')
+    }
+    function setLocalStorage(data,itemValue){
+        data = ($.isArray(data) || $.type(data) == 'object') ? JSON.stringify(data):data ;
+        localStorage.setItem(itemValue,data);
+    }
+    function getLocalStorage(itemValue){
+        if (localStorage.getItem(itemValue)) {
+            var value     = localStorage.getItem(itemValue);
+            return $.parseJSON(value);
+        } else {
+            return false;
+        }
+    }
+
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+</script>

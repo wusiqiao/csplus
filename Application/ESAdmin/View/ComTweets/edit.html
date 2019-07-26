@@ -1,0 +1,154 @@
+<style>
+    #edui_fixedlayer{
+        z-index: 2333 !important;
+    }
+    textarea{
+        height: 50px !important;
+    }
+    .textarea-div .textbox{
+        height: 50px !important;
+    }
+    .tweets-textarea{
+        display: -webkit-inline-flex;
+        color: #9f9f9f;
+        font-family: cursive !important;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post"
+          name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-tabs" style="width:665px;height:440px;background: #ccc">
+            <div title="基本资料" style="padding:10px">
+                <div class="tableForm">
+                    <input name="id" type="hidden" value="{$model.id}">
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.TWEETS_TITLE}：</span></div>
+                        <div class="inputbox_x2">
+                            <input name="title" class="easyui-validatebox"
+                                   data-options="required:true" value="{$model.title}"/></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.TWEETS_BASE_COUNT}：</span></div>
+                        <div class="inputbox">
+                            <input type="text" name="base_count" class="easyui-numberspinner" value="<gt name='model.base_count' value='0'>{$model.base_count}<else/>200</gt>"  data-options="min:0,max:1000,required:true" >
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.TWEETS_PIC}：</span></div>
+                        <div class="inputbox">
+                            <input type="text" class="easyui-validatebox" id="pic" name="pic"  value="{$model.pic}" data-options="required:true"/>
+                        </div>
+                        <a href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="upImage();">上传图片</a>
+                        <a href="{$model.pic}"
+                           class="easyui-linkbutton fontawesome-icon-button"
+                           plain="true"
+                           target="_blank"
+                        <empty name="model.pic">
+                            style="display: none"
+                        </empty>
+                        id="show_pic">查看图片</a>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.TWEETS_OPEN}：</span></div>
+                        <div class="inputbox">
+                            <input name="is_open" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.is_open}"  default="true"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>{$Think.lang.TWEETS_DESCRIBE}：</span></div>
+                        <div class="inputbox textarea-div" style="width: 47%">
+                            <input class="easyui-textbox tweets-textarea" value="{$model.describe}" name="describe" data-options="multiline:true,prompt:'请输入软文相关描述,限制字数在40以内',validType:'max[40]',onChange:handlerDescribeFonts" style="width:300px;">
+                        </div>
+                        <div style="display: -webkit-inline-flex;color:#9f9f9f"><desctibe id="describe_fonts" style="font-weight: 600;"> 0 </desctibe> /40</div>
+                    </div>
+                    <div class="easyui-section-item">
+                        <div class="tab-header" style="position: relative">
+                            <span>{$Think.lang.TWEETS_BODY}</span>
+                            <div style="position: absolute;right:10px;top:2px"><a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button editor-edit-botton" plain="true" icon="fa-edit fa-lg">编辑</a></div>
+                        </div>
+                        <div style="padding-top: 0px" >
+                            <div class="maincontainer" style="height:400px;overflow: auto">
+                                <div id="store-content">{$model.body|html_entity_decode}</div>
+                                <input name="body" type="hidden" value="{$model.body}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+    <!--添加上传图片 start-->
+    <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editorUploadImages/js/ueditor.config.js"></script>
+    <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editorUploadImages/js/ueditor.all.js"></script>
+    <script type="text/plain" id="upload_ue"></script>
+    <!--添加上传图片 end-->
+    <script>
+        $(function() {
+            $.extend($.fn.validatebox.defaults.rules, {
+                max:{
+                    validator: function (value,param) {
+                        handlerDescribeFonts(value);
+                        return value.length <= param[0];
+                    },
+                    message: '不能超过{0}个字数'
+                }
+            });
+            var $dataform = getDataForm("{$Think.const.CONTROLLER_NAME}");
+            $dataform.find(".editor-edit-botton").click(function () {
+                var source = $("#store-content").html();
+                openEditor("文章编辑", source, function (content) {
+                    $("#store-content").html(content);
+                    $dataform.find("input[name=body]").val(content);
+                });
+            });
+            // $('.tweets-textarea').textbox({
+            //     onChange(value) {
+            //         handlerDescribeFonts(value)
+            //     },
+            // });
+            // $('.tweets-textarea').textbox({
+            //     onChange(value) {
+            //         handlerDescribeFonts(value)
+            //     },
+            //     onBlur(value){
+            //         console.log(2123);
+            //         handlerDescribeFonts(value)
+            //     }
+            // });
+        })
+        function handlerDescribeFonts(value){
+            var count = $.trim(value) == '' ? 0 : value.length;
+            $('#describe_fonts').text(count);
+        }
+    </script>
+    <!--上传图片模块-->
+    <script type="text/javascript">
+        var _editor;
+        $(function() {
+            //重新实例化一个编辑器，防止在上面的editor编辑器中显示上传的图片或者文件
+            _editor = UE.getEditor('upload_ue',
+                {
+                    upload_model: "tweets",
+                    UEDITOR_HOME_URL:'__ROOT__Application/ESAdmin/Public/editorUploadImages/js/',
+                });
+            _editor.ready(function () {
+                //隐藏编辑器，因为不会用到这个编辑器实例，所以要隐藏
+                _editor.hide();
+                //侦听图片上传
+                _editor.addListener('beforeInsertImage', function (t, arg) {
+                    //将地址赋值给相应的input,只去第一张图片的路径
+                    $("#pic").attr("value", arg[0].src);
+                    //图片预览
+                    $("#show_pic").attr("href", arg[0].src);
+                    $("#show_pic").show();
+                })
+            });
+        });
+        //弹出图片上传的对话框
+        function upImage() {
+            var myImage = _editor.getDialog("insertimage");
+            myImage.open();
+        }
+    </script>
+</div>

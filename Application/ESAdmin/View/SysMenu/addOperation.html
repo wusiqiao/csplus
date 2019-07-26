@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="SysMenu-dataform" method="post" name="SysMenu-dataform">
+    <div class="tableForm" style="height: 150px;width: 380px;">
+        <input name="id"  type="hidden"  value="{$menu_id}">
+        <div class="row" style="margin-bottom: 5%">
+            <div class="caption"><span>名称：</span></div>
+            <div class="inputbox">
+                <input name="add_name" class="easyui-validatebox" style="width: 200px" required/>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 5%">
+            <div class="caption"><span>动作：</span></div>
+            <div class="inputbox">
+                <input name="add_action" class="easyui-validatebox" style="width: 200px" required/>
+            </div>
+        </div>
+        <div class="row" style="margin-left: 30%">
+            <a href="javascript:void(0)" plain="true" class="modal-save-btn btn-update " id="saveOperation">确定</a>
+            <a href="javascript:void(0)" plain="true" class="modal-close-btn">取消</a>
+        </div>
+    </div>
+</form>
+</body>
+<script>
+    $("#saveOperation").on('click',function(){
+        //获取权限列表
+        var inputs = $("#menu_operation_select").data('menu_operation_inputs');
+        var name = $("input[name=add_name]").val();
+        var action = $("input[name=add_action]").val();
+        var operation_name = $("input[name=operation_name]").val();
+        var operation_action = $("input[name=operation_action]").val();
+        for(var i=0;i<inputs.length;i++){
+            if(inputs[i].text == name){
+                alert("权限名称已存在！");
+                return false;
+            }
+        }
+        var check = operation_action.split(",");
+        if(check.indexOf(action) > -1){
+            alert("权限动作已存在！");
+            return false;
+        }
+        var ok = true;
+        var menu_id = $("input[name=id]").val();
+        //验证数据库中action是否重复
+        $.ajax({
+            url:'SysMenu/checkOperation',
+            data:{"action":action,"menu_id":menu_id},
+            type:"post",
+            dataType:"json",
+            async:false,
+            success:function(result){
+                if(result.err == 1){
+                    alert(result.message);
+                    ok = false;
+                }
+            }
+        })
+        if(!ok){
+            return false;
+        }
+        operation_name == "" ? $("input[name=operation_name]").val(name) : $("input[name=operation_name]").val(operation_name+","+name);
+        operation_action == "" ? $("input[name=operation_action]").val(action) : $("input[name=operation_action]").val(operation_action+","+action);
+        var json = {"value":"","text":name};
+        inputs.push(json);
+        $("#menu_operation_select").data('menu_operation_inputs',inputs);
+        $("#menu_operation_select").append("<option>"+ name +"</option>")
+        $("#menu_operation_select").trigger("chosen:updated");
+        closeDialog();
+    })
+    $(".modal-close-btn").on('click',function(){
+        closeDialog();
+    })
+</script>
+</html>

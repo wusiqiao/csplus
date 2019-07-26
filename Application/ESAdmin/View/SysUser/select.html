@@ -1,0 +1,19 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="width:640px; height:480px">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="SysUser" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'setuserpassword',width:64,align:'center'">操作</th>
+        <th data-options="field:'account',width:120,align:'left'">{$Think.lang.FLD_ACCOUNT}</th>
+        <th data-options="field:'no',width:120,align:'left'">{$Think.lang.FLD_NO}</th>
+        <th data-options="field:'name',width:120,align:'left'">{$Think.lang.FLD_USER_NAME}</th>
+        <th data-options="field:'sex',width:60,align:'left'">{$Think.lang.FLD_SEX}</th>
+        <th data-options="field:'birthday',width:120,align:'left',formatter:formatDate">{$Think.lang.FLD_BIRTHDAY}</th>
+        <th data-options="field:'email',width:120,align:'left'">{$Think.lang.FLD_EMAIL}</th>
+        <th data-options="field:'mobile',width:120,align:'left'">{$Think.lang.FLD_MOBILE}</th>
+        <th data-options="field:'is_valid',width:40,align:'left',formatter:formatValidState">{$Think.lang.FLD_IS_VALID}</th>
+        <th data-options="field:'last_time',width:120,align:'left',formatter:formatDateTime">{$Think.lang.FLD_LAST_TIME}</th>
+        <th data-options="field:'login_count',width:120,align:'left'">{$Think.lang.FLD_LOGIN_COUNT}</th>
+
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="SysUser" />
+</div>

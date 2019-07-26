@@ -1,0 +1,347 @@
+<style>
+    .tabs-container{
+        overflow-y: initial;
+        height: initial;
+    }
+    .user-checked{
+        display: -webkit-inline-box;
+        margin-left: 15%;
+        width: 82%;
+    }
+    .user-checked span {
+        padding: 5px 10px;
+        background-color: #0b95ff;
+        border-radius: 5px;
+        color:#fff;
+        border: 1px solid #0b95ff;
+        margin: 5px 2px;
+        display: -webkit-inline-box;
+        /*float: left;*/
+    }
+    .icon-add,.icon-del{
+        font-size: 15px !important;
+        position: initial !important;
+        padding: 0 22px !important;
+    }
+    .icon-del{
+        margin-left: 10px !important;
+        background-color: red !important;
+        border-color: red !important;
+    }
+    #ComPotential-dataform .datagrid-pager{display: none}
+	.chosen-container .chosen-drop {
+	    position: absolute;
+        top: auto;
+	    bottom: 36px;
+	    z-index: 1010;
+	    width: 100%;
+	    border: 1px solid #aaa;
+	    border-bottom: 0;
+	    background: #fff;
+	    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.15);
+	}
+</style>
+<script>
+
+    function formatValidGroup(value) {
+        return value ? value : '未分组';
+    }
+</script>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/target" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm" style="width:1000px;min-height: 400px;;overflow-x:auto">
+            <!--             <div class="row">
+                <div class="caption" style="position: absolute;"><span>客户：</span></div>
+                <div class="user-checked">
+
+                </div>
+            </div> -->
+            <div class="selection-title">已选用户：</div>
+            <table id="user-checked-datagrid" class="easyui-datagrid datagrid">
+                <thead>
+                    <tr>
+                        <th field="ck" checkbox="true"></th>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'head_pic',width:100">头像</th>
+                        <th data-options="field:'name',width:100">昵称</th>
+                        <th data-options="field:'comments'">备注</th>
+                        <th data-options="field:'mobile',width:100">绑定手机</th>
+                        <th data-options="field:'groups_value',width:100,formatter:formatValidGroup">分组</th>
+                        <th data-options="field:'tags_value',width:100">标签</th>
+                        <th data-options="field:'user_type',width:100">用户类型</th>
+                        <th data-options="field:'service_man_value',width:100">业务负责人</th>
+                        <th data-options="field:'company_names',width:180">公司</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div class="center-row">
+                <div class="caption"><span>{$Think.lang.FLD_GROUP}：</span></div>
+                <div class="inputbox">
+                    <select name="group_id" class="chosen-select" data-options="all:true,value:'',search_key_url:'SysTargetGroup/keyNameList/'">
+                        <option value="">请选择分组</option>
+                    </select>
+                </div>
+                <span class="common-blue-btn icon-add" onclick="$('#add_group').show()">  添加分组</span>
+            </div>
+            <div class="center-row" style="display:none" id="add_group">
+                <div class="caption" ><span>新增分组：</span></div>
+                <div class="inputbox">
+                    <input type="text" value="" class="easyui-validatebox">
+                </div>
+                <span class="icon-add common-blue-btn" data-type="group">确定</span>
+                <span class="icon-del common-red-btn" >取消</span>
+            </div>
+            <div class="center-row">
+                <div class="caption"><span>{$Think.lang.FLD_TAG}：</span></div>
+                <div class="inputbox">
+                    <select name="tag_ids[]" class="chosen-select" data-options="all:true,value:'',search_key_url:'SysTargetTag/keyNameList/'" multiple>
+                    </select>
+                </div>
+                <span class="common-blue-btn icon-add" onclick="$('#add_tag').show()">  添加标签</span>
+            </div>
+            <div class="center-row" id="add_tag" style="display:none">
+                <div class="caption"><span>新增标签：</span></div>
+                <div class="inputbox">
+                    <input type="text" value="" class="easyui-validatebox">
+                </div>
+                <span class="icon-add common-blue-btn" data-type="tag">确定</span>
+                <span class="icon-del common-red-btn" >取消</span>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="common-blue-btn btn-update" plain="true" onclick="targetUser('{$Think.const.CONTROLLER_NAME}');">保存</a>
+            <a href="javascript:void(0)" class="common-red-btn bg_red" plain="true" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+    <script type="text/javascript">
+    $(function() {
+        var $custom_actions = $('#{$Think.const.CONTROLLER_NAME}-actions-custom');
+        if ($custom_actions.length > 0) {
+            $custom_actions.appendTo($('#{$Think.const.CONTROLLER_NAME}-form-actions')).show();
+        }
+    });
+    </script>
+</div>
+<script>
+
+$('.center-row > .icon-del').on('click', function() {
+    $(this).parents('.center-row').hide();
+})
+$('.center-row[id*=add] > .icon-add').on('click', function() {
+    var type = $(this).data('type');
+    var newValue = $.trim($('#add_' + type).find('.inputbox > input').val());
+    var inputDom = $('#add_' + type).find('.inputbox > input');
+    var typeName = type == 'group' ? 'group_id' : 'tag_ids';
+    if (newValue == '') {
+        message = type == 'group' ? '新增分组名称不能为空' : '新增标签名称不能为空';
+        $.dialog.tips(message)
+        return false;
+    }
+    if (newValue.length > 5) {
+        message = type == 'group' ? '新增分组名称不能大于5个字' : '新增标签名称不能大于5个字';
+        $.dialog.tips(message)
+        return false;
+    }
+    var oldValue = [];
+    oldValue = $('select[name=' + typeName + ']').find('option').map(function() {
+        return $.trim($(this).text());
+    }).get();
+    if (oldValue.length == 0 || $.inArray(newValue, oldValue) === -1) {
+        //新增标签或分组
+        url = '/{$Think.const.CONTROLLER_NAME}/addTarget';
+        $.post(url, { value: newValue, type: type }, function(data) {
+            console.log(data)
+            if (data.error == 0) {
+                $.dialog.tips('添加成功!!')
+                //删除和隐藏添加栏
+                inputDom.val('');
+                inputDom.parents('.center-row').hide();
+                $('select[name*=' + typeName + ']').append('<option value="' + data.data + '">' + newValue + '</option>');
+                $('select[name*=' + typeName + ']').trigger("liszt:updated");
+                $('select[name*=' + typeName + ']').chosen();
+            } else {
+                $.dialog.tips(data.message)
+            }
+        }, 'json');
+    } else {
+        message = type == 'group' ? '新增分组名称已存在' : '新增标签名称已存在';
+        $.dialog.tips(message)
+        return false;
+    }
+
+})
+
+function targetUser(frameId) {
+    showMaskLayer();
+    if ($('#{$Think.const.CONTROLLER_NAME}-dataform').form('validate')) {
+        var data = $('#{$Think.const.CONTROLLER_NAME}-dataform').serializeArray();
+        var user = getGridSelections("user-checked");
+        for (var i in user)
+        {
+            data.push({"name":"users[]","value":user[i].id})
+        }
+        $.post('/' + frameId + '/targetUpdates', data, function(result) {
+            hideMaskLayer();
+            if (result.code == 0) {
+                closeDialog();
+                getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                $.dialog.tips('保存成功');
+            } else {
+                $.dialog.tips(result.message);
+                return false;
+            }
+        }, 'json')
+    }
+}
+</script>
+<script type="text/javascript">
+var tag_ids = [];
+$('select[name="tag_ids[]"]').on('change', function() {
+    var flag =0;
+    var index= '';
+    var namestr = '';
+    var tmp = tag_ids;
+    var diff = array_diff($(this).val(),tag_ids);
+    tag_ids = $(this).val();
+    if (diff) {
+        for (var i in data.data) {
+            var str = data.data[i].tag_ids;      
+            if (str!="" && str != null) {
+                str = str.split(",");
+                // console.log(index);
+                for (var j in str) {
+                    if (str[j] == diff[0] && index=='') {
+                        index = i;
+                        namestr = $.trim(data.data[i].name) != '' ? data.data[i].name : '未命名用户' + data.data[i].id;
+                        // console.log(index);
+                    }
+                }
+
+            }
+        }
+        if (index != '') {
+            if (confirm("用户<"+namestr+">已添加该标签，是否继续？") == false) {
+                $(this).val(tmp);
+                tag_ids = tmp;
+                $(this).trigger("chosen:updated");
+                // $("li.search-choice:last").remove();
+            }
+        }
+    }
+    console.log($(this).val());
+})
+
+function array_diff(arr1, arr2) {
+    if (arr1 == null) {
+        arr1 = [];
+    }
+    if (arr2 == null) {
+        arr2 =[];
+    }
+    var len = arr1.length; 
+    var len2 = arr2.length; 
+    
+    var arr = [];
+    if(len > len2){
+        while (len--) {
+            if (arr2.indexOf(arr1[len]) < 0) {
+                arr.push(arr1[len]);
+            }
+        }
+        return arr;
+    }else{
+        return false;
+    }
+};
+
+var data = new Array;
+$(function() {
+    setTimeout(function() {
+        data = getData();
+        // var html = '';
+        // var input = '';
+        // for(var i in data.data){
+        //     html += $.trim(data.data[i].name) != '' ? '<span>'+data.data[i].name+'</span>' : '<span>未命名用户'+data.data[i].id+'</span>';
+        //     input+= '<input name="users[]" type="hidden" value="'+data.data[i].id+'" />';
+        // }
+        // $('.user-checked').html(html+input)
+        // var checked = '';
+        var namestr = '';
+        var img = '';
+        var arr = [];
+        for (var i in data.data) {
+            // checked = '<input name="users[]" type="checkbox" value="' + data.data[i].id + '" checked />';
+            namestr = $.trim(data.data[i].name) != '' ? data.data[i].name : '未命名用户' + data.data[i].id;
+            img = '<img src="' + data.data[i].head_pic + '" width="40px" height="40px">';
+            arr.push({
+                // checked: checked,
+                head_pic: img,
+                name: namestr,
+                id: data.data[i].id,
+                comments: data.data[i].comments,
+                mobile: data.data[i].mobile,
+                groups_value: data.data[i].groups_value,
+                tags_value: data.data[i].tags_value,
+                user_type: data.data[i].user_type_value,
+                service_man_value: data.data[i].service_man_value,
+                company_names: data.data[i].company_names
+            });
+        }
+        $('#user-checked-datagrid').datagrid('loadData', arr);
+        $('#user-checked-datagrid').datagrid('selectAll');
+        //获取所选用户相同的值
+        // setTimeout(function() {
+        //     var default_group = filer(data.data, 'group_id');
+        //     if (default_group.length > 0) {
+        //         $("select[name=group_id]").val(default_group[0]);
+        //         $("select[name=group_id]").trigger("liszt:updated");
+        //         $("select[name=group_id]").chosen();
+        //     }
+        //     var default_tag = filer(data.data, 'tag_ids');
+
+        //     if (default_tag.length > 0) {
+        //         for (var i = 0; i < default_tag.length; i++) {
+        //             console.log($("select[name*=tag_ids]").find('option[value=' + default_tag[i] + ']').length)
+        //             $("select[name*=tag_ids]").find('option[value=' + default_tag[i] + ']').attr('selected', 'selected')
+        //         }
+
+        //         $("select[name*=tag_ids]").trigger("liszt:updated");
+        //         $("select[name*=tag_ids]").chosen();
+        //     }
+        // }, 1000)
+    }, 200)
+
+    function filer(data, $inc) {
+        var temp = new Array;
+        for (var i = 0; i < parseInt(data.length); ++i) {
+            if (!data[i][$inc]) {
+                temp = [];
+                break;
+            } else if (i == 0) {
+                temp = data[i][$inc].split(',');
+            } else {
+                var inc_ins = data[i][$inc].split(',');
+                for (var a = 0; a < temp.length; a++) {
+                    if ($.inArray(temp[a], inc_ins) == -1) {
+                        temp.splice(a, 1);
+                    }
+                }
+                if (temp.length == 0 || temp == '') {
+                    temp = [];
+                    break;
+                }
+            }
+        }
+        return temp;
+    }
+
+    function getData() {
+        return $.dialog.list["dlg-company-select"].data;
+    }
+
+});
+</script>

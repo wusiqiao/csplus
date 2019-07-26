@@ -1,0 +1,200 @@
+<style type="text/css">
+    .pay_content_bankinfo {
+        width: 80%;
+        height: 200px;
+        background:#fde8ca;
+        padding: 2%;
+    }
+    .pay_content_bankinfo h3 {
+        background:url({$Think.MODULE_PATH}Public/images/icon/bankcard.png) no-repeat 2% 50%;
+        height: 36px;
+        line-height: 36px;
+        padding-left: 55px;
+        font-size: 14px;
+        color:#3f3f4c;
+        border-bottom: 1px solid #9e938b;
+    }
+    .pay_content_bank {
+        margin-top: 18px;
+    }
+    .pay_content_bank li {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 36px;
+    }
+    .pay_content_bank li span {
+        display:inline-block;
+        width: 100px;
+    }
+    th{
+        font-weight:initial;
+    }
+    .second-header{
+        display: block;
+        height: 50px;
+        line-height: 50px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #35323b;
+        padding-left: 15px;
+        background-color: #eeeeee;
+    }
+
+    .tabs-header{
+        border-style: hidden;
+    }
+    .ui_content{
+        padding: 10px 0 !important;
+    }
+    .capital-detailed-div{
+        padding: 10px 10%;
+        color:#666666;
+    }
+    .capital-detailed-div .detail-value.bank{
+        height: 50px;
+        background-color: #ebf8fe;
+        border-radius: 6px;
+        border: solid 1px #7dbced;
+    }
+    .capital-detailed-div .detail-title{
+        display: -webkit-inline-box;
+        width: 25%;
+    }
+    .capital-detailed-div .detail-value{
+        display: -webkit-inline-box;
+        width: 70%;
+    }
+</style>
+<div class="detailcontainer" style="width:400px;">
+    <form id="bank-form">
+        <div class="row">
+            <div class="capital-detailed-div">
+                <div class="detail-title">银行卡号：</div>
+                <div class="detail-value">
+                    <input name="bank_account" type="text"  class="easyui-validatebox" placeholder="请输入银行卡号"  data-options="required:true,missingMessage:'请输入银行卡号'" value="{$model['bank_account']}"/>
+                </div>
+            </div>
+            <div class="capital-detailed-div">
+                <div class="detail-title">持卡人：</div>
+                <div class="detail-value">
+                    <input name="real_name" type="text"  class="easyui-validatebox" placeholder="请输入持卡人" data-options="required:true,missingMessage:'请输入持卡人'" value="{$model['real_name']}"/>
+                </div>
+            </div>
+            <div class="capital-detailed-div">
+                <div class="detail-title">开户行：</div>
+                <div class="detail-value">
+                    <select name="deposit" class="easyui-validatebox" data-options="required:true,missingMessage:'请选择银行'">
+                        <volist name="banks" id="vo">
+                            <option value="{$vo.id}" <if condition="$vo.id eq $model['deposit']">selected</if>>{$vo.title}</option>
+                        </volist>
+                    </select>
+                </div>
+            </div>
+            <div class="capital-detailed-div">
+                <div class="detail-title">支行名称：</div>
+                <div class="detail-value">
+                    <input name="bank_address" type="text" placeholder="请输入支行名称" class="easyui-validatebox"   value="{$model['bank_address']}"/>
+                </div>
+            </div>
+            <div class="capital-detailed-div">
+                <div class="detail-title">手机号：</div>
+                <div class="detail-value">
+                    <input type="text" disabled="disabled" class="easyui-validatebox"    name="mobile" value="{$model['mobile']}"/>
+                </div>
+            </div>
+            <div class="capital-detailed-div">
+                <div class="detail-title">验证码：</div>
+                <div class="detail-value">
+                    <input name="code" type="number"  class="easyui-validatebox" style="width: 50%"/>
+                    <button class="get-code" onclick="getSMS(this)" style="color: #368bfe;">点击获取</button>
+                    <input type="hidden" id="codes" class="form-control" data-options="required:true"/>
+                </div>
+            </div>
+            <div align="center" style="display: flex;padding: 15px 20%;">
+                <div style="flex: 1;margin: 0 12px;" class="operation-btn" onclick="customerBank()">确认</div>
+                <div style="flex: 1;background-color: red;margin: 0 12px;" class="operation-btn" onclick="closeDialog();">取消</div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script>
+    function getSMS(obj) {
+        if (!(/^1[345678]\d{9}$/.test($('input[name=mobile]').val()))) {
+            $.dialog.tips('请先在移动端绑定手机号');
+        } else {
+            $.ajax({
+                url: "/ComUserCapital/Check.html",
+                type: "post",
+                dataType: "json",
+                data: {
+                    "phone": $('input[name=mobile]').val(),
+                },
+                success: function (json) {
+                    $.dialog.tips(json.message);
+                    if (json.result == '0') {
+                        settime(obj);
+                    } else {
+                        alert(json.message);
+                        $(obj).attr("disabled", false);
+                        return false;
+                    }
+                },
+                beforeSend: function () {
+                    $(obj).attr("disabled", true);
+                },
+                errors: function () {
+                    $(obj).attr("disabled", false);
+                }
+            });
+        }
+    }
+    var countdown = 60;
+    function settime(setbtn) {
+        if (countdown == 0) {
+            $(setbtn).attr("disabled", false);
+            $(setbtn).css("color", "#368bfe");
+            $(setbtn).text("获取验证码");
+            $(setbtn).removeClass("check");
+            countdown = 60;
+            return false;
+        } else {
+            $(setbtn).attr("disabled", true);
+            $(setbtn).css("color", "#666666");
+            $(setbtn).text("重新发送(" + countdown + ")");
+            countdown--;
+        }
+        setTimeout(function () {
+            settime(setbtn);
+        }, 1000);
+    }
+    function customerBank(){
+        if($("input[name='real_name']").val() == "") {
+            $.dialog.tips('持卡人不能为空！');
+            return false;
+        }
+        if($("input[name='bank_account']").val() == "") {
+            $.dialog.tips('银行卡号不能为空！');
+            return false;
+        }
+        if($("input[name='deposit']").val() == "") {
+            $.dialog.tips('请选择开户行！');
+            return false;
+        }
+        if($("input[name='code']").val() == "") {
+            $.dialog.tips('验证码不能为空！');
+            return false;
+        }
+        showMaskLayer();
+        $.post('/{$Think.const.CONTROLLER_NAME}/bank',$('#bank-form').serialize(),function(data){
+            $.dialog.tips(data.message);
+            hideMaskLayer();
+            if (data.error == 0) {
+                hasloop = 0;
+                closeDialog('ComBankDetails');
+                callHandlerBank(data.result);
+            }
+        },'json')
+    }
+
+</script>

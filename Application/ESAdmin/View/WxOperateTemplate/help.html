@@ -1,0 +1,61 @@
+<style>
+    .chosen-container {
+        width: 90% !important;
+    }
+    .extra-black .extra-black-title{
+         text-align: initial !important;
+    }
+    .extra-black{
+        display: flex;
+        margin: 15px 15px;
+    }
+</style>
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/flatfoot.css?version={$version}" rel="stylesheet" />
+<form method="post" id="{$Think.const.CONTROLLER_NAME}-dataform" class="content-wrap " style="height: 100%;padding-top: 35px;background-color: #fff">
+    <!--<form method="post" id="{$Think.const.CONTROLLER_NAME}-dataform">-->
+    <div class="c-select" id="append">
+        <div class="whole-title">
+            <div class="title-tip bgb"></div>
+            <div class="title-message">帮助</div>
+        </div>
+        <div class="whole-div" style="margin: 25px 25px 0 0;border: 1px solid #e3e3e3">
+            <div class="whole-substance">
+                <div class="extra-black">
+                    <div class="extra-black-title">
+                        短信发送失败是否计费
+                    </div>
+                </div>
+                <div class="extra-black">
+                    <div class="extra-black-title">
+                        2019年1月24日
+                    </div>
+                </div>
+                <div class="extra-black">
+                    <div class="extra-black-title">
+                        财穗+ 短信通知是通过移动运营商向客户提供短信通知业务。做到及时提醒，方便快捷。
+                    </div>
+                </div>
+                <div class="extra-black">
+                    <div class="extra-black-title">
+                        短信发送存在失败的可能，如果发送失败则不计费。并且不计入条目信息
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: left;">
+            <div class="whole-small-div" >
+                <a href="javascript:;" onclick="toggleType('{$Think.const.CONTROLLER_NAME}')" class="btn_bg_blue">返回上级</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    function toggleType(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+</script>

@@ -1,0 +1,25 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox" data-options="required:true" value="{$model.name}" /></div>
+                <input  type="hidden" name="parent_id" value="{$model.parent_id}" />
+                <div class="caption"><span>{$Think.lang.FLD_SORT}：</span></div>
+                <div class="inputbox"><input name="sort" class="easyui-numberbox easyui-validatebox"  value="{$model.sort}" /></div>
+            </div>
+            <div class="row">
+                <div class="caption block"><span>{$Think.lang.FLD_COMMENTS}：</span></div>
+                <div class="inputbox_x2"><textarea name="comments" class="easyui-validatebox">{$model.comments}</textarea></div>
+            </div>
+
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="SysDict" />
+</div>
+<script type="text/javascript">
+    $("#{$Think.const.CONTROLLER_NAME}-dataform").bind("afterUpdate", function(){
+      load_dict_tree();
+    });
+</script>

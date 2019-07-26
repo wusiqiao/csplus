@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+        <style>
+            .sList .datebox + .datebox{
+                display: none;
+            }
+            input[readonly]{
+                background-color: #f7f5f5 !important;
+                cursor: not-allowed;
+            }
+            .grey{
+                background-color: #bfbfbf;
+                cursor: not-allowed;
+            }
+            .edit-tips{
+                color: #e91835;
+                /* position: relative; */
+                display: inline-block;
+                /* left: 5px */
+                padding: 3px 0 0 5px;
+            }
+            .icon-query-new{
+                background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_query_new.png');
+                background-size: 100% 100%;
+                width: 24px;
+                height: 24px;
+                position: relative;
+                background-color: white !important;
+                top: 8px;
+                left: 10px;
+            }
+            .show_text{
+                display: none;
+                position: absolute;
+                width: 250px;
+                line-height: 30px;
+                top: 95px;
+                right: 65px;
+                border: 1px solid #666;
+                z-index: 99;
+                background-color: whitesmoke;
+                color: #333;
+                padding: 5px 10px;
+                text-align: center;
+            }
+            .red-point-another{
+                height:11px;
+                width:11px;
+                border-radius:16px;
+                display:inline-block;
+                text-align:center;
+                font-size:0.12em;
+                color:#fff;
+                background:red;
+                position: absolute;
+                top: 20px;
+                left: 5px;
+                z-index:99;
+                -webkit-animation: twinkling 1s infinite ease-in-out;
+            }
+            .details-section .upload{
+                border-radius: 0px !important;
+                background:#529bfd !important;
+            }
+            li.search-choice {
+                border-radius: 1px !important;
+                background-color: #fff !important;
+                color: #333 !important;
+                border: 1px solid #d3d3d3 !important;
+                margin: 5px !important;
+                width: 84px !important;
+            }
+            .chosen-choices {
+                border-radius: 1px;
+            }
+            input[type=checkbox].css-checkbox + label.css-label {
+                top: 0px;
+                left: 0px;
+            }
+            .inputbox input {
+                float: left;
+                width: 270px;
+                height: 30px;
+            }
+            .caption {
+                float: left;
+                width: 160px;
+                line-height: 30px;
+                text-align: right;
+                color: #676767;
+            }
+            hr {
+                height: 1px;
+                border: none;
+                border-top: 1px solid #d3d3d3;
+            }
+            .details-section{
+                background: none;
+                text-indent: 0;
+            }
+            .txt{
+                padding-left: 13px;
+                font-weight: 700;
+                border-left:5px solid #529bfd; 
+            }
+            .options-table {
+                border-collapse: collapse;
+                margin: 0 0;
+                text-align: center;
+            }
+            .options-table td,
+            .options-table th {
+                border: 1px solid #cad9ea;
+                color: #666;
+                height: 30px;
+            }
+
+            .options-table thead,
+            .options-table th {
+                background-color: #f6f7fa;
+            }
+
+            .options-table tr:nth-child(even) {
+                background: #fbfafa;
+            }
+            .search-table .validatebox-text{
+                width: 270px;
+            }
+            .no-readonly input{
+                background:none !important;
+                cursor: text !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="details-wrap">
+            <div style="overflow-y:scroll;height:500px;width: 1117px;">
+                <div class="details-section">
+                    <div class="details-content">
+                        <p style="height: 23px;line-height: 23px;margin: 23px 0 37px 38px;">
+                            <span class="txt">合同信息</span>
+                            <span class="drop-down"></span>
+                        </p>
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption"><span class="important" style="padding-right: 1px">*</span>公司：</div>
+                                <div class="inputbox">
+                                    <input name="company_name" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.company_name}" />
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+        
+                            </div>
+                        </div>
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption">合同编号：</div>
+                                <div class="inputbox">
+                                    <input name="agreement_sn" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.agreement_sn}" />
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                <div class="caption">合同系统编号：</div>
+                                <div class="inputbox">
+                                    <input name="sys_sn" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.sys_sn}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption"><span class="important" style="padding-right: 1px">*</span>合同名称：</div>
+                                <div class="inputbox">
+                                    <input name="agreement_name" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.name}">
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                <div class="caption"><span class="important" style="padding-right: 1px">*</span>合同金额：</div>
+                                <div class="inputbox">
+                                    <input name="agreement_money" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.agreement_money}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-table" style="display:flex;margin:22px 0;">
+                            <div style="flex: 1">
+                                <div class="caption"><span class="important" style="padding-right: 1px">*</span>合同开始日期：</div>
+                                <div class="inputbox">
+                                    <input name="start_time"  class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.show_start_time}" />
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                <div class="caption">合同结束日期：</div>
+                                <div class="inputbox">
+                                    <input name="finish_time"  class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.show_finish_time}" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <table class="search-table">
+                            <tbody>
+                                <tr>
+                                    <td class="width120"><span class="important" style="padding-right: 1px">*</span>公司：</td>
+                                    <td>
+                                        <input name="company_name" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.company_name}" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="width120">合同编号：</td>
+                                    <td>
+                                         <input name="agreement_sn" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.agreement_sn}" />
+                                    </td>
+                                    <td class="block"></td>
+                                    <td class="width120">合同系统编号：</td>
+                                    <td>
+                                         <input name="sys_sn" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.sys_sn}" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td  class="width120"><span class="important" style="padding-right: 1px">*</span>合同名称：</td>
+                                    <td>
+                                        <input name="agreement_name" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.name}">
+                                    </td>
+                                    <td class="block"></td>
+                                    <td class="width120"><span class="important" style="padding-right: 1px">*</span>合同金额：</td>
+                                    <td>
+                                        <input name="agreement_money" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.agreement_money}">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="search-table">
+                            <tbody>
+                                <tr>
+                                    <td class="width120"><span class="important" style="padding-right: 1px">*</span>合同开始日期：</td>
+                                    <td>
+                                        <input name="start_time"  class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.show_start_time}" />
+                                    </td>
+                                    <td class="block"></td>
+                                    <td class="width120">合同结束日期：</td>
+                                    <td>
+                                        <input name="finish_time"  class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.show_finish_time}" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table> -->
+                    </div>
+                </div>
+                <div class="details-section">
+                    <div class="details-content">
+                        <p style="height: 23px;line-height: 23px;margin: 40px 0 33px 38px;">
+                            <span class="txt">收款信息</span>
+                        </p>
+                        <form id="receivables-form">
+                            <input type="hidden" name="id" value="{$model.id}">
+                            <input type="hidden" name="company_id" value="{$model.wrkAgreement.company_id}">
+                            <input type="hidden" name="contract_id" value="{$model.wrkAgreement.id}">
+                            <input type="hidden" name="agreement_money" value="{$model.wrkAgreement.agreement_money}">
+                            <input type="hidden" name="attach_group" value="{$model.attach_group}">
+                            <div class="search-table" style="display:flex;margin:22px 0;">
+                                <div style="flex: 1">
+                                    <div class="caption">收款客户负责人：</div>
+                                        <!-- <span class="important" style="padding-right: 1px">*</span> -->
+                                    <div class="inputbox">
+                                        <input name=""  class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.customer_leader_name}">
+                                    </div>
+                                </div>
+                                <div style="flex: 1">
+                                    <div class="caption"><strong style="color: red">开通客户端续费功能：</strong></div>
+                                    <div class="inputbox">
+                                        <input type="checkbox" name="is_renew" value="1" <if condition="$model.is_renew eq 1">checked</if>>
+                                        <span style="" class="edit-tips">不开通则不通知客户，仅作商家内部管理</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="search-table" style="display:flex;margin:22px 0;">
+                                <div style="flex: 1">
+                                    <div class="caption"><span class="important" style="padding-right: 1px">*</span>收款商户负责人：</div>
+                                    <div class="inputbox">
+                                        <if condition="$instance_permit egt 8 || $model.id == null ">
+                                                <input style="width:270px" name="service_man_name" id="service_man_name" value="{$model.service_man_name}" class="easyui-validatebox" data-name="q-service_man" data-options="required:true" placeholder="输入用户名将自动搜索，请选择搜索结果">
+                                            <else/>
+                                                <input style="width:270px" name="service_man_name" value="{$model.service_man_name}" class="easyui-validatebox" data-name="q-service_man" data-options="required:true" readonly="true">
+                                        </if>
+                                        <input type="hidden" name="leader_id" value="{$model.leader_id}">
+                                    </div>
+                                </div>
+                                <div style="flex: 1">
+                                    <div class="caption">收款商户协作人：</div>
+                                    <div class="inputbox">
+                                        <select style="width:270px" name="collaborators" class="chosen-select" data-placeholder=" " id="collaborators_select" data-options="all:true,value:'{$model.collaborators}',required:true"  multiple style="width:100%">
+                                            <option value="" disabled>请选择商户协作人</option>
+                                        </select>
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="search-table" style="display:flex;margin:22px 0;">
+                                <div style="flex: 1">
+                                    <div class="caption">收款计划附件：</div>
+                                    <div class="inputbox">
+                                        <if condition="$model.is_visibler neq 1">
+                                            <div style="margin:0 5px;" class="btn-speed" onclick="uploadAttachment()">上传</div>
+                                            <else/>
+                                            <div style="margin:0 5px;" class="btn-speed-disable">上传</div>
+                                        </if>
+                                    </div>
+                                </div>
+                                <div style="flex: 1">
+                                    <div class="caption">收款商户可见人：</div>
+                                    <div class="inputbox">
+                                        <select style="width:270px" name="visiblers" class="chosen-select" data-placeholder=" " id="service_leader_select" data-options="all:true,value:'{$model.visiblers}',required:true"  multiple style="width:100%">
+                                            <option value="" disabled>请选择商户可见人</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="vue-zone">                    
+                <empty name="model.id">
+                    <div class="details-section">
+                        <div class="details-content">
+                            <p style="height: 23px;line-height: 23px;margin: 40px 0 25px 38px;">
+                                <span class="txt">收款设置</span>
+                            </p>
+                            <p style="margin-left:40px;">已付数据：</p>  
+                            <div class="tab-div newTab clearFix datagrid-0" id="datagrid0-form">
+                                <table class="options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px;margin-top:15px;">
+                                    <thead>
+                                        <td>付款日期</td>
+                                        <td>已付金额</td>
+                                        <td>收款账户</td>
+                                        <td>收款手续费</td>
+                                        <td>实收金额</td>
+                                        <td>付款附件</td>
+                                        <td><span class="icon-addbtn" @click="newItem0()"></span></td>
+                                    </thead>
+                                    <tr v-for="(item,index) in datas0" :class="'row-0-'+index">
+                                        <td><span class="lisdate0 no-readonly"><input name="pay_date[]" :data-index="index" data-name="datas0" date-box-name="pay_date" class="easyui-datebox" data-options="onSelect:changeDate,prompt:'请选择时间',editable:false"  v-model="item.pay_date" required></span></td>
+                                        <td><span><input name="pay_amount" class="easyui-validatebox" v-model="item.pay_amount" @keyup="advance_change(index)" required/></span></td>
+                                        <td>
+                                            <span><select style="text-indent:0px;" name="customer_leader_id[]" class="easyui-validatebox validatebox-text" v-model="item.account_id" required>
+                                                <option value="">未选择</option>
+                                                <option v-for="item in accounts" :value="item.value">{{item.text}}</option>
+                                            </select></span>
+                                        </td>
+                                        <td><span><input name="poundage" class="easyui-validatebox" v-model="item.poundage" @keyup="advance_change(index)" required/></span></td>
+                                        <td><span><input name="net_amount" class="easyui-validatebox" v-model="item.net_amount"  readonly="true"/></span></td>
+                                        <td><span><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)' >查看</a></span></td>
+                                        <td><span style="margin:5px 0;" class="icon-delbtn minuse"  @click="removeItem0(index)"></span></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <hr style="margin-top:30px;height:1px;border:none;border-top:1px solid grey;" />
+                            <table class="search-table" style="margin-left: 35px;">
+                                <tbody>
+                                <tr>
+                                    <td >收款方式：</td>
+                                    <td>
+                                        <select id="cycle" name="cycle" class="chosen-select" data-options="all:true" style="width: 270px;border-radius: 0px;">
+                                            <option value="">自定义</option>
+                                            <option value="once">一次性</option>
+                                            <option value="daily">按日</option>
+                                            <option value="weekly">按周</option>
+                                            <option value="monthly">按月</option>
+                                            <option value="quarterly">按季</option>
+                                            <option value="yearly">按年</option>
+                                        </select>
+                                    </td>
+                                    <td class="width120">  
+                                        <div class="once" style="display:none">应收日期：</div>
+                                        <div class="generator" style="display:none">应收日期：</div>
+                                    </td>
+                                    <td>
+                                        <div class="once no-readonly" style="display:none;">
+                                            <input style="width:270px;" id="once_date" class="easyui-datebox" data-options="onSelect:onceChangeDate,editable:false,prompt:'请选择时间'"  value="">
+                                        </div>
+                                        <div class="generator no-readonly" style="display:none;">
+                                            <input id="generator_start" class="easyui-datebox" value="" data-options="onSelect:generatorDate,editable:false,prompt:'请选择时间'" textboxname="qdr-create_time" style="display:none;width: 150px;" comboname="qdr-create_time">－
+                                            <input id="generator_end" class="easyui-datebox filter-field" value="" data-options="onSelect:generatorDate,editable:false,prompt:'请选择时间'" textboxname="qdr-create_time" style="display:none;width: 150px;" comboname="qdr-create_time">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="generator" style="display:none">收款参数：</div>
+                                    </td>
+                                    <td>
+                                        <div id="daily" style="display:none;">
+                                            <div style="float:left;padding-left:10px"><input type="checkbox" name="daily" class="generator_attr" value="1">工作日</div>
+                                            <div style="float:left;padding-left:10px"><input type="checkbox" name="daily" class="generator_attr" value="6">周六</div>
+                                            <div style="float:left;padding-left:10px"><input type="checkbox" name="daily" class="generator_attr" value="7">周日</div>
+                                        </div>
+                                        <div id="weekly" style="display:none;">
+                                            <select name="weekly_day" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">周一</option>
+                                                <option value="2">周二</option>
+                                                <option value="3">周三</option>
+                                                <option value="4">周四</option>
+                                                <option value="5">周五</option>
+                                                <option value="6">周六</option>
+                                                <option value="7">周日</option>
+                                            </select>
+                                        </div>
+                                        <div id="monthly" style="display:none;">
+                                            <select name="monthly_day" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">1日</option><option value="2">2日</option><option value="3">3日</option>
+                                                <option value="4">4日</option><option value="5">5日</option><option value="6">6日</option>
+                                                <option value="7">7日</option><option value="8">8日</option><option value="9">9日</option>
+                                                <option value="10">10日</option><option value="11">11日</option><option value="12">12日</option>
+                                                <option value="13">13日</option><option value="14">14日</option><option value="15">15日</option>
+                                                <option value="16">16日</option><option value="17">17日</option><option value="18">18日</option>
+                                                <option value="19">19日</option><option value="20">20日</option><option value="21">21日</option>
+                                                <option value="22">22日</option><option value="23">23日</option><option value="24">24日</option>
+                                                <option value="25">25日</option><option value="26">26日</option><option value="27">27日</option>
+                                                <option value="29">28日</option><option value="29">29日</option><option value="30">30日</option>
+                                                <option value="31">31日</option>
+                                            </select>
+                                        </div>
+                                        <div id="quarterly" style="display:none;">
+                                            <select id="quarterly_mounth" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">第1个月</option><option value="2">第2个月</option><option value="3">第3个月</option>
+                                            </select>
+                                            <select id="quarterly_day" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">1日</option><option value="2">2日</option><option value="3">3日</option>
+                                                <option value="4">4日</option><option value="5">5日</option><option value="6">6日</option>
+                                                <option value="7">7日</option><option value="8">8日</option><option value="9">9日</option>
+                                                <option value="10">10日</option><option value="11">11日</option><option value="12">12日</option>
+                                                <option value="13">13日</option><option value="14">14日</option><option value="15">15日</option>
+                                                <option value="16">16日</option><option value="17">17日</option><option value="18">18日</option>
+                                                <option value="19">19日</option><option value="20">20日</option><option value="21">21日</option>
+                                                <option value="22">22日</option><option value="23">23日</option><option value="24">24日</option>
+                                                <option value="25">25日</option><option value="26">26日</option><option value="27">27日</option>
+                                                <option value="29">28日</option><option value="29">29日</option><option value="30">30日</option>
+                                                <option value="31">31日</option>
+                                            </select>
+                                        </div>
+                                        <div id="yearly"  style="display:none;">
+                                            <select id="yearly_mounth" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option>
+                                                <option value="4">4月</option><option value="5">5月</option><option value="6">6月</option>
+                                                <option value="7">7月</option><option value="8">8月</option><option value="9">9月</option>
+                                                <option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+                                            </select>
+                                            <select id="yearly_day" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">1日</option><option value="2">2日</option><option value="3">3日</option>
+                                                <option value="4">4日</option><option value="5">5日</option><option value="6">6日</option>
+                                                <option value="7">7日</option><option value="8">8日</option><option value="9">9日</option>
+                                                <option value="10">10日</option><option value="11">11日</option><option value="12">12日</option>
+                                                <option value="13">13日</option><option value="14">14日</option><option value="15">15日</option>
+                                                <option value="16">16日</option><option value="17">17日</option><option value="18">18日</option>
+                                                <option value="19">19日</option><option value="20">20日</option><option value="21">21日</option>
+                                                <option value="22">22日</option><option value="23">23日</option><option value="24">24日</option>
+                                                <option value="25">25日</option><option value="26">26日</option><option value="27">27日</option>
+                                                <option value="29">28日</option><option value="29">29日</option><option value="30">30日</option>
+                                                <option value="31">31日</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td class="width120 generator" style="display:none;">合计期数：</td>
+                                    <td class="generator" style="display:none;">
+                                        <!-- <input name="period_number"  class="easyui-validatebox" style="width: 300px;"  readonly="true" value="" /> -->
+                                        <span id="period_number">0</span>
+                                    </td>                                    
+                                </tr>
+                                </tbody>
+                            </table>
+                            <p style="height: 23px;line-height: 23px;margin: 40px 0 25px 38px;">
+                                <span class="txt">收款计划列表：</span>
+                            </p>        
+                            <div class="tab-div newTab clearFix datagrid-1" id="datagrid1-form">
+                                <form id="receivables-item-form">
+                                    <table class="options-table" id="receivables_plan" style="width: 95%;margin-left: 35px;margin-bottom: 10px;margin-top:15px;">
+                                        <thead>
+                                            <td>期数</td>
+                                            <td>应收日期</td>
+                                            <td>应收金额</td>
+                                            <td>服务期间</td> 
+                                            <template v-if="is_show_set_btn == 1">
+                                                <td><span class="icon-addbtn set-btn" @click="newItem1()"></span></td>    
+                                            </template>
+                                        </thead>
+                                        <tr v-for="(item,index) in datas1" :class="'row-1-'+index">
+                                            <td>{{index+1}}</td>
+                                            <template v-if="is_readonly == 1">
+                                                <td><span><input name="receivable_date[]" :data-index="index" data-name="datas1" date-box-name="receivable_date" data-options="onSelect:changeDate,prompt:'请选择日期'" class="easyui-datebox set-input" v-model="item.receivable_date" required readonly="true"></span></td>
+                                                <td><span><input name="receivables_amount[]" class="easyui-validatebox set-input" v-model="item.receivables_amount" readonly="true"/></span></td> 
+                                            </template>
+                                            <template v-else>
+                                                <td><span class="no-readonly"><input name="receivable_date[]" :data-index="index" data-name="datas1" date-box-name="receivable_date" data-options="onSelect:changeDate,editable:false,prompt:'请选择日期'" class="easyui-datebox set-input" v-model="item.receivable_date" required></span></td>
+                                                <td>
+                                                    <span class="no-readonly"><input name="receivables_amount[]" class="easyui-validatebox set-input" v-model="item.receivables_amount" onkeyup="statistics()" required/></span> 
+                                                </td>
+                                            </template>
+                                            <td>
+                                                <span class="no-readonly"><input name="begin_date[]" data-options="onSelect:changeDate,editable:false,prompt:'请选择时间'" :data-index="index" data-name="datas1" date-box-name="begin_date" class="easyui-datebox"  v-model="item.begin_date"></span>-
+                                                <span class="no-readonly"><input name="end_date[]" data-options="onSelect:changeDate,editable:false,prompt:'请选择时间'" :data-index="index" data-name="datas1" date-box-name="end_date" class="easyui-datebox"  v-model="item.end_date"></span> 
+                                            </td>
+                                            <template v-if="is_show_set_btn == 1">
+                                                <td><span style="margin:5px 0;" class="icon-delbtn set-btn" @click="removeItem1(index)"></span></td>
+                                            </template>
+                                        </tr>        
+                                    </table>
+                                </form>
+                            </div>
+                            <div class="details-section">
+                                <div class="details-content">
+                                    <p style="height: 15px;line-height: 15px;margin: 40px 0 25px 38px;">
+                                        <span style="font-weight: 700;color: #e91835;line-height: 15px;">
+                                            ●  合同金额：{$model.wrkAgreement.agreement_money}；
+                                            <!-- 总额：{{statistics.total}} -->
+                                            已付：{{statistics.advance_amount}}；
+                                            计划应收：{{statistics.receivables_amount}}；
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <else />
+                    <div class="details-section">
+                        <div class="details-content">
+                            <p style="height: 23px;line-height: 23px;margin: 40px 0 25px 38px;">
+                                <span class="txt">已付数据：</span>
+                            </p>
+                            <div class="tab-div newTab clearFix">
+                                <table class="options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px;margin-top:15px;">
+                                    <thead>
+                                        <tr>
+                                            <td>类型</td>
+                                            <td>付款日期</td>
+                                            <td>已付金额</td>
+                                            <td>收款账户</td>
+                                            <td>收款手续费</td>
+                                            <td>线下付款</td>
+                                            <td>余额付款</td>
+                                            <td>微信付款</td>
+                                            <td>优惠券付款</td>
+                                            <td>付款附件</td>
+                                        </tr>
+                                    </thead>
+                                    <tr v-for="(item,index) in advance">
+                                        <td>{{item.type}}</td>
+                                        <td>{{item.pay_date}}</td>
+                                        <td>{{item.pay_amount}}</td>
+                                        <td>{{item.account_name}}</td>
+                                        <td>{{item.poundage}}</td>
+                                        <td>{{item.offline_amount}}</td>
+                                        <td>{{item.balance_amount}}</td>
+                                        <td>{{item.wechat_amount}}</td>
+                                        <td>{{item.coupon_amount}}</td>
+                                        <td><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)'>查看</a></td>
+                                    </tr>
+                                    <tr v-if="advance.length == 0">
+                                        <td colspan="10"><span>暂无已付记录</span></td> 
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="resetData" style="display:none;">
+                        <hr style=" margin-top:30px;height:1px;border:none;border-top:1px solid grey;" />
+                            <table class="search-table" style="margin-left: 15px;">
+                                <tbody>
+                                <tr>
+                                    <td >收款方式：</td>
+                                    <td>
+                                        <select id="cycle" name="cycle" class="chosen-select" data-options="all:true" style="width: 200px;">
+                                            <option value="">自定义</option>
+                                            <option value="once">一次性</option>
+                                            <option value="daily">按日</option>
+                                            <option value="weekly">按周</option>
+                                            <option value="monthly">按月</option>
+                                            <option value="quarterly">按季</option>
+                                            <option value="yearly">按年</option>
+                                        </select>
+                                    </td>
+                                    <td class="width120">  
+                                        <div class="once" style="display:none">应收日期：</div>
+                                        <div class="generator" style="display:none">应收日期：</div>
+                                    </td>
+                                    <td>
+                                        <div class="once no-readonly" style="display:none;">
+                                            <input style="width:270px;" id="once_date" class="easyui-datebox" data-options="onSelect:onceChangeDate,editable:false,prompt:'请选择时间'"  value="" style="width: 300px;" >
+                                        </div>
+                                        <div class="generator no-readonly" style="display:none;">
+                                            <input id="generator_start" class="easyui-datebox" value="" data-options="onSelect:generatorDate,editable:false,prompt:'请选择时间'" textboxname="qdr-create_time" style="display:none;width: 150px;" comboname="qdr-create_time">－
+                                            <input id="generator_end" class="easyui-datebox filter-field" value="" data-options="onSelect:generatorDate,editable:false,prompt:'请选择时间'" textboxname="qdr-create_time" style="display:none;width: 150px;" comboname="qdr-create_time">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="generator" style="display:none">收款参数：</div>
+                                    </td>
+                                    <td>
+                                        <div id="daily" style="display:none;">
+                                            <div style="float:left;padding-left:10px"><input type="checkbox" name="daily" class="generator_attr" value="1">工作日</div>
+                                            <div style="float:left;padding-left:10px"><input type="checkbox" name="daily" class="generator_attr" value="6">周六</div>
+                                            <div style="float:left;padding-left:10px"><input type="checkbox" name="daily" class="generator_attr" value="7">周日</div>
+                                        </div>
+                                        <div id="weekly" style="display:none;">
+                                            <select name="weekly_day" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">周一</option>
+                                                <option value="2">周二</option>
+                                                <option value="3">周三</option>
+                                                <option value="4">周四</option>
+                                                <option value="5">周五</option>
+                                                <option value="6">周六</option>
+                                                <option value="7">周日</option>
+                                            </select>
+                                        </div>
+                                        <div id="monthly" style="display:none;">
+                                            <select name="monthly_day" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">1日</option><option value="2">2日</option><option value="3">3日</option>
+                                                <option value="4">4日</option><option value="5">5日</option><option value="6">6日</option>
+                                                <option value="7">7日</option><option value="8">8日</option><option value="9">9日</option>
+                                                <option value="10">10日</option><option value="11">11日</option><option value="12">12日</option>
+                                                <option value="13">13日</option><option value="14">14日</option><option value="15">15日</option>
+                                                <option value="16">16日</option><option value="17">17日</option><option value="18">18日</option>
+                                                <option value="19">19日</option><option value="20">20日</option><option value="21">21日</option>
+                                                <option value="22">22日</option><option value="23">23日</option><option value="24">24日</option>
+                                                <option value="25">25日</option><option value="26">26日</option><option value="27">27日</option>
+                                                <option value="29">28日</option><option value="29">29日</option><option value="30">30日</option>
+                                                <option value="31">31日</option>
+                                            </select>
+                                        </div>
+                                        <div id="quarterly" style="display:none;">
+                                            <select id="quarterly_mounth" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">第1个月</option><option value="2">第2个月</option><option value="3">第3个月</option>
+                                            </select>
+                                            <select id="quarterly_day" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">1日</option><option value="2">2日</option><option value="3">3日</option>
+                                                <option value="4">4日</option><option value="5">5日</option><option value="6">6日</option>
+                                                <option value="7">7日</option><option value="8">8日</option><option value="9">9日</option>
+                                                <option value="10">10日</option><option value="11">11日</option><option value="12">12日</option>
+                                                <option value="13">13日</option><option value="14">14日</option><option value="15">15日</option>
+                                                <option value="16">16日</option><option value="17">17日</option><option value="18">18日</option>
+                                                <option value="19">19日</option><option value="20">20日</option><option value="21">21日</option>
+                                                <option value="22">22日</option><option value="23">23日</option><option value="24">24日</option>
+                                                <option value="25">25日</option><option value="26">26日</option><option value="27">27日</option>
+                                                <option value="29">28日</option><option value="29">29日</option><option value="30">30日</option>
+                                                <option value="31">31日</option>
+                                            </select>
+                                        </div>
+                                        <div id="yearly"  style="display:none;">
+                                            <select id="yearly_mounth" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option>
+                                                <option value="4">4月</option><option value="5">5月</option><option value="6">6月</option>
+                                                <option value="7">7月</option><option value="8">8月</option><option value="9">9月</option>
+                                                <option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+                                            </select>
+                                            <select id="yearly_day" class="chosen-select generator_attr" style="width:45%" data-options="all:true">
+                                                <option value="1">1日</option><option value="2">2日</option><option value="3">3日</option>
+                                                <option value="4">4日</option><option value="5">5日</option><option value="6">6日</option>
+                                                <option value="7">7日</option><option value="8">8日</option><option value="9">9日</option>
+                                                <option value="10">10日</option><option value="11">11日</option><option value="12">12日</option>
+                                                <option value="13">13日</option><option value="14">14日</option><option value="15">15日</option>
+                                                <option value="16">16日</option><option value="17">17日</option><option value="18">18日</option>
+                                                <option value="19">19日</option><option value="20">20日</option><option value="21">21日</option>
+                                                <option value="22">22日</option><option value="23">23日</option><option value="24">24日</option>
+                                                <option value="25">25日</option><option value="26">26日</option><option value="27">27日</option>
+                                                <option value="29">28日</option><option value="29">29日</option><option value="30">30日</option>
+                                                <option value="31">31日</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td class="width120 generator" style="display:none;">合计期数：</td>
+                                    <td class="generator" style="display:none;">
+                                        <!-- <input name="period_number"  class="easyui-validatebox" style="width: 300px;"  readonly="true" value="" /> -->
+                                        <span id="period_number">0</span>
+                                    </td>                                    
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="details-content">
+                            <p style="height: 23px;line-height: 23px;margin: 40px 0 25px 38px;">
+                                <span class="txt">收款列表</span>
+                            </p>
+                            <div class="tab-div clearFix datagrid-3" style="overflow: hidden;width:1100px;position: relative;" id="datagrid3-form">
+                                <div style="display: flex;justify-content: space-between;margin-bottom:20px;padding: 0 40px 0 30px;">
+                                    <if condition="$instance_permit egt 4">
+                                        <div>
+                                            <a class="actionBtn common-blue-btn" href="javascript:void(0)" onclick="payConfirm()">到款确认</a>
+                                            <a class="actionBtn common-blue-btn" href="javascript:void(0)" onclick="refund()">退款</a>
+                                            <a class="actionBtn common-blue-btn" href="javascript:void(0)" onclick="overdue()" style="width:150px">逾期付款冻结任务</a>
+                                            <a class="actionBtn common-blue-btn" href="javascript:void(0)" onclick="badDept()" style="width:150px">结束付款坏账处理</a>
+                                        </div>
+                                        <div>
+                                            <a class="actionBtn common-blue-btn" href="javascript:void(0)" onclick="resetData()" >重置</a>
+                                        </div>
+                                    <else/>
+                                        <div>
+                                            <a class="common-blue-btn grey" href="javascript:void(0)">到款确认</a>
+                                            <a class="common-blue-btn grey" href="javascript:void(0)">退款</a>
+                                            <a class="common-blue-btn grey" href="javascript:void(0)" style="width:150px">逾期付款冻结任务</a>
+                                            <a class="common-blue-btn grey" href="javascript:void(0)" style="width:150px">结束付款坏账处理</a>
+                                        </div>
+                                        <div>
+                                            <a class="common-blue-btn grey" href="javascript:void(0)">重置</a>
+                                        </div>
+                                    </if>
+                                </div>
+                                <div style="overflow-x:auto;width:100%">
+                                    <div id="receivables_item" class="fl" style="width:1620px">
+                                        <table class="originalData options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px;">
+                                            <thead>
+                                                <tr>
+                                                    <td>期数</td>
+                                                    <td>应收日期</td>
+                                                    <td>应收金额</td>
+                                                    <template v-if="is_show_service_date == '1'">
+                                                        <td>服务期间</td>
+                                                    </template>
+                                                    <td>付款日期</td>
+                                                    <td>总金额</td>
+                                                    <td>线下付款</td>
+                                                    <td>余额付款</td>
+                                                    <td>微信付款</td>
+                                                    <td>优惠券付款</td>
+                                                    <td>未付金额</td>
+                                                    <td>收款账户</td>
+                                                    <td>收款状态</td>
+                                                    <td>付款备注附件</td>
+                                                </tr>
+                                            </thead>
+                                            <tr v-for="(item,index) in datas3">
+                                                <td>{{index+1}}</td>
+                                                <td>{{item.show_receivables_date}}</td>
+                                                <td>{{item.receivables_amount}}</td>
+                                                <template v-if="is_show_service_date == '1'">
+                                                    <td>{{item.show_begin_date}}至{{item.show_end_date}}</td>
+                                                </template>
+                                                <td>{{item.show_actual_date}}</td>
+                                                <td>{{item.actual_amount}}</td>
+                                                <td>{{item.offline_amount}}
+                                                    <template v-if="item.unconfirmed_amount != '-' && item.unconfirmed_amount != '0'">
+                                                        <span style="color: red">
+                                                            (待确认：{{item.unconfirmed_amount}})
+                                                        </span>
+                                                    </template>
+                                                </td>
+                                                <td>{{item.balance_amount}}</td>
+                                                <td>{{item.wechat_amount}}</td>
+                                                <td>{{item.coupon_amount}}</td>
+                                                <td>{{item.unpaid_amount}}</td>
+                                                <td>{{item.account_name}}</td>
+                                                <td>{{item.show_status}}</td>
+                                                <td><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)' >查看</a></td>
+                                            </tr>
+                                            <tr v-if="datas3.length == 0" >
+                                                <td colspan="14"><span>暂无收款记录</span></td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <div class="resetData" style="display:none;">
+                                            <table class="resetData options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px;">
+                                                <thead>
+                                                    <tr>
+                                                        <td>期数</td>
+                                                        <td>应收日期</td>
+                                                        <td>应收金额</td>
+                                                        <td>服务期间</td>
+                                                        <template v-if="is_show_set_btn == 1">
+                                                            <td><span class="icon-addbtn set-btn"  @click="newItem1()"></span></td> 
+                                                        </template>
+                                                    </tr>
+                                                </thead>
+                                                <tr v-for="(item,index) in datas1" :class="'row-1-'+index">
+                                                    <td>{{index+1}}</td>
+                                                    <template v-if="is_readonly == 1">
+                                                        <td><span><input name="receivable_date[]" :data-index="index" data-name="datas1" date-box-name="receivable_date" data-options="onSelect:changeDate,prompt:'请选择日期'" class="easyui-datebox set-input" v-model="item.receivable_date" required readonly="true"></span></td>
+                                                        <td><span><input name="receivables_amount[]" class="easyui-validatebox set-input" v-model="item.receivables_amount" readonly="true"/></span></td>
+                                                    </template>
+                                                    <template v-else>
+                                                        <td><span class="no-readonly"><input name="receivable_date[]" :data-index="index" data-name="datas1" date-box-name="receivable_date" data-options="onSelect:changeDate,editable:false,prompt:'请选择日期'" class="easyui-datebox set-input" v-model="item.receivable_date" required></span></td>
+                                                        <td><span><input name="receivables_amount[]" class="easyui-validatebox set-input" v-model="item.receivables_amount" onkeyup="statistics()" required /></span></td>
+                                                    </template>
+                                                    <td><span class="no-readonly"><input name="begin_date[]" data-options="onSelect:changeDate,editable:false,prompt:'请选择时间'" :data-index="index" data-name="datas1" date-box-name="begin_date" class="easyui-datebox"  v-model="item.begin_date"></span>-
+                                                    <span class="no-readonly"><input name="end_date[]" data-options="onSelect:changeDate,editable:false,prompt:'请选择时间'" :data-index="index" data-name="datas1" date-box-name="end_date" class="easyui-datebox"  v-model="item.end_date"></span></td>
+                                                    <template v-if="is_show_set_btn == 1">
+                                                        <td><span style="margin:5px 0;" class="icon-delbtn set-btn" @click="removeItem1(index)"></span></td>
+                                                    </template>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="details-section">
+                        <div class="details-content">
+                            <p style="height: 23px;line-height: 23px;margin: 40px 0 25px 38px;">
+                                <span class="txt">退款清单</span>
+                            </p>
+                            <div class="tab-div clearFix">
+                                <table class="options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px;margin-top:15px">
+                                    <thead>
+                                        <tr>
+                                            <td>序号</td>
+                                            <td>退款日期</td>
+                                            <td>退款金额</td>
+                                            <td>退款备注附件</td>
+                                        </tr>
+                                    </thead>
+                                    <tr v-for="(item,index) in datas4">
+                                        <td>{{index+1}}</td>
+                                        <td>{{item.refund_date}}</td>
+                                        <td>{{item.refund_amount}}</td>
+                                        <td><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)' >查看</a></td>
+                                    </tr>
+                                    <tr v-if="datas4.length == 0" >
+                                        <td colspan="4"><span class="sList" style="width:500px;">暂无退款记录</span></td>
+                                    </tr>
+                                </table>
+                                <!-- <div class="fl" style="margin-left:15px;">
+                                    <p class="title">
+                                        <span style="width:50px">序号</span>
+                                        <span style="width:150px">退款日期</span>
+                                        <span style="width:150px">退款金额</span>
+                                        <span style="width:150px">退款备注附件</span>
+                                    </p>
+                                    <p v-for="(item,index) in datas4">
+                                    <span class="sList" style="width:50px;line-height:34px;">{{index+1}}</span>
+                                    <span class="sList" style="width:150px;">{{item.refund_date}}</span>
+                                    <span class="sList" style="width:150px;">{{item.refund_amount}}</span>
+                                    <span class="sList" style="width:150px;"><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)' >查看</a></span>
+                                    </p>
+                                    <p v-if="datas4.length == 0" >
+                                        <span class="sList" style="width:500px;">暂无退款记录</span>
+                                    </p>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="datas5 != null" class="details-section">
+                        <div class="details-content">
+                            <p style="height: 23px;line-height: 23px;margin: 40px 0 40px 38px;">
+                                <span class="txt">坏账金额</span>
+                            </p>
+                            <div class="tab-div clearFix">
+                                    <table class="options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px;margin-top:15px">
+                                        <thead>
+                                            <tr>
+                                                <td>坏账时间</td>
+                                                <td>坏账金额</td>
+                                                <td>坏账备注附件</td>
+                                                <td>坏账删除</td>
+                                            </tr>
+                                        </thead>
+                                        <tr>
+                                            <td>{{datas5.bad_dept_date}}</td>
+                                            <td>{{datas5.bad_dept_amount}}</td>
+                                            <td><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)' >查看</a></td>
+                                            <td><span style="margin:0;" class=" icon-delbtn minuse"  @click="removeBadDept(datas5.id)"></span></td>
+                                        </tr>
+                                    </table>
+                                <!-- <div class="fl" style="margin-left:15px;">
+                                    <p class="title">
+                                        <span style="width:150px">坏账时间</span>
+                                        <span style="width:150px">坏账金额</span>
+                                        <span style="width:150px">坏账备注附件</span>
+                                    </p>
+                                    <p>
+                                    <span class="sList" style="width:150px;">{{datas5.bad_dept_date}}</span>
+                                    <span class="sList" style="width:150px;">{{datas5.bad_dept_amount}}</span>
+                                    <span class="sList" style="width:150px;"><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)' >查看</a></span>
+                                    <span class="sList icon-delbtn minuse"  @click="removeBadDept(datas5.id)"></span>
+                                    </p>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="details-section">
+                        <div class="details-content">
+                            <p style="height: 15px;line-height: 15px;margin: 40px 0 25px 38px;">
+                                <span style="font-weight: 700;color: #e91835;line-height: 15px;">
+                                    ●  合同付款状态(总)：{{statistics.show_status}}；
+                                    已付总额：{{statistics.actual_amount}}； 未付总额：{{statistics.unpaid_amount}}；
+                                    退款总额：{{statistics.refund_amount}}；
+                                    <template v-if="datas5 != null">坏账总额：{{statistics.bad_dept_amount}}；</template> 
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- <hr style=" margin-top:30px;height:1px;border:none;border-top:1px solid grey;" />
+                    <div class="row">
+                        <div class="caption" onclick="toggleSysLog()" style="padding-right: 10px"><span>收款日志</span> <img src="{$Think.MODULE_PATH}/Public/images/icon/triangle.png" class="triangle"/></div>
+                    </div> -->
+                    <div class="details-section" id="SysLog" style="margin-top:15px">
+                        <div class="details-content">
+                            <p style="height: 23px;line-height: 23px;margin: 40px 0 40px 38px;">
+                                <span class="txt">收款日志</span>
+                            </p>
+                            <div class="tab-div clearFix">
+                                <table class="options-table" style="width: 95%;margin-left: 35px;margin-bottom: 10px;margin-top:15px">
+                                    <thead>
+                                        <tr>
+                                            <td>序号</td>
+                                            <td>操作人</td>
+                                            <td>操作</td>
+                                            <td>时间</td>
+                                        </tr>
+                                    </thead>
+                                    <tr v-for="(item,index) in datas6">
+                                        <td>{{index+1}}</td>
+                                        <td>{{item.user_name}}</td>
+                                        <td>{{item.operation}}</td>
+                                        <td>{{item.create_time}}</td>
+                                    </tr>
+                                    <tr v-if="datas6.length == 0">
+                                        <td colspan="4"><span>暂无操作记录</span></td> 
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </empty>
+                </div>       
+            </div>
+            <div class="details-section" style="padding:30px 0 20px;border-top:1px solid #d3d3d3;">
+                <div class="form-actions" id="ToolEnclosure-form-actions" style="height:auto;">
+                    <div class="actions-sysdefault">
+                        <empty name="model.id">
+                            <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="saveReceivables()">保存</a>
+                        <else/>
+                            <if condition="$instance_permit egt 4">
+                                <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="editReceivables()">保存</a>
+                                <else/>
+                                <a href="javascript:void(0)" class="modal-save-btn btn-update grey" plain="true">保存</a>
+                            </if>
+                        </empty>
+                        <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+        <script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+        <script>
+        $(function(){
+            autocompleteAjaxEx($("#service_man_name"),"ComCompany/queryModuleUsers/module/WrkReceivables",{
+                formatItem(row){
+                    var mobile = row['mobile'];
+                    var item_text = $.format(
+                        "<div style='display: flex;flex-direction: row;font-size: 13px;padding: 5px'>" +
+                        "<div style='flex: 1'>用户：<span style='color:#368bfe'>{0}</span></div>"+
+                        "<div style='flex: 1'>手机：<span style='color:#368bfe'>{1}</span></div>"+
+                        "</div>",
+                        [padLeft(row.name,8," "),(row.mobile == null || row.mobile == "")? "未绑定":row.mobile ]);
+                    return item_text;
+                },
+                onSelected:function(row){
+                    $("input[name='leader_id']").val(row.id);
+                }
+            });
+
+            $(document).on("change","#service_man_name", function() {
+                if ($('input[name="service_man_name"]').length > 0 && $("input[name='service_man_name']").val()=="") {
+                    $('input[name="leader_id"]').val("");
+                }else{
+                    $("#service_leader_select option:selected").each(function () {
+                        if (selected.value == $("input[name='leader_id']").val() ) {
+                            $.dialog.tips("负责人不能和可见人重复！");
+                            $("input[name='leader_id']").val("");
+                            $("input[name='service_man_name']").val("");
+                            return false;
+                        }
+                    })
+                    $("#collaborators_select option:selected").each(function () {
+                        if (selected.value == $("input[name='leader_id']").val() ) {
+                            $.dialog.tips("协负责人不能和协作人重复！");
+                            $("input[name='leader_id']").val("");
+                            $("input[name='service_man_name']").val("");
+                            return false;
+                        }
+                    })
+                }
+            });
+
+            $("#collaborators_select").bind("chosen:beforeSelected", function(event, selected){
+                $("#service_leader_select option:selected").each(function () {
+                    if (selected.value == $(this).val()) {
+                        $.dialog.tips("协作人不能和可见人重复！")
+                        selected.cancel = true;
+                        return false;
+                    }
+                })
+                if (selected.value == $("input[name='leader_id']").val() ) {
+                    $.dialog.tips("协作人不能和负责人重复！")
+                    selected.cancel = true;
+                    return false;
+                }
+            });
+
+            $("#service_leader_select").bind("chosen:beforeSelected", function(event, selected){
+                $("#collaborators_select option:selected").each(function () {
+                    if (selected.value == $(this).val()) {
+                        $.dialog.tips("协作人不能和可见人重复！")
+                        selected.cancel = true;
+                        return false;
+                    }
+                })
+                if (selected.value == $("input[name='leader_id']").val() ) {
+                    $.dialog.tips("可见人不能和负责人重复！")
+                    selected.cancel = true;
+                    return false;
+                }
+            });
+        });
+
+        function toggleSysLog(){
+            $("#SysLog").toggle();
+        }
+        function getVisiblers(){
+            var id = "c" + '{$model.wrkAgreement.company_id}';
+            var visibler = "{$model.visiblers}";
+            var visiblers = visibler.split(",");
+            var html = "";
+            $.get("ComCompany/queryModuleUsers/module/WrkReceivables",{id:id},function(result){
+                if(result.length != 0){
+                    for(var i in result){
+                        if(visiblers.indexOf(result[i].value) > -1){
+                            html += "<option value='"+result[i].value+"' selected>"+result[i].text+"</option>"
+                        }else{
+                            html += "<option value='"+result[i].value+"'>"+result[i].text+"</option>"
+                        }
+                    }
+                }else{
+                    html += "<option value='' disabled>无可见人可选</option>"
+                }
+                $("#service_leader_select").html(html).trigger("liszt:updated");
+                $('#service_leader_select').chosen();
+            },'json');
+        }
+        getVisiblers();
+        function getCollaborators(){
+            var id = "c" + '{$model.wrkAgreement.company_id}';
+            var visibler = "{$model.collaborators}";
+            var visiblers = visibler.split(",");
+            var html = "";
+            $.get("ComCompany/queryModuleUsers/module/WrkReceivables",{id:id},function(result){
+                if(result.length != 0){
+                    for(var i in result){
+                        if(visiblers.indexOf(result[i].value) > -1){
+                            html += "<option value='"+result[i].value+"' selected>"+result[i].text+"</option>"
+                        }else{
+                            html += "<option value='"+result[i].value+"'>"+result[i].text+"</option>"
+                        }
+                    }
+                }else{
+                    html += "<option value='' disabled>无协作人可选</option>"
+                }
+                $("#collaborators_select").html(html).trigger("liszt:updated");
+                $('#collaborators_select').chosen();
+            },'json');
+        }
+        getCollaborators();
+
+
+
+        $(document).on("change","#cycle",function(){
+            $("#period_number").text(0);
+            
+            var id = $("#cycle").val();
+                $(".once").hide();
+                $("#daily").hide();
+                $("#weekly").hide();
+                $("#monthly").hide();
+                $("#quarterly").hide();
+                $("#yearly").hide();
+            var tmp = vue.datas1;
+            vue.datas1 = [];
+            if (id!=""){
+                statistics();
+                if (id=="once") {
+                    $(".generator").hide();
+                    $(".once").show();
+                    parseForm($(".once"));
+                }else {
+                    $(".generator").show();
+                    $("#"+id).show();
+                    $(".generator_attr").removeAttr('checked');
+                    parseForm($(".generator"));
+                }
+                vue.is_readonly = 1;
+                vue.is_show_set_btn = 0;
+                // $(".set-btn").hide();
+            }else {
+                vue.is_readonly = 0;
+                vue.$nextTick(function() {
+                    if (tmp.length > 0) {
+                        vue.datas1 = tmp;
+                        statistics();
+                        $(vue.datas1).each(function (index) {
+                            var row_class = ".row-1-"+ index;
+                            vue.$nextTick(function() {
+                                $.parser.parse(row_class);
+                            });
+                            $(row_class).find("[date-box-name='receivable_date']").datebox('setValue', vue.datas1[index].receivable_date);
+                            $(row_class).find("[date-box-name='begin_date']").datebox('setValue', vue.datas1[index].begin_date);
+                            $(row_class).find("[date-box-name='end_date']").datebox('setValue', vue.datas1[index].end_date);
+                        })
+
+                    }
+                });
+                vue.is_show_set_btn = 1;
+
+                // $(".set-btn").show();
+                $(".generator").hide();
+            }
+        });
+        $(document).on("change",".generator_attr",function(){
+            receivablesGenerator();
+        });
+
+        //上传
+        function uploadAttachment(){
+            var attach_group = $("input[name='attach_group']").val();
+            if(attach_group == ""){
+                $.post("ComAttachment/getAttachGroup",function(result){
+                    $("input[name='attach_group']").val(result);
+                    attach_group = result;
+                },"text")
+            }
+            openAttachmentForm("收款计划附件", [{text:"收款计划",attach_group:'{$model.attach_group}'}],function(id){
+            });
+        }
+        //编辑时上传
+        function showRecordAttach(obj){
+            // var attach_group = $(obj).data("group");
+            openAttachmentForm("收款计划附件",[{text:"收款计划",attach_group:'{$model.attach_group}'}],function(){
+            })
+        }
+
+        function changeDate(date){
+            var index = $(this).attr("data-index");
+            var name = $(this).attr("data-name");
+            var date_name = $(this).attr("date-box-name");
+            if (date == null) {
+                vue[name][index][date_name] = date;
+                return true;
+            }
+            var date = date.getTime()/1000;
+            console.log(date);
+            switch(date_name)
+            {
+            case 'receivable_date':
+                if ('{$model.wrkAgreement.start_time}' > date) {
+                    $.dialog.tips("应收日期不能早于合同开始时间");
+                    $(this).datebox('setValue',null);
+                    return false;
+                }
+                break;
+            case 'begin_date':
+                var begin_date = date;
+                var end_date = vue[name][index]['end_date'];
+                if (begin_date > end_date && end_date != '') {
+                    $.dialog.tips("服务结束时间不能早于服务开始时间");
+                    $(this).datebox('setValue',null);
+                    return false;
+                }
+                break;
+             case 'end_date':
+                var begin_date = vue[name][index]['begin_date'];
+                var end_date = date;
+                if ( begin_date > end_date) {
+                    $.dialog.tips("服务结束时间不能早于服务开始时间");
+                    $(this).datebox('setValue',null);
+                    return false;
+                }
+                break;
+            }
+            vue[name][index][date_name] = date;
+        }
+
+        // .details-wrap
+        
+        var vue = new Vue({
+            el:".vue-zone",
+            data:{
+                accounts:[],
+                datas0:[],
+                datas1:[],
+                datas2:[],
+                datas3:[],
+                datas4:[],
+                datas5:null,
+                datas6:[],
+                advance:[],
+                statistics:[],
+                is_readonly:0,
+                is_show_set_btn:1,
+                is_show_service_date:0
+            },
+            methods:{
+                newItem0:function(){
+                    var data={};
+                    data.pay_date = "";
+                    data.pay_amount = "";
+                    data.account_id = "";
+                    data.poundage = "";
+                    data.net_amount = "";
+                    data.attach_group = "";
+                    $.post("ComAttachment/getAttachGroup",function(result){
+                        data.attach_group = result;
+                    },"text");
+                    vue.datas0.push(data);
+                    vue.$nextTick(function() {
+                        var index = vue.datas0.length-1;
+                        var row_class = ".row-0-"+ index;
+                        $.parser.parse(row_class);
+                    });
+                },
+                newItem1:function(){
+                    var data = {};
+                    data.receivable_date = "";
+                    data.receivables_amount = "";
+                    data.begin_date = "";
+                    data.end_date = "";
+                    data.attach_group = "";
+                    $.post("ComAttachment/getAttachGroup",function(result){
+                        data.attach_group = result;
+                    },"text");
+                    vue.datas1.push(data);
+                    vue.$nextTick(function() {
+                        var index = vue.datas1.length-1;
+                        var row_class = ".row-1-"+ index;
+                        $.parser.parse(row_class);
+                        $(".set-btn").show();
+                        $("#resetData").css("margin-left","10px");
+
+                    });
+                },
+                newItem2:function(){
+                    var data={};
+                    data.content = "";
+                    data.pay_amount = "";
+                    data.begin_date = "";
+                    data.end_date = "";
+                    vue.datas2.push(data);
+                    vue.$nextTick(function() {
+                        var index = vue.datas2.length-1;
+                        var row_class = ".row-2-"+ index;
+                        $.parser.parse(row_class);
+                    });                     
+                },
+                newItem3:function(){
+                    var data={
+                        id:"",
+                        receivable_date:"",
+                        receivables_amount:"",
+                        service_begin_date:"",
+                        service_end_date:"",
+                        actual_date:"",
+                        actual_amount:"",
+                        account_name:"",
+                        unpaid_amount:"",
+                        status:"",
+                        show_status:"",
+                        attach_group:""
+                    };
+                    $.post("ComAttachment/getAttachGroup",function(result){
+                        data.attach_group = result;
+                    },"text");
+                    vue.datas3.push(data);
+                    vue.$nextTick(function() {
+                        var index = vue.datas3.length-1;
+                        var row_class = ".row-3-"+ index;
+                        $.parser.parse(row_class);
+                    }); 
+                },
+                removeItem0:function(index){
+                    this.datas0.splice(index,1);
+                    $(vue.datas0).each(function (index) {
+                        var row_class = ".row-0-"+ index;
+                        $(row_class).find("[date-box-name='pay_date']").datebox('setValue', vue.datas0[index].pay_date);
+                    })
+                    statistics();
+                },
+                removeItem1:function(index){
+                    this.datas1.splice(index,1);
+                    $(vue.datas1).each(function (index) {
+                        var row_class = ".row-1-"+ index;
+                        $(row_class).find("[date-box-name='receivable_date']").datebox('setValue', vue.datas1[index].receivable_date);
+                        $(row_class).find("[date-box-name='begin_date']").datebox('setValue', vue.datas1[index].begin_date);
+                        $(row_class).find("[date-box-name='end_date']").datebox('setValue', vue.datas1[index].end_date);
+                    })
+                    statistics();
+                },
+                removeItem2:function(index){
+                    this.datas2.splice(index,1);
+                    $(vue.datas2).each(function (index) {
+                        var row_class = ".row-2-"+ index;
+                        $(row_class).find("[date-box-name='begin_date']").datebox('setValue', vue.datas2[index].begin_date);
+                        $(row_class).find("[date-box-name='end_date']").datebox('setValue', vue.datas2[index].end_date);
+                    })
+                },
+                removeItem3:function(index){
+                    this.datas3.splice(index,1);
+                    $(vue.datas3).each(function (index) {
+                        var row_class = ".row-3-"+ index;
+                        $(row_class).find("[date-box-name='receivable_date']").datebox('setValue', vue.datas3[index].receivable_date);
+                        $(row_class).find("[date-box-name='begin_date']").datebox('setValue', vue.datas3[index].begin_date);
+                        $(row_class).find("[date-box-name='end_date']").datebox('setValue', vue.datas3[index].end_date);
+                        $(row_class).find("[date-box-name='actual_date']").datebox('setValue', vue.datas3[index].actual_date);
+                    })
+                },
+                removeBadDept:function(id){
+                    // vue.datas5 = null;
+                    $.post('/WrkReceivables/deleteBadDept/id/'+id, function(result) {
+                        // queryData3();
+                        queryData5();
+                        statistics();
+                        $.dialog.tips(result.message);
+                    }, 'json');
+                },
+                advance_change:function(index) {
+                    var pay_amount = vue.datas0[index].pay_amount;
+                    var poundage = vue.datas0[index].poundage;
+                    if (pay_amount == '' || pay_amount == NaN) {
+                        pay_amount = 0;
+                    };
+                    if (poundage == '' || poundage == NaN) {
+                        poundage = 0;
+                    };
+                    pay_amount = parseFloat(pay_amount);
+                    poundage = parseFloat(poundage);
+                    var remain = pay_amount - poundage;
+                    if (remain > 0) {
+                        vue.datas0[index].net_amount = remain.toFixed(2);
+                    } else {
+                        vue.datas0[index].net_amount = pay_amount.toFixed(2);
+                        vue.datas0[index].poundage = 0;
+                        $.dialog.alert('收款手续费不能大于已付金额');
+                    }
+                    statistics();
+                }
+            },
+            watch:{
+                datas0:function(){
+                },
+            }          
+        });
+        //查询已付数据
+        function queryAdvance() {
+            vue.advance = [];
+            $.post("/WrkReceivables/getAdvance/id/{$model.id}", function(result) {
+                vue.advance = result;
+            }, "json");
+        }
+        queryAdvance();
+        //编辑页面获取收款计划列表
+        function queryData3() {
+            vue.datas3 = [];
+            $.post("/WrkReceivables/getItem/id/{$model.id}/notice_id/{$model.notice_id}", function(result) {
+                vue.datas3 = result;
+                var is_show_service_date = 0;
+                $(vue.datas3).each(function (index) {
+                    if (vue.datas3[index].show_begin_date != '') {
+                        $("#receivables_item").css("width","1920px");
+                        is_show_service_date = 1;
+                    }
+                })
+                vue.is_show_service_date = is_show_service_date;
+            }, "json");
+        }
+        queryData3();
+        //编辑页面获取收退款列表
+        function queryData4() {
+            $.post("/WrkReceivables/getRefund/id/{$model.id}", function(result) {
+                vue.datas4 = result;
+            }, "json");
+        }
+        queryData4();
+        function queryData5() {
+            $.post("/WrkReceivables/getBadDept/id/{$model.id}", function(result) {
+                vue.datas5 = result;
+            }, "json");
+        }
+        queryData5();
+
+        function queryDatas6() {
+            $.post("/WrkReceivables/getSysLog/id/{$model.id}", function(result) {
+                vue.datas6 = result;
+            }, "json");
+        }
+        queryDatas6();
+        //统计
+        function statistics(){
+            if ('{$model.id}' == '' || '{$model.id}' == NaN) {
+                var data = {};
+                data.total = 0;
+                data.advance_amount = 0;
+                data.receivables_amount = 0;
+                vue.$nextTick(function() {
+                    $(vue.datas0).each(function (index) {
+                        data.advance_amount = mathAdd(data.advance_amount,vue.datas0[index].pay_amount);
+                    })
+                    $(vue.datas1).each(function (index) {
+                        data.receivables_amount = mathAdd(data.receivables_amount,vue.datas1[index].receivables_amount);
+                    })
+                    data.total = mathAdd(data.advance_amount,data.receivables_amount);
+                    vue.statistics = data;
+                });
+            } else {
+                $.post("/WrkReceivables/statistics/id/{$model.id}", function(result) {
+                    vue.$nextTick(function() {
+                        vue.statistics = result;
+                        if (result.status != 0 || is_resetData == 1) {
+                            // console.log(result.status+is_resetData);
+                            $('.actionBtn').addClass('grey');
+                        }else{
+                            $('.actionBtn').removeClass('grey');
+                        }
+                    });
+                }, "json");
+            }
+        }
+        statistics();
+
+        function mathAdd(a,b) {
+           var sum = (a*100 + b*100)/100;
+           return sum.toFixed(2);
+        }
+
+    function mathSub(a,b) {
+       var sum = (a*100 - b*100)/100;
+       return sum.toFixed(2);
+    }
+
+        //重置按钮
+        var is_resetData = 0;
+        function resetData() {
+            if (vue.statistics.status==0) {
+                $('.resetData').show();
+                $('.originalData').hide();
+                is_resetData = 1;
+                $('.actionBtn').addClass('grey');
+                $("#receivables_item").css("width","1000px");
+            }
+        }
+
+        //新增页面生成收款计划列表
+        function receivablesGenerator() {
+            var amount = '{$model.wrkAgreement.agreement_money}';
+            var advance_sum = 0;
+            if (is_resetData==1) {
+                $(vue.advance).each(function (index) {
+                    advance_sum = mathAdd(advance_sum,vue.advance[index].pay_amount);
+                })
+            } else {
+                $(vue.datas0).each(function (index) {
+                    advance_sum = mathAdd(advance_sum,vue.datas0[index].pay_amount);
+                })
+            }
+            // amount = amount - advance_sum;
+            amount = mathSub(amount,advance_sum);
+            var beginStr = $('#generator_start').datebox('getValue');
+            var endStr = $('#generator_end').datebox('getValue');
+
+            var cycle = $("#cycle").val();
+            var attr = [];
+            if (cycle == 'daily') {
+                $("#"+cycle).find("input:checked").each(function(){
+                    attr.push($(this).val());
+                    if ($(this).val()==1) {
+                       attr.push(2);
+                       attr.push(3);
+                       attr.push(4);
+                       attr.push(5);
+                    }
+                });
+            }else {
+                $("#"+cycle).find(".generator_attr").each(function(){
+                    attr.push($(this).val());
+                });
+            }
+            if (beginStr != "" && endStr != "") {
+                if (beginStr > endStr) {
+                    $.dialog.tips("结束时间不能早于开始时间");
+                    return false;
+                }
+                vue.datas1 = [];
+                $.post("/WrkReceivables/generator",{beginStr:beginStr,endStr:endStr,cycle:cycle,attr:attr,amount:amount},function(result) {
+                    vue.datas1 = result.rows;
+                    // $("input[name='period_number']").val(result.period_number);
+                    $("#period_number").text(result.period_number);
+                    statistics();
+
+                    $(vue.datas1).each(function (index) {
+                        var row_class = ".row-1-"+ index;
+                        vue.$nextTick(function() { 
+                            $.parser.parse(row_class);
+                        });
+                        $(row_class).find("[date-box-name='receivable_date']").datebox('setValue', vue.datas1[index].receivable_date);
+                        $(row_class).find("[date-box-name='begin_date']").datebox('setValue', vue.datas1[index].begin_date);
+                        $(row_class).find("[date-box-name='end_date']").datebox('setValue', vue.datas1[index].end_date);
+                    })
+                }, "json");
+            }
+            
+        }
+        //一次性收款生成
+        function onceChangeDate(date){
+            //清空处理
+            if (date == null) {
+                return false;
+            }
+            //时间验证        
+            var receivable_date = date.getTime()/1000;
+            if ('{$model.wrkAgreement.start_time}' > receivable_date) {
+                $.dialog.tips("应收日期不能早于合同开始时间");
+                return false;
+            }
+            var amount = '{$model.wrkAgreement.agreement_money}';
+            var advance_sum = 0;
+            if (is_resetData==1) {
+                $(vue.advance).each(function (index) {
+                    advance_sum = mathAdd(advance_sum,vue.advance[index].pay_amount);
+                })
+            } else {
+                $(vue.datas0).each(function (index) {
+                    advance_sum = mathAdd(advance_sum,vue.datas0[index].pay_amount);
+                })
+            }
+
+            amount = amount - advance_sum;
+            vue.datas1 = [];
+            vue.datas1.push({
+                receivable_date:receivable_date,
+                receivables_amount:amount
+            });
+            //统计显示
+            statistics();
+            $(vue.datas1).each(function (index) {
+                var row_class = ".row-1-"+ index;
+                vue.$nextTick(function() {
+                    $.parser.parse(row_class);
+                });
+                $(row_class).find("[date-box-name='receivable_date']").datebox('setValue', vue.datas1[index].receivable_date);
+                $(row_class).find("[date-box-name='begin_date']").datebox('setValue', vue.datas1[index].begin_date);
+                $(row_class).find("[date-box-name='end_date']").datebox('setValue', vue.datas1[index].end_date);
+            })
+
+        }
+
+        function generatorDate(date){
+            if (date == null) {
+                return false;
+            }        
+            var receivable_date = date.getTime()/1000;
+            if ('{$model.wrkAgreement.start_time}' > receivable_date) {
+                $.dialog.tips("应收期间不能早于合同开始时间");
+                $(this).datebox('setValue',null);
+                return false;
+            }
+            receivablesGenerator();
+        }
+
+        $(document).on("change",".generator_attr",function(){
+            receivablesGenerator();
+        });
+        
+        function saveReceivables() {
+            var validate1 = $('#receivables-form').form("validate");
+            var validate2 = $("#datagrid0-form").form("validate");
+            var validate3 = $("#datagrid1-form").form("validate");
+            var validate4 = $("#datagrid2-form").form("validate");
+            if(!validate1 || !validate2 || !validate3 || !validate4){
+                //$.dialog.tips("请输入必填项！");
+                return false;
+            }
+            var total_num = 0;
+            var empty_num = 0;
+            var date = '';
+
+            $(vue.datas1).each(function (index) {
+                var row_class = ".row-1-"+ index;
+                date = vue.datas1[index].begin_date;
+                total_num = total_num +1;
+                if (date=='' || date==null) {
+                    empty_num = empty_num + 1;
+                }
+                date = vue.datas1[index].end_date;
+                total_num = total_num +1;
+                if (date=='' || date==null) {
+                    empty_num = empty_num + 1;
+                }
+            })
+
+            if (empty_num != 0) {
+                if(total_num != empty_num){
+                    $.dialog.tips("只要输入一项服务期间就需要填满");
+                    return false;
+                }
+            }
+            var data = $('#receivables-form').serializeArray();
+            var record = vue.datas0;
+            var item = vue.datas1;
+            var renew = vue.datas2;
+            var is_renew = 0;
+            $("input[name='is_renew']:checked").each(function(){
+                is_renew = 1;
+            });
+            if (is_renew == 1 && '{$model.wrkAgreement.unline_card_number}' == '') {
+                $.dialog.alert("未填写线下转账需要的账户信息，无法开通客户端续费功能");
+                return false;
+            }
+
+           showMaskLayer();
+            $.post('/WrkReceivables/saveReceivables',
+                {data:data,record:record,item:item,is_renew:is_renew,renew:renew},
+                function(result) {
+                hideMaskLayer();
+                $.dialog.tips(result.message);
+                if (result.code == 0) {
+                    // closeDialog("dlg-edit-receivables");
+                    closeDialog("{$Think.const.CONTROLLER_NAME}");
+                    queryReceivables();
+                }
+            }, 'json') 
+        }
+        
+        function editReceivables() {
+            var validate1 = $('#receivables-form').form("validate");
+            var validate2 = $('#datagrid3-form').form("validate");
+            if(!validate1 || !validate2){
+                return false;
+            }
+            var data = $('#receivables-form').serializeArray();
+            
+            var total_num = 0;
+            var empty_num = 0;
+            var date = '';
+            var item = vue.datas1;
+            if (is_resetData == 1) {
+                $(vue.datas1).each(function (index) {
+                    var row_class = ".row-1-"+ index;
+                    date = vue.datas1[index].begin_date;
+                    total_num = total_num +1;
+                    if (date=='' || date==null) {
+                        empty_num = empty_num + 1;
+                    }
+                    date = vue.datas1[index].end_date;
+                    total_num = total_num +1;
+                    if (date=='' || date==null) {
+                        empty_num = empty_num + 1;
+                    }
+                })
+
+                if (empty_num != 0) {
+                    if(total_num != empty_num){
+                        $.dialog.tips("只要输入一项服务期间就需要填满");
+                        return false;
+                    }
+                }
+            }
+            var is_renew = 0;
+            $("input[name='is_renew']:checked").each(function(){
+                is_renew = 1;
+            });
+            if (is_renew == 1 && '{$model.wrkAgreement.unline_card_number}' == '') {
+                $.dialog.alert("未填写线下转账需要的账户信息，无法开通客户端续费功能");
+                return false;
+            }
+            showMaskLayer();
+            $.post("/WrkReceivables/editReceivables/id/{$model.id}/type/1",{data:data,item:item,is_renew:is_renew,is_reset_data:is_resetData},function(result) {
+                hideMaskLayer();
+                $.dialog.tips(result.message);
+                if (result.code == 0) {
+                    closeDialog("{$Think.const.CONTROLLER_NAME}");
+                    queryReceivables();
+                }
+            }, "json");
+        }
+
+        $.post("/WrkReceivables/accountList", function(result){
+            vue.accounts = result;
+        },"json");
+        //到款确认
+        function payConfirm() {
+            if (vue.statistics.status==0 && is_resetData != 1) {
+                createDialog("{$Think.const.CONTROLLER_NAME}/payConfirm/id/{$model.id}/notice_id/{$model.notice_id}",
+                    '到款确认',
+                    'dlg-payConfirm');
+            }
+        }
+        
+        //退款
+        function refund() {
+            if (vue.statistics.status==0 && is_resetData != 1) {
+                createDialog("{$Think.const.CONTROLLER_NAME}/refund/id/{$model.id}", '退款处理', 'dlg-refund');
+            }
+        }
+        //逾期冻结
+        function overdue() {
+            if (vue.statistics.status==0 && is_resetData != 1) {
+                createDialog("{$Think.const.CONTROLLER_NAME}/overdue/id/{$model.id}", '冻结通知','dlg-overdue');    
+            }
+        }
+        //坏账
+        function badDept() {
+            if (vue.statistics.status==0 && is_resetData != 1) {
+                createDialog("{$Think.const.CONTROLLER_NAME}/badDept/id/{$model.id}", '坏账处理', 'dlg-badDept');
+            }
+        }
+        
+        function showText(){
+            document.querySelector('.show_text').style.display = "block";
+        }
+        function hideText(){
+            document.querySelector('.show_text').style.display = "none";
+        }
+        </script>
+    </body>
+</html>
+

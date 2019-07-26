@@ -1,0 +1,17 @@
+ 
+@model IEnumerable<Xditi.Inspection.Model.SysMenu>
+@Html.Partial("_SelectTreeHeaderPartial")
+                <tr>                
+                <th field="ck" checkbox="false"></th>
+                    <th data-options="field:'id',width:120,align:'left',hidden:true">@Html.DisplayNameFor(m => m.ID )</th>                    
+                    <th data-options="field:'name',width:120,align:'left'">@Html.DisplayNameFor(m => m.Name )</th>                    
+                    <th data-options="field:'SysMenu_ID',width:120,align:'left'">@Html.DisplayNameFor(m => m.SysMenu_ID )</th>                    
+                    <th data-options="field:'Enabled',width:120,align:'left'">@Html.DisplayNameFor(m => m.Enabled )</th>                    
+                    <th data-options="field:'Url',width:120,align:'left'">@Html.DisplayNameFor(m => m.Url )</th>                    
+                                        
+                    <th data-options="field:'Sort',width:120,align:'left'">@Html.DisplayNameFor(m => m.Sort )</th>                    
+                    <th data-options="field:'querykey',width:120,align:'left'">@Html.DisplayNameFor(m => m.querykey )</th>                    
+                      
+                    <th data-options="field:'DataControll',width:120,align:'left'">@Html.DisplayNameFor(m => m.DataControll )</th>                    
+                </tr>
+@Html.Partial("_SelectTreeFooterPartial")

@@ -1,0 +1,82 @@
+<script>
+    function branchTemplate(branch_id, data, index){
+        if(branch_id == 0){
+            return '系统模板';
+        }
+
+        return '自定义';
+    }
+</script>
+<div class="c-header" id="page">
+    <div class="tab-span tab-span-on" data-index="0">对账单</div>
+</div>
+<div class="search-panel" style="overflow: hidden;position: absolute;right: 0;z-index: 2;display: unset;padding: 0;width: auto;margin-top: 5px;">
+    <div class="search-table">
+        <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+            <input onkeyup="doSearchQuery('{$Think.const.CONTROLLER_NAME}')" type="text" placeholder="请输入标题" style="width:300px;" class="easyui-validatebox validatebox-text filter-field" name="name">
+            <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="">
+        </div>
+    </div>
+</div>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <table fitColumns="true" class="datagrid" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+        data-options="
+        url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/list',
+        pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+        pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+        toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+        pageNumber:1,
+        checkOnSelect:true,
+        singleSelect:false,
+        border:true,
+        onSelect:function(value,row){
+            if(row.branch_id == 0){
+                $.dialog.tips('提示：系统模板不可删除')
+            }
+        }">
+    <thead>
+    <!-- <include file="./Application/Common/Layout/Default/list_header_auto.html" controller="{$Think.const.CONTROLLER_NAME}"/> -->
+    <tr>
+        <th data-options="field:'branch_id',width:70,align:'center', formatter:branchTemplate">来源</th>
+        <th data-options="field:'name',width:200,align:'center'">{$Think.lang.NAME}</th>
+        <th data-options="field:'start',width:80,align:'center'">{$Think.lang.START}</th>
+        <th data-options="field:'deal_time',width:80,align:'center'">{$Think.lang.DEAL_TIME}</th>
+        <th data-options="field:'income',width:140,align:'center'">{$Think.lang.INCOME}</th>
+        <th data-options="field:'disbursement',width:140,align:'center'">{$Think.lang.DISBURSEMENT}</th>
+        <th data-options="field:'account',width:140,align:'center'">{$Think.lang.ACCOUNT}</th>
+        <th data-options="field:'summary',width:80,align:'center'">{$Think.lang.SUMMARY}</th>
+        <th data-options="field:'remarks',width:80,align:'center'">{$Think.lang.REMARKS}</th>
+        <th data-options="field:'mark',width:80,align:'center'">{$Think.lang.MARK}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html" controller="{$Think.const.CONTROLLER_NAME}"/>
+</div>
+<script>
+    (function(){
+        $("#VcrBillTemplate-toolbar .actions").append('<a href="javascript:void(0)" class="btn-speed detail-delete" plain="true" onclick="downloadTemplate(\'VcrBillTemplate\')">导出模板</a>')
+        $("#page .tab-span").click(function(){
+            $("#page .tab-span").removeClass('tab-span-on');
+            $(this).addClass('tab-span-on');
+            
+        });
+    })()
+    function downloadTemplate(ID){
+        var obj = $("#" + ID + '-datagrid').datagrid('getSelected');
+        var id  = 0;
+        if(obj){
+            id = obj.id;
+        }else{
+            $.dialog.alert('请选择要导出的模板!');
+            return false;
+        }
+
+        window.open("/VcrBillTemplate/exportTemplate?id=" + id,'_blank');
+    }
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+    $(".common-blue-btn").hide();
+</script>

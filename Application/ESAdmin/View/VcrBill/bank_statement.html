@@ -1,0 +1,101 @@
+<style>
+        #VcrBillReceipt-toolbar .choose-month a{
+                width: 80px;
+                margin-left: 5px;
+        }
+</style>
+<div style="width: 86vw;height: 500px;overflow-y: scroll">
+        <div id="VcrBillReceipt-toolbar">
+                <div class="choose-month">
+                        <div style="width:100%;display: flex;flex-wrap: wrap;">
+                                <span style="line-height: 32px;">会计期间：{$accounting_section}</span>
+                               <!-- <select class="easyui-combobox" id="account_section" name="state" style="width:80px;">
+                                        &lt;!&ndash; <option value="all">全部</option> &ndash;&gt;
+                                        <option value="2019">2019年</option>
+                                        <option value="2018">2018年</option>
+                                </select>
+                                <a>一月<span style="color: red;"></span></a><a>二月<span style="color: red;"></span></a><a>三月<span style="color: red;"></span></a><a>四月<span style="color: red;"></span></a><a>五月<span style="color: red;"></span></a><a>六月<span style="color: red;"></span></a><a>七月<span style="color: red;"></span></a><a>八月<span style="color: red;"></span></a><a>九月<span style="color: red;"></span></a><a>十月<span style="color: red;"></span></a><a>十一月<span style="color: red;"></span></a><a>十二月<span style="color: red;"></span></a>
+                                -->
+
+                                <input type="hidden" name="accounting_section" value="{$accounting_section}" >
+                        </div>
+                </div>
+        </div>
+        <div class="intel-done">
+                <table id="VcrBillReceipt-datagrid" width="100%" class="easyui-datagrid datagrid" cellspacing="0"
+                       data-options="url:'/VcrBill/receiptList/type/1/id/{$bill_id}',fit:false,pagination:true,pageSize:20,onLoadSuccess(data){if(data.total == 0){$('#empty-notice').show()}else{$('#empty-notice').hide()}}">
+                        <thead>
+                        <tr>
+                                <th data-options="field:'id',width:0,hidden:true"></th>
+                                <th data-options="field:'accounting_section',align:'center',resizable:false", width="13%">会计期间</th>
+                                <th data-options="field:'source_date',align:'center',resizable:false,formatter:formatDate", width="13%">回单日期</th>
+                                <th data-options="field:'total_sum',align:'center',resizable:false", width="13%">回单金额</th>
+                                <th data-options="field:'memo',align:'center',resizable:false", width="30%">回单内容</th>
+                                <th data-options="field:'bill_date',align:'center',resizable:false,formatter:formatDate", width="13%">录入日期</th>
+                                <th data-options="field:'is_link_bank',align:'center',resizable:false,formatter:formatLink", width="18%">操作</th>
+                        </tr>
+                        </thead>
+                </table>
+                <div id="empty-notice" style="color: rgb(180, 180, 180);display:none;width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 180px;font-size: 20px">当前会计期间无银行回单</div>
+        </div>
+</div>
+
+
+<script>
+   $(function(){
+       //银行回单会计期间
+       /*create_year_combox($("#VcrBillReceipt-toolbar .choose-month select"), function(value){
+           $("#VcrBillReceipt-toolbar .choose-month a").removeClass("month-on");
+           $.post("VcrBill/receiptTotal",{year:value.id},function(result){
+               for(k in result){
+                   $("#VcrBillReceipt-toolbar span.combo").siblings("a").eq(k-1).find("span").text(`（${result[k].num}）`);
+               }
+           },'json');
+           queryReceipt();
+       });*/
+       /*monthChoose($("#VcrBillReceipt-toolbar .choose-month a"), function (index, isChecked) {
+           queryReceipt();
+       });*/
+       /*var year = $("#account_section").combobox("getValue");
+       $.post("VcrBill/receiptTotal",{year:year},function(result){
+           for(k in result){
+               $("#VcrBillReceipt-toolbar span.combo").siblings("a").eq(k-1).find("span").text(`（${result[k].num}）`);
+           }
+       },'json');*/
+   })
+
+        function formatLink(value,row) {
+            if(value > 0){
+                return `<div style="color:grey;cursor: pointer;">已被关联</div>`
+            }else{
+                return `<div onclick="linkBill(${row.id},${row.image_id})" style="color:#368bfe;cursor: pointer;">关联</div>`
+            }
+        }
+
+        function linkBill(id,image_id){
+                $.dialog.confirm("是否确认关联该回单？",function(){
+                    $.post("VcrBill/linkBill",{bill_id:"{$bill_id}",receipt_id:id,image_id:image_id,type:"receipt"},function(result){
+                        if(result.error == 0){
+                            closeDialog("bank_statement");
+                            $("#VcrBill-bank-datagrid").datagrid("reload");
+                            $("#VcrBill-receipt-datagrid").datagrid("reload");
+                        }
+                        $.dialog.tips(result.message);
+                    },'json')
+                })
+        }
+
+        function queryReceipt(){
+            var accounting_section = getMonthChooseValue($("#VcrBillReceipt-toolbar .choose-month"));
+            var queryParams = isNaN(accounting_section) ? {'q-accounting_section': accounting_section} : {'ql-accounting_section': accounting_section};
+            $("#VcrBillReceipt-datagrid").datagrid("load", queryParams);
+        }
+
+        $(function(){
+            $("#VcrBillReceipt-toolbar .choose-month a").on("click",function(){
+                return false;
+            });
+        })
+
+</script>

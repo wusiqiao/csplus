@@ -1,0 +1,126 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/flatfoot.css?version={$version}" rel="stylesheet" />
+<style>
+    .whole-substance{
+        flex:1;
+    }
+    .whole-message{
+        flex:0.8;
+    }
+    .whole-small-div{
+        /*height: 6px;*/
+        /*padding: 10px 15px;*/
+        margin: 15px 0;
+    }
+    .whole-substance .whole-lattice .lattice-block .lattice-title{
+        font-family: MicrosoftYaHei;
+        font-size: 26px;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 24px;
+        letter-spacing: 0px;
+        color: #666666;
+        margin-top: 15px;
+    }
+    .lattice-clock{
+        margin-top: 21px;border: 1px solid #e3e3e3;display: flex;    padding: 20px;
+    }
+    .whole-substance .whole-lattice{
+        padding: 0  10% 0  0;
+    }
+    .whole-button{
+        padding: 7px 12px;
+        background-color: #368bfe;
+        border-radius: 2px;
+        color: #fff;
+        margin: initial;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="height: 100%;padding-top: 5px;background-color: #fff">
+    <div class="">
+        <div class="c-select">
+            <div id="{$Think.const.CONTROLLER_NAME}-toolbar">
+                <div class="c-header" style="margin:2px 15px">
+                    <span class="tab-span on" onclick="toggleType('{$Think.const.CONTROLLER_NAME}')">概述</span>
+                    <span class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/plan')">发送计划</span>
+                    <span class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/history')">发送记录</span>
+                    <span class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/clear_notice')">清卡通知</span>
+                </div>
+            </div>
+            <div class="content-wrap">
+                <div class="whole-small-div" >
+                    <a href="javascript:;" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/appoint_plan')" class="btn_bg_blue">创建计划</a>
+                </div>
+                <div class="whole-div">
+                    <div class="whole-substance">
+                        <div class="whole-sms">
+                            <div class="whole-title">
+                                <div class="title-tip bgb"></div>
+                                <div class="title-message">发送统计</div>
+                            </div>
+                            <div class="whole-lattice">
+                                <div class="lattice-clock">
+                                    <div class="lattice-block">
+                                        <div class="lattice-title">0</div>
+                                        <div class="lattice-message">发送总量</div>
+                                    </div>
+                                    <div class="lattice-block">
+                                        <div class="lattice-title">0</div>
+                                        <div class="lattice-message">成功发送总条数</div>
+                                    </div>
+                                    <div class="lattice-block">
+                                        <div class="lattice-title">0</div>
+                                        <div class="lattice-message">未成功发送总条数</div>
+                                    </div>
+                                </div>
+                                <div class="lattice-clock" style="margin-top:15px">
+                                    <div class="lattice-block">
+                                        <div class="lattice-title" >0</div>
+                                        <div class="lattice-message">累计费用</div>
+                                    </div>
+                                    <div class="lattice-block">
+                                        <div class="lattice-title">0</div>
+                                        <div class="lattice-message">剩余可发送条数</div>
+                                    </div>
+                                    <div class="lattice-block">
+                                        <div class="lattice-title" style="    margin-top: 30px;">
+                                            <a href="javascript:;" style="
+                                                padding: 6px 15px;
+                                                border: 1px solid #398bfe;
+                                                color: #398bfe;
+                                                " onclick="$.dialog.tips('暂未开放')">立刻充值</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="whole-message">
+                        <div class="whole-title">
+                            <div class="title-tip bgr"></div>
+                            <div class="title-message">帮助与条款</div>
+                        </div>
+                        <div class="whole-queue" style="border: 1px solid #e3e3e3;
+                                                    padding: 20px 20px 20px 40px;
+                                                    margin-top: 20px;">
+                            <ul>
+                                <li onclick="toggleType('{$Think.const.CONTROLLER_NAME}/help/tip/1')">短信发送失败是否计费</li>
+                                <!--<li onclick="toggleType('{$Think.const.CONTROLLER_NAME}/help/2')">最多可查看几个月的发送数据</li>-->
+                                <!--<li onclick="toggleType('{$Think.const.CONTROLLER_NAME}/help/3')">感词汇以及非法内容屏蔽</li>-->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function toggleType(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+</script>

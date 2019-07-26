@@ -1,0 +1,27 @@
+<script type="text/javascript">
+    function formatTemplate(value, row, index){         
+        return "<i class='fa fa-file-powerpoint-o' style='color:#00aaee;cursor:pointer' onclick='showTemplateDialog("+ row.id +")'></i>";
+    }  
+    function showTemplateDialog(id){
+        var dlg = $.dialog({
+            title: '素材编辑',
+            autoSize: true,
+            content: "url:ComImageText/template/id/" + id,
+            lock: false,
+            max: true,
+            min: false,
+        });
+        dlg.max();
+    }
+</script>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:320,align:'left'">{$Think.lang.FLD_NAME}</th>
+        <th data-options="field:'sort',width:100,align:'left'">顺序</th>
+        <th data-options="field:'count',width:100,align:'left'">模板个数</th>
+        <th data-options="field:'edit',width:80,align:'center',formatter:formatTemplate">素材管理</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>

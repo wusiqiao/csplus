@@ -1,0 +1,57 @@
+<div class="maincontainer" id="VcrBillValueTax-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="VcrBillValueTax" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th> 
+        <th data-options="field:'bill_date',width:160,align:'left',formatter:formatDate">录入日期</th>
+        <th data-options="field:'bill_no',width:160,align:'left'">录入单号</th>        
+        <th data-options="field:'name',width:240,align:'left',formatter:formatOtherSide">销售/购买单位名称</th>
+        <th data-options="field:'goods_name',width:240,align:'left'">货物或劳务、服务名称</th>
+        <th data-options="field:'amount',width:120,align:'left'">金额</th>
+        <th data-options="field:'tax_amount',width:120,align:'left'">税额</th>
+        <th data-options="field:'quantity',width:80,align:'left'">数量</th>
+        <th data-options="field:'price',width:80,align:'left'">单价</th>
+        <th data-options="field:'unit',width:120,align:'left'">计量单位</th>
+        <th data-options="field:'creator',width:120,align:'left'">{$Think.lang.FLD_CREATOR}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="VcrBillValueTax" />
+</div>
+<equal name="ent_scale" value="1">
+<div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:auto" icon="fa fa-download fa-lg" plain="true" onclick="action_show_skimportdlg()">导入税控</a><div class="btn-separator"></div>  
+</div>
+</equal>
+<script>
+    function action_show_skimportdlg() {
+        createDialog("/VcrBillValueTax/import", "导入税控开票资料");
+    }
+    
+    function action_shuikong_import() {
+        if ($("#shuikong-import-file").val() == "") {
+            alert("导入文件不能为空！");
+            return;
+        }
+        var customer = $("#customer-info").text();
+        if (customer != "") {
+            $.dialog.confirm("确定导入客户【" + customer + "】的税控开票资料？",
+                    function () {
+                        var formData = new FormData();
+                        formData.append("shuikong_file", document.getElementById("shuikong-import-file").files[0]);
+                        $.ajax({url: "/VcrBillValueTax/import", type: "POST", data: formData, contentType: false, processData: false, dataType: "json",
+                            beforeSend: function () {
+                                showMaskLayer();
+                            },
+                            success: function (result) {
+                                $.dialog.tips(result.message);
+                                closeDialog();
+                                hideMaskLayer();
+                                setTimeout('getDataGrid("{$Think.const.CONTROLLER_NAME}").treegrid("reload")', 2000);
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert("导入失败！" + textStatus + errorThrown);
+                                hideMaskLayer();
+                            }
+                        });
+                   });
+        }
+    }
+</script>

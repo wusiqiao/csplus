@@ -1,0 +1,13 @@
+<div class="maincontainer"  style="width:540px;height:400px">
+    <table class="easyui-datagrid" data-options="url:'ComCategory/datalist',border:true" id="ComCategory-SortGrid">
+        <thead>
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:180,align:'left'">{$Think.lang.FLD_NAME}</th>
+        <th data-options="field:'parent_name',width:180,align:'left'">上级类别</th>
+        <th data-options="field:'is_valid',width:60,align:'left',formatter:formatValidState">{$Think.lang.FLD_IS_VALID}</th>
+        <th data-options="field:'updown',width:60,align:'center',formatter:function(value, row, index){return formatUpDown('ComCategory','#ComCategory-SortGrid', row)}">移动</th>
+    </tr>
+        </thead>
+    </table>
+</div>

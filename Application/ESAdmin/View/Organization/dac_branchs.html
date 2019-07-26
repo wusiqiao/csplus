@@ -1,0 +1,187 @@
+<link rel="stylesheet" href="/{$Think.APP_PATH}Public/vender/vue-tree-2.0/vue-tree.css">
+<style>
+
+    .tree-node-title-another{
+       width:300px !important; 
+
+    }
+</style>
+<div id = "app" class="clearFix" style="overflow-y: scroll;height: 300px;width: 500px">
+    <!--<div class="nav-lef" style="height: 100%;">
+        &lt;!&ndash;<tree :folder = "trees"></tree>&ndash;&gt;
+    </div>-->
+    <ul id="object-tree" class="vue-tree" style="padding-left: 20px;width: 450px;padding-right: 10px">
+        <vue-tree style="cursor: pointer"  :model="trees" ></vue-tree>
+    </ul>
+</div>
+
+<div style="text-align: center;margin: 10px">
+    <a href="javascript:void(0)" class="common-blue-btn select-over" onclick="">选择完毕</a>
+    <a href="javascript:void(0)" class="common-red-btn" onclick="closeDialog()">取消</a>
+</div>
+<script src="__ROOT__/{$Think.MODULE_PATH}/Public/vue/vue.min.js"></script>
+<script>
+    /*Vue.component('tree', {
+        name:"tree",
+        template:`<ul class="tree-ul">
+                    <li v-for = "(item,index) in folder" :id="item.id" :level="item.level">
+                        <template v-if="item.show != 0">
+                            <div class="clearFix" :id="'li'+item.id">
+                                <div class="le">
+                                    <i class="map"></i>
+                                    <span :title="item.text">{{item.name}}</span>
+                                </div>
+                                <div class="ri" style="width: 20px;">
+                                    <input type="checkbox" name="dac_branchs" :id="'B'+item.id" class="css-checkbox" :value="item.id">
+                                    <label :for="'B'+item.id" class="css-label"></label>
+                                </div>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div class="clearFix" style="width: 200px;" id="disabled">
+                                <div class="le" style="width: 200px;">
+                                    <i class="map"></i>
+                                    <span :title="item.text">{{item.name}}</span>
+                                </div>
+                            </div>
+                        </template>
+                        <tree v-if = "item.children" :folder = "item.children"></tree>
+                    </li>
+                </ul>`,
+        props:["folder"],
+        data: function (){
+            return {
+                len:0,
+                single:true
+            }
+        },
+        methods:{},
+        mounted: function () {
+            var len=this.folder.length;
+            this.len=len;
+            if (len===1){
+                this.single=false
+            }
+        }
+    });*/
+
+    // <tree v-if = "item.children" :folder = "item.children"></tree>
+    Vue.component("vue-tree", {
+        template:
+            `<li :class="'item item-'+model.id" style="width: 450px" style="display: block;clear: both;">
+                <div :class="isFolder?'bold tree-folder':'tree-folder'" style="width: 100%;height: 30px;">
+                    <span v-if="isFolder" :class="open?'tree-node tree-node-open':'tree-node tree-node-close'" @click="toggle"></span>
+                    <span v-else class='tree-node tree-node-child'></span>
+                    <span class="tree-node-title tree-node-title-another"> <label class="css-label" :for="'B'+model.id">{{model.name}}</label></span>
+
+                    <span class="tree-node tree-node-edit" >
+                        <input type="checkbox" class="css-checkbox" :id="'B'+model.id" :value="model.id" @click="click(model.id)">
+                        <label class="css-label" :for="'B'+model.id"></label>
+                    </span>
+                </div>
+                <!--<div class="bottom-line"></div>-->
+                <ul v-show="open" v-if="isFolder" :class="'vue-tree vue-tree-'+model.id">
+                    <vue-tree v-for="child in model.children" :model="child"></vue-tree>
+                </ul>
+             </li>`,
+        props: {
+            model: Object,
+            actions: Object
+        },
+        data: function () {
+            return {
+                open: true
+            }
+        },
+        computed: {
+            isFolder: function () {
+                return this.model.children && this.model.children.length
+            }
+        },
+        methods: {
+            toggle: function () {
+                if (this.isFolder) {
+                    this.open = !this.open
+                }
+            },
+            select: function (event) {},
+            click:function(id){
+                if($("#B"+id).attr("checked") == "checked"){
+                    $(".item-"+id).find("input[type='checkbox']").attr("checked",true);
+                }else{
+                    $(".item-"+id).find("input[type='checkbox']").removeAttr("checked");
+                }
+            }
+        },
+        mounted:function(){
+            if (vue_tree != undefined) {
+                vue_tree.child_mounted();
+            }
+        }
+    });
+    var vue_tree = new Vue({
+        el:"#app",
+        data:{
+            trees:[],
+            current:Object,
+            index:0,
+            total_count:0
+        },
+        methods:{
+            select:function(){},
+            child_mounted:function(){
+                this.index ++;
+                if(this.index == this.total_count){
+                    var dac_branchs = parent.$("input[name='dac_branchs']").val();
+                    var ids = dac_branchs.split(",");
+                    for(var i in ids){
+                        $("#B"+ids[i]).attr("checked",true);
+                    }
+                }
+            },
+            click:function(){}
+        }
+    });
+
+    $(function(){
+        getSelectTrees();
+    });
+    function getSelectTrees(){
+        $.post("Organization/staffListForDacBrabchs",{},function(result){
+            //result.splice(1, 1);
+            //result = result[0]["children"];
+            vue_tree.trees = result[0];
+            vue_tree.total_count = result[0].children.length;
+            getCount(result[0].children);
+        },'json')
+
+        // $.post("Organization/treeList/type/1",{},function(result){
+        //     //result.splice(1, 1);
+        //     //result = result[0]["children"];
+        //     vue_tree.trees = result[0];
+        //     vue_tree.total_count = result[0].children.length;
+        //     getCount(result[0].children);
+        // },'json')
+    }
+
+    function getCount(data){
+        for(var i in data){
+            vue_tree.total_count += data[i].children.length;
+            if(data[i].children.length>0){
+                getCount(data[i].children);
+            }
+        }
+    }
+
+    $(".select-over").on("click",function(){
+        var ids = [];
+        $.each($("#app input:checkbox:checked"),function(index){
+            if (this.value != '' && this.value != null) {
+                ids[index] = this.value;
+            }
+        });
+        var dac_branchs = ids.join(",");
+        parent.$("input[name='dac_branchs']").val(dac_branchs);
+        closeDialog();
+    });
+</script>

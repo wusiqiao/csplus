@@ -1,0 +1,108 @@
+<script type="text/javascript">
+    function formatStatus(value,row){
+        var scale_text = ["未发送","已发送"];
+        return scale_text[parseInt(value)];
+    }
+    function formatType(value,row){
+        if(value == 10){
+            return '通知'
+        }
+        if(value == 20){
+            return '迭代'
+        }
+
+        return '未知';
+    }
+
+    function formatToDateTime(value, row, index){
+        if(!value) {
+            return "-";
+        }else{
+            var date = new Date();
+            date.setTime(value * 1000);
+            var y = date.getFullYear();    
+            var m = date.getMonth() + 1;    
+            m = m < 10 ? ('0' + m) : m;    
+            var d = date.getDate();    
+            d = d < 10 ? ('0' + d) : d;    
+            var h = date.getHours();  
+            h = h < 10 ? ('0' + h) : h;  
+            var minute = date.getMinutes();  
+            var second = date.getSeconds();  
+            minute = minute < 10 ? ('0' + minute) : minute;    
+            second = second < 10 ? ('0' + second) : second; 
+            return y+'-'+m+'-'+d+' '+h+':'+minute;
+        }
+    }
+    function formatEdit(value, row){
+        var html = '';
+        if (row.status == 1) {
+            html = '<a onclick="showDetailForm(\'ComIterationMessage\','+row.id+',\'{$title}\')">查看</a>';
+        } else {
+            html = html
+            + '<a onclick="showDetailForm(\'ComIterationMessage\','+row.id+',\'{$title}\')">编辑</a>'
+            + '&nbsp;&nbsp;<a onclick="sendMessage('+row.id+')">发送</a>'
+            + '&nbsp;&nbsp;<a onclick="deleteIteration('+row.id+')">删除</a>';
+        }
+        return html;
+    }
+</script>
+<div class="maincontainer" id="ComIterationMessage-maincontainer" style="height: 99%;background-color: #fff;">
+    <include file="./Application/Common/Layout/Default/list_header_auto.html"  controller="ComIterationMessage" />
+    <tr> 
+        <th data-options="field:'id',hidden:true"></th>
+        <th data-options="field:'create_time',width:120,align:'left',formatter:formatToDateTime">创建时间</th>
+        <th data-options="field:'type',width:80,align:'left',formatter:formatType">消息类型</th>
+        <th data-options="field:'status',width:80,align:'left',formatter:formatStatus">发送状态</th>
+        <th data-options="field:'send_time',width:200,align:'left',formatter:formatToDateTime">发送时间</th>
+        <th data-options="field:'operation',width:250,align:'left',formatter:formatEdit">操作</th>
+    </tr>
+    <!-- <inclu de file="./Application/Common/Layout/Default/list_footer.html"  controller="ComIterationMessage" /> -->
+    </thead>
+</table>
+<div id="ComIterationMessage-toolbar">
+    <div class="action-panel">
+        <div class="actions">
+            <a href="javascript:void(0)" class="common-blue-btn detail-add" style="width:auto" plain="true" onclick="action_add('ComIterationMessage','{$title}')">新建通知</a>
+        </div>
+   </div>
+</div>
+
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        initial_easyui_grid("ComIterationMessage", "{$title}");
+    });
+    function sendMessage(id){
+        $.dialog.confirm('确认后将马上给用户发送通知，是否立即通知客户?', function () {
+            $.post('ComIterationMessage/sendMessage',{id: id},function (result) {
+                getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                $.dialog.tips(result.message);
+            },"json");
+        });
+    }
+
+    function deleteIteration(id){
+        $.dialog.confirm('删除后将不可找回，确认删除?', function () {
+                $.post('ComIterationMessage/delete',
+                    {id: id, options: 1},
+                    function (result) {
+                        if (result.code === 0) {
+                            refreshGrid('ComIterationMessage', id, "delete");
+                            $.dialog.tips("删除成功！");
+                        } else {
+                            $.dialog.alert(result.message);
+                        }
+                    },
+                    "json"
+                ).error(
+                    function(XMLHttpRequest, textStatus, errorThrown){
+                        $.dialog.alert("删除错误！");
+                    }
+                );
+            }
+        );
+    }
+
+</script>

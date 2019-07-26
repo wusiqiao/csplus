@@ -1,0 +1,65 @@
+<style>
+    .form-button-group {
+        text-align: center;
+    }
+    .form-button-group .form-button-operation{
+        background-color: #368bfe;
+        border-radius: 3px;
+        color: #fff;
+        width: 83px;
+        height: 29px;
+        border: initial;
+    }
+    .form-button-group .form-button-close{
+        border: 1px solid #368bfe;
+        background-color: #fff;
+        width: 83px;
+        height: 29px;
+        border-radius: 3px;
+        color: #368bfe;
+    }
+    .refuse-div{
+        text-align: center;
+    }
+    .refuse-div div{
+        margin: 15px 5px;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="width: 400px;
+	height: 200px;">
+    <input type="hidden" name="id" value="{$model.id}" />
+    <div class="refuse-div" style="height: 150px">
+        <div>
+            <img src="/Application/ESAdmin//Public/images/icon/refuse-icon.png" width="50" height="50" alt="">
+        </div>
+        <div style="color: #e91835">
+            提现失败
+        </div>
+        <div style="color: #666666">
+            您好，您的提现失败，具体原因请联系王小姐-18020602060。
+        </div>
+    </div>
+    <div class="form-button-group">
+        <button href="javascript:void(0)" class="form-button-close" plain="true" onclick="closeDialog()">关闭</button>
+        <button href="javascript:void(0)" class="form-button-operation" plain="true" onclick="operateRefuseNotice()">发送</button>
+    </div>
+</div>
+<script>
+    //状态操作
+    function operateRefuseNotice(){
+        var id = $('input[name=id]').val();
+        if (id > 0) {
+            $.dialog.confirm("是否发送该提现失败通知?",function(){
+                var url = "{$Think.const.CONTROLLER_NAME}/withdrawalNotice";
+                closeDialog();
+                $.post(url,{id:id,notice:'refuse'},function(result){
+                    closeDialog('WithdrawalsRefuse-notice');
+                    $.dialog.tips('发送成功');
+                },'json')
+            });
+        } else {
+            $.dialog.alert('操作失败');
+            return false;
+        }
+    }
+</script>

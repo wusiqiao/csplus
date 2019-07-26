@@ -1,0 +1,92 @@
+<style>
+    /*#VcrVoucherDraf-maincontainer .datagrid-header,.datagrid-header-row{height:0px !important;}*/
+    #VcrVoucherDraf-maincontainer .detail-content{background: #fff; padding:10px;border:1px solid #ccc; margin: 5px 0px}
+    #VcrVoucherDraf-maincontainer .datagrid-row-selected{background-color: #0b95ff !important; color: #0b95ff}
+    #VcrVoucherDraf-maincontainer .datagrid-row-over{background: #cccccc}
+    #VcrVoucherDraf-maincontainer .source-bill-table th{background: transparent}
+</style>
+<script src="__ROOT__/{$Think.APP_PATH}Public/jquery/drag.js"></script>
+<script src="__ROOT__/{$Think.MODULE_PATH}Public/script/voucher_draf.js?v=2"></script>
+<div class="maincontainer" id="VcrVoucherDraf-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="VcrVoucherDraf" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'ck',checkbox:true"></th>
+        <th data-options="field:'content',width:'98%',align:'left',formatter:formatContent"></th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="VcrVoucherDraf" />
+</div>
+<div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-reviewed" style="width:auto" icon="fa fa-pencil-square fa-lg" plain="true" onclick="reviewBill(1)"><span class="txt-reviewed">审核</span></a><div class="btn-separator"></div>
+    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-unreviewed" style="width:auto;background:#c5d2ff" icon="fa fa-undo fa-lg" plain="true" onclick="reviewBill(0)"><span class="txt-reviewed">取消审核</span></a><div class="btn-separator"></div>
+    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-voucher-export" style="width:auto" icon="fa fa-newspaper-o fa-lg" plain="true">导出</a><div class="btn-separator"></div>
+    <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-except" style="width:auto;background:orange;display:none" icon="fa fa-warning fa-lg" plain ="true">查看异常</a>
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <table class="search-table">
+        <tr>
+            <th>公司：</th>
+            <td>
+                <select  name="q-branch_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'ComCompany/keyNameList/'"></select>
+            </td>
+            <th>会计期间：</th>
+            <td>
+                <select class="chosen-select filter-field" style="width:300px;" name="q-accounting_section">
+                    <option value="">期间不限</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="mask-layer mask-layer-half-transparent custom-modal" onclick="$(this).hide()">
+    <div class="modal-content" style="width: 100%">
+        <img src=""  style="width: 50%; height: 50%; margin: 10% 25%"/>
+    </div>
+</div>
+<script>
+    checkExcepton();
+    create_ccounting_section($("select[name='q-accounting_section']"));
+    $(".action-voucher-export").click(function(){
+        createDialog("/VcrVoucherDraf/exportView","导出凭证");
+    });
+    $(".action-except").click(function(){
+        var data_grid = getDataGrid("VcrVoucherDraf");
+        var queryParams = data_grid.datagrid('options').queryParams;
+        queryParams["q-has_error"] = 1;
+        data_grid.datagrid('options').queryParams = queryParams;
+        data_grid.datagrid('reload');
+       // createDialog("/VcrVoucherDraf/exceptions","查看异常凭证科目");
+    });
+    function checkExcepton() {
+        $.post("/VcrVoucherDraf/getExceptionCount", {}, function (result) {
+            if (result > 0){
+                $(".action-except").show();
+            } else{
+                $(".action-except").hide();
+            }
+        });
+    }
+    function reviewBill(reviewed){
+        var rows = getGridSelections("VcrVoucherDraf");
+        if (rows.length == 0){
+            $.dialog.tips("请先选择要审核或取消审核的草稿");
+            return false;
+        }
+        var text = (reviewed == 1)?"审核":"取消审核";
+        $.dialog.confirm("确定" + text + "所选凭证草稿？",
+            function () {
+                var ids = [];
+                $(rows).each(function(){
+                    ids.push(this.id);
+                });
+                $.post("/VcrVoucherDraf/reviewed", {id: ids, reviewed: reviewed}, function (ret) {
+                    $.dialog.tips(ret.message);
+                    refreshGrid("VcrVoucherDraf");
+                }, "json");
+            });
+    }
+    function showAttachment(sender) {
+        $(".custom-modal").show();
+       $(".custom-modal img").get(0).src = sender.src;
+    };
+</script>

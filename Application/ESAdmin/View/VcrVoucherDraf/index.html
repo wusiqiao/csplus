@@ -1,0 +1,591 @@
+<style>
+.combo-panel {
+    border: 1px solid #d3d3d3;
+}
+.datagrid-view {
+    margin-left: 0px;
+}
+.datagrid-body {
+    overflow: unset;
+}
+#intel-table-cover{
+    /* opacity:1; */
+    transform-origin:left;
+    transform:rotate3d(0,1,0,0deg);
+    transition: all 2s;
+}
+.viewer-container {
+    left: 5px !important;
+    top: 90px !important;
+}
+#lvistion::-webkit-scrollbar {
+    width: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+}
+#lvistion::-webkit-scrollbar-thumb{
+    background: #b8b4b4;
+    border-radius: 4px;
+}
+</style>
+<div class="content voucherdraf-content" id="intelligent">
+    <div class="main-content">
+        <div class="easyui-tabs" id="voucher-tabs">
+            <div title="未生成" style="padding:10px">
+                <div id="VcrBill-toolbar">
+                    <div class="choose-month">
+                        <div>
+                            <span id="ungenerated">会计期间：</span>
+                            <select style="width:100px;" class="easyui-combobox" name="accounting_year">
+                                <option value="2019">2019年</option>
+                                <option value="2018">2018年</option>
+                            </select>
+                            <div style="height: 10px;width: 100%;"></div>
+                            <a>一月<span style="color: red;"></span></a>
+                            <a>二月<span style="color: red;"></span></a>
+                            <a>三月<span style="color: red;"></span></a>
+                            <a>四月<span style="color: red;"></span></a>
+                            <a>五月<span style="color: red;"></span></a>
+                            <a>六月<span style="color: red;"></span></a>
+                            <a>七月<span style="color: red;"></span></a>
+                            <a>八月<span style="color: red;"></span></a>
+                            <a>九月<span style="color: red;"></span></a>
+                            <a>十月<span style="color: red;"></span></a>
+                            <a>十一月<span style="color: red;"></span></a>
+                            <a>十二月<span style="color: red;"></span></a>
+                        </div>
+                        <input type="hidden" class="filter-field" id="vcrbill-accounting-section">
+                    </div>
+                    <div class="deal-form">
+                        <div style="float: right;">
+                            <input name="q-bill_flag" type="hidden" class="filter-field">
+                            <!--<input name="ql-bill_no" class="text-input filter-field" type="hidden">-->
+                            <label>单证类型：</label><input id="bill-flag"  class="text-input" type="text" placeholder="请输入单证类型" />
+                            <!-- <label>录入单号：</label><input id="bill-no" name="ql-bill_no" class="text-input filter-field" type="text" placeholder="请录入单号" /> -->
+                            <label>录入单号：</label>
+                            <div style="float: right;margin: 0 20px 0 0;width: 270px;" class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                                <input  style="width:300px;" id="bill-no" name="ql-bill_no" class="text-input filter-field" type="text" placeholder="请录入单号" /><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div> 
+                    <div class="opt-group">
+                        <a class="opt-autoCreate" onclick="VcrVoucherDeafFunctions.showDrafCreateConfirmDialog()">自动生成凭证</a>
+                        <a class="opt-del bule-btn" onclick="action_delete('VcrBill')">删除</a>
+                    </div>
+                </div>
+                <div class="intel-done">
+                    <table id="VcrBill-datagrid" class="easyui-datagrid datagrid" width="100%" cellspacing="0" fit="false" fitColumns="true" data-options="url:'/VcrBill/unCreateList',fit:false,pagination:true,pageSize:20">
+                        <thead>
+                        <tr> 
+                            <th data-options="field:'ck',checkbox:true"></th>
+                            <th data-options="field:'id',width:0,hidden:true">序号</th>
+                            <th data-options="field:'accounting_section',align:'center',resizable:true", width="9%">会计期间</th>
+                            <th data-options="field:'bill_date',align:'center',resizable:true,formatter:formatDate", width="10%">录入日期</th>
+                            <th data-options="field:'bill_no',align:'center',resizable:true", width="10%">录入单号</th>
+                            <th data-options="field:'bill_type',align:'center',resizable:true", width="9%">单证类型</th>
+                            <th data-options="field:'memo',align:'center',resizable:true", width="18%">备注</th>
+                            <th data-options="field:'error',align:'center',resizable:true", width="25%">错误原因</th>
+                            <th data-options="field:'operations',align:'center',resizable:true,formatter:formatDrafNeverCreateOperation" width="14%">操作</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div title="已生成">
+                <div id="VcrVoucherDraf-toolbar">
+                    <div class="choose-month">
+                        <div>
+                            <span id="generated">会计期间：</span>
+                            <select class="easyui-combobox" name="state" style="width:100px;">
+                                <option value="2019">2019年</option>
+                                <option value="2018">2018年</option>
+                            </select>
+                            <div style="height: 10px;width: 100%;"></div>
+                            <a>一月<span style="color: green;"></span></a>
+                            <a>二月<span style="color: green;"></span></a>
+                            <a>三月<span style="color: green;"></span></a>
+                            <a>四月<span style="color: green;"></span></a>
+                            <a>五月<span style="color: green;"></span></a>
+                            <a>六月<span style="color: green;"></span></a>
+                            <a>七月<span style="color: green;"></span></a>
+                            <a>八月<span style="color: green;"></span></a>
+                            <a>九月<span style="color: green;"></span></a>
+                            <a>十月<span style="color: green;"></span></a>
+                            <a>十一月<span style="color: green;"></span></a>
+                            <a>十二月<span style="color: green;"></span></a>
+                        </div>
+                        <input type="hidden" class="filter-field" name="ql-accounting_section" value="" id="vcrdraf-accounting-section">
+                        <div style="width:800px;height:54px;line-height: 54px;position: relative;display: flex;align-content: center;">
+                            <div class="btn-screening-label">审核状态：</div>
+                            <span class="btn-screening btn-screening-on" data-value="">全部<span id="total_count"></span></span>
+                            <span class="btn-screening" data-value="0">未完成<span id="unReviewed_count"></span></span>
+                            <span class="btn-screening" data-value="1">已完成<span id="reviewed_count"></span></span>
+                        </div>
+                    </div>
+
+                    <div class="opt-group">
+                        <a class="opt-add"  onclick="VcrVoucherDeafFunctions.showVoucherDrafEditDialog()">新增凭证</a>
+                        <a class="" onclick="VcrVoucherDeafFunctions.exportVoucher(this)">导出凭证</a>
+                        <!--<a class="opt-check opt-haschecked" data-value="1">已完成</a>
+                        <a class="opt-check opt-unchecked" data-value="0">未完成</a>-->
+                        <!--<a class="opt-unchecked" href="unchecked">未审核</a>-->
+                    </div>
+                    <input type="hidden" name="reviewed" class="filter-field">
+                </div>
+                <div class="intel-done">
+                    <div class="model-choose">
+                        <a class="on" model="list">列表模式</a>
+                        <a model="intel">账本模式</a>
+                    </div>
+                    <div class="list-table on">
+                        <table id="VcrVoucherDraf-datagrid" class="easyui-datagrid datagrid" width="100%" cellspacing="0" data-options="url:'/VcrVoucherDraf/list',fit:false,pagination:true,pageSize:20,onLoadSuccess:setCompleteCount">
+                            <thead>
+                            <tr>
+                                <th data-options="field:'ck',checkbox:true"></th>
+                                <th data-options="field:'id',width:0,hidden:true">序号</th>
+                                <th data-options="field:'accounting_section',align:'center',resizable:true", width="7%">会计期间</th>
+                                <th data-options="field:'bill_type',align:'center',resizable:true", width="8%">来源</th>
+                                <th data-options="field:'bill_no',align:'center',resizable:true", width="10%">凭证编号</th>
+                                <th data-options="field:'summary',align:'center',resizable:true", width="10%">摘要</th>
+                                <th data-options="field:'subject_name',align:'left',resizable:true", width="11%">科目名称</th>
+                                <th data-options="field:'debit_amount',align:'center',resizable:true", width="10%">借方金额</th>
+                                <th data-options="field:'credit_amount',align:'center',resizable:true", width="10%">贷方金额</th>
+                                <th data-options="field:'creater',align:'center',resizable:true", width="5%">制单人</th>
+                                <!--<th data-options="field:'reviewed',align:'center',resizable:true,formatter:formatTF", width="6%">审核状态</th>-->
+                                <th data-options="field:'state',align:'center',resizable:true,formatter:formatVoucherState", width="6%">审核状态</th>
+                                <th data-options="field:'operations',align:'center',resizable:true,formatter:formatDrafHasCreateOperation" width="9%">操作</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="intel-table" style="width: 100%;background: #fff;margin-top: 10px;border: 1px solid #d3d3d3;">
+                        <div style="width: 100%;height: 330px;overflow: hidden;display: flex;">
+                            <div style="width: 60px;height: 100%;background-color: burlywood;display: flex;flex-direction: column;justify-content: space-around;align-items: center;">
+                                <div style="width: 30px;height: 30px;background-color: #fff;border-radius: 50%;"></div>
+                                <div style="width: 30px;height: 30px;background-color: #fff;border-radius: 50%;"></div>
+                                <div style="width: 30px;height: 30px;background-color: #fff;border-radius: 50%;"></div>
+                            </div>
+                            <!-- 账本 -->
+                            <div style="flex: 1;position: relative;overflow: hidden;">
+                                <div id="intel-table-cover" style="width: 100%;height: 100%;background-color: wheat;position: absolute;top: 0;left: 0;z-index: 2;display: flex;align-items: center;justify-content: center;">
+                                    <div style="width: 80%;height: 80%;">
+                                        <div style="width: 100%;height: 32px;line-height: 32px;color: #333;">企业名称：
+                                            <span id="company_name">{$company_name}</span>
+                                        </div>
+                                        <div style="width: 100%;height: calc(100% - 32px);border: 2px double #333;">
+                                            <h5 id="books-time" style="text-align: center;font-size: 18px;margin: 10px 0;">
+                                                <span style="font-size: 18px;">&nbsp;&nbsp;</span>&nbsp;年&nbsp;
+                                                <span style="font-size: 18px;color: red;">&nbsp;&nbsp;</span>&nbsp;月份
+                                            </h5>
+                                            <h4 style="text-align: center;font-size: 28px;margin: 20px 0;">记 账 凭 证 封 面</h4>
+                                            <div id="books-num" style="text-align: center;font-size: 18px;margin: 10px 0;font-weight: 400;">记账凭证号码&nbsp;第<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>号至<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>号</div>
+                                            <!-- <p style="text-align: center;">请先选择将要查看的月份</p> -->
+                                            <p id="books-pageNum" style="text-align: center;">（ 本 月 账 本 共  <span>&nbsp;&nbsp;</span>  页 ）</p>
+                                        </div>
+                                        <!-- <div style="width: 100%;height: 32px;"></div> -->
+                                    </div>
+                                </div>
+                                <div id="intel-table-content" style="width: 100%;height: 100%;background-color: #fff;position: absolute;top: 0;left: 0;z-index: 1;display: none;">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div id="intel-table-tool" style="display: none;">
+                            <div style="border-top: 1px solid #d3d3d3;display: flex;justify-content: center;align-items: center;">
+                                <div class="btn-speed" onclick="ToFirstPage()">回封面</div>
+                                <div class="btn-speed" onclick="ToPrevPage()">上一页</div>
+                                <div class="btn-speed" onclick="ToNextPage()">下一页</div>
+                                <div style="margin: 0 5px;">第<span id="view_index"></span>页</div>
+                                <div style="margin: 0 5px;">共<span id="view_total"></span>页</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-temp" id="draf-create-confirm-dialog">
+    <div class="create-wrap">
+        <div class="create-content">
+            <p>是否确定合并同科目明细</p>
+            <div>
+                <label>会计期间：</label>
+                <input type="text" style="width: 100px"  name="accounting-section-year" id="draf-accounting-section-year" />
+                <input type="text" style="width: 100px" name="accounting-section-month" id="draf-accounting-section-month" />
+            </div>
+            <div>
+                <label class="checkedbox-label config" data-name="vcr_merge_fee" onclick="VcrVoucherDeafFunctions.checked(this)"><span class="checkbox"><span></span><input type="hidden" value="1" name="merge_fee" /></span>合并费用</label>
+            </div>
+            <div>
+                <label class="checkedbox-label config"  data-name="vcr_merge_receivable" onclick="VcrVoucherDeafFunctions.checked(this)"><span class="checkbox"><span></span><input type="hidden" value="1" name="merge_receivable" /></span>合并应收</label>
+            </div>
+            <div>
+                <label class="checkedbox-label config"  data-name="vcr_merge_payable" onclick="VcrVoucherDeafFunctions.checked(this)"><span class="checkbox"><span></span><input type="hidden" value="1" name="merge_payable" /></span>合并应付</label>
+            </div>
+            <div style="float: right">
+                <label class="checkedbox-label config"  data-name="vcr_draf_prompt" onclick="VcrVoucherDeafFunctions.checked(this)"><span class="checkbox"><span></span><input type="hidden" value="1" name="draf_prompt" /></span>保存设置</label>
+            </div>
+        </div>
+        <div class="btn-group" style="margin-top: 10px">
+            <input class="blue-btn" type="button" value="确定" onclick="VcrVoucherDeafFunctions.createVoucherDraf(this)"/>
+            <input class="square-btn" type="button" value="取消" onclick="closeDialog()"/>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var VcrVoucherDeafFunctions = {
+        activeTab:0,
+        activeModel:"list",
+        currentViewId:0,
+        viewTotal:0,//账本模式总页数
+        viewIndex:0,//账本模式当前页数
+        exportVoucher:function(){
+            createDialog("/VcrVoucherDraf/exportView","导出凭证");
+        },
+        showDrafCreateConfirmDialog: function (){
+            var _self = this;
+            $.post("/VcrVoucherDraf/getCreateConfig", function (result) {
+                if(!result){
+                    $.dialog.alert("请先进行参数设置！");
+                    return false;
+                }
+                $("#draf-create-confirm-dialog .create-content label.config").each(function () {
+                    _self.initialConfirm(this, result);
+                });
+                var html = $("#draf-create-confirm-dialog").html();
+                $.dialog({max:false,min:false, title: "合并同科目明细", content: html});
+                create_accounting_section_combox("#draf-accounting-section-year","","year");
+                create_accounting_section_combox("#draf-accounting-section-month","","month");
+            },"json");
+        },
+        showVoucherDrafEditDialog:function(source_id){
+            if (source_id == undefined){source_id = 0};
+            createDialog("/VcrVoucherDraf/add/source/"+source_id, "新增凭证", "VcrVoucherDraf");
+        },
+        initialConfirm:function(target, configData){
+            var name = $(target).data("name");
+            if (configData[name] == "1") {
+                $(target).find("span").addClass("checked");
+            }
+            $(target).find("input").val(configData[name]);
+        },
+        createVoucherDraf:function(){
+            var postData = {};
+            postData["accounting_section"] = $("#draf-accounting-section-year").combobox("getValue") + "/" + $("#draf-accounting-section-month").combobox("getValue");
+            postData["draf_prompt"] = $("input[name=draf_prompt]").val();
+            postData["merge_fee"] = $("input[name=merge_fee]").val();
+            postData["merge_payable"] = $("input[name=merge_payable]").val();
+            postData["merge_receivable"] = $("input[name=merge_receivable]").val();
+            $.post("/VcrVoucherDraf/createDraf", postData, function(result){
+                closeDialog();
+                //$.dialog.tips(result.message);
+                $.dialog.alert(result.message);
+                $("#VcrBill-datagrid").datagrid("reload");
+                $("#VcrVoucherDraf-datagrid").datagrid("reload");
+                getUncreateCount();
+                getVoucherCount();
+            },"json");
+        },
+        checked: function(obj){
+            $(obj).find("span").toggleClass("checked");
+            if($(obj).find("span").hasClass("checked")){
+                $(obj).find("input").val(1)
+            }else{
+                $(obj).find("input").val(0)
+            }
+        },
+        moveView:function(direction){
+            var year_month = getMonthChooseValue($("#VcrVoucherDraf-toolbar .choose-month"));
+            if (direction == undefined){direction = ""};
+            var postData = {direction: direction, currentId: this.currentViewId, accounting_section:year_month};
+            showMaskLayer();
+            $.post("/VcrVoucherDraf/moveRecord", postData, function (html) {
+                if (html != ""){
+                    $("#intel-table-content").html(html);
+                    VcrVoucherDeafFunctions.currentViewId = $(".intel-table .recording-voucher").data("value");
+                    VcrVoucherDeafFunctions.setViewNumber(direction);
+                }else{
+                    if (direction == ""){
+                        //$(".intel-table").html("");
+                        VcrVoucherDeafFunctions.showCover();
+                        $("#intel-table-content").html("");
+                        VcrVoucherDeafFunctions.currentViewId = 0;
+                        VcrVoucherDeafFunctions.viewIndex = 0;
+                    }else if(direction != "prev"){
+                        VcrVoucherDeafFunctions.showCover();
+                    }
+                    VcrVoucherDeafFunctions.setViewNumber(direction);
+                    $.dialog.tips("已经没有符合条件的凭证了");
+                }
+                hideMaskLayer();
+            });
+        },
+        requeryBill:function(){
+            var accounting_section = getMonthChooseValue($("#VcrBill-toolbar .choose-month"));
+            if (accounting_section == "0"){
+                $("#vcrbill-accounting-section").attr("name","");
+            }else{
+                var querykey = isNaN(accounting_section)?'q-accounting_section':'ql-accounting_section';
+                $("#vcrbill-accounting-section").attr("name",querykey).val(accounting_section);
+            }
+            doSearchQuery('VcrBill');
+        },
+        requeryDraf:function(){
+            var accounting_section = getMonthChooseValue($("#VcrVoucherDraf-toolbar .choose-month"));
+            var querykey = isNaN(accounting_section)?'q-accounting_section':'ql-accounting_section';
+            $("#vcrdraf-accounting-section").attr("name",querykey).val(accounting_section);
+            if (VcrVoucherDeafFunctions.activeModel == "list") {
+                doSearchQuery('VcrVoucherDraf');
+            }else {
+                VcrVoucherDeafFunctions.moveView();
+            }
+        },
+        setViewNumber:function(direction){
+            VcrVoucherDeafFunctions.viewTotal = $("#VcrVoucherDraf-toolbar .choose-month").find("a.month-on").attr("data-count");
+            if(VcrVoucherDeafFunctions.viewTotal == undefined){
+                VcrVoucherDeafFunctions.viewTotal = 0;
+            }
+            $("#view_total").html(VcrVoucherDeafFunctions.viewTotal);
+            if(direction == "prev"){
+                if(VcrVoucherDeafFunctions.viewIndex > 0){
+                    VcrVoucherDeafFunctions.viewIndex --;
+                }
+                $("#view_index").html(VcrVoucherDeafFunctions.viewIndex);
+            }else if(direction == "next"){
+                if(VcrVoucherDeafFunctions.viewIndex < VcrVoucherDeafFunctions.viewTotal){
+                    VcrVoucherDeafFunctions.viewIndex ++;
+                }
+                $("#view_index").html(VcrVoucherDeafFunctions.viewIndex);
+            }else{
+                VcrVoucherDeafFunctions.viewIndex = 0;
+                $("#view_index").html(VcrVoucherDeafFunctions.viewIndex);
+            }
+        },
+        showCover(){
+            $("#intel-table-cover").css("transform","rotate3d(0,1,0,0deg)")
+            //$("#intel-table-content").hide()
+            //$("#intel-table-tool").hide()
+        },
+        setCoverInfo:function(){
+            var year_month = getMonthChooseValue($("#VcrVoucherDraf-toolbar .choose-month")).split("/");
+            $("#books-time").find("span").eq(0).html(year_month[0]);//年
+            $("#books-time").find("span").eq(1).html(year_month[1] == undefined ? "":year_month[1]);//月
+            $("#books-pageNum").find("span").html(VcrVoucherDeafFunctions.viewTotal);//总页数
+            var max_number = $("#VcrVoucherDraf-toolbar .choose-month").find("a.month-on").attr("data-max");
+            var min_number = $("#VcrVoucherDraf-toolbar .choose-month").find("a.month-on").attr("data-min");
+            $("#books-num").find("span").eq(0).html(min_number == undefined ? " - ":min_number);
+            $("#books-num").find("span").eq(1).html(max_number == undefined ? " - ":max_number);
+        }
+    }
+    $(function(){
+        $(".model-choose a").on("click", function(){
+            $(this).siblings(".on").removeClass("on");
+            $(this).addClass("on");
+            var model = $(this).attr("model");
+            $("." + model + "-table").siblings().removeClass("on");
+            $("." + model + "-table").addClass("on");
+            if (model == "intel") {
+                VcrVoucherDeafFunctions.viewIndex = 0;
+                $("#view_index").html(VcrVoucherDeafFunctions.viewIndex);
+                VcrVoucherDeafFunctions.moveView();
+                $("#reviewed_count").html("");
+                $("#unReviewed_count").html("");
+            }else{
+                VcrVoucherDeafFunctions.showCover();
+                doSearchQuery('VcrVoucherDraf');
+            }
+            VcrVoucherDeafFunctions.activeModel = model;
+        });
+
+        create_year_combox($("#VcrBill-toolbar .choose-month select"), function(value){
+            $("#VcrBill-toolbar .choose-month a").removeClass("month-on");
+            VcrVoucherDeafFunctions.requeryBill();
+            $.post("VcrVoucherDraf/getVoucherCount",{year:value.id},function(result){
+                for(k in result){
+                    $("#ungenerated").siblings("a").eq(k-1).find("span").text(`（${result[k].bill_num}）`);
+                }
+            },'json')
+        });
+        monthChoose($("#VcrBill-toolbar .choose-month a"), function(index, isChecked){
+            VcrVoucherDeafFunctions.requeryBill();
+        });
+
+        create_year_combox($("#VcrVoucherDraf-toolbar .choose-month select"), function(value){
+            $("#VcrVoucherDraf-toolbar .choose-month a").removeClass("month-on");
+            VcrVoucherDeafFunctions.requeryDraf();
+            VcrVoucherDeafFunctions.showCover();
+            VcrVoucherDeafFunctions.setCoverInfo();
+            $.post("VcrVoucherDraf/getVoucherCount",{year:value.id},function(result){
+                for(k in result){
+                    $("#generated").siblings("a").eq(k-1).find("span").text(`（${result[k].voucher_num}）`);
+                    $("#generated").siblings("a").eq(k-1).attr("data-count",result[k].voucher_num);
+                    $("#generated").siblings("a").eq(k-1).attr("data-max",result[k].number.max_number);
+                    $("#generated").siblings("a").eq(k-1).attr("data-min",result[k].number.min_number);
+                }
+                //bill_num未生成数
+                //voucher_num已生成数
+            },'json')
+        });
+        monthChoose($("#VcrVoucherDraf-toolbar .choose-month a"), function(index, isChecked){
+            if(isChecked){
+                // $("#intel-table-cover").css("opacity","0");
+                VcrVoucherDeafFunctions.showCover();
+                $("#intel-table-content").show();
+                $("#intel-table-tool").show()
+            }else{
+                // $("#intel-table-cover").css("opacity","1");
+                $("#intel-table-cover").css("transform","rotate3d(0,1,0,0deg)");
+                $("#books-time").find("span").eq(0).html("");
+                $("#books-time").find("span").eq(1).html("");
+                $("#intel-table-content").hide();
+                $("#intel-table-tool").hide();
+                VcrVoucherDeafFunctions.viewTotal = 0;
+            }
+            VcrVoucherDeafFunctions.setViewNumber();
+            VcrVoucherDeafFunctions.requeryDraf();
+            VcrVoucherDeafFunctions.setCoverInfo();
+        });
+        $('#viewer').viewer({
+            navbar: false,
+            title: false,
+            movable: false,
+            rotatable: false,
+            scalable: false,
+            keyboard: false,
+            fullscreen: false,
+            zoomRatio:false
+        });
+
+        $(".viewer-close").on("click", function(){
+            $(this).parents(".viewer-container").remove();
+        });
+
+        $("#voucher-tabs").tabs({
+            onSelect:function (title, index) {
+                VcrVoucherDeafFunctions.activeTab = index;
+                var tab = $("#voucher-tabs").tabs("getSelected");
+                if ($(tab).data("click_count") == 1) { //第一次加载不触发
+                    switch (index) {
+                        case 0:
+                            $("#VcrBill-datagrid").datagrid("reload");
+                            break;
+                        case 1:
+                            $("#VcrVoucherDraf-datagrid").datagrid("reload");
+                            break;
+                    }
+                }
+                $(tab).data("click_count", 1);
+            }
+        });
+        easyui_combobox("#bill-flag", JSON.parse('{$bill_flags}'),0, function (record) {
+            $("input[name='q-bill_flag']").val(record.id>0?record.id:"");
+            doSearchQuery('VcrBill');
+        });
+        autocompleteAjaxEx($("input[name='ql-bill_no']"), "/VcrBill/searchBill", {
+            onSelected: function(row){
+                doSearchQuery('VcrBill');
+            }
+        });
+    });
+
+    /*$(".opt-check ").on("click",function(){
+        $("input[name='q-reviewed']").val($(this).data("value"));
+        doSearchQuery('VcrVoucherDraf');
+    });*/
+
+    $(".btn-screening").on("click",function(){
+        $(this).addClass("btn-screening-on").siblings().removeClass("btn-screening-on");
+        $("input[name='reviewed']").val($(this).data("value"));
+        doSearchQuery('VcrVoucherDraf');
+    });
+
+    function getUncreateCount(){
+        var year = $("#VcrBill-toolbar").find("select").combobox("getValue");
+        $.post("VcrVoucherDraf/getVoucherCount",{year:year},function(result){
+            for(var k in result){
+                //$("#generated").siblings("a").eq(k-1).find("span").text(`（${result[k].voucher_num}）`);
+                $("#ungenerated").siblings("a").eq(k-1).find("span").text(`（${result[k].bill_num}）`);
+            }
+        },'json')
+    }
+
+    function getVoucherCount(){
+        var year = $("#VcrVoucherDraf-toolbar").find("select").combobox("getValue");
+        $.post("VcrVoucherDraf/getVoucherCount",{year:year},function(result){
+            for(var k in result){
+                $("#generated").siblings("a").eq(k-1).find("span").text(`（${result[k].voucher_num}）`);
+                $("#generated").siblings("a").eq(k-1).attr("data-count",result[k].voucher_num);
+                $("#generated").siblings("a").eq(k-1).attr("data-max",result[k].number.max_number);
+                $("#generated").siblings("a").eq(k-1).attr("data-min",result[k].number.min_number);
+                //$("#ungenerated").siblings("a").eq(k-1).find("span").text(`（${result[k].bill_num}）`);
+            }
+        },'json')
+    }
+
+    //获取条数
+    $(function(){
+        getUncreateCount();
+        getVoucherCount();
+    })
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+
+    // 
+    function ToPrevPage(){
+        if(VcrVoucherDeafFunctions.viewIndex == 0){
+            return false;
+        }
+        if(VcrVoucherDeafFunctions.viewIndex == 1){
+            $("#intel-table-cover").css("transform","rotate3d(0,1,0,0deg)");
+            VcrVoucherDeafFunctions.setViewNumber("prev");
+            return false;
+        }
+        if (VcrVoucherDeafFunctions.currentViewId > 0) {
+            VcrVoucherDeafFunctions.moveView("prev");
+        }
+    }
+    function ToNextPage(){
+        if(VcrVoucherDeafFunctions.viewTotal == 0 || VcrVoucherDeafFunctions.viewTotal == VcrVoucherDeafFunctions.viewIndex){
+            return false;
+        }
+        if(VcrVoucherDeafFunctions.viewIndex == 0){
+            $("#intel-table-cover").css("transform","rotate3d(0,1,0,90deg)");
+            VcrVoucherDeafFunctions.setViewNumber("next");
+            return false;
+        }
+        VcrVoucherDeafFunctions.moveView("next");
+    }
+
+    function ToFirstPage(){
+        if(VcrVoucherDeafFunctions.viewIndex != 0){
+            VcrVoucherDeafFunctions.currentViewId = 0;
+            VcrVoucherDeafFunctions.setViewNumber();
+            VcrVoucherDeafFunctions.showCover();
+            VcrVoucherDeafFunctions.moveView();
+        }
+    }
+
+    $("#VcrVoucherDraf-datagrid").bind("afterDelete",function(){
+        getUncreateCount();
+        getVoucherCount();
+    })
+
+    $("#VcrBill-datagrid").bind("afterDelete",function(){
+        getUncreateCount();
+    })
+
+    function setCompleteCount(data){
+        var reviewed_count = data.reviewed_count == undefined ? "(0)" : `(${data.reviewed_count})`;
+        var unReviewed_count = data.unReviewed_count == undefined ? "(0)" : `(${data.unReviewed_count})`;
+        $("#reviewed_count").html(reviewed_count);
+        $("#unReviewed_count").html(unReviewed_count);
+    }
+</script>

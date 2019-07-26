@@ -1,0 +1,340 @@
+<link rel="stylesheet" href="/{$Think.APP_PATH}Public/vender/vue-tree-2.0/vue-tree.css">
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    #app
+    {
+        height:100%;
+        width:100%;
+        background-color:#fff;
+    }
+
+    .nav-rig
+    {
+        height:100%;
+        position:relative;
+    }
+
+    .clearFix:after
+    {
+        display:block;
+        content:'';
+        clear:both;
+    }
+
+    .del,
+    .add
+    {
+        display:inline-block;
+        padding:3px 0;
+        width:20px;
+        height:20px;
+    }
+
+    .del
+    {
+        background:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c11.png') 0 5px no-repeat;
+    }
+
+    .add
+    {
+        width:20px;
+        height:14px;
+        position:absolute;
+        right:10px;
+        bottom:76px;
+        background-size:100% 100%;
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new.png');
+    }
+
+    .remover
+    {
+        width:20px;
+        height:20px;
+        margin:0 30px 0 5px;
+        background-size:100% 100%;
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_remove_new.png');
+    }
+
+    .branch_list
+    {
+        width:260px;
+        height:100%;
+        display:block;
+        content:'';
+        clear:both;
+        overflow-y:scroll;
+    }
+
+    .branch_list::-webkit-scrollbar
+    {
+        display:none;
+    }
+
+    /* 显示隐藏按钮 */
+    .btn_seen_lef
+    {
+        width:16px;
+        height:94px;
+        background-size:100% 100%;
+        background-repeat:no-repeat;
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/btn_close.png');
+        position:absolute;
+        right:-15px;
+        top:calc(50% - 47px);
+        /*z-index: 999;*/
+        cursor:pointer;
+    }
+
+    .btn_seen_lef:hover
+    {
+        opacity:0.8;
+    }
+
+    .vue-tree
+    {
+        background:none;
+    }
+
+    /* 左侧列表过渡效果 */
+    .slide-enter,
+    .slide-leave-to
+    {
+        opacity:0;
+        width:0px;
+    }
+
+    .slide-enter-to,
+    .slide-leave
+    {
+        opacity:1;
+        width:350px;
+    }
+
+    .slide-enter-active,
+    .slide-leave-active
+    {
+        transition:all 0.25s;
+    }
+</style>
+<div id="app">
+    <div class="c-header">
+        <div class="tab-span" onclick="toggleType('WrkParameter/index')">合同消息模板</div>
+        <div class="tab-span" onclick="toggleType('WrkParameter/skIndex')">收款消息模板</div>
+        <div class="tab-span" onclick="toggleType('WrkParameter/ckIndex')">催款消息模板</div>
+        <div class="tab-span" onclick="toggleType('WrkParameter/kpIndex')">开票消息模板</div>
+        <div class="tab-span tab-span-on" onclick="toggleType('ComProgressParameter/index')">任务消息设置</div>
+    </div>
+    <div style="padding:0 18px;height:54px;line-height: 54px;display: flex;align-items: center;">
+        <div class="btn-screening-label">请选择将要设置的模板：</div>
+        <span class="btn-screening btn-screening-on" @click="get_list();">系统模板</span>
+        <span class="btn-screening" @click="get_self_list();">自定义模板</span>
+    </div>
+    <div class="clearFix" style="display: flex;  flex-flow: row;padding: 0 18px;height: calc(100% - 90px);">
+        <div style="width:auto; position: relative;background-color: #f9fafb;min-width: 1px;height:100%;">
+            <div class="btn_seen_lef" v-on:click="isSeen"></div>
+            <transition name="slide">
+                <div v-show="seen" class="branch_list">
+                    <div style="padding: 0 10px;">
+                        <div id="addxtmb" style="text-align: right;">
+                            <!--<div class="btn-speed" v-on:click="add_xt_mb">同步系统参数</div>-->
+                        </div>
+                        <div id="addmb" style="text-align: right;display:none;">
+                            <div class="btn-speed" v-on:click="add_info_show">新增模板</div>
+                        </div>
+                        <div v-for="(item,index) in templateList">
+                            <div style="display: flex;justify-content: space-between;align-items: center;margin: 10px 0;">
+                                <div @click="get_info(item.id)" style="width:80%">{{index+1}}、{{item.progress_type_name}}</div>
+                                <div v-if="item.is_system == 2" class="del" @click="delete_info(item.id)" title="删除"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
+        <div id="updateInfo" class="nav-rig" style="flex: 1;margin-left: 15px;">
+            <template v-if="Object.keys(info).length > 0">
+            <div style="width: 90%;margin: 40px auto;border: 1px solid #d3d3d3;padding: 5px 10px;position: relative;">
+                <input type="hidden" name="id" v-model="info.id" >
+                <div style="width: 100%;display: flex;align-items: center;height: 32px;line-height: 32px;margin: 10px 0;">
+                    <span style="width: 110px;text-align: right;">进度类型名称：</span>
+                    <input v-if="info.is_system == 1" name="progress_type_name" type="text" v-model="info.progress_type_name" placeholder="请输入进度类型名称" style="flex: 1;height: 30px;text-indent: 10px;" readonly>
+                    <input v-else name="progress_type_name" type="text" v-model="info.progress_type_name" placeholder="请输入进度类型名称" style="flex: 1;height: 30px;text-indent: 10px;">
+                </div>
+                <div style="width: 100%;display: flex;align-items: center;height: 32px;line-height: 32px;margin: 10px 0;">
+                    <span style="width: 110px;text-align: right;">进度情况：</span>
+                    <input name="progress_situation" type="text" v-model="info.progress_situation" placeholder="请描述进度情况" style="flex: 1;height: 30px;text-indent: 10px;">
+                </div>
+                <template v-if="info.is_system == 2">
+                <div class="extended_parameter" v-for="(item,index) in info.extended_parameter" style="width: 100%;display: flex;align-items: center;height: 32px;line-height: 32px;margin: 10px 0;">
+                    <span style="width: 110px;text-align: right;">选填内容：</span>
+                    <input name="field" :value="item.field" type="text" placeholder="" style="flex: 1;height: 30px;margin-right:5px;text-indent: 10px;">
+                    <input name="value" :value="item.value" type="text" placeholder="" style="flex: 1;height: 30px;margin-left:5px;text-indent: 10px;">
+                    <div @click="supplemen_remove(index)" class="remover" title="删除"></div>
+                </div>
+                <div @click="supplemen_add" class="add" title="新增"></div>
+                </template>
+                <div style="text-align: center;">
+                    <div class="btn-speed"  @click="update_info">保存</div>
+                </div>
+            </div>
+            </template>
+        </div>
+        <div id="addInfo" class="nav-rig" style="flex: 1;margin-left: 15px;display:none;">
+            <div style="width: 90%;margin: 40px auto;border: 1px solid #d3d3d3;padding: 5px 10px;position: relative;">
+                <div style="width: 100%;display: flex;align-items: center;height: 32px;line-height: 32px;margin: 10px 0;">
+                    <span style="width: 110px;text-align: right;">进度类型名称：</span>
+                    <input name="add_progress_type_name" type="text" placeholder="请输入进度类型名称" style="flex: 1;height: 30px;text-indent: 10px;">
+                </div>
+                <div style="width: 100%;display: flex;align-items: center;height: 32px;line-height: 32px;margin: 10px 0;">
+                    <span style="width: 110px;text-align: right;">进度情况：</span>
+                    <input name="add_progress_situation" type="text" placeholder="请描述进度情况" style="flex: 1;height: 30px;text-indent: 10px;">
+                </div>
+                <div class="add_extended_parameter" v-for="(item,index) in extended_parameter_arr" style="width: 100%;display: flex;align-items: center;height: 32px;line-height: 32px;margin: 10px 0;">
+                    <span style="width: 110px;text-align: right;">选填内容：</span>
+                    <input name="field" type="text" placeholder="" style="flex: 1;height: 30px;margin-right:5px;text-indent: 10px;">
+                    <input name="value" type="text" placeholder="" style="flex: 1;height: 30px;margin-left:5px;text-indent: 10px;">
+                    <div @click="supplemen_remove_ext(index)" class="remover" title="删除"></div>
+                </div>
+                <div @click="supplemen_add_ext" class="add" style="bottom: 94px;" title="新增"></div>
+                <div style="text-align: center;padding: 20px 0;">
+                    <div class="btn-confirm"  @click="add_info">保存</div>
+                    <div class="btn-cancel"  @click="add_info_close">取消</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app", data: {
+            seen: true,
+            templateList: {$templateList},
+            info:[],
+            extended_parameter_arr:[{field: "", value: ""}]
+        },
+        methods: {
+            isSeen: function () {
+                if (this.seen) {
+                    $(".btn_seen_lef").css("backgroundImage", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/btn_open.png')")
+
+                } else {
+                    $(".btn_seen_lef").css("backgroundImage", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/btn_close.png')")
+                }
+                this.seen = !this.seen
+            },
+            supplemen_add() {
+                var NewObj = {
+                    field: "", value: ""
+                }
+                this.info.extended_parameter.push(NewObj)
+            },
+            supplemen_remove(index) {
+                this.info.extended_parameter.splice(index, 1);
+            },
+            supplemen_add_ext() {
+                var NewObj = {
+                    field: "", value: ""
+                }
+                this.extended_parameter_arr.push(NewObj)
+            },
+            supplemen_remove_ext(index) {
+                this.extended_parameter_arr.splice(index, 1);
+            },
+            get_list(){
+                app.templateList = [];
+                app.info = {};
+                $.post("ComProgressParameter/list", {is_system:1}, function (result) {
+                    app.templateList = result.rows;
+                }, 'json')
+            },
+            get_self_list(){
+                app.templateList = [];
+                app.info = {};
+                $.post("ComProgressParameter/list", {is_system:2}, function (result) {
+                    app.templateList = result.rows;
+                }, 'json')
+            },
+            get_info(id) {
+                $.post("ComProgressParameter/getInfo", {id:id}, function (result) {
+                    app.info = result.message;
+                }, 'json')
+            },
+            update_info(){
+                var id = $("input[name='id']").val();
+                var progress_type_name = $("input[name='progress_type_name']").val();
+                var progress_situation = $("input[name='progress_situation']").val();
+                var extended_parameter = [];
+                $(".extended_parameter").each(function (i) {
+                    var par = {};
+                    par['field'] = $(this).find("input[name='field']").val();
+                    par['value'] = $(this).find("input[name='value']").val();
+                    extended_parameter.push(par);
+                });
+                $.post("ComProgressParameter/update", {id:id,progress_type_name:progress_type_name,progress_situation:progress_situation,extended_parameter:extended_parameter}, function (result) {
+                    if (result.code == 0){
+                        $.dialog.tips('修改成功');
+                    }
+                }, 'json')
+            },
+            add_info_show(){
+                $("#updateInfo").hide();
+                $("#addInfo").show();
+            },
+            add_info_close(){
+                $("#addInfo").hide();
+                $("#updateInfo").show();
+            },
+            add_info(){
+                var progress_type_name = $("input[name='add_progress_type_name']").val();
+                var progress_situation = $("input[name='add_progress_situation']").val();
+                var extended_parameter = [];
+                $(".add_extended_parameter").each(function (i) {
+                    var par = {};
+                    par['field'] = $(this).find("input[name='field']").val();
+                    par['value'] = $(this).find("input[name='value']").val();
+                    extended_parameter.push(par);
+                });
+                $.post("ComProgressParameter/add", {is_system:2,progress_type_name:progress_type_name,progress_situation:progress_situation,extended_parameter:extended_parameter}, function (result) {
+                    if (result.code == 0){
+                        app.get_info(result.message.id);
+                        $.dialog.tips('添加成功');
+                        app.get_self_list();
+                        app.add_info_close();
+                    }
+                }, 'json')
+            },
+            delete_info(id){
+                $.post("ComProgressParameter/delete", {id:id}, function (result) {
+                    if (result.code == 0){
+                        $.dialog.tips('删除成功');
+                        app.get_self_list();
+                        app.info = {};
+                    }
+                }, 'json')
+            },
+            add_xt_mb(){
+                $.post("ComProgressParameter/addXtInfo", {}, function (result) {
+                    if (result.code == 0){
+                        $.dialog.tips('同步成功');
+                        app.get_list();
+                        app.info = {};
+                    }
+                }, 'json')
+            }
+        }
+    });
+    $('.btn-screening').click(function () {
+        $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+        if ($(this).html() == '系统模板'){
+            $("#addmb").hide();
+            $("#addxtmb").show();
+        } else {
+            $("#addmb").show();
+            $("#addxtmb").hide();
+        }
+    })
+
+
+</script>

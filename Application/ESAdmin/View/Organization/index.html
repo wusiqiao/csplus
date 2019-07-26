@@ -1,0 +1,548 @@
+<link rel="stylesheet" href="/{$Think.APP_PATH}Public/vender/vue-tree-2.0/vue-tree.css">
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    #app{
+        display:flex;
+        flex-flow: row;
+        margin-left: -15px;
+        height:100%;
+        width: 100%;
+    }
+    .nav-lef{
+        padding-top:20px;
+        width:380px;
+        height:100%;
+    }
+    .nav-rig{
+        flex:5; 
+        height: 100%;
+        position: relative;
+        background: white;
+        width: calc(100% - 370px);
+    }
+    .clearFix:after{
+        display: block;
+        content: '';
+        clear: both;
+    }
+    .tree-ul{
+        padding-left:25px;
+    }
+    .le{
+        float:left;
+    }
+    .ri{
+        float:right;
+        width:120px;
+        padding-right: 25px;
+    }
+    .map,.del,.edit,.add,.up,.down{
+        display: inline-block;
+        padding:3px 0;
+        width:20px;
+        height:20px;
+    }
+    .nav-lef span{
+        overflow: hidden;
+        display: inline-block;
+        width:100px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        vertical-align: top;
+        padding: 3px 0;
+    }
+    .map{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c8_che.png')0 5px no-repeat;
+    }
+    .del{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c11.png')0 5px no-repeat;
+    }
+    .edit{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c12.png')0 5px no-repeat;
+    }
+    .add-first{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new.png') ;
+        background-size: 100% 100%;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        display: block;
+        margin-top: 3px;
+    }
+    .add{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c13.png') 0 5px no-repeat;
+    }
+    .up{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c14.png')0 5px no-repeat;
+    }
+    .down{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c9.png')0 5px no-repeat;
+    }
+    .tree-node-child{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c8_che.png')0 5px no-repeat !important;
+    }
+    .tree-node-open{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png')0 10px no-repeat !important;
+    }
+    .tree-node-close{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png')10px 10px no-repeat !important;
+        transform: rotate(-90deg);
+    }
+    .tab-con{
+        padding:30px 25px;
+        background: #fff;
+    }
+    .addPeople{
+        display: inline;
+        padding: 10px 25px;
+        background: #398bfe;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+    }
+    .on{
+        background-color: #e9f4fd;
+    }
+    .branch_list{
+        width: 350px; 
+        height: 100%;
+        display: block;
+        content: '';
+        clear: both;
+        overflow-y: scroll;
+    }
+    .branch_list::-webkit-scrollbar {
+        display: none;
+    }
+    /* 搜索框 */
+    .search_ipt{
+        float: right;
+    }
+    /* 显示隐藏按钮 */
+    .btn_seen_lef{
+        width: 16px;
+        height: 94px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-image: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/btn_close.png');
+        position: absolute;
+        right: -15px;
+        top: calc(50% - 47px);
+        /*z-index: 999;*/
+        cursor: pointer;
+    }
+    .btn_seen_lef:hover{
+        opacity: 0.8;
+    }
+    .vue-tree{
+        background: none;
+    }
+    /* 左侧列表过渡效果 */
+    .slide-enter,.slide-leave-to{
+        opacity: 0;
+        width: 0px;
+    }
+    .slide-enter-to,.slide-leave{
+        opacity: 1;
+        width: 350px;
+    }
+    .slide-enter-active, .slide-leave-active {
+        transition: all 0.25s;
+    }
+    .tree-node-title{
+        width:70px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+    }
+</style>
+<script>
+    function formatOption(value,row){
+        var html = "<a href='javascript:void(0)' onclick='toEdit("+row.id+")' >编辑</a>" ;
+
+        if(row.is_valid == 1 && row.role_ids != 2){
+            html += "<a href='javascript:void(0)' onclick='disableStaff("+row.id+")' style='margin-left: 15px'>禁用账户</a>";
+        }else if(row.is_valid == 0){
+            html += "<a href='javascript:void(0)' onclick='enableStaff("+row.id+")' style='margin-left: 15px'>启用账户</a>";
+        }
+        if(row.is_valid == 0){
+            html += "<a href='javascript:void(0)' onclick='indexDeleteStaff("+row.id+")' style='margin-left: 15px;color: red'>删除</a>";
+        }
+        return html;
+    }
+
+    function indexDeleteStaff(id){
+        $.dialog.confirm("是否确认删除此员工",function(){
+            var user_ids = [];
+            user_ids.push(id);
+            $.post("Organization/deleteStaff",{user_ids:user_ids},function(result){
+                if(result.code == 0){
+                    $("#Organization-datagrid").datagrid("reload");
+                    $.dialog.tips(result.message);
+                }else if(result.code == 2){
+                    createDialog("Organization/handlerReplaceStaff/id/"+id,"选择交接人员","dlg-replace-staff");
+                }else{
+                    $.dialog.tips(result.message);
+                }
+            },'json')
+        })
+    }
+
+    function toEdit(id){
+        createDialog("Organization/detail/id/"+id,"编辑员工",'dlg-edit-staff');
+    }
+
+    function disableStaff(id){
+        $.dialog.confirm("确认禁用该账户？",function(){
+            $.post("Organization/disableStaff",{id:id},function(result){
+                if(result.error == 0){
+                    createDialog("Organization/disableAccount","禁用账户",'dlg-disableAccount');
+                    $("#Organization-datagrid").datagrid("reload");
+                    getTrees();
+                }else{
+                    $.dialog.tips(result.message);
+                }
+            },"json")
+        })
+    }
+
+    function enableStaff(id){
+        $.dialog.confirm("确认启用该账户？",function(){
+            $.post("Organization/enableStaff",{id:id},function(result){
+                if(result.error == 0){
+                    createDialog("Organization/enableAccount","启用账户",'dlg-enableAccount');
+                    $("#Organization-datagrid").datagrid("reload");
+                    getTrees();
+                }else{
+                    $.dialog.tips(result.message);
+                }
+            },"json")
+        })
+    }
+
+    function actionPermission() {
+        rows = getGridSelections('{$Think.const.CONTROLLER_NAME}');
+        var data = [];
+        if (rows.length !== 1) {
+            $.dialog.tips('请选择一名员工');
+        } else {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                data.push(row);
+            }
+            createDialog("{$Think.const.CONTROLLER_NAME}/customPermission/id/"+data[0].id, '客户权限', 'dlg-custom-permission', { data: data });
+        }
+    }
+    function format_head_pic(value, row) {
+        return '<img src="' + value + '" width="40px" height="40px">';
+    }
+    // 搜索框悬停效果
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+</script>
+<div id = "app" class="clearFix" style="display: flex;  flex-flow: row;">
+    <!--<div class="nav-lef" style="flex:2; height: 100%;">
+        &lt;!&ndash;<tree :folder = "trees"></tree>&ndash;&gt;
+    </div>-->
+    <div style="width:auto; position: relative;background-color: #f9fafb;min-width: 15px;">
+        <div class="btn_seen_lef" v-on:click="isSeen"></div>
+        <transition name="slide">
+            <div v-show="seen" class="branch_list">
+                <ul id="object-tree" class="vue-tree" style="padding-left: 20px;border-right: 1px solid #e7e7ed;">
+                    <vue-tree style="cursor: pointer"  :model="trees"></vue-tree>
+                    <li id="li-disabled" class="'item item-undefined" style="width: 100%;"></li>
+                </ul>
+            </div>
+        </transition>
+    </div>
+    <div style="flex: 0.25;background: white"></div>
+    <div class="nav-rig" >
+        <div class=""  id="table-area" style="flex:5; height: 100%;position: relative;background: white;width: 100%">
+            <div style="margin: 10px;overflow: hidden;min-width: 670px;">
+                <if condition="($permissions.addStaff eq 1) ">
+                    <a href="javascript:void(0)" class="btn_bg_blue" style="width:auto" plain="true" onclick="createDialog('Organization/addStaff','新增员工账户','dlg-edit-staff');">新增员工账户</a>
+                </if>
+                <!--<if condition="($permissions.customPermission eq 1) ">
+                    <a href="javascript:void(0)" class="btn_bg_blue detail-edit" style="width:auto" plain="true" onclick="actionPermission()">客户权限</a>
+                </if>-->
+                <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                    <input style="width:300px;" type="text" placeholder="请输入员工姓名或手机号搜索" class="easyui-validatebox" name="searchStaff"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+                </div>
+                <!-- <input type="text" class="easyui-validatebox" name="searchStaff" placeholder="请输入员工姓名或手机号搜索" style="width: 300px;float: right;margin-right: 10px;"> -->
+            </div>
+            <div class="maincontainer" id="Organization-maincontainer" style="height: 90%;">
+                <include file="./Application/Common/Layout/Default/list_header.html"  controller="Organization" />
+                <tr>
+                    <th data-options="field:'id',hidden:true">ID</th>
+                    <th field="ck" checkbox="true"></th>
+                    <th data-options="field:'staff_name',width:150,align:'center'">{$Think.lang.FLD_STAFF_NAME}</th>
+                    <th data-options="field:'mobile',width:150,align:'center'">手机</th>
+                    <th data-options="field:'role_name',width:150,align:'center'">角色</th>
+                    <!--<th data-options="field:'director_name',width:120,align:'center'">主管</th>-->
+                    <th data-options="field:'dept_name',width:100,align:'center'">部门</th>
+                    <th data-options="field:'b',width:200,align:'left',formatter:formatOption">操作</th>
+                </tr>
+                </thead>
+                </table>
+                <div id="staff-empty-notice" style="color: rgb(180, 180, 180);line-height:100px;background: #fff;position: absolute;
+    left: 0;bottom: 200px;display:none;width:100%;text-align: center;font-size: 20px;">无人员存在！请先添加员工</div>
+                <div id="[controller]-toolbar">
+                    <div class="action-panel">
+                        <div class="actions">
+                                <a href="javascript:void(0)" class="common-blue-btn detail-add" style="width:auto" plain="true" onclick="action_add('[controller]','{$title}')">新增{$title}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script src="__ROOT__/{$Think.MODULE_PATH}/Public/vue/vue.min.js"></script>
+<script>
+    Vue.component("vue-tree", {
+        template:
+            ` <li :class="'item item-'+model.id" style="width: 350px" style="display: block;clear: both;">
+                <template v-if="model.show != 0">
+                    <div :class="isFolder?'bold tree-folder on':'tree-folder on'" style="width: 100%;height: 30px;" :id="'div-'+model.id">
+                        <span v-if="isFolder" :class="open?'tree-node tree-node-open':'tree-node tree-node-close'" @click="toggle"></span>
+                        <span v-else class='tree-node tree-node-child'></span>
+                        <span class="tree-node-title" @click="refreshDeptList(model.id)" :id="'span-'+model.id" :title="model.name"> {{model.name}}</span>
+                        <span class="tag_count">({{model.user_count}})</span>
+                        <div class="ri">
+                            <template v-if="model.type != 0 && model.id != 0">
+                                <i class="del" @click.stop="remove(model,index)" title="删除部门"></i>
+                                <i class="edit" @click.stop="edit(model)" title="编辑部门"></i>
+                            </template>
+                            <template v-if="model.type != 0 && model.id != 0"><i class="add" @click.stop="add(model)" title="添加部门"></i></template>
+                            <template v-if="model.type == 0 && model.id != 0"><i class="add-first" @click.stop="add(model)" title="添加部门"></i></template>
+
+                            <!--<i :class="(model.type != 0 && model.id != 0)? 'add' : 'add-first'" @click.stop="add(model)" title="添加部门"></i>-->
+                            <template v-if="model.type != 0 && model.id != 0">
+                                <i class="up" v-if="index > 0" @click.stop="up(model,index)" title="上移"></i>
+                                <i class="down" v-if="index != (count-1)" @click.stop="down(model,index)" title="下移"></i>
+                            </template>
+                        </div>
+                    </div>
+                    <ul v-show="open" v-if="isFolder" :class="'vue-tree vue-tree-'+model.id">
+                        <vue-tree v-for="(child,index) in model.children" :model="child" :index="index" :count="model.children.length"></vue-tree>
+                    </ul>
+                </template>
+                <template v-else>
+                    <div :class="isFolder?'bold tree-folder':'tree-folder'" style="width: 100%;height: 30px;">
+                        <span v-if="isFolder" :class="open?'tree-node tree-node-open':'tree-node tree-node-close'" @click="toggle"></span>
+                        <span v-else class='tree-node tree-node-child'></span>
+                        <span class="tree-node-title" @click="showDisabledStaff(model.id)" :id="'span-'+model.id"> {{model.text}}</span>
+                    </div>
+                </template>
+             </li>`,
+        props: {
+            model: Object,
+            actions: Object,
+            index:0,
+            count:0
+        },
+        data: function () {
+            return {
+                open: true,
+                single:true,
+                len:0,
+                count:0,
+                showDown:true,
+                children_length:0
+            }
+        },
+        computed: {
+            isFolder: function () {
+                return this.model.children && this.model.children.length
+            }
+        },
+        methods: {
+            toggle: function () {
+                if (this.isFolder) {
+                    this.open = !this.open
+                }
+            },
+            select: function (event) {},
+            click:function(id){},
+            remove: function (item,index){
+                createDialog("Organization/deleteDept/id/"+item.id,"删除部门","dlg-delete-dept");
+                getTrees();
+            },
+            edit: function (item){
+                createDialog("Organization/editDept/id/"+item.id,'编辑部门','edit_dept');
+                getTrees();
+            },
+            add: function (item){
+                createDialog(" Organization/addDept/dept_id/"+item.id,'添加部门','add_dept');
+                getTrees();
+            },
+            refreshDeptList : function (id) {
+                $(".on").removeClass("on").css("background-color","");
+                $("#div-"+id).addClass("on").css("background-color",'#e9f4fd');
+                $("#staff-empty-notice").hide();
+                $('#Organization-datagrid').datagrid('load', {
+                    branch_id: id
+                });
+            },
+            showDisabledStaff : function(id){
+                $(".on").removeClass("on").css("background-color","");
+                $("#div-"+id).addClass("on");
+                $('#Organization-datagrid').datagrid('load', {
+                    disable: 1
+                });
+            },
+            up: function (item){
+                $.post("Organization/sortTreeList",{id:item.id,parent_id:item.parent_id,type:"up"},function(result){
+                    if(result.error == 0){
+                        getTrees();
+                    }
+                    $.dialog.tips(result.message);
+                },'json')
+            },
+            down: function (item){
+                $.post("Organization/sortTreeList",{id:item.id,parent_id:item.parent_id,type:"down"},function(result){
+                    if(result.error == 0){
+                        getTrees();
+                    }
+                    $.dialog.tips(result.message);
+                },'json')
+            }
+        },
+        mounted:function(){
+        }
+    });
+    // <tree v-if = "item.children" :folder = "item.children"></tree>
+    var app = new Vue({
+        el:"#app",
+        data:{
+            trees:[
+                //{"id":"34","name":"体验账号","children":[{"id":"272","name":"管理部","type":"2","children":[{"id":"273","name":"管理之一部","type":"2","children":[],"user_count":"0","text":"管理之一部 (0人)"}],"user_count":"1","text":"管理部 (1人)"},{"id":"257","name":"测试部","type":"2","children":[],"user_count":"2","text":"测试部 (2人)"},{"id":"251","name":"产品部","type":"2","children":[{"id":"271","name":"产品一部","type":"2","children":[],"user_count":"3","text":"产品一部 (3人)"}],"user_count":"1","text":"产品部 (1人)"},{"id":"241","name":"开发部","type":"2","children":[],"user_count":"3","text":"开发部 (3人)"},{"id":"236","name":"运营部","type":"2","children":[{"id":"259","name":"运营三部","type":"2","children":[],"user_count":"0","text":"运营三部 (0人)"},{"id":"243","name":"运营二部","type":"2","children":[],"user_count":"2","text":"运营二部 (2人)"},{"id":"242","name":"运营一部","type":"2","children":[],"user_count":"0","text":"运营一部 (0人)"}],"user_count":"0","text":"运营部 (0人)"},{"id":"235","name":"记账组","type":"2","children":[{"id":"245","name":"记账二部","type":"2","children":[],"user_count":"1","text":"记账二部 (1人)"},{"id":"244","name":"记账一部","type":"2","children":[],"user_count":"0","text":"记账一部 (0人)"}],"user_count":"0","text":"记账组 (0人)"}],"user_count":"17","text":"体验账号 (0人)"}
+            ],
+            trees2: [],
+            count:0,
+            total_count:0,
+            seen:true
+        },
+        methods:{
+            isSeen:function(){
+                if(this.seen){
+                    $(".btn_seen_lef").css("backgroundImage","url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/btn_open.png')")
+                    $(".nav-rig").css("width","100%");
+                    //$("#Organization-datagrid").css("width","100%");
+                    //$('#Organization-datagrid').datagrid({fitColumns:true});
+
+                }else{
+                    $(".btn_seen_lef").css("backgroundImage","url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/btn_close.png')")
+                    $(".nav-rig").css("width","calc(100% - 370px)");
+                    //$("#Organization-datagrid").css("width","calc(100% - 280px)");
+                    //$('#Organization-datagrid').datagrid({fitColumns:true});
+                }
+
+                setTimeout(function(){
+                    var w = $("#table-area").width();
+                    $('#Organization-datagrid').datagrid('resize',{
+                        width:w
+                    });
+                    $.parser.parse("#table-area");
+                    $('.datagrid .datagrid-pager').css('width',w+"px");
+                }, 350);
+                this.seen = !this.seen
+            }
+        }
+    });
+
+    $(function(){
+        getTrees();
+    });
+    function getTrees(){
+        $.post("Organization/treeList",{},function(result){
+            app.trees = result[0];
+            app.total_count = result[0].children.length;
+            var html = "";
+            html +=`<div class="bold tree-folder" style="width: 100%;height: 30px;">
+                            <span class='tree-node tree-node-child'></span>
+                            <span class="tree-node-title" id="span-disabled" onclick="showDisabledStaff(this)" style="width: 90%"> 已禁用账户 (`+result[1]["count"]+`)</span>
+                        </div>`;
+            $("#li-disabled").html(html);
+        },'json')
+    }
+    $(function() {
+        initial_easyui_grid("Organization", "{$title}");
+        $('#Organization-datagrid').datagrid({fitColumns:true});
+    });
+
+    $('#Organization-datagrid').bind("onLoadSuccess",function(event,data) {
+        if (data.total == 0) {
+            $('#staff-empty-notice').show();
+        }else{
+            $('#staff-empty-notice').hide();
+        }
+    });
+
+    function showDisabledStaff(obj){
+        $(".on").removeClass("on").css("background-color","");
+        $(obj).addClass("on").css("background-color","");
+        $('#Organization-datagrid').datagrid('load', {
+            disable: 1
+        });
+    }
+
+    $(function(){
+        /*autocompleteAjax($("input[name='searchStaff']"),"Organization/staffListForSearch/",function(item){
+            console.log(item.branch_id);
+            $("#span-"+item.branch_id).trigger("click");
+        });*/
+        autocompleteAjaxEx($("input[name='searchStaff']"),"Organization/staffListForSearch/",{
+            formatItem(row){
+                var mobile = row['mobile'];
+                var item_text = $.format(
+                    "<div style='display: flex;flex-direction: row;font-size: 13px;padding: 5px'>" +
+                    "<div style='flex: 1'>姓名：<span style='color:#368bfe'>{0}</span></div>"+
+                    "<div style='flex: 1'>部门：<span style='color:#368bfe'>{1}</span></div>"+
+                    "</div>",
+                    //[padLeft(row.name,10," "),(row.mobile == null || row.mobile == "")? "未绑定":row.mobile ]);
+                    [padLeft(row.name,10," "),row.branch_name]);
+                return item_text;
+            },
+            onSelected:function(row){
+                /*if(row.is_valid == 0){
+                    $("#span-disabled").trigger("click");
+                }else{
+                    $("#span-"+row.branch_id).trigger("click");
+                }*/
+                $("#object-tree .on").removeClass("on").css("background-color","");
+                $('#Organization-datagrid').datagrid('load', {
+                    id: row.id
+                });
+                if(row.is_valid == 1){
+                    $("#div-"+row.branch_id).addClass("on").css("background-color",'#e9f4fd');
+                }else{
+                    $("#span-disabled").addClass("on").css("background-color",'#e9f4fd');
+                }
+            }
+        });
+
+        $(".datagrid-header-check").children('input')[0].style.visibility="hidden";
+    });
+
+    /*$("#Organization-datagrid").datagrid({
+        onDblClickRow:function(){
+            createDialog("");
+        }
+    })*/
+    setTimeout(function(){
+        var w = $("#table-area").width();
+        $('#Organization-datagrid').datagrid('resize',{
+            width:w
+        });
+        // $.parser.parse("#table-area");
+        $('.datagrid .datagrid-pager').css('width',w+"px");
+    }, 1000);
+
+</script>

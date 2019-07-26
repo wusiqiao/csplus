@@ -1,0 +1,483 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>编辑器</title>
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/common.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/index.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/editor-min.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/guoyoo.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/jquery.jgrowl.css">
+        <link rel="stylesheet" type="text/css" media="all" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/emoji.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/lrtk.css" />
+        <link href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/ueditor.css" type="text/css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/codemirror.css">
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery-1.10.2.min.js"></script>
+        <!-- <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/fn.js"></script> -->
+        <!--[if lt IE 9]>
+            <script src="js/html5.js"></script>
+        <![endif]-->
+        <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/bootstrap.min.js" type="text/javascript" charset="utf-8" ></script>
+        <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/codemirror.js" type="text/javascript" defer="defer"></script>
+        <script>
+            var BASEURL = "";
+            var current_editor;
+            var current_active_v3item = null;
+            var isout = "false";
+            var isnew = "";
+        </script>
+        <style>
+            #right-fix-tab{width:32px;position:absolute;right:0px;}
+            #right-fix-tab li{width:30px;background:rgba(58,51,50,0.5);border:0 none;color:#FFF;width:30px;font-size:14px;}
+            #color-plan .nav-tabs > li > a{padding:5px;color: #efefef;border: 0 none;}
+            #color-plan .nav-tabs > li > a:hover{background:transparent;color:#FFF;}
+            #color-plan .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {background-color: #000;color: #FFF;border: 0 none;}
+            #more-popover-content .btn-xs{font-size:12px;padding:2px 2px;width:64px;margin:2px;height:20px;margin:1px auto;border: 0 none;background: transparent;color: #FFF;border: 1px solid #FFF;}
+            #more-popover-content .btn-xs:hover{ background-color:rgb(213,149,69);color:#FFF;}
+            table#xtbn{width:386px}
+            table#xtbn tr{line-height:2}
+            .span-hot{position: absolute;background-color: #ed603a;color: #ffffff;top: 420px;font-size: 12px;border-radius: 5px;padding: 1px;}
+            .span-hot2{position: absolute;background-color: #ed603a;color: #ffffff;top: 100px;font-size: 12px;border-radius: 5px;padding: 1px;}
+        </style>
+        <style id="edui-customize-v3BgDialog-style">.edui-default .edui-for-v3BgDialog .edui-dialog-content  {width:600px;height:300px;}
+        </style>
+        <style id="edui-customize-v3BdBgDialog-style">.edui-default .edui-for-v3BdBgDialog .edui-dialog-content  {width:800px;height:400px;}
+        </style>
+
+        <style type="text/css">
+            .STYLE2 {color: #FF0000}
+        </style>
+    </head>
+
+    <body style="overflow-y: hidden; overflow-x: auto;">
+
+        <div id="full-page" class="bg small-height" style="min-width: 1200px; margin-top: 10px; height: 100%;">
+            <div class="box p-r" style="margin-top: 10px;"><!--box start-->
+                <div class="fl w0 p-r">
+                    <div class="w1 fl">
+                        <div class="n1">分类</div>
+                        <ul class="n1-1" style="height: 280px;">
+                            <li id="guanzhu-tpl-trigger" class="">
+                                <a href="#style-guanzhu" role="tab" data-toggle="tab" aria-expanded="false">代账模板</a>
+                            </li>                           
+                        </ul>
+                    </div>
+
+                    <!-- left-bar -->
+                    <div class="w2 fl" style="background:#FFF">
+                        <div class="n2 ttt">
+                            <a href="/" target="_blank"><font color="#000000">详情编辑</font></a>
+                        </div>
+
+                        <div id="insert-style-list" class="item tab-content" style="height: 281px;">
+                            <!-- 标题 -->
+                            <div id="style-title" class="tab-pane active">  
+
+                                <div id="title-list" class="ui-portlet clearfix "  data-type="2">
+                                    <ul id="loader" class="editor-template-list ui-portlet-list">
+                                        <li class="col-xs-12 brush" data-id="2666"><section style="margin: 5px 0;"><section style="box-sizing: border-box;margin: 0.5em;text-align: center;"><section style="display: inline-block;margin-left: -0.2em;-ms-transform: skew(-45deg);-moz-transform: skew(-45deg);-webkit-transform: skew(-45deg);-o-transform: skew(-45deg);transform: skew(-45deg);"><section class="fzn.cc" style="border-right: 2px solid rgb(166, 166, 174);border-bottom: 1px solid rgb(166, 166, 174);padding: 5px 10px;"><section style="text-align: right;-ms-transform: skew(25deg);-moz-transform: skew(25deg);-webkit-transform: skew(25deg);-o-transform: skew(25deg);transform: skew(25deg);"><p style="color: rgb(166, 166, 174); font-size: 20px; font-weight: bold; margin: 0px;">Fashion Trend</p></section></section></section><section style="margin-left: 0.4em;display: inline-block;-moz-transform: skew(-45deg);-webkit-transform: skew(-45deg);-o-transform: skew(-45deg);transform: skew(-45deg);-ms-transform: skew(-45deg);"><section class="fzn.cc" style="border-left: 2px solid rgb(166, 166, 174);border-top: 1px solid rgb(166, 166, 174);padding: 5px 10px;"><section style="text-align:left;-webkit-transform: skew(45deg);-moz-transform: skew(45deg);-webkit-transform: skew(45deg);-o-transform: skew(45deg);transform: skew(45deg);-ms-transform: skew(45deg);"><p style="color: rgb(166, 166, 174); font-size: 20px; font-weight: bold; margin: 0px;">文字标题</p></section></section></section></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="2654"><section style="margin: 0px; padding: 0px; max-width: 100%; box-sizing: border-box !important; word-wrap: break-word !important; font-size: 18px; letter-spacing: -2px; display: inline-block;"><span style="margin: 0px; padding: 0px; max-width: 100%; box-sizing: border-box !important; word-wrap: break-word !important; color: rgb(255, 140, 0); font-weight: bold; font-family: 宋体;">&gt;</span><span style="margin: 0px; padding: 0px; max-width: 100%; box-sizing: border-box !important; word-wrap: break-word !important; color: rgb(255, 140, 0); font-weight: 700; opacity: 0.7; font-family: 宋体;">&gt;</span><span style="margin: 0px; padding: 0px; max-width: 100%; box-sizing: border-box !important; word-wrap: break-word !important; color: rgb(255, 140, 0); font-weight: 700; opacity: 0.5; font-family: 宋体;">&gt;</span><span style="margin: 0px; padding: 0px; max-width: 100%; box-sizing: border-box !important; word-wrap: break-word !important; color: rgb(255, 140, 0); font-weight: 700; opacity: 0.3; font-family: 宋体;">&gt;</span></section><section style="margin: 0px 0px 0px 10px; padding: 0px; max-width: 100%; box-sizing: border-box !important; word-wrap: break-word !important; color: rgb(28, 89, 165); display: inline-block;"><p class="active brush" style="margin-top: 0px; margin-bottom: 0px; padding: 0px; max-width: 100%; color: rgb(121, 121, 121); box-sizing: border-box !important; word-wrap: break-word !important;">这里输入文字</p></section></li>
+                                        <li class="col-xs-12 brush" data-id="2642"><section style="position:relative;padding:10px;line-height:normal;background:#f8f8f8"><h3 class="yead_bdlc" style="display:inline-block;margin:0 12px 0 0;padding:0 0 0 10px;border-left:4px solid #f70;font-size:14px;color:#333;font-weight:700;line-height:20px">这里输入标题</h3></section></li>
+                                        <li class="col-xs-12 brush" data-id="2641"><section style="width:100%;background:#f8f8f8"><section style="display:block;padding:10px"><section class="yead_bgc" style="float:left;text-align:center;width:40px;height:40px;border-radius:4px;background-color:#f93;width:40px;height:40px;line-height:40px"><span style="color:#fff;font-size:18px">1</span></section><section style="font-size:14px;height:24px;line-height:24px;vertical-align:bottom;color:#333;font-weight:700;margin-left:50px">这里输入标题</section><section style="margin-left:50px;font-size:12px;height:16px;line-height:16px;vertical-align:top;color:#999;text-overflow:ellipsis;white-space:nowrap;overflow:hidden">这里是一个淘气的副标题</section></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="2640"><section style="box-sizing:border-box"><section style="margin-top:10px;margin-bottom:10px;text-align:center;box-sizing:border-box"><section style="margin-bottom:-.9em;display:inline-block;vertical-align:top;box-sizing:border-box"><section class="fzn.cc" style="filter:alpha(opacity=50);-moz-opacity:.5;-khtml-opacity:.5;opacity:.5;display:inline-block;vertical-align:bottom;border-right-width:.4em;border-right-style:solid;border-right-color:#f1363f;border-top-width:.4em;border-top-style:solid;border-top-color:#f1363f;box-sizing:border-box;max-width:5%;border-bottom-width:.4em!important;border-bottom-style:solid!important;border-bottom-color:transparent!important;border-left-width:.4em!important;border-left-style:solid!important;border-left-color:transparent!important"></section><section class="fzn.cc" style="padding:2px 5px;display:inline-block;vertical-align:top;font-size:18px;line-height:2em;border-radius:5px 5px 0 0;color:#fff;box-sizing:border-box;max-width:90%;background-color:#f1363f"><p style="margin:0;box-sizing:border-box"><strong style="box-sizing:border-box">这里输入标题</strong></p></section><section class="fzn.cc" style="filter:alpha(opacity=50);-moz-opacity:.5;-khtml-opacity:.5;opacity:.5;display:inline-block;vertical-align:bottom;border-top-width:.4em;border-top-style:solid;border-top-color:#f1363f;border-left-width:.4em;border-left-style:solid;border-left-color:#f1363f;box-sizing:border-box;max-width:5%;border-right-width:.4em!important;border-right-style:solid!important;border-right-color:transparent!important;border-bottom-width:.4em!important;border-bottom-style:solid!important;border-bottom-color:transparent!important"></section></section><section style="height:.9em;border-top-width:3px;border-top-style:solid;border-top-color:#000;box-sizing:border-box"></section></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="2621"><section style="max-width:100%;color:#3e3e3e;line-height:20px;white-space:normal;box-sizing:border-box!important;word-wrap:break-word!important;padding-top:5px;background-color:#fff"><p style="max-width:100%;margin: 0 auto;min-height:1em;text-align:center;box-sizing:border-box!important;word-wrap:break-word!important"><span style="max-width:100%;color:#3f3f3f;font-size:16px;box-sizing:border-box!important;word-wrap:break-word!important">这里输入标题</span></p><p style="max-width:100%;min-height:1em;margin: 0 auto;text-align:center;box-sizing:border-box!important;word-wrap:break-word!important"><img class="fzn.cc" style="height:auto!important;box-sizing:border-box!important;word-wrap:break-word!important;width:180px!important;visibility:visible!important" _width="180px" src="http://pic.fzn.cc/upload/images/20160919/Fmdy3o6OlrHh0KeDu2AnjPXv4cV0.png"></p></section></li>
+                                        <li class="col-xs-12 brush" data-id="2620"><section style="white-space:normal"><section style="float:left;margin-right:5px;position:static"><img class="fzn.cc" src="http://pic.fzn.cc/upload/images/20160919/FtvqK3iaXZmwnmr6-u5_-6cEpLyQ.png" style="width:16px;vertical-align:middle"></section><section style="display:inline-block;vertical-align:middle"><section style="font-size:14px;position:static">这里输入标题</section></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="2584"><section style="margin-right: 1em; display: inline-block; vertical-align: bottom; width: 50%;" data-width="50%"><section style="margin-top: -4px; width: 1.85615%; height: 8px; border-radius: 100%; float: left; background-color: rgb(240, 84, 84);" data-width="1.85615%"></section><section style="border-top-width: 1px; border-top-style: solid; border-color: rgb(240, 84, 84); width: 98.1439%; float: left;" data-width="98.1439%"></section></section><section style="text-align: right; width: 50%;" data-width="50%"><section class="white" style="margin-top: -1.2em; width: 2em; height: 2em; line-height: 2em; display: inline-block; vertical-align: top; border-radius: 100%; font-size: 1em; font-family: inherit; text-align: center; text-decoration: inherit; color: rgb(255, 255, 255); background-color: rgb(240, 84, 84);" data-width="2em"><section>未</section></section><section class="white" style="margin-top: -1.2em; width: 2em; height: 2em; line-height: 2em; display: inline-block; vertical-align: top; border-radius: 100%; font-size: 1em; font-family: inherit; text-align: center; text-decoration: inherit; color: rgb(255, 255, 255); background-color: rgb(240, 84, 84);" data-width="2em"><section>完</section></section><section class="white" style="margin-top: -1.2em; width: 2em; height: 2em; line-height: 2em; display: inline-block; vertical-align: top; border-radius: 100%; font-size: 1em; font-family: inherit; text-align: center; text-decoration: inherit; color: rgb(255, 255, 255); background-color: rgb(240, 84, 84);" data-width="2em"><section>待</section></section><section class="white" style="margin-top: -1.2em; width: 2em; height: 2em; line-height: 2em; display: inline-block; vertical-align: top; border-radius: 100%; font-size: 1em; font-family: inherit; text-align: center; text-decoration: inherit; color: rgb(255, 255, 255); background-color: rgb(240, 84, 84);" data-width="2em"><section>续</section></section></section><section style="width: 0%; height: 0px; clear: both;" data-width="0%"></section></li>
+                                        <li class="col-xs-12 brush" data-id="2577"><section class="block-content" style="clear: both; position: relative; width: 100%; margin-right: auto; margin-left: auto; overflow: hidden;"><section style="margin-top: 0.5em; margin-bottom: 0.5em; display: inline-block; width: 100%;" data-component-id="4Z1NJQz"><section style="float: left; margin-left: 0.8em;"><img style="width: 2.5em; display: inline-block; vertical-align: bottom;" src="http://pic.fzn.cc/upload/images/20160908/253.png"><section style="display: inline-block; vertical-align: top; margin-top: 0.5em; font-size: 16px;"><p class="fontcolor-changeable" style="color: rgb(34, 34, 34);"><span style="font-family: 微软雅黑; font-size: 16px;">请输入标题</span></p></section></section><img class="fzn-bg" style="width: 100%; float: left; display: inline-block; vertical-align: middle; background-color: rgb(13, 140, 104);" src="http://pic.fzn.cc/upload/images/20160908/2531.png"></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="2576"><section class="" style="margin-top: 10px; margin-bottom: 10px; text-align: center; position: static;"><section class="wxqq-borderBottomColor" style="border-bottom-color: rgb(46, 204, 232); font-size: 28.8px; border-bottom-width: 1px; border-bottom-style: solid; line-height: 1.2; padding-top: 5px; padding-bottom: 5px;"><section><strong><span style="font-family: 微软雅黑; font-size: 16px;">非找你微信编辑器</span></strong></section></section><section class="wxqq-borderBottomColor" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(46, 204, 232); margin-top: 0.2em; margin-right: 2.3em; margin-left: 2.3em;"></section><section class="wxqq-borderBottomColor" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(46, 204, 232); margin: 0.2em 4.6em;"></section><section class="wxqq-borderBottomColor" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(46, 204, 232); margin-right: 6.9em; margin-left: 6.9em;"></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="2575"><section class="" style="margin-top: 10px; margin-bottom: 10px; padding-right: 3px; padding-left: 3px; position: static;"><section class="" style="display: inline-block; width: 100%; vertical-align: top; margin-top: 1.15em;"><section style="width: 100%;"><section class="fzn-bg" style="width: 6px; height: 6px; margin-top: -3px; border-radius: 100%; float: left; background-color: rgb(40, 178, 209);"></section><section class="wxqq-borderTopColor" style="border-top-width: 1px; border-top-style: solid; width: 99.9%; border-top-color: rgb(40, 178, 209);"></section></section><section style="text-align: right; margin-top: -1.2em;"><section class="fzn-bg" style="display: inline-block; vertical-align: top; text-align: left; padding: 3px 10px; color: rgb(255, 255, 255); background-color: rgb(40, 178, 209);"><section style="font-size: 16px; line-height: 25.6px;"><span style="font-family:微软雅黑, Microsoft YaHei">非找你微信编辑器</span></section></section></section></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="2574"><section style="position: relative; width: 100%; margin: 0 auto;" class="block-inner" data-width="100%"><section class="fzn-bg" style="margin: 0.5em auto; width: 100%; border: 1px solid rgb(214, 214, 214); text-align: center; line-height: 45px; color: rgb(255, 255, 255); background-color: rgb(11, 185, 191);" data-width="100%"><section style="width:38%;border-top-right-radius:20px; border-bottom-right-radius:20px;display:inline-block;height: 45px !important; background-color: rgb(254,254,254);text-align:center;" data-width="38%"><span style="color: #000000; font-size: 14px;">内容１</span></section><section style="width:24%;display:inline-block;height: 45px !important;" data-width="24%"><span style=" font-size: 14px; color: #FFFFFF;">主题</span></section><section style="display:inline-block;width:38%; background-color: rgb(254,254,254);border-top-left-radius:20px; border-bottom-left-radius:20px;height:45px !important; color: inherit;text-align:center;" data-width="38%"><span style="color: #000000; font-size: 14px;">内容２</span></section></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="2520"><section style="margin: 1em auto; max-width: 100%; border: none; text-align: center;"><section class="fzn-bgc" style="margin-right: auto; margin-left: auto; padding: 0.5em 1em; max-width: 100%; overflow: hidden; display: inline-block; border-radius: 5px; cursor: pointer; color: rgb(255, 255, 255); background-color: rgb(61, 167, 66);"><img class="fzn-img" style="display: inline-block; float: left; width: 27px !important;" src="http://pic.fzn.cc/upload/images/201609/bt2016082701.png"><section class="fznDiy" data-brushtype="text" style="padding-left: 0.5em;max-width: 100%;overflow: hidden;line-height: 27px;text-align: left;color: rgb(255, 255, 255);box-sizing:color: #FFFFFF;font-size:18px;">图标标题</section></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="2505"><section style="margin:5px 0;text-align: center;" class="http://fzn.cc"><section style="display: inline-block; vertical-align: top; border: 0px none; padding: 0px;"><section style="width: 2.5em; height: 2.5em; display: inline-block; vertical-align: bottom; border-left-width: 2px; border-left-style: solid; border-left-color: rgb(193, 193, 193); border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: rgb(193, 193, 193);"></section><section style="padding: 8px; display: inline-block; vertical-align: top; margin-right: -2.5em; margin-left: -2.5em;transform: rotate(0deg);-webkit-transform: rotate(0deg);-moz-transform: rotate(0deg);-o-transform: rotate(0deg);"><section class="http://fzn.cc" style="width: 100%;padding: 3px 8px; font-size: 24px; background-color: rgb(252, 215, 111);">感</section></section><section style="width: 2.5em; height: 2.5em; display: inline-block; vertical-align: top; border-right-width: 2px; border-right-style: solid; border-right-color: rgb(193, 193, 193); border-top-width: 2px; border-top-style: solid; border-top-color: rgb(193, 193, 193);"></section></section><section style="display: inline-block; vertical-align: top; border: 0px none; padding: 0px;"><section style="width: 2.5em; height: 2.5em; display: inline-block; vertical-align: bottom; border-left-width: 2px; border-left-style: solid; border-left-color: rgb(193, 193, 193); border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: rgb(193, 193, 193);"></section><section style="padding: 8px; display: inline-block; vertical-align: top; margin-right: -2.5em; margin-left: -2.5em;transform: rotate(0deg);-webkit-transform: rotate(0deg);-moz-transform: rotate(0deg);-o-transform: rotate(0deg);"><section class="http://fzn.cc" style="width: 100%;padding: 3px 8px; font-size: 24px; background-color: rgb(252, 215, 111);">恩</section></section><section style="width: 2.5em; height: 2.5em; display: inline-block; vertical-align: top; border-right-width: 2px; border-right-style: solid; border-right-color: rgb(193, 193, 193); border-top-width: 2px; border-top-style: solid; border-top-color: rgb(193, 193, 193);"></section></section><section style="display: inline-block; vertical-align: top; border: 0px none; padding: 0px;"><section style="width: 2.5em; height: 2.5em; display: inline-block; vertical-align: bottom; border-left-width: 2px; border-left-style: solid; border-left-color: rgb(193, 193, 193); border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: rgb(193, 193, 193);"></section><section style="padding: 8px; display: inline-block; vertical-align: top; margin-right: -2.5em; margin-left: -2.5em;transform: rotate(0deg);-webkit-transform: rotate(0deg);-moz-transform: rotate(0deg);-o-transform: rotate(0deg);"><section class="http://fzn.cc" style="width: 100%;padding: 3px 8px; font-size: 24px; background-color: rgb(252, 215, 111);">有</section></section><section style="width: 2.5em; height: 2.5em; display: inline-block; vertical-align: top; border-right-width: 2px; border-right-style: solid; border-right-color: rgb(193, 193, 193); border-top-width: 2px; border-top-style: solid; border-top-color: rgb(193, 193, 193);"></section></section><section style="display: inline-block; vertical-align: top; border: 0px none; padding: 0px;"><section style="width: 2.5em; height: 2.5em; display: inline-block; vertical-align: bottom; border-left-width: 2px; border-left-style: solid; border-left-color: rgb(193, 193, 193); border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: rgb(193, 193, 193);"></section><section style="padding: 8px; display: inline-block; vertical-align: top; margin-right: -2.5em; margin-left: -2.5em;transform: rotate(0deg);-webkit-transform: rotate(0deg);-moz-transform: rotate(0deg);-o-transform: rotate(0deg);"><section class="http://fzn.cc" style="width: 100%;padding: 3px 8px; font-size: 24px; background-color: rgb(252, 215, 111);">你</section></section><section style="width: 2.5em; height: 2.5em; display: inline-block; vertical-align: top; border-right-width: 2px; border-right-style: solid; border-right-color: rgb(193, 193, 193); border-top-width: 2px; border-top-style: solid; border-top-color: rgb(193, 193, 193);"></section></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="1741"><section class="v5bjq" label="Copyright © 2016 fzn.cc All Rights Reserved." style="font-size:14px;font-family:Microsoft YaHei;margin: 5px auto;white-space: normal;"><section style="background-color:#fbfbfb;padding:10px"><p style="font-family:Microsoft Yahei;color:#333;margin:0;padding:10px"><strong>联系我们</strong></p><section style="overflow:hidden;border-bottom:1px solid #ddd;font-size:14px;color:#545454;background-color:#fbfbfb"><span style="background-image:url(http://pic.fzn.cc/upload/img/1026.png);background-position:0 -135px;background-repeat:no-repeat;display:block;width:24px;height:24px;float:left;margin-top:6px;margin-left:10px" data-width="24px"></span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">电话：</span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">155xxxxxxxx</span><span style="display:block;float:right;margin-right:10px;font-weight:700;line-height:38px;width:20px;height:36px;background-image:url(http://pic.fzn.cc/upload/img/1027.png);background-repeat:no-repeat;background-position:0 -197px" data-width="20px"></span></section><section style="overflow:hidden;border-bottom:1px solid #ddd;font-size:14px;color:#545454;background-color:#fbfbfb"><span style="background-image:url(http://pic.fzn.cc/upload/img/1026.png);background-position:0 -472px;background-repeat:no-repeat;display:block;width:24px;height:24px;float:left;margin-top:6px;margin-left:10px" data-width="24px"></span><span style="display:block;float:left;margin-left:11px;line-height:38px;font-family:Microsoft Yahei">QQ：</span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">25822xxxx</span></section><section style="overflow:hidden;border-bottom:1px solid #ddd;font-size:14px;color:#545454;background-color:#fbfbfb"><span style="background-image:url(http://pic.fzn.cc/upload/img/1026.png);background-position:0 0;background-repeat:no-repeat;display:block;width:24px;height:24px;float:left;margin-top:8px;margin-left:10px" data-width="24px"></span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">微信：</span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">xxxx</span></section><section style="overflow:hidden;border-bottom:1px solid #ddd;font-size:14px;color:#545454;background-color:#fbfbfb"><span style="background-image:url(http://pic.fzn.cc/upload/img/1026.png);background-position:0 -270px;background-repeat:no-repeat;display:block;width:24px;height:24px;float:left;margin-top:6px;margin-left:10px" data-width="24px"></span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">地址：</span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">xx省xx市xx区xx</span><span style="display:block;float:right;margin-right:10px;font-weight:700;line-height:38px"></span></section><section style="overflow:hidden;border-bottom:1px solid #ddd;font-size:14px;color:#545454;background-color:#fbfbfb"><span style="background-image:url(http://pic.fzn.cc/upload/img/1026.png);background-position:0 -31px;background-repeat:no-repeat;display:block;width:24px;height:24px;float:left;margin-top:6px;margin-left:10px" data-width="24px"></span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">官网：</span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">editor.fzn.cc</span><span style="display:block;float:right;margin-right:10px;font-weight:700;line-height:38px;width:20px;height:36px;background-image:url(http://pic.fzn.cc/upload/img/1027.png);background-repeat:no-repeat;background-position:0 -197px" data-width="20px"></span></section><section style="overflow:hidden;font-size:14px;border-bottom:1px solid #ddd;color:#545454;background-color:#fbfbfb"><span style="background-image:url(http://pic.fzn.cc/upload/img/1026.png);background-position:0 -99px;background-repeat:no-repeat;display:block;width:24px;height:24px;float:left;margin-top:6px;margin-left:10px" data-width="24px"></span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">邮箱：</span><span style="display:block;float:left;margin-left:10px;line-height:38px;font-family:Microsoft Yahei">admin@fzn.cc</span></section></section></section></li>
+                                        <li class="col-xs-12 brush" data-id="2504"><section style="margin: 5px 0px 15px; padding: 0px; text-align: center;"><section class="http://fzn.cc" style="margin: 0px; padding: 0px 10px; height: 30px; display: inline-block; line-height: 30px; color: rgb(239, 145, 145); background-color: rgb(255, 255, 255);"><p style="color:inherit; font-size: 22px;display: inline-block;margin: 0;">♣</p><p class="http://fzn.cc" style="color:inherit; font-size:18px;display: inline-block;margin: 0;">请输入标题</p></section><section class="http://fzn.cc" style="margin-top: -15px; padding: 0px; height: 2px; background-color: rgb(239, 145, 145);"></section></section></li>
+                                    </ul>
+                                </div>			
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w3 fl">
+                        <div class="editor2 p-r fl" style="height: 280px;"><!--editor2 start-->
+                            <div id="editor" class="edui-default" style="width: 498px; height: 264px;"></div>
+                            <div class="menu">
+                                <div id="cancel"  data-target="#bccg" title="撤销" onclick="cancel_edit()" style="top:140px;">撤销</div>
+                                <div class="clear-editor" title="清空编辑器内容">清空</div> 
+                                <div id="html-see" data-toggle="modal" data-target="#myModalsee" title="模拟预览">预览</div>
+                                <div id="scon" data-toggle="modal" data-target="#bccg" title="保存">保存</div>                                
+                                <div id="magic-pannel" style="top:300px;right:-74px;width:74px">                                    
+                                    <div class="tab-content" style="background:rgba(58,51,50,0.5);">
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--editor2 end-->
+                    </div>
+                </div>
+            </div><!--box end-->
+        </div>
+
+         <section id="color-plan" style="width:100px;position:fixed;top:128px;right:-5px;height:320px;text-align: center;">
+    	<div class="panel panel-primary" style="border:0 none;background: transparent;">
+        	<ul class="nav nav-tabs" role="tablist" id="right-fix-tab">
+                <li role="presentation">
+                    <a data-toggle="#color-choosen" href="#color-choosen" aria-controls="home">配色图</a>
+                </li>
+                <li role="presentation">
+                    <a data-toggle="#color-choosen" href="#color-choosen" aria-controls="home">点此切换本面板</a>
+                </li>
+        	</ul>
+            <div class="tab-content" style="position:absolute;right:32px;padding: 10px 0px !important;width:100px;padding:0;background:rgba(58,51,50,0.5);">
+        		<div id="features" role="tabpanel" class="tab-pane" style="text-align: left;padding-left:5px;">
+        			<small id="more-popover-content" style="font-size:12px;">
+            			<button class="btn btn-default btn-xs" id="set-image-radius"> 图片圆形  </button>
+            			<button class="btn btn-default btn-xs" id="flat-add-radius"> 加圆角</button>
+            			<button class="btn btn-default btn-xs" id="flat-strip-radius"> 去圆角</button>
+            			<button class="btn btn-default btn-xs" id="set-image-border"> 图片边框 </button>
+            			<button class="btn btn-default btn-xs" id="flat-add-border"> 加边框</button>
+            			<button class="btn btn-default btn-xs" id="flat-strip-border"> 去边框</button>
+            			<button class="btn btn-default btn-xs" id="flat-strip-shadow"> 去阴影 </button>
+            			<button class="btn btn-default btn-xs" id="flat-add-shadow"> 加阴影 </button>
+            			<button class="btn btn-default btn-xs" id="v3-random-color">随机换色</button>
+            			<button class="btn btn-default btn-xs" id="v3-random-transform">随机倾斜</button>
+        			</small>
+        		</div>
+
+                <div role="tabpanel" class="tab-pane active" id="color-choosen">
+                	<div class="xiuxiu" style="background:rgba(58,51,50,0.5);border:0 none;color:#fff;">
+                        <a href="#" target="_blank" title="">◢ 快捷面板 ◣</a>
+                    </div>
+                    <div class="panel-body" style="padding:0;background:rgba(58,51,50,0.5);width:100px;">
+                        <div style="margin:5px 15px;color:#FFF;line-height:32px;text-align: center;position:relative;">
+                        <input id="custom-color-text" class="colorPicker form-control" style="font-size: 12px; width: 80px; color: rgb(34, 34, 34); padding: 4px 8px; height: 24px; line-height: 16px; background-color: rgb(239, 112, 96);" value="#EF7060">
+                        </div>
+
+                        <div style="margin:0 0;color:#dad9d8;line-height:32px;text-align: center;">
+                            <label style="cursor:pointer;">
+                            <input style="margin-top:8px;" type="checkbox" id="replace-color-all" value="1"> 全文换色</label>
+                        </div>
+                        <ul id="favor-colors" class="clearfix" style="list-style:none;padding:0 10px 0px;margin:0 0;">
+                        </ul>
+                        <hr style="margin:2px 20px;border-color:#ddd;">
+                        <ul class="clearfix" style="list-style:none;padding:0 10px 10px;margin:0 0;">
+                            <li class="color-swatch" style="background-color: #ac1d10"></li>
+                            <li class="color-swatch" style="background-color: #d82821;"></li>
+                            <li class="color-swatch active" style="background-color: #ef7060;"></li>
+                            <li class="color-swatch" style="background-color: #fde2d8;"></li>
+                            <li class="color-swatch" style="background-color: #d32a63;"></li>
+                            <li class="color-swatch" style="background-color: #eb6794;"></li>
+                            <li class="color-swatch" style="background-color: #f5bdd1;"></li>            
+                            <li class="color-swatch" style="background-color: #ffebf0;"></li>
+                            <li class="color-swatch" style="clear:left;background-color: #e2561b;"></li>
+                            <li class="color-swatch" style="background-color: #ff8124;"></li>
+                            <li class="color-swatch" style="background-color: #fcb42b;"></li>
+                            <li class="color-swatch" style="background-color: #feecaf;"></li>
+                            <li class="color-swatch" style="clear:left;background-color: #0c8918;"></li>
+                            <li class="color-swatch" style="background-color: #80b135;"></li>
+                            <li class="color-swatch" style="background-color:#c2c92a;"></li>
+                            <li class="color-swatch" style="background-color:#e5f3d0;"></li>
+                            <li class="color-swatch" style="clear:left;background-color: #1f877a;"></li>
+                            <li class="color-swatch" style="background-color: #27abc1;"></li>
+                            <li class="color-swatch" style="background-color: #5acfe1;"></li>
+                            <li class="color-swatch" style="background-color: #b6f2ea;"></li> 
+                            <li class="color-swatch" style="clear:left;background-color:#374aae;"></li>
+                            <li class="color-swatch" style="background-color:#1e9be8;"></li>
+                            <li class="color-swatch" style="background-color:#59c3f9;"></li>
+                            <li class="color-swatch" style="background-color:#b6e4fd;"></li>
+                            <li class="color-swatch" style="clear:left;background-color:#5b39b4;"></li>
+                            <li class="color-swatch" style="background-color: #4c6ff3;"></li>
+                            <li class="color-swatch" style="background-color:#91a8fc;"></li>
+                            <li class="color-swatch" style="background-color:#d0dafe;"></li>
+                            <!-- 紫色 -->
+                            <li class="color-swatch" style="clear:left;background-color:#8d4bbb;"></li>
+                            <li class="color-swatch" style="background-color: rgb(166, 91, 203);"></li>
+                            <li class="color-swatch" style="background-color:#cca4e3;"></li>
+                            <li class="color-swatch" style="background-color: rgb(190, 119, 99);"></li>
+                            <li class="color-swatch" data-color="#efefef" style="clear:left;background-color:#3c2822;"></li>
+                            <li class="color-swatch" style="background-color:#6b4d40;"></li>
+                            <li class="color-swatch" style="background-color:#9f887f;"></li>
+                            <li class="color-swatch" style="background-color:#d7ccc8;"></li>
+                            <li class="color-swatch" style="background-color: #212122;"></li>
+                            <li class="color-swatch" style="background-color: #757576;"></li>
+                            <li class="color-swatch" style="background-color: #c6c6c7"></li>
+                            <li class="color-swatch" style="background-color: #f5f5f4"></li>
+                        </ul>
+                        <ul><!-- qq --></ul>
+                    </div>
+            	</div> 
+            </div>
+    	</div>        
+    </section>
+        <div id="bccg" class="modal fade" tabindex="9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">保存草稿</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form8" method="post" >
+                            <div class="input-group" style="margin-top:10px;">
+                               <div  style="padding-left: 20px; float:right">
+                                <input type="checkbox" value="1" name="as_tpl">保存成模板
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="message-text" class="control-label">内容:</label>
+                                <div style="border:1px solid #ccc;padding:20px;">
+                                    <div id="tbcov" style="height:320px;overflow-y:scroll;"></div>
+                                    <textarea  id="savecontent1" name="content1" style="display:none"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="savewx" >保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!--预览框  -->  
+        <!-- Modal -->
+        <!-- sample modal content -->
+        <div id="myModal" class="modal fade" tabindex="9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">保存编辑内容</h4>
+                        <div>
+                            <em style="color:#8c8c8c;font-style:normal;font-size:12px;">2015-08-10</em>
+                            <a style="font-size:12px;color:#607fa6" href="javascript:void(0);" id="post-user"></a> 
+                        </div>
+                    </div>                   
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        <div class="modal fade" id="paragraph-setting" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" style="width:600px;margin-top:20px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="border:0 none">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">×</span>
+                            <span class="sr-only">关闭</span>
+                        </button>
+                        <h4 class="modal-title">段落设置</h4>
+                    </div>
+                    <div class="modal-body" style="overflow: hidden;padding: 0;margin: 10px;">
+                        <form class="form-horizontal">
+                            <div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">行高</label>
+                                        <div class="col-sm-7 controls">
+                                            <input class="form-control" value="1.5em" id="paragraph-lineHeight" type="text">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">字体</label>
+                                        <div class="col-sm-7 controls">
+                                            <select class="form-control" id="paragraph-fontFamily">
+                                                <option value="微软雅黑">微软雅黑</option>
+                                                <option value="宋体">宋体</option>
+                                                <option value="楷体">楷体</option>
+                                                <option value="黑体">黑体</option>
+                                                <option value="隶书,SimLi">隶书</option>
+                                                <option value="arial">arial</option>
+                                                <option value="sans-serif">sans-serif</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">字号</label>
+                                        <div class="col-sm-7 controls">
+                                            <input class="form-control" placeholder="字号" value="14px" id="paragraph-fontSize" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">首行缩进</label>
+                                        <div class="col-sm-7 controls">
+                                            <input class="form-control" id="paragraph-textIndent" value="2em" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">段前距</label>
+                                        <div class="col-sm-7 controls">
+                                            <input class="form-control" id="paragraph-paddingTop" value="5px" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">段后距</label>
+                                        <div class="col-sm-7 controls">
+                                            <input class="form-control" id="paragraph-paddingBottom" value="5px" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+                    <div class="modal-footer text-right">
+                        <button type="button" onclick="applyParagraph('active');" class="btn btn-primary" data-dismiss="modal">应用本样式</button>
+                        <button type="button" onclick="applyParagraph('all');" class="btn btn-warning" data-dismiss="modal">应用全文</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- sample modal content -->
+        <div id="myModalsee" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="myModalLabel">预览（提示：如文章太长，请按下鼠标滚轮，上下拉动预览）</h4>
+                        <div>
+                            <em style="color:#8c8c8c;font-style:normal;font-size:12px;">2015-08-10</em> 
+                            <a style="font-size:12px;color:#607fa6" href="javascript:void(0);" id="post-user"></a> 
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div style="border:0px solid #ccc;padding:20px;">
+                                <div id="previews">
+                                    <p style="border-width: 0px;"><br></p>
+                                    <section data-id="685" class="v3editor">
+                                        <p style="border-width: 0px;">&nbsp; &nbsp;<img src="__ROOT__/{$Think.MODULE_PATH}Public/editor/picture/1461330442143878.jpg" style="border-radius: 4px; max-width: 100%; padding: 4px; border-width: 0px; background-color: rgb(255, 255, 255);"></p>
+                                    </section>
+                                    <p style="border-width: 0px;"><br></p>
+                                    <section data-id="720" class="v3editor">
+                                        <section style="max-width: 100%; white-space: normal; margin: 1em auto; padding: 1em 2em; box-sizing: border-box !important; word-wrap: break-word !important; border-width: 0px;">
+                                            <span style="max-width: 100%; float: left; margin-left: -7px; margin-top: 15px; display: block; box-sizing: border-box !important; word-wrap: break-word !important; border-width: 0px;">
+                                                <section class="color" style="max-width: 100%; min-height: 33px; color: rgb(255, 255, 255); text-align: center; line-height: 1.5; font-size: 15px; margin-right: 10px; padding: 5px 8px; min-width: 75px; border-width: 0px; box-sizing: border-box !important; word-wrap: break-word !important; background: rgb(255, 29, 107);">今日话题</section>
+                                                <img style="display: block; border-radius: 4px; max-width: 100%; padding: 4px; border-width: 0px; width: 7px !important; box-sizing: border-box !important; word-wrap: break-word !important; visibility: visible !important; height: auto !important; background-color: rgb(255, 255, 255);" class="" data-type="gif" data-ratio="0.8571428571428571" data-w="7" _width="7px" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/picture/1461330442143878.jpg" data-width="7px">
+                                            </span>
+                                            <section class="v3brush" style="max-width: 100%; padding: 16px; width: 560px; font-size: 14px; line-height: 1.4; border-width: 0px; box-sizing: border-box !important; word-wrap: break-word !important;" data-width="560px">一天一个鸡蛋，不仅能提高记忆力，还能保护视力，帮助减肥。但有些人对鸡蛋心有疑虑，怕每天吃升高血脂。殊不知，早餐吃个鸡蛋，可是有诸多好处。在营养学界，鸡蛋一直有“全营养食品”的美称，杂志甚至为鸡蛋戴上了“世界上最营养早餐”的殊荣。</section>
+                                        </section>
+                                    </section>
+                                    <p style="border-width: 0px;"><br></p>
+                                    <section data-id="716" class="v3editor">
+                                        <fieldset style="padding: 16px; line-height: 1.4; margin-top: 10px; max-width: 100%; white-space: normal; border-width: 0px; box-sizing: border-box !important; word-wrap: break-word !important; background-color: rgb(244, 244, 244);" id="shifu_c_008" class="wxqq-borderTopColor wxqq-borderLeftColor wxqq-borderRightColor wxqq-borderBottomColor;" label="Copyright © 2014 99vu.com All Rights Reserved."><section class="v3brush" style="color: inherit; border-width: 0px;">135图文排版是设计的基本功，但经常有同学不知道如何处理图片与字体的搭配。正所谓“无规矩不成方圆”，懒人图文排版也需要遵循一定的法则。今天就给同学们扒一扒图文排版10个技巧，让你的设计瞬间高逼格！</section></fieldset>
+                                    </section>
+                                    <p style="border-width: 0px;"><br></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!--adend-->
+
+
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/ueditor.config.js"></script>
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/ueditor.all.min.js"></script>
+        <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/gjs02.js" type="text/javascript"></script>
+        <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery.jcrop.js"></script>
+        <link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/jquery.jcrop.css" type="text/css">
+
+
+
+        <!--[if lt IE 9]>
+          <script src="js/html6.js"></script>
+          <![endif]-->
+        <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/gjs01.js" type="text/javascript"></script>
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/less-1.7.0.min.js"></script>
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/clipboard.min.js"></script>
+
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/instoo.js"></script>
+
+        <div id="global-zeroclipboard-html-bridge" class="global-zeroclipboard-container" style="position: absolute; left: 0px; top: -9999px; width: 1px; height: 1px; z-index: 999999999;">
+            <object id="global-zeroclipboard-flash-bridge" name="global-zeroclipboard-flash-bridge" width="100%" height="100%" type="application/x-shockwave-flash" data="js/ueditor/third-party/zeroclipboard/ZeroClipboard.swf?noCache=1439172085753">
+                <param name="allowScriptAccess" value="sameDomain">
+                <param name="allowNetworking" value="all">
+                <param name="menu" value="false">
+                <param name="wmode" value="transparent">
+                <div id="global-zeroclipboard-flash-bridge_fallbackContent">&nbsp;</div>
+            </object>
+        </div>
+
+        <div id="success" style="display:none;">
+            <div>复制成功</div>
+        </div>
+
+        <a href="#" id="toTop" style="display: none;"><span id="toTopHover"></span>To Top</a>
+
+        <script type="text/javascript"  src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/su.js"></script>    
+
+        <script>
+            function cancel_edit(){
+                UE.getEditor('editor').execCommand("undo");
+            }
+            $(function () {
+                document.page = 1;
+                document.isget = 0;
+                document.name = '';
+                getdata(document.name, document.page);
+                var type = $('.active').attr('id').substring(0, $('.active').attr('id').indexOf('-'));
+                var dom = $('#' + type + '-list');
+                var id = dom.attr('data-type');
+                $("#insert-style-list").scroll(function () {
+                    if (($("#insert-style-list").scrollTop() > (dom.height() - 900)) && (document.isget == 0)) {
+                        document.page = document.page + 1;
+                        document.isget = 1;
+                        getdata(document.name, document.page);
+                        document.isget = 0;
+                    }
+                });
+                $('.n1-1 li').click(function () {
+                    document.name = $(this).attr('id').substring(0, $(this).attr('id').indexOf('-'));
+                    $('.ui-portlet ul').html('');
+                    document.page = 1;
+                    getdata(document.name, document.page);
+                })
+//                $("#savewx").click(function(){
+//                    var content = UE.getEditor('editor').getContent();
+//                    var cate = $("select[name=tpl_cates]").val();
+//                    var as_tpl = $("input[name=as_tpl]").val();
+//                    if (as_tpl == 1){
+//                        content = "<section class='fzneditor'>" + content + "</section>"
+//                    }
+//                    $.post("/Editor/saveTemplate", {content: content, cate: cate},function(){
+//                        
+//                    },"json");
+//                });
+            });
+            function getdata(name, page) {
+//                var type = name;
+//                if (name == '') {
+//                    type = $('.active').attr('id').substring(0, $('.active').attr('id').indexOf('-'));
+//                }
+//                console.log(type);
+//                var dom = $('#' + type + '-list');
+                //获取类别html元素
+                // var id = dom.attr('data-type');	$.get('api.php?type='+id+'&page='+page,function(data){		
+                //     dom.find('ul').append(data);	
+                // })
+            }
+            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,48 @@
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/tree_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:200,align:'left'">{$Think.lang.FLD_NAME}</th>
+        <th data-options="field:'no',width:120,align:'left',sortable:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'parent_name',width:120,align:'left'">{$Think.lang.FLD_PARENT_ID}</th>
+        <th data-options="field:'type_name',width:120,align:'left'">{$Think.lang.FLD_TYPE_NAME}</th>
+        <!--<th data-options="field:'need_map',width:120,align:'center',formatter:format_needmap">{$Think.lang.FLD_NEED_MAP}</th>-->
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <ul class="search-table" style="display: flex;">
+        <li style="padding: 0 10px">
+            <label>企业类型：</label>
+            <div style="display: inline-block">
+                <input class="easyui-validatebox" name="ent_type_name"/>
+                <input name="q-ent_type_id" class="filter-field" type="hidden"/>
+            </div>
+        </li>
+        <li style="padding: 0 10px">
+            <label>科目名称：</label>
+            <div style="display: inline-block">
+                <input name="ql-name"  class="easyui-validatebox filter-field"  type="text" />
+            </div>
+        </li>
+    </ul>
+</div>
+<div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+    <a href="javascript:void(0)" class="common-blue-btn" style="width:auto"  onclick="action_show_importdlg()">导入</a></div></div>
+<script>
+    autocompleteAjaxEx($(".search-table input[name='ent_type_name']"), "/VcrSubject/getEnterpriceTypes", {
+        onSelected: function(row){
+            $(".search-table input[name='q-ent_type_id']").val(row.id);
+            doSearchQuery('VcrSysSubject');
+        }
+    });
+    autocompleteAjaxEx($(".search-table input[name='ql-name']"), "/VcrSysSubject/autocomplete/search/name+querykey/result/name", {
+        onSelected: function(row){
+            doSearchQuery('VcrSysSubject');
+        }
+    });
+    function action_show_importdlg() {
+        createDialog("/VcrSysSubject/import", "标准科目资料导入", "dlg-subject-import");
+    }
+
+</script>

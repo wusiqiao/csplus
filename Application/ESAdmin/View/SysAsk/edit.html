@@ -1,0 +1,143 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" >
+    <link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}/Public/css/step.css">
+    <style>
+        .header-pic{
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            margin-top: 18px;
+        }
+        .dialog-content.rtl{
+            -webkit-flex-direction: row-reverse;
+            flex-direction: row-reverse;
+        }
+        .dialog-box time{
+            display:inline-block;
+            margin:0.83rem auto;
+            padding: 0.25rem 0.83rem;
+            border-radius:3px;
+            background-color:rgba(0,0,0,.2);
+            color:#fff;
+            font-size: 1rem;
+        }
+        .dialog-content{
+            display:-webkit-flex;
+            display: flex;
+            justify-content: flex-start;
+            flex-flow:row nowrap;
+            align-items: flex-start;
+        }
+        .right-dia{
+            padding: 10px;
+            font-size: 1.25rem;
+            color:#fff;
+            margin-right:16px;
+            border-radius:3px;
+            background-color:#e88422;
+            position: relative;
+            text-align: left;
+            max-width: calc(100% - 6rem);
+        }
+        .right-triangle{
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width:8px 0 8px 12px;
+            border-color: transparent transparent transparent #e88422;
+            position: absolute;
+            right:-0.45rem;
+            top:0.83rem;
+        }
+        .left-dia{
+            line-height: 1.5rem;
+            padding: 0.83rem;
+            font-size: 1.25rem;
+            color:#353535;
+            margin-left:1.33rem;
+            border-radius:3px;
+            background-color:#fff;
+            position: relative;
+            text-align: left;
+            max-width: calc(100% - 6rem);
+        }
+        .left-triangle{
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width:8px 12px 8px 0;
+            border-color: transparent #fff transparent transparent;
+            position: absolute;
+            left:-0.45rem;
+            top:0.83rem;
+        }
+    </style>
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-tabs" style="width:700px;background: #ccc;height:480px">
+            <div title="聊天记录" style="padding:10px;text-align: center;" >
+                <div class="dialog-box yxcontent">
+                    <foreach name="model" item="vo">
+                        <if condition="$vo.flag eq 1">
+                            <time>{$vo.begtime}</time>
+                            <div class="dialog-content">
+                                <a href="javascript:;"><img class="header-pic" src="{$vo.face}" alt=""></a>
+                                <if condition="$vo.attach neq ''">
+                                    <p class="left-dia file-background">
+                                        <eq name="vo.attach_type" value="image">
+                                            <img class="ask-pic" data-preview-src="" data-preview-group="1" src="{:getAskUploadFileImages($vo['attach'])}">
+                                            <else/>
+                                            <a href="{$vo['attach']}">
+                                                <img class="ask-file" width="38" height="38" src="{:getAskUploadFileImages($vo['attach'])}">
+                                            </a>
+                                        </eq>
+                                    </p>
+                                    <else/>
+                                    <p class="left-dia"><span class="left-triangle"></span>{$vo.content}</p>
+                                </if>
+                            </div>
+                            <else />
+                            <time>{$vo.begtime}</time>
+                            <div class="dialog-content rtl">
+                                <img class="header-pic" src="{$vo.face}" alt="">
+                                <if condition="$vo.attach neq ''">
+                                    <p class="right-dia file-background">
+                                        <eq name="vo.attach_type" value="image">
+                                            <img class="ask-pic" data-preview-src="" data-preview-group="1" src="{:getAskUploadFileImages($vo['attach'])}">
+                                            <else/>
+                                            <a href="{$vo['attach']}">
+                                                <img class="ask-file" width="38" height="38" src="{:getAskUploadFileImages($vo['attach'])}">
+                                            </a>
+                                        </eq>
+                                    </p>
+                                    <else/>
+                                    <p class="right-dia"><span class="right-triangle"></span>{$vo.content}</p>
+                                </if>
+                            </div>
+
+                        </if>
+                    </foreach>
+                </div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script type="text/javascript">
+    //模板替换
+    function parseTemplate(target, jsobject){
+        var tpl = $('#'+target).prop("outerHTML").replace(target,"");
+        var tpl = tpl.replace("display:none","");
+        console.log(tpl);
+        var reg = new RegExp("\{%([^%}]*)?%\}", "g");
+        var matchs = tpl.match(reg);
+        if (matchs != null) {
+            for (var i = 0; i < matchs.length; i++) {
+                var key = matchs[i].replace("{%", "").replace("%}", "");
+                var val = $.isEmptyObject(jsobject[key]) ? "" : jsobject[key];
+                tpl = tpl.replace(matchs[i], val);
+            }
+            return tpl;
+        }
+        return "";
+    }
+
+</script>

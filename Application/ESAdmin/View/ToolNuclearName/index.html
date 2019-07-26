@@ -1,0 +1,44 @@
+<script type="text/javascript">
+    function format_show_state(value, row) {
+        var scale_text = ["未处理", "已处理"];
+        return scale_text[parseInt(value)];
+    }
+    function format_time(value){
+        return timestampToTime(value,'Y年m月d日 H:i');
+    }
+    function timestampToTime(timestamp,str) {
+        if ($.trim(timestamp) > 152732000){
+            var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+            Y = date.getFullYear();
+            m = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1);
+            d = date.getDate();
+            H = date.getHours();
+            i = date.getMinutes();
+            return `<div title="${str.replace('Y',Y).replace('m',m).replace('d',d).replace('H',H).replace('i',i)}">${str.replace('Y',Y).replace('m',m).replace('d',d).replace('H',H).replace('i',i)}</div>`;
+        }else{
+            return '暂无处理';
+        }
+
+    }
+</script>
+<style>
+    .maincontainer{
+        height: 100%;
+    }
+</style>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th data-options="field:'id',hidden:true">id</th>
+        <th data-options="field:'nickname',width:120,align:'left'" sortable="true">{$Think.lang.NUCLEARNAME_NICKNAME}</th>
+        <th data-options="field:'mobile',width:120,align:'left'">{$Think.lang.NUCLEARNAME_MOBILE}</th>
+        <th data-options="field:'city',width:120,align:'left'">{$Think.lang.NUCLEARNAME_CITY}</th>
+        <th data-options="field:'firm',width:120,align:'left'">{$Think.lang.NUCLEARNAME_FIRM}</th>
+        <th data-options="field:'trade',width:120,align:'left'">{$Think.lang.NUCLEARNAME_TRADE}</th>
+        <th data-options="field:'form',width:120,align:'left'">{$Think.lang.NUCLEARNAME_FORM}</th>
+        <th data-options="field:'is_process',width:60,align:'left',formatter:format_show_state">{$Think.lang.NUCLEARNAME_PROCESSED}</th>
+        <th data-options="field:'created_at',width:180,align:'left',formatter:format_time">{$Think.lang.NUCLEARNAME_CREATED_AT}</th>
+        <th data-options="field:'processed_at',width:180,align:'left',formatter:format_time">{$Think.lang.NUCLEARNAME_PROCESSED_AT}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>

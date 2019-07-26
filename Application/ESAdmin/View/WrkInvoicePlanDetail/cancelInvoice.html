@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			.grey{
+				background-color: grey;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="details-wrap invoice-main" id="add-invoice" style="overflow-y: scroll;height: 350px;padding-right: 10px;width: 500px">
+			<p style="text-align: center;color: #e91835;">您好，以下编号发票已作废，请知悉：</p>
+			<form method="post" id="WrkInvoiceRecord-dataform">
+				<div class="details-section" >
+					<table class="c-table  fl" border="1" bordercolor="#ccc" border-collaspe="collaspe" id="cancel-invoice">
+						<thead>
+						<tr>
+							<th>开票日期</th>
+							<th>发票编号</th>
+							<th>发票金额</th>
+							<th>发票类型</th>
+						</thead>
+						<tbody id="record_table">
+						<tr v-for="item in invoice_record">
+							<td>{{item.invoice_day}}</td>
+							<td>{{item.invoice_id}}</td>
+							<td>{{item.invoice_sum}}</td>
+							<td>{{item.invoice_type}}</td>
+						</tr>
+						</tbody>
+					</table>
+					<div>&nbsp;</div>
+					<div class="express-box clearFix">
+						<div style="text-align:center;margin:10px;" >
+							<span class="line-state-finish"></span>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="details-section">
+			<div class="form-actions" id="WrkInvoiceRecord-form-actions">
+				<div class="actions-sysdefault">
+					<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="confirmCancelInvoice(this)">发送</a>
+					<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">取消</a>
+				</div>
+			</div>
+		</div>
+		<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+		<script>
+			var cancelVue = new Vue({
+            	el:"#cancel-invoice",
+            	data:{
+                    invoice_record:[]
+            	}
+            });
+
+			$(function(){
+                cancelVue.invoice_record = planDetailvue.cancel_invoice;
+			});
+
+			function confirmCancelInvoice(obj){
+                showMaskLayer();
+			    if(!$(obj).hasClass("grey")){
+			        $(obj).addClass("grey");
+                    var id = "";
+                    var total_money = 0;
+                    var plan_id = $("input[name='plan_id']").val();
+                    $(cancelVue.invoice_record).each(function(){
+                        if(id == ""){
+                            id = this.id;
+                        }else{
+                            id = id + "," +this.id;
+                        }
+                        total_money += Number(this.invoice_sum);
+                    });
+                    $.post("WrkInvoicePlanDetail/cancelInvoice",{id:id,total_money:total_money,plan_id:plan_id},function(result){
+                        $(obj).removeClass("grey");
+                        hideMaskLayer();
+                        if(result.error==0){
+                            $.dialog.focus.close();
+                            $(".notshow").show();
+                            getInvoiceState();
+                            getInvoiceRecord();
+                            getInvoicePlan();
+                        }
+                        $.dialog.tips(result.message);
+                    },'json')
+				}
+			}
+
+		</script>
+	</body>
+</html>

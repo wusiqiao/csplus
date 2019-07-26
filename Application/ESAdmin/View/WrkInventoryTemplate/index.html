@@ -1,0 +1,37 @@
+<div class="maincontainer" id="WrkInventoryTemplate-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="WrkInventoryTemplate" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th field="ck" checkbox="true"></th>
+        <th data-options="field:'name',width:500,align:'left'">{$Think.lang.FLD_NAME}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="WrkInventoryTemplate" />
+</div>
+<div id="actions-WrkInventoryTemplate">
+    <div class="action-panel">
+        <div class="actions">
+            <if condition="($permissions.add eq 1) ">
+                <a href="javascript:void(0)" class="common-blue-btn detail-add" style="width:auto" plain="true" onclick="action_add('WrkInventoryTemplate','{$title}')">新增子任务模板</a>
+            </if>
+            <if condition="($permissions.detail eq 1) ">
+                <a href="javascript:void(0)" class="common-blue-btn detail-edit" style="width:auto;" plain="true" onclick="action_detail('WrkInventoryTemplate','{$title}')">编辑子任务模板</a>
+            </if>
+            <if condition="($permissions.delete eq 1) ">
+                <a href="javascript:void(0)" class="common-red-btn detail-delete" style="width:auto" plain="true" onclick="action_delete('WrkInventoryTemplate')">批量删除</a>
+            </if>
+        </div>
+    </div>
+    <div id="box_ComFans" class="easyui-menu" style="width:120px;">
+        <if condition="($permissions.add eq 1) OR ($permissions._IS_ADMIN_ eq 1)">
+            <div onclick="action_add('WrkInventoryTemplate','{$title}')" >新增子任务模板</div>
+            <div class="menu-sep"></div>
+        </if>
+        <if condition="($permissions.detail eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+            <div onclick="action_detail('WrkInventoryTemplate','{$title}')" >编辑子任务模板</div>
+            <div class="menu-sep"></div>
+        </if>
+        <if condition="($permissions.delete eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+            <div onclick="action_delete('WrkInventoryTemplate')" >批量删除</div>
+        </if>
+    </div>
+</div>

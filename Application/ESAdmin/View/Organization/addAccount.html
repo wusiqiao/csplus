@@ -1,0 +1,217 @@
+<style>
+    .spanBtn{
+        display: inline;
+        padding: 10px 25px;
+        background: #398bfe;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+    }
+    .tableForm .row .inputbox.sec{
+        display: none;
+    }
+    .grey{
+        background:#b4b5b7;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+
+<div>
+    <form action="">
+        <div class="tableForm" style="width:860px">
+            <div class="row">
+                <div class="caption"><span><span style="color:#FF0000">*</span>微信绑定：</span></div>
+                <div class="inputbox">
+                    <input name="staff_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                </div>
+                <div class="inputbox fir">
+                    <span class="spanBtn" style="margin-left:20px;">发送邀请</span>
+                </div>
+                <div class="inputbox sec">
+                    <span class="spanBtn grey" style="margin-left:20px;">待确认</span>
+                    <span class="spanBtn" style="margin-left:20px;">重新邀请</span>
+                </div>
+            </div>
+            <div class="row" style="margin-left:120px;">1.请输入员工的微信昵称、手机号或备注快速搜索，输入之前确保员工已经关注公众号</div>
+            <div class="row" style="margin-left:120px;">2.员工需在微信上进行确认才能绑定成功。</div>
+            <div class="row">
+                <div class="caption"><span><span style="color:#FF0000">*</span>姓名：</span></div>
+                <div class="inputbox">
+                    <input name="staff_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span><span style="color:#FF0000">*</span>手机号：</span></div>
+                <div class="inputbox">
+                    <input name="staff_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                </div>
+            </div>
+            <div class="row" style="margin-left:120px;">手机号将作为登录账号，且作为找回密码的凭据</div>
+            <div class="row">
+                <div class="caption"><span>角色：</span></div>
+                <div class="inputbox">
+                    <select id="role_ids" name="role_ids" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization/roleList/'">
+                        <option value=""></option>
+                    </select>
+                    <input type="hidden" name="role_ids_changed" value="1">
+                </div>
+                <div class="inputbox">
+                    <span class="spanBtn" style="margin-left:20px;">+ 新增角色</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>所属部门：</span></div>
+                <div class="inputbox">
+                    <select id="role_ids" name="role_ids" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization/roleList/'">
+                        <option value=""></option>
+                    </select>
+                    <input type="hidden" name="role_ids_changed" value="1">
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>上级主管：</span></div>
+                <div class="inputbox">
+                    <select id="role_ids" name="role_ids" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization/roleList/'">
+                        <option value=""></option>
+                    </select>
+                    <input type="hidden" name="role_ids_changed" value="1">
+                </div>
+            </div>
+
+        </div>
+        <div class="form-actions" id='Organization-form-actions'>
+            <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="adjustDept()">保存</a>
+                <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+            </div>
+        </div>
+    </form>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script>
+    $('.fir').click(function (){
+        $(this).css('display','none');
+        $('.sec').css('display','inline-block');
+    });
+
+    $(function(){
+        autocompleteAjax($("input[name='staff_name']"), "Organization/userList", {
+            formatItem(row){
+                var mobile = row['mobile'];
+                var item_text = $.format(
+                    "<div style='display: flex;flex-direction: row;font-size: 13px;padding: 5px'>" +
+                    "<div style='flex: 1'>用户：<span style='color:#368bfe'>{0}</span></div>"+
+                    "<div style='flex: 1'>手机：<span style='color:#368bfe'>{1}</span></div>"+
+                    "</div>",
+                    [padLeft(row.name,8," "),(row.mobile == null || row.mobile == "")? "未绑定":row.mobile ]);
+                return item_text;
+            },
+            onSelected:function(row){
+                $("input[name='id']").val(item.id);
+                $("img[name='head_pic']").attr("src", item.head_pic);
+                $("#name").text("{$Think.lang.FLD_LINKNAME}：" + item.name);
+                if (item.mobile != null) {
+                    $("#mobile").text("{$Think.lang.FLD_MOBILE}：" + item.mobile);
+                }else{
+                    $("#mobile").text("{$Think.lang.FLD_MOBILE}：");
+                }
+                if (item.comments != null) {
+                    $("#comments").text("{$Think.lang.FLD_REMARK}：" + item.comments);
+                }else{
+                    $("#comments").text("{$Think.lang.FLD_REMARK}：");
+                }
+                if (item.telephone != null && item.telephone != '') {
+                    $("input[name='telephone']").val(item.telephone);
+                }else{
+                    $("input[name='telephone']").val(item.mobile);
+                }
+
+                if (/^1[3-8]+\d{9}$/.test(item.account)) {
+                    $("input[name='account']").val(item.account);
+                }else{
+                    $("input[name='account']").val(item.mobile);
+                }
+                $("input[name='staff_name']").val(item.deptment_id);
+                $("input[name='staff_name']").val(item.staff_name);
+                $("input[name='email']").val(item.email);
+                $("input[name='qq']").val(item.qq);
+                $("#deptment_id").val(item.deptment_id);
+                $("#deptment_id").trigger("chosen:updated");
+                $(".modal-save-btn").show();
+
+                var custom = item.custom;
+                var html = "";
+                var str = "";
+                for (var i = 0; i < custom.length; i++) {
+                    if (custom[i].type == 0) {
+                        str = '<input name="custom-value[]" placeholder="请输入'+custom[i].title+'" value="'+custom[i].value+'" class="easyui-validatebox" />';
+                    } else {
+                        str = '<input name="custom-value[]" placeholder="请输入'+custom[i].title+'" value="'+custom[i].value+'" class="easyui-datebox" />';
+                    }
+                    html += '<div class="row">'+
+                        '<div class="caption"><span>'+custom[i].title+'：</span></div>'+
+                        str +
+                        '<input name="custom-type[]" value="'+custom[i].type+'" type="hidden" />'+
+                        '<input name="custom-title[]" value="'+custom[i].title+'" type="hidden" />'+
+                        '<a href="javascript:void(0);" class="common-blue-btn" style="margin-left: 15px;" onclick="removeCustomAttr(this);">删除</a>'+
+                        '</div>';
+                }
+            }
+        });
+
+
+        /*autocompleteAjax($("input[name='staff_name']"), "Organization/userList", function(item) {
+            $("input[name='id']").val(item.id);
+            $("img[name='head_pic']").attr("src", item.head_pic);
+            $("#name").text("{$Think.lang.FLD_LINKNAME}：" + item.name);
+            if (item.mobile != null) {
+                $("#mobile").text("{$Think.lang.FLD_MOBILE}：" + item.mobile);
+            }else{
+                $("#mobile").text("{$Think.lang.FLD_MOBILE}：");
+            }
+            if (item.comments != null) {
+                $("#comments").text("{$Think.lang.FLD_REMARK}：" + item.comments);
+            }else{
+                $("#comments").text("{$Think.lang.FLD_REMARK}：");
+            }
+            if (item.telephone != null && item.telephone != '') {
+                $("input[name='telephone']").val(item.telephone);
+            }else{
+                $("input[name='telephone']").val(item.mobile);
+            }
+
+            if (/^1[3-8]+\d{9}$/.test(item.account)) {
+                $("input[name='account']").val(item.account);
+            }else{
+                $("input[name='account']").val(item.mobile);
+            }
+            $("input[name='staff_name']").val(item.deptment_id);
+            $("input[name='staff_name']").val(item.staff_name);
+            $("input[name='email']").val(item.email);
+            $("input[name='qq']").val(item.qq);
+            $("#deptment_id").val(item.deptment_id);
+            $("#deptment_id").trigger("chosen:updated");
+            $(".modal-save-btn").show();
+
+            var custom = item.custom;
+            var html = "";
+            var str = "";
+            for (var i = 0; i < custom.length; i++) {
+                if (custom[i].type == 0) {
+                    str = '<input name="custom-value[]" placeholder="请输入'+custom[i].title+'" value="'+custom[i].value+'" class="easyui-validatebox" />';
+                } else {
+                    str = '<input name="custom-value[]" placeholder="请输入'+custom[i].title+'" value="'+custom[i].value+'" class="easyui-datebox" />';
+                }
+                html += '<div class="row">'+
+                    '<div class="caption"><span>'+custom[i].title+'：</span></div>'+
+                    str +
+                    '<input name="custom-type[]" value="'+custom[i].type+'" type="hidden" />'+
+                    '<input name="custom-title[]" value="'+custom[i].title+'" type="hidden" />'+
+                    '<a href="javascript:void(0);" class="common-blue-btn" style="margin-left: 15px;" onclick="removeCustomAttr(this);">删除</a>'+
+                    '</div>';
+            }
+            $("#custom-item").html(html);
+            parseForm($("#custom-attr"));
+        });*/
+    })
+</script>

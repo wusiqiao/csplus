@@ -1,0 +1,52 @@
+<style>
+
+</style>
+
+<div style="width: 1000px;">
+    <div style="height: 620px;overflow-y: auto;">
+        <div id="search-status" style="height:54px;line-height: 54px;position: relative;">
+            <div class="btn-screening-label">报名状态：</div>
+            <span class="btn-screening btn-screening-on">全部</span>
+            <span class="btn-screening">待审核</span>
+            <span class="btn-screening">已审核</span>
+        </div>
+        <div style="margin-left: 18px;overflow: hidden;">
+            <div class="btn-speed" style="margin: 0;" onclick="ToManualAdded()">新增选手</div>
+            <div style="float: right;margin: 0 10px;" class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                <input type="text" placeholder="请输入标题" style="width:300px;" class="filter-field" name="ql-name" value="" oninput="searchByKey(event)">
+                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="">
+            </div>
+        </div>
+        <include file="./Application/Common/Layout/Default/list_header.html"  controller="VoteActivity" />
+        <tr> 
+            <th data-options="field:'id',hidden:true">id</th>  
+            <th data-options="field:'name',width:130,align:'left'">报名名称</th>
+            <th data-options="field:'name',width:100,align:'left'">联系人</th>
+            <th data-options="field:'name',width:110,align:'left'">联系电话</th>
+            <th data-options="field:'name',width:120,align:'left'">报名时间</th>
+            <th data-options="field:'name',width:80,align:'left'">报名状态</th>
+            <th data-options="field:'name',width:60,align:'left'">票数</th>
+            <th data-options="field:'name',width:120,align:'left'">操作</th>
+        </tr>
+        <include file="./Application/Common/Layout/Default/list_footer.html"  controller="VoteActivity" />
+    </div>
+</div>
+
+<script>
+    // 搜索框悬停效果
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+    // 输入框搜索功能
+    function searchByKey(e){
+      
+    }
+    // 手动新增选手
+    function ToManualAdded(){
+        var id;
+        createDialog(`VoteActivity/manual_added/id/${id}`,"营销>投票管理_新增选手","manual_added");
+    }
+</script>

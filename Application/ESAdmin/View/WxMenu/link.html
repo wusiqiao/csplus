@@ -1,0 +1,177 @@
+<!-- 商城链接选择弹窗 -->
+<div id="MallLink-select-edit" style="display:none;">
+    <div class="MallLinkselect-edit-hd">
+        <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">选择服务</span>
+        <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+              onclick="$(`#MallLink-select-edit`).hide(); $(`#mask`).hide();">X</span>
+    </div>
+    <div class="MallLinkselect-edit-bd">
+        <div class="c-header" style="margin:10px 0px 0">
+            <span class="tab-span on" onclick="MallClick(event)">商城页面</span>
+            <span class="tab-span" onclick="CommodityClick(event)">商品</span>
+            <span class="tab-span" onclick="PromotionClick(event)">推广</span>
+        </div>
+        <!-- 商城页面 -->
+        <div id="Mall-page">
+            <div class="link-box">
+                <div class="link-box-text" style="color: #35323b;font-size: 16px;line-height: 16px;margin: 0 8px;">商城首页</div>
+                <div style="height: 32px;padding:0 8px;margin: 17px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+            <div class="link-box">
+                <div class="link-box-text" style="color: #35323b;font-size: 16px;line-height: 16px;margin: 0 8px;">公司介绍</div>
+                <div style="height: 32px;padding:0 8px;margin: 17px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+            <div class="link-box">
+                <div class="link-box-text" style="color: #35323b;font-size: 16px;line-height: 16px;margin: 0 8px;">服务分类</div>
+                <div style="height: 32px;padding:0 8px;margin: 17px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+            <div class="link-box">
+                <div class="link-box-text" style="color: #35323b;font-size: 16px;line-height: 16px;margin: 0 8px;">领券中心</div>
+                <div style="height: 32px;padding:0 8px;margin: 17px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+        </div>
+        <!-- 商品 -->
+        <div id="Commodity-page" style="display:none;">
+            <div class="Commodity-box">
+                <div style="height:83px">
+                    <div class="Commodity-box-img"><img style="width:100%;" src="" alt=""></div>
+                    <div class="Commodity-box-txt">
+                        <div class="Commodity-box-title">小规模记账</div>
+                        <div class="Commodity-box-content" title="此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方">此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方</div>
+                        <div class="Commodity-box-price">￥240.00元</div>
+                    </div>
+                </div>
+                <div style="width: 100%;height: 32px;margin: 20px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+            <div class="Commodity-box">
+                <div style="height:83px">
+                    <div class="Commodity-box-img"><img src="" alt=""></div>
+                    <div class="Commodity-box-txt">
+                        <div class="Commodity-box-title">小规模记账</div>
+                        <div class="Commodity-box-content" title="此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方">此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方</div>
+                        <div class="Commodity-box-price">￥240.00元</div>
+                    </div>
+                </div>
+                <div style="width: 100%;height: 32px;margin: 20px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+            <div class="Commodity-box">
+                <div style="height:83px">
+                    <div class="Commodity-box-img"><img src="" alt=""></div>
+                    <div class="Commodity-box-txt">
+                        <div class="Commodity-box-title">小规模记账</div>
+                        <div class="Commodity-box-content" title="此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方">此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方</div>
+                        <div class="Commodity-box-price">￥240.00元</div>
+                    </div>
+                </div>
+                <div style="width: 100%;height: 32px;margin: 20px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+            <div class="Commodity-box">
+                <div style="height:83px">
+                    <div class="Commodity-box-img"><img src="" alt=""></div>
+                    <div class="Commodity-box-txt">
+                        <div class="Commodity-box-title">小规模记账</div>
+                        <div class="Commodity-box-content" title="此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方">此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方</div>
+                        <div class="Commodity-box-price">￥240.00元</div>
+                    </div>
+                </div>
+                <div style="width: 100%;height: 32px;margin: 20px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+        </div>
+        <!-- 推广 -->
+        <div id="Promotion-page" style="display:none;">
+            <div class="Commodity-box">
+                <div style="height:83px">
+                    <div class="Commodity-box-img"><img src="" alt=""></div>
+                    <div class="Commodity-box-txt">
+                        <div style="margin-bottom: 47px;" class="Commodity-box-content" title="钱付了，对方不给发票，会计怎么做账？财务们快看过来！">钱付了，对方不给发票，会计怎么做账？财务们快看过来！</div>
+                        <div style="width: 100%;height: 20px;line-height: 20px;">
+                            <div class="link-focus">
+                                <span class="icon-focus"></span>
+                                <span class="num-focus">200</span>
+                            </div>
+                            <div class="link-share">
+                                <span class="icon-share"></span>
+                                <span class="num-share">66</span>
+                            </div>
+                            <div class="link-date">2019年2月14日</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 100%;height: 32px;margin: 20px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+            <div class="Commodity-box">
+                <div style="height:83px">
+                    <div class="Commodity-box-img"><img src="" alt=""></div>
+                    <div class="Commodity-box-txt">
+                        <div style="margin-bottom: 47px;" class="Commodity-box-content" title="钱付了，对方不给发票，会计怎么做账？财务们快看过来！">钱付了，对方不给发票，会计怎么做账？财务们快看过来！</div>
+                        <div style="width: 100%;height: 20px;line-height: 20px;">
+                            <div class="link-focus">
+                                <span class="icon-focus"></span>
+                                <span class="num-focus">200</span>
+                            </div>
+                            <div class="link-share">
+                                <span class="icon-share"></span>
+                                <span class="num-share">66</span>
+                            </div>
+                            <div class="link-date">2019年2月14日</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 100%;height: 32px;margin: 20px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+            <div class="Commodity-box">
+                <div style="height:83px">
+                    <div class="Commodity-box-img"><img src="" alt=""></div>
+                    <div class="Commodity-box-txt">
+                        <div style="margin-bottom: 47px;" class="Commodity-box-content" title="钱付了，对方不给发票，会计怎么做账？财务们快看过来！">钱付了，对方不给发票，会计怎么做账？财务们快看过来！</div>
+                        <div style="width: 100%;height: 20px;line-height: 20px;">
+                            <div class="link-focus">
+                                <span class="icon-focus"></span>
+                                <span class="num-focus">200</span>
+                            </div>
+                            <div class="link-share">
+                                <span class="icon-share"></span>
+                                <span class="num-share">66</span>
+                            </div>
+                            <div class="link-date">2019年2月14日</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 100%;height: 32px;margin: 20px 0;">
+                    <span class="link-box-left">http://www.caisuijia.com/</span>
+                    <span class="link-box-right">选择该链接</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

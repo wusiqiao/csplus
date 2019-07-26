@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .spanBtn{
+            display: inline;
+            padding: 10px 25px;
+            background: #398bfe;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+        }
+        .tableForm .row .inputbox.sec{
+            display: none;
+        }
+        .grey{
+            background:#b4b5b7;
+        }
+        .avator{
+            margin-right:10px;
+            width:40px;
+            height: 40px;
+            border-radius: 50%;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <form action="">
+        <div class="tableForm" style="width:860px">
+            <div class="row">
+                <div class="caption"><span><span style="color:#FF0000">*</span>微信绑定：</span></div>
+                <img class="avator" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/picture.png" alt="">
+                <span class="avator-name">蓝天白云</span>
+            </div>
+            <div class="row" style="margin-left:120px;">绑定微信之前请先关注公众号，否则无法绑定成功；邀请发送之后需让员工在手机上
+                进行确认才能绑定成功。</div>
+            <div class="row">
+                <div class="caption"><span><span style="color:#FF0000">*</span>姓名：</span></div>
+                <div class="inputbox">
+                    <input name="staff_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span><span style="color:#FF0000">*</span>手机号：</span></div>
+                <div class="inputbox">
+                    <input name="staff_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="" title="">
+                </div>
+            </div>
+            <div class="row" style="margin-left:120px;">手机号将作为登录账号，且作为找回密码的凭据</div>
+            <div class="row">
+                <div class="caption"><span>角色1：</span></div>
+                <div class="inputbox">
+                    <select id="role_ids" name="role_ids" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization/roleList/'">
+                        <option value=""></option>
+                    </select>
+                    <input type="hidden" name="role_ids_changed" value="1">
+                </div>
+                <div class="inputbox">
+                    <span class="spanBtn" style="margin-left:20px;">+ 新增角色</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>角色2：</span></div>
+                <div class="inputbox">
+                    <select id="role_ids" name="role_ids" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization/roleList/'">
+                        <option value=""></option>
+                    </select>
+                    <input type="hidden" name="role_ids_changed" value="1">
+                </div>
+                <div class="inputbox">
+                    <span style="color:#e91835;padding-left:20px">删除</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>所属部门：</span></div>
+                <div class="inputbox">
+                    <select id="role_ids" name="role_ids" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization/roleList/'">
+                        <option value=""></option>
+                    </select>
+                    <input type="hidden" name="role_ids_changed" value="1">
+                </div>
+            </div>
+            <div class="row">
+                <div class="caption"><span>上级主管：</span></div>
+                <div class="inputbox">
+                    <select id="role_ids" name="role_ids" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization/roleList/'">
+                        <option value=""></option>
+                    </select>
+                    <input type="hidden" name="role_ids_changed" value="1">
+                </div>
+            </div>
+
+        </div>
+        <div class="form-actions" id='Organization-form-actions'>
+            <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="adjustDept()">保存</a>
+                <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $('.fir').click(function (){
+        $(this).css('display','none');
+        $('.sec').css('display','inline-block');
+    })
+</script>
+</body>
+</html>

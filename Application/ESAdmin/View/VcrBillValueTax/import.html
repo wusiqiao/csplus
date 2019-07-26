@@ -1,0 +1,28 @@
+<div class="detailcontainer" id="subject-import-detailcontainer" style="width:480px; height:120px;margin-top: 20px">
+    <form  action="{$Think.const.CONTROLLER_NAME}/import"  id="import-form" method="post" enctype="multipart/form-data" style="position: relative;">
+        <div style="margin: 10px 0px;float:left;width:100%">
+            <span style="float:left;padding: 5px;display: block">自开票明细表：</span>
+            <div style="position: relative;width:70%;float:left">
+            <input type="file" id="import-file" name="import_file" accept="*.xls,*.xlsx" class="easyui-file"/>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" style="margin-top: 10px">     
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="action_invoice_import()">导入</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog()">取消</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function action_invoice_import() {
+        var customer = $("#customer-info").text();
+        if (customer != "") {
+            action_import("import-file", "VcrBillValueTax/import", "确定导入客户【" + customer + "】的自开票明细表？", function (result) {
+                alert(result.remote_path + result.file_path);
+                setTimeout('getDataGrid("VcrBill").datagrid("reload")', 2000);
+            })
+        }
+    }
+</script>

@@ -1,0 +1,201 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/editor/css/style.css" rel="stylesheet" />
+<style>
+    .tableForm{width:100%; margin-left: 10px; position: relative}
+    .tableForm .row .caption{width: auto; text-align: left; }
+    .commision-type-border{border: 1px solid #ccc; padding: 5px; float:left;height: 30px;margin-right: 2px}
+</style>
+<div class="c-header" style="margin:0 15px">
+    <div class="tab-span" onclick="toggleIndex('DistributionUser')">分销用户</div>
+    <div class="tab-span" onclick="toggleIndex('ComBusinessCard')">推广二维码</div>
+    <div class="tab-span" onclick="toggleIndex('DistributionIncome')">佣金明细</div>
+    <div class="tab-span tab-span-on" onclick="toggleIndex('DistributionSetting')">佣金设置</div>
+</div>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="background: #fff;width:99%;border:1px solid #ccc;">
+    <form action="{$Think.const.CONTROLLER_NAME}/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" enctype="multipart/form-data" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-section">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>佣金设置</span></div>
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption"><span>启用分销：</span></div>
+                        <div class="inputbox">
+                            <input name="is_valid" class="easyui-validatebox"  type="checkbox" data-value="{$model.is_valid}" value="1" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption block" style="height: 40px; line-height: 40px"><span>佣金类型：</span></div>
+                        <div class="inputbox_x2">
+                            <div class="commision-type-border">
+                            <input name="commision_type" type="radio" value="0" data-options="validType:'number'" data-value="{$model.commision_type}"  default="true" />每单金额百分比
+                            <input name="commision_rate" class="easyui-validatebox commision-value commision-value-0"  value="{$model.commision_rate}"  style="width:100px" />&nbsp;%&nbsp;&nbsp;
+                            </div>
+                            <div  class="commision-type-border">
+                            <input name="commision_type" type="radio" value="1" data-value="{$model.commision_type}"  />每单固定佣金
+                            <input name="commision_amount" class="easyui-validatebox commision-value commision-value-1" data-options="precision:2,validType:'number'" value="{$model.commision_amount}" readonly style="width:100px" />&nbsp;元&nbsp;&nbsp;
+                            </div>
+                            <div  class="commision-type-border">
+                            <input name="commision_type" type="radio" value="2" data-value="{$model.commision_type}" />服务个性化设置
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row commision-activity-period">
+                        <div class="caption"><span>启用日期：</span></div>
+                        <input name="activity_start" class="easyui-datebox easyui-validatebox" data-options="formatter:formatDate" value="{$model.activity_start}" />
+                        －<input name="activity_end" class="easyui-datebox easyui-validatebox" data-options="formatter:formatDate" value="{$model.activity_end}" />
+                        <span style="color:red">（启用开始和结束日期如果为空，表示永久有效）</span>
+                    </div>
+                    <div class="row commision-product-setting" style="text-align: center;width:90%;">
+                        <div style="width:100%; text-align: right"><span style="color:red">（<开始时间>和<结束时间>如果为空，表示永久有效）</span></div>
+                        <table class="gridtable detail-table">
+                            <thead>
+                            <tr><th style="display: none">服务编号</th><th>启用</th><th>服务名称</th><th>佣金类型</th><th>开始时间</th><th>结束时间</th></tr>
+                            </thead>
+                            <tbody>
+                            <volist name="model.product_commisions" id="vo">
+                            <tr>
+                                <td  style="display: none"><input name="product[]" value="{$vo.product_id}" /><input name="product_title_{$vo.product_id}" value="{$vo.product_title}" /></td>
+                                <td>
+                                    <input name="prd_is_valid_{$vo.product_id}" class="easyui-validatebox prd_is_valid"  type="checkbox" data-value="{$vo.is_valid}"  value="1"/>
+                                </td>
+                                <td>{$vo.product_title}</td>
+                                <td>
+                                    <input name="prd_commision_type_{$vo.product_id}" class="prd_commision_type prd-commision" type="radio" value="0" data-value="{$vo.commision_type}" default="true"/>订单金额百分比
+                                    <input name="prd_commision_rate_{$vo.product_id}" class="easyui-validatebox prd-commision-value prd-commision-value-0 prd-commision"  value="{$vo.commision_rate}" placeholder="%" style="width:100px" />&nbsp;
+                                    <input name="prd_commision_type_{$vo.product_id}" class="prd_commision_type prd-commision" type="radio" value="1" data-value="{$vo.commision_type}" />固定金额
+                                    <input name="prd_commision_amount_{$vo.product_id}" class="easyui-validatebox prd-commision-value prd-commision-value-1 prd-commision"  value="{$vo.commision_amount}" readonly placeholder="元" style="width:100px" />
+                                </td>
+                                <td>
+                                    <input name="prd_activity_start_{$vo.product_id}" class="easyui-datebox easyui-validatebox prd-commision" data-options="formatter:formatDate" value="{$vo.activity_start}" />
+                                </td>
+                                <td>
+                                    <input name="prd_activity_end_{$vo.product_id}" class="easyui-datebox easyui-validatebox prd-commision" data-options="formatter:formatDate" value="{$vo.activity_end}" />
+                                </td>
+                            </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>解冻时效</span></div>
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption"><span>解冻时间：</span></div>
+                        <div class="inputbox_2x">
+                            <input name="frozen_type" type="radio" value="0" data-value="{$model.frozen_type}"  default="true" />手动
+                            <input name="frozen_type" type="radio" value="1" data-value="{$model.frozen_type}"  />开始服务后
+                            <input name="frozen_type" type="radio" value="2" data-value="{$model.frozen_type}"  />完成服务后
+                            <input name="frozen_days" class="easyui-validatebox" data-options="precision:0,validType:'number'" value="{$model.frozen_days}" style="width:100px" />天&nbsp;&nbsp;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+    <div style="padding-right: 10px">
+        <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="saveComDistributionSetting()">保存</a>
+        </if>
+        <!--<a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog('[controller]')">关闭</a>-->
+        </div>
+    </div>        
+    </form>
+</div>
+<script type="text/javascript">
+    $(function () {
+        parseForm($("#{$Think.const.CONTROLLER_NAME}-detailcontainer"));
+        $("input[name=commision_type]").change(function(){
+            global_commision_type_change(this, true);
+        });
+        $(".prd_commision_type").change(function(){
+            prd_commision_type_change(this, true);
+        });
+        $(".prd_is_valid").click(function(){
+            initialComponent(this);
+        });
+        $(".prd_is_valid").each(function(){
+            initialComponent(this);
+        });
+        $("input[name=frozen_type]").change(function(){
+            global_frozen_type_change(this);
+        });
+        global_commision_type_change($("input[name=commision_type]:checked"), false);
+        global_frozen_type_change($("input[name=frozen_type]:checked"));
+    });
+
+    function global_frozen_type_change(target){
+        if ($(target).val() == "0"){
+            $("input[name=frozen_days]").attr("readonly", "readonly").val("");
+        }else{
+            $("input[name=frozen_days]").removeAttr("readonly");
+        }
+    }
+    function global_commision_type_change(target, resetVal){
+        $(".commision-value").attr("readonly", "readonly");
+        if (resetVal){
+            $(".commision-value").val("");
+        }
+        $(".commision-value-" + $(target).val()).removeAttr("readonly");
+        if ($(target).val() == "2"){ //个性化
+            $(".commision-activity-period").hide();
+            $(".commision-product-setting").show();
+        }else{
+            $(".commision-activity-period").show();
+            $(".commision-product-setting").hide();
+        }
+    }
+    function prd_commision_type_change(target, resetVal){
+        var prd_commision_value_target = $(target).parents("td").find(".prd-commision-value");
+        prd_commision_value_target.attr("readonly", "readonly");
+        if (resetVal){
+            prd_commision_value_target.val("");
+        }
+        $(target).parents("td").find(".prd-commision-value-" + $(target).val()).removeAttr("readonly");
+    }
+    function initialComponent(check_target){
+        if ($(check_target).prop("checked")){
+            $(check_target).parents("tr").find(".prd-commision").removeAttr("readonly").removeAttr("disabled");
+            var prd_commision_type_target = $(check_target).parents("tr").find(".prd_commision_type:checked");
+            prd_commision_type_change(prd_commision_type_target, false);
+        }else{
+            $(check_target).parents("tr").find(".prd-commision").attr("readonly", "readonly").attr("disabled","disabled");
+        }
+    }
+    function saveComDistributionSetting(){
+        showMaskLayer();
+        var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+        dataForm.form('submit', {
+            url: dataForm.attr("action"),
+            onSubmit:function(){
+                var validate = $(this).form('validate');
+                if (!validate){
+                    hideMaskLayer();
+                }
+                return validate;
+            },
+            success: function (ret) {
+                var result = $.parseJSON(removeJsonQuote(ret));
+                if (result.code === 0) {
+                    $.dialog.tips("保存成功！");
+                    //刷新窗体
+                    //dataForm.find("input[name=id]").val(result.message.id);
+                    //dataForm.attr("action", "{$Think.const.CONTROLLER_NAME}/update");
+                } else {
+                    $.dialog.tips(result.message);
+                }
+                hideMaskLayer();
+            }
+        });
+    }
+
+    function toggleIndex(url){
+        if(url != ""){
+            $.get(url, function(result){
+                $("#module-content .content").html("").append(result);
+                $.parser.parse("#module-content .content");
+            });
+        }
+    }
+</script>

@@ -1,0 +1,115 @@
+<script type="text/javascript">
+setMainContainerConfig("{$Think.const.CONTROLLER_NAME}", {
+    delete: {
+        click: function(frameId) {
+            var flag = 0;
+            var data = getGridSelections(frameId);
+            if (data.length === 0) {
+                $.dialog.tips('请选择删除项!');
+                return false;
+            }
+            $(data).each(function() {
+                if (this.user_count > 0) {
+                    flag = 1;
+                }
+            });
+            if (flag == 1) {
+                _delete(frameId, {}, "删除分组，分组内所有人员都将移至未分组")
+            } else {
+                _delete(frameId, {}, "确定要删除所选记录？")
+            }
+            
+        }
+    }
+});
+function format_edit(value, row){
+    return '<a onclick="showDetailForm(\'SysTargetGroup\','+row.id+',\'{$title}\')">编辑</a>';
+}
+</script>
+
+<div class="maincontainer" id="SysTargetGroup-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html" controller="SysTargetGroup" />
+    <tr>
+        <th field="ck" checkbox="true"></th>
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'value',width:300,align:'left'">{$Think.lang.FLD_VALUE}</th>
+        <!-- <th data-options="field:'count',width:300,align:'left'">{$Think.lang.FLD_COUNT}</th> -->
+        <th data-options="field:'user_count',width:300,align:'left'">{$Think.lang.FLD_USER_COUNT}</th>
+        <th data-options="field:'created_at',width:300,align:'left',formatter:formatDateTime">{$Think.lang.FLD_CREATED_AT}</th>
+        <th data-options="field:'operation',width:240,align:'left',formatter:format_edit">操作</th>
+    </tr>
+</thead>
+</table>
+<div id="SysTargetGroup-toolbar">
+    <div class="action-panel">
+        <div class="actions">
+            <if condition="($permissions.add eq 1) ">
+            <a href="javascript:void(0)" class="common-blue-btn detail-add" style="width:auto" plain="true" onclick="action_add('SysTargetGroup','{$title}')">新增分组</a>
+            </if>
+            <if condition="($permissions.detail eq 1) ">
+            <a href="javascript:void(0)" class="common-blue-btn detail-edit" style="width:auto;display:none" plain="true" onclick="action_detail('SysTargetGroup','{$title}')">修改</a>
+            </if>
+             
+            <if condition="($permissions.copy eq 1) ">
+            <a href="javascript:void(0)" class="common-blue-btn detail-copy" style="width:auto" plain="true" onclick="action_copy('SysTargetGroup','{$title}')">复制</a>
+            </if>
+            <if condition="($permissions.delete eq 1) ">
+            <a href="javascript:void(0)" class="common-red-btn detail-delete" style="width:auto" plain="true" onclick="action_delete('SysTargetGroup')">删除分组</a>
+            </if>
+            <!--<div class="btn-separator btn-search-separator"></div><a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-search" style="width:auto" icon="fa-caret-right fa-lg" plain ="true" onclick="action_search(this, 'SysTargetGroup')">查询</a>-->
+        </div>
+    </div>
+    <div class="search-panel">
+        <div class="search-action-panel">               
+            <a href="javascript:void(0)" class="common-blue-btn" plain ="true" onclick="doSearchQuery('SysTargetGroup')">查询</a>
+        </div>
+    </div>
+</div>
+<!--右键菜单-->
+<div id="box_SysTargetGroup" class="easyui-menu" style="width:120px;">
+    <if condition="($permissions.add eq 1) OR ($permissions._IS_ADMIN_ eq 1)">
+        <div onclick="action_add('SysTargetGroup','{$title}')" >新增</div>
+        <div class="menu-sep"></div>
+    </if>
+    <if condition="($permissions.detail eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+        <div onclick="action_detail('SysTargetGroup','{$title}')" >修改</div>
+        <div class="menu-sep"></div>
+    </if>
+
+    <if condition="($permissions.copy eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+        <div onclick="action_copy('SysTargetGroup','{$title}')">复制</div>
+        <div class="menu-sep"></div>
+    </if>
+
+    <if condition="($permissions.delete eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+        <div onclick="action_delete('SysTargetGroup')" >删除</div>
+    </if>
+</div>
+
+</div>
+<if condition="($permissions.batchAdd eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+    <div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+        <a href="javascript:void(0)" class="common-blue-btn" style="width:auto" plain="true" onclick="action_show_batch_add_dlg('{$Think.const.CONTROLLER_NAME}')">批量添加分组</a>
+    </div>
+</if>
+<script type="text/javascript">
+$(function() {
+    initial_easyui_grid("SysTargetGroup", "{$title}");
+    getDataGrid("{$Think.const.CONTROLLER_NAME}").bind("beforeDelete", function(event, data) {
+
+        if (data[0].id == 0) {
+            throw "该分组无法删除!";
+        }
+    });
+    // getDataGrid("{$Think.const.CONTROLLER_NAME}").bind("beforeDetail", function(event, data) {
+    //     if (data[0].id == 0) {
+    //         throw "该分组无法修改!";
+    //     }
+    // });
+    getDataGrid("{$Think.const.CONTROLLER_NAME}").bind("beforeCopy", function(event, data) {
+        if (data[0].id == 0) {
+            throw "该分组无法复制!";
+        }
+    });
+});
+</script>

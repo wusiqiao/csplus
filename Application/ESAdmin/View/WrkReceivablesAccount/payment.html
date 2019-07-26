@@ -1,0 +1,32 @@
+<div class="detailcontainer" style="width:300px;height:200px">
+    <form id="payment-form">
+    <div class="row">
+        <input type="hidden" name="id" value="{$model.id}">
+        <input type="hidden" name="attach_group" value="{$model.attach_group}">
+        <p>账户名称：<input type="text" class="easyui-validatebox" readonly="true" name="account_name" value="{$model.account_name}"></p>
+        <p>出款金额：<input type="text" class="easyui-validatebox" name="amount" value="{$model.amount}"></p>
+        <p>备注附件：<a class="common-blue-btn" onclick="showAttachment()">查看</a></p>
+    </div>
+    </form>
+	<div align="center">
+		<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="paymentSave()">确认</a>
+		<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>	
+	</div>
+</div>
+<script>
+    function paymentSave() {
+        var data = $('#payment-form').serialize();
+        // showMaskLayer();
+        $.post("/WrkReceivablesAccount/payment/id/{$model.id}",data,function(result) {
+            // hideMaskLayer();
+            $.dialog.tips(result.message);
+            if (result.code == 0) {
+                searchAction();
+            	closeDialog("dlg-payment");
+            }
+        }, "json");
+    }
+    function showAttachment(){
+        openAttachmentForm('出款附件', [{text:'出款附件',attach_group:'{$model.attach_group}'}]);
+    }
+</script>

@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>编辑器</title>
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/common.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/index.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/editor-min.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/guoyoo.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/jquery.jgrowl.css">
+        <link rel="stylesheet" type="text/css" media="all" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/emoji.css">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/lrtk.css" />
+        <link href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/ueditor.css" type="text/css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/codemirror.css">
+		<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/jquery.range.css">
+		<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/set-width.css">
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery-1.10.2.min.js"></script>
+        <script src="__ROOT__/{$Think.APP_PATH}/Public/lhgdialog/dialog.min.js?skin=idialog"></script>
+        <!-- <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/fn.js"></script> -->
+        <!--[if lt IE 9]>
+            <script src="js/html5.js"></script>
+        <![endif]-->
+        <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/bootstrap.min.js" type="text/javascript" charset="utf-8" ></script>
+        <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/codemirror.js" type="text/javascript" defer="defer"></script>
+        <script>
+            var BASEURL = "";
+            var current_editor;
+            var current_active_v3item = null;
+            var isout = "false";
+            var isnew = "";
+        </script>
+        <style>
+            #right-fix-tab{width:32px;position:absolute;right:0px;}
+            #right-fix-tab li{width:30px;background:rgba(58,51,50,0.5);border:0 none;color:#FFF;width:30px;font-size:14px;}
+            #color-plan .nav-tabs > li > a{padding:5px;color: #efefef;border: 0 none;}
+            #color-plan .nav-tabs > li > a:hover{background:transparent;color:#FFF;}
+            #color-plan .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {background-color: #000;color: #FFF;border: 0 none;}
+            #more-popover-content .btn-xs{font-size:12px;padding:2px 2px;width:64px;margin:2px;height:20px;margin:1px auto;border: 0 none;background: transparent;color: #FFF;border: 1px solid #FFF;}
+            #more-popover-content .btn-xs:hover{ background-color:rgb(213,149,69);color:#FFF;}
+            table#xtbn{width:386px}
+            table#xtbn tr{line-height:2}
+            .span-hot{position: absolute;background-color: #ed603a;color: #ffffff;top: 420px;font-size: 12px;border-radius: 5px;padding: 1px;}
+            .span-hot2{position: absolute;background-color: #ed603a;color: #ffffff;top: 100px;font-size: 12px;border-radius: 5px;padding: 1px;}
+        </style>
+        <style id="edui-customize-v3BgDialog-style">.edui-default .edui-for-v3BgDialog .edui-dialog-content  {width:600px;height:300px;}
+        </style>
+        <style id="edui-customize-v3BdBgDialog-style">.edui-default .edui-for-v3BdBgDialog .edui-dialog-content  {width:800px;height:400px;}
+        </style>
+
+        <style type="text/css">
+            .STYLE2 {color: #FF0000}
+        </style>
+    </head>
+
+    <body style="overflow-y: hidden; overflow-x: auto;">
+
+        <div id="full-page" class="bg small-height" style="min-width: 1200px; margin-top: 10px; height: 100%;">
+            <div class="box p-r" style="margin-top: 10px;"><!--box start-->
+                <div class="fl w0 p-r">
+                    <div class="w1 fl">
+                        <div class="n1">分类</div>
+                        <ul class="n1-1" style="height: 280px;" id="image-text-list">
+                            <volist name="list" id="vo">
+                                <li class="image-text-cate {$vo.active}" data-value="{$vo.id}">
+                                    <a href="javascript:;">{$vo.name}</a>
+                                </li>                           
+                            </volist>
+                        </ul>
+                    </div>
+
+                    <!-- left-bar -->
+                    <div class="w2 fl" style="background:#FFF">
+                        <div class="n2 ttt">
+                            <a href="/" target="_blank"><font color="#000000" id="current-image-text-title"></font></a>
+                        </div>
+
+                        <div id="insert-style-list" class="item tab-content" style="height: 281px;">
+                            <!-- 标题 -->
+                            <div id="style-title" class="tab-pane active">  
+
+                                <div id="title-list" class="ui-portlet clearfix "  data-type="2">
+                                    <ul id="loader" class="editor-template-list ui-portlet-list">                                    
+                                    </ul>
+                                </div>			
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w3 fl">
+                        <div class="editor2 p-r fl" style="height: 280px;">
+                        	<!--editor2 start-->
+                        	<menu id="set-imgwidth" class="set-imgwidth" style="height: 40px;">		
+				        		<li>		
+				        			<span class="prop-name">宽度</span>
+				        			<div id="fill-item" class="fill-item">
+				        				<input class="bubble-slider" type="number" min="0" max="640" data-color="#fff" value="">
+				        				<div class="bubble-slider-wrap">
+				        					<div class="demo">
+												<input type="hidden" class="single-slider" value="100" />
+											</div>
+				        				</div>
+				        			</div>			
+				        		</li>	
+				        	</menu>
+                            <div id="editor" class="edui-default" style="width: 498px; height: 264px;"></div>
+                            <div class="menu">
+                                <div id="cancel" class="menu-item" title="撤销" onclick="cancel_edit()">撤销</div>
+                                <div id="clear-editor" class="menu-item" title="清空编辑器内容">清空</div> 
+                                <div id="html-see" class="menu-item"  data-toggle="modal" data-target="#myModalsee" title="模拟预览">预览</div>
+                                <div id="scon" class="menu-item"  title="每一条保存为一个单独素材">逐条保存</div> 
+                                <div id="scon_merge" class="menu-item" title="整体保存成一个模板">合并保存</div> 
+                            </div>
+                        </div><!--editor2 end-->
+                    </div>
+                </div>
+            </div><!--box end-->
+        </div>
+
+        <section id="color-plan" style="width:100px;position:fixed;top:128px;right:-5px;height:320px;text-align: center;">
+            <div class="panel panel-primary" style="border:0 none;background: transparent;">
+                <ul class="nav nav-tabs" role="tablist" id="right-fix-tab">
+                    <li role="presentation">
+                        <a data-toggle="#color-choosen" href="#color-choosen" aria-controls="home">配色图</a>
+                    </li>
+                    <li role="presentation">
+                        <a data-toggle="#color-choosen" href="#color-choosen" aria-controls="home">点此切换本面板</a>
+                    </li>
+                </ul>
+                <div class="tab-content" style="position:absolute;right:32px;padding: 10px 0px !important;width:100px;padding:0;background:rgba(58,51,50,0.5);">
+                    <div role="tabpanel" class="tab-pane active" id="color-choosen">
+                        <div class="xiuxiu" style="background:rgba(58,51,50,0.5);border:0 none;color:#fff;">
+                            <a href="#" target="_blank" title="">◢ 快捷面板 ◣</a>
+                        </div>
+                        <div class="panel-body" style="padding:0;background:rgba(58,51,50,0.5);width:100px;">
+                            <div style="margin:5px 15px;color:#FFF;line-height:32px;text-align: center;position:relative;">
+                                <input id="custom-color-text" class="colorPicker form-control" style="font-size: 12px; width: 80px; color: rgb(34, 34, 34); padding: 4px 8px; height: 24px; line-height: 16px; background-color: rgb(239, 112, 96);" value="#EF7060">
+                            </div>
+
+                            <div style="margin:0 0;color:#dad9d8;line-height:32px;text-align: center;">
+                                <label style="cursor:pointer;">
+                                    <input style="margin-top:8px;" type="checkbox" id="replace-color-all" value="1"> 全文换色</label>
+                            </div>
+                            <ul id="favor-colors" class="clearfix" style="list-style:none;padding:0 10px 0px;margin:0 0;">
+                            </ul>
+                            <hr style="margin:2px 20px;border-color:#ddd;">
+                            <ul class="clearfix" style="list-style:none;padding:0 10px 10px;margin:0 0;">
+                                <li class="color-swatch" style="background-color: #ac1d10"></li>
+                                <li class="color-swatch" style="background-color: #d82821;"></li>
+                                <li class="color-swatch active" style="background-color: #ef7060;"></li>
+                                <li class="color-swatch" style="background-color: #fde2d8;"></li>
+                                <li class="color-swatch" style="background-color: #d32a63;"></li>
+                                <li class="color-swatch" style="background-color: #eb6794;"></li>
+                                <li class="color-swatch" style="background-color: #f5bdd1;"></li>            
+                                <li class="color-swatch" style="background-color: #ffebf0;"></li>
+                                <li class="color-swatch" style="clear:left;background-color: #e2561b;"></li>
+                                <li class="color-swatch" style="background-color: #ff8124;"></li>
+                                <li class="color-swatch" style="background-color: #fcb42b;"></li>
+                                <li class="color-swatch" style="background-color: #feecaf;"></li>
+                                <li class="color-swatch" style="clear:left;background-color: #0c8918;"></li>
+                                <li class="color-swatch" style="background-color: #80b135;"></li>
+                                <li class="color-swatch" style="background-color:#c2c92a;"></li>
+                                <li class="color-swatch" style="background-color:#e5f3d0;"></li>
+                                <li class="color-swatch" style="clear:left;background-color: #1f877a;"></li>
+                                <li class="color-swatch" style="background-color: #27abc1;"></li>
+                                <li class="color-swatch" style="background-color: #5acfe1;"></li>
+                                <li class="color-swatch" style="background-color: #b6f2ea;"></li> 
+                                <li class="color-swatch" style="clear:left;background-color:#374aae;"></li>
+                                <li class="color-swatch" style="background-color:#1e9be8;"></li>
+                                <li class="color-swatch" style="background-color:#59c3f9;"></li>
+                                <li class="color-swatch" style="background-color:#b6e4fd;"></li>
+                                <li class="color-swatch" style="clear:left;background-color:#5b39b4;"></li>
+                                <li class="color-swatch" style="background-color: #4c6ff3;"></li>
+                                <li class="color-swatch" style="background-color:#91a8fc;"></li>
+                                <li class="color-swatch" style="background-color:#d0dafe;"></li>
+                                <!-- 紫色 -->
+                                <li class="color-swatch" style="clear:left;background-color:#8d4bbb;"></li>
+                                <li class="color-swatch" style="background-color: rgb(166, 91, 203);"></li>
+                                <li class="color-swatch" style="background-color:#cca4e3;"></li>
+                                <li class="color-swatch" style="background-color: rgb(190, 119, 99);"></li>
+                                <li class="color-swatch" data-color="#efefef" style="clear:left;background-color:#3c2822;"></li>
+                                <li class="color-swatch" style="background-color:#6b4d40;"></li>
+                                <li class="color-swatch" style="background-color:#9f887f;"></li>
+                                <li class="color-swatch" style="background-color:#d7ccc8;"></li>
+                                <li class="color-swatch" style="background-color: #212122;"></li>
+                                <li class="color-swatch" style="background-color: #757576;"></li>
+                                <li class="color-swatch" style="background-color: #c6c6c7"></li>
+                                <li class="color-swatch" style="background-color: #f5f5f4"></li>
+                            </ul>
+                            <ul><!-- qq --></ul>
+                        </div>
+                    </div> 
+                </div>
+            </div>        
+        </section>
+        <div id="bccg" class="modal fade" tabindex="9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">保存草稿</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-save" method="post" >                            
+                            <div class="form-group">
+                                <input type="hidden" value="" name="id">
+                                <label for="message-text" class="control-label">内容:</label>
+                                <div style="border:1px solid #ccc;padding:20px;">
+                                    <div id="tbcov" style="height:320px;overflow-y:scroll;"></div>
+                                    <textarea  id="savecontent1" name="content1" style="display:none"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="savewx" >保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!--预览框  -->  
+        <!-- Modal -->
+        <!-- sample modal content -->
+        <div id="myModal" class="modal fade" tabindex="9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">保存编辑内容</h4>
+                        <div>
+                            <em style="color:#8c8c8c;font-style:normal;font-size:12px;">2015-08-10</em>
+                            <a style="font-size:12px;color:#607fa6" href="javascript:void(0);" id="post-user"></a> 
+                        </div>
+                    </div>                   
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        <div class="modal fade" id="paragraph-setting" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" style="width:600px;margin-top:20px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="border:0 none">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">×</span>
+                            <span class="sr-only">关闭</span>
+                        </button>
+                        <h4 class="modal-title">段落设置</h4>
+                    </div>
+                    <div class="modal-body" style="overflow: hidden;padding: 0;margin: 10px;">
+                        <form class="form-horizontal">
+                            <div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">行高</label>
+                                        <div class="col-sm-7 controls">
+                                            <input class="form-control" value="1.5em" id="paragraph-lineHeight" type="text">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">字体</label>
+                                        <div class="col-sm-7 controls">
+                                            <select class="form-control" id="paragraph-fontFamily">
+                                                <option value="微软雅黑">微软雅黑</option>
+                                                <option value="宋体">宋体</option>
+                                                <option value="楷体">楷体</option>
+                                                <option value="黑体">黑体</option>
+                                                <option value="隶书,SimLi">隶书</option>
+                                                <option value="arial">arial</option>
+                                                <option value="sans-serif">sans-serif</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">字号</label>
+                                        <div class="col-sm-7 controls">
+                                            <input class="form-control" placeholder="字号" value="14px" id="paragraph-fontSize" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">首行缩进</label>
+                                        <div class="col-sm-7 controls">
+                                            <input class="form-control" id="paragraph-textIndent" value="2em" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">段前距</label>
+                                        <div class="col-sm-7 controls">
+                                            <input class="form-control" id="paragraph-paddingTop" value="5px" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">段后距</label>
+                                        <div class="col-sm-7 controls">
+                                            <input class="form-control" id="paragraph-paddingBottom" value="5px" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+                    <div class="modal-footer text-right">
+                        <button type="button" onclick="applyParagraph('active');" class="btn btn-primary" data-dismiss="modal">应用本样式</button>
+                        <button type="button" onclick="applyParagraph('all');" class="btn btn-warning" data-dismiss="modal">应用全文</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- sample modal content -->
+        <div id="myModalsee" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="myModalLabel">预览（提示：如文章太长，请按下鼠标滚轮，上下拉动预览）</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div style="border:0px solid #ccc;padding:20px;">
+                                <div id="previews">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!--adend-->
+
+
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/ueditor.config.js"></script>
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/ueditor.all.js"></script>
+        <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/gjs02.js" type="text/javascript"></script>
+        <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery.jcrop.js"></script>
+        <link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}Public/editor/css/jquery.jcrop.css" type="text/css">
+
+
+
+        <!--[if lt IE 9]>
+          <script src="js/html6.js"></script>
+          <![endif]-->
+        <script src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/gjs01.js" type="text/javascript"></script>
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/less-1.7.0.min.js"></script>
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/clipboard.min.js"></script>
+
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/instoo.js"></script>
+        <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/jquery.range.js"></script>
+        <div id="success" style="display:none;">
+            <div>复制成功</div>
+        </div>
+
+        <a href="#" id="toTop" style="display: none;"><span id="toTopHover"></span>To Top</a>
+
+        <script type="text/javascript"  src="__ROOT__/{$Think.MODULE_PATH}Public/editor/js/su.js"></script>    
+
+        <script>
+            function cancel_edit() {
+                UE.getEditor('editor').execCommand("undo");
+            }
+            UE.getEditor('editor').ready(function () {
+                var current_editor = UE.getEditor('editor');
+                current_editor.addListener('contentChange', function () {
+                    $("#previews").html(current_editor.getContent());
+                    $("#tbcov").html(current_editor.getContent());
+                });
+            });
+            function loadImageTextTemplate(cateItem) {
+                if ($(cateItem).length > 0) {
+                    $("#current-image-text-title").text($(cateItem).text() + "（双击添加）");
+                    $(".editor-template-list").html("");
+                    var id = $(cateItem).attr('data-value');
+                    $("input[name=id]").val(id);
+                    $.post("/ComImageText/getDetail", {id: id}, function (ret) {
+                        if (ret.code == 0) {
+                            $(ret.message).each(function () {
+                                var $li = $("<li class=\"col-xs-12 brush\" hs-imagetext-id=\"" + this.id + "\">" +
+                                        "<span style=\"position:absolute;top:5px;right:5px;color:#fff;background: #4e82f7;border:1px solid red;padding:2px;z-index:1\">删除</span>" +
+                                        "<div class=\"wrap\">" + this.content + "</div>" +
+                                        "</li>");
+                                var detail_id = this.id;
+                                $li.find("span").click(function () {
+                                    var msg = "确定删除？";
+                                    if (confirm(msg) == true) {
+                                        $.post("/ComImageText/removeDetail", {detail_id: detail_id}, function (ret) {
+                                            if (ret.code == 0) {
+                                                $li.remove();
+                                            }
+                                            ;
+                                            showSuccessMessage(ret.message);
+                                        }, "json");
+                                    }
+                                });
+                                $(".editor-template-list").append($li);
+                            });
+                        }
+                    }, "json");
+                }
+            }
+            $(function () {
+                $(".image-text-cate").click(function () {
+                    $("#image-text-list li").removeClass("active");
+                    $(this).addClass("active");
+                    loadImageTextTemplate(this);
+                });
+                $("#scon").click(function () {
+                    saveTemplate(0);
+                });
+                $("#scon_merge").click(function () {
+                    saveTemplate(1);
+                });
+
+                function saveTemplate(is_merge) {
+                    var msg = (is_merge==1)?"确定合并所有内容并保存成一个模板？":"确定拆分内容并保存成多个成素材？";
+                    if (confirm(msg) == true) {
+                        var content = UE.getEditor('editor').getContent();
+                        var parent_id = $("input[name=id]").val();
+                        if (parent_id) {
+                            var data = {is_merge: is_merge, parent_id: parent_id, "content": content.replace(/\"/g, "'")};
+                            $.post("/ComImageText/updateDetail", data, function (ret) {
+                                if (ret.code == 0) {
+                                    $("#bccg").modal("hide");
+                                    showSuccessMessage("保存完成");
+                                    loadImageTextTemplate($("#image-text-list li.active"));
+                                }
+                            }, "json");
+                        } else {
+                            showErrorMessage("模板编号为空，不能保存！");
+                        }
+                    }
+                }
+                ;
+                loadImageTextTemplate($("#image-text-list li.active"));
+            });
+			
+			function getPercent(){
+				if(current_active_v3item){
+					var oWidth = current_active_v3item.width();
+				}else {
+					alert('请选择图片');
+				}
+				
+				var per = (oWidth / 460).toFixed(2);
+				if(per === 1){
+					$('.pointer-label').css('left',130 + 'px');
+					$('.pointer-label').html(100);
+					$('.pointer').css('left',144 + 'px');
+				} else {
+					$('.pointer-label').css('left',144 * per + 'px');
+					$('.pointer-label').html(100 * per);
+					$('.pointer').css('left',144 * per);
+				}
+				$('.single-slider').val(per);
+			}
+			
+			function setImgWidth(e){
+				var oWidtWrap = $('#set-imgwidth');
+				var a = 1;
+				var imgWidth = 460;
+				getPercent();
+				$('#set-imgwidth').toggle();
+				$(document).on('click',function(e){
+					if(a){
+						oWidtWrap.offset({ top: e.pageY + 20 , left: e.pageX - 250 });
+						a = 0;
+					} 
+			   });
+			}
+			
+			$(function() {
+				$('.single-slider').jRange({
+					from: 0,
+					to: 100,
+					step: 1,
+					scale: [0, 25, 50, 75, 100],
+					format: '%s',
+					width: 150,
+					showLabels: true,
+					showScale: false
+				});
+			});
+			
+			
+        </script>
+    </body>
+</html>

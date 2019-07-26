@@ -1,0 +1,89 @@
+<script type="text/javascript">
+    function format_name(value){
+        return `<div style="max-width: 190px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function format_icon(value){
+        return `<div style="max-width: 190px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function format_file(value){
+        return `<div style="max-width: 110px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function format_show_state(value, row) {
+        var scale_text = ["显示", "隐藏"];
+        return scale_text[parseInt(value)];
+    }
+    function format_time(value){
+        return timestampToTime(value,'Y年m月d日 H:i');
+    }
+    function timestampToTime(timestamp,str) {
+        var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        Y = date.getFullYear();
+        m = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1);
+        d = date.getDate();
+        H = date.getHours();
+        i = date.getMinutes();
+        return `<div title="${str.replace('Y',Y).replace('m',m).replace('d',d).replace('H',H).replace('i',i)}">${str.replace('Y',Y).replace('m',m).replace('d',d).replace('H',H).replace('i',i)}</div>`;
+    }
+    function formatcategorycolumn(value, row, index){
+        if (row.parent_id == 0 || row.parent_id == null) {
+            return formatUpDown('{$Think.const.CONTROLLER_NAME}','#{$Think.const.CONTROLLER_NAME}-datagrid', row);
+        }
+        return '';
+    }
+</script>
+<style>
+    .maincontainer{
+        height: 100%;
+    }
+</style>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th data-options="field:'id',hidden:true">id</th>
+        <th data-options="field:'name',width:200,align:'left',formatter:format_name" sortable="true">{$Think.lang.ENCLOSURE_NAME}</th>
+        <th data-options="field:'icon',width:200,align:'left',formatter:format_icon">{$Think.lang.ENCLOSURE_ICON}</th>
+        <th data-options="field:'enc_url',width:120,align:'left',formatter:format_file">{$Think.lang.ENCLOSURE_FILE}</th>
+        <th data-options="field:'is_hidden',width:100,align:'left',formatter:format_show_state">{$Think.lang.ENCLOSURE_IS_HIDDEN}</th>
+        <th data-options="field:'created_at',width:180,align:'left',formatter:format_time">{$Think.lang.ENCLOSURE_CREATED_AT}</th>
+        <th data-options="field:'updated_at',width:180,align:'left',formatter:format_time">{$Think.lang.ENCLOSURE_UPDATED_AT}</th>
+        <if condition="($permissions.copyto eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+        <th data-options="field:'company_name',width:120,align:'left'">公司名称</th>
+        </if>
+        <th data-options="field:'updown',width:60,align:'center',formatter:formatcategorycolumn">移动</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<if condition="($permissions.copyto eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+    <div id="{$Think.const.CONTROLLER_NAME}-action-extend">
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:auto" icon="fa fa-download fa-lg" plain="true" onclick="action_show_copydlg('{$Think.const.CONTROLLER_NAME}')">复制到...</a><div class="btn-separator"></div>
+    </div>
+    <div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+        <table class="search-table">
+            <tr>
+                <th>{$Think.lang.ENCLOSURE_NAME}：</th>
+                <td>
+                    <input name="ql-name" class="easyui-validatebox filter-field" />
+                </td>
+                <th>{$Think.lang.FLD_COMPANY_NAME}：</th>
+                <td>
+                    <select name="q-branch_id" class="chosen-select filter-field" data-options="empty_line:true,all:true,search_key_url:'SysBranch/keyNameList/'">
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+</if>
+<script>
+    $(function () {
+        getDataGrid("{$Think.const.CONTROLLER_NAME}").bind("beforeDetail", function (event, data, action) {
+            if (data[0].get_count > 0) {
+                throw "选中的优惠卷已有人领取,不能修改!";
+            }
+        });
+    });
+    //    function beforeDetail(data,action){
+    //        if(data[0].get_count > 0){
+    //            throw "选中的优惠卷已有人领取,不能修改!";
+    //        }
+    //    }
+</script>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .ui_content{
+            padding: 0 !important;
+        }
+        .wrap{
+            width: 800px;
+        }
+        .topBox{
+            padding-top: 35px;
+            background: #f6f9fe;
+            text-align: center;
+        }
+        .topBox p{
+            margin-top:0;
+        }
+        .topBox span{
+            display: inline-block;
+            user-select: none;
+        }
+        .imgBox{
+            display: flex;
+            width: 145px;
+            margin: auto;
+        }
+        .tabBox .imgBox img{
+            padding: 3px 0;
+            width: 36px;
+            height: 36px;
+        }
+        .info span{
+            display: block;
+            margin-left: 15px;
+            line-height: 21px;
+            text-align: left;
+        }
+        .tabBox table .link{
+            width: 36px;
+            height: 15px;
+        }
+        .tabBox table td{
+            padding: 10px 0;
+        }
+        .tabBox table p{
+            margin: 0;
+            line-height: 25px;
+        }
+        .form-actions{
+            margin: 40px 0 25px;
+        }
+         /* 保存按钮 */
+         .btn_save_blue{
+            display: inline-block;
+            width: 84px;
+            height:34px;
+            line-height: 34px;
+            text-align: center;
+            background-color: #529bfd;
+            color: #fff;
+            padding: 0px 10px;
+            margin: 5px 10px;
+            cursor: pointer;
+        }
+        .btn_save_blue:hover{
+            background-color: #6eacfe;
+        }
+        /* 关闭按钮 */
+        .btn_close_gray{
+            display: inline-block;
+            width: 84px;
+            height:34px;
+            line-height: 34px;
+            text-align: center;
+            padding: 0px 10px;
+            margin: 5px 10px;
+            border:1px solid #d3d3d3;
+            cursor: pointer;
+        }
+        .btn_close_gray:hover{
+            border:1px solid #6eacfe;
+        }
+    </style>
+    <link href="/{$Think.APP_PATH}Public/css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        function formatUser(value,row){
+            var html = `<p>`+row.name+`</p>
+                        <p style="color:#0b95ff">`+row.contact+`</p>`;
+            return html;
+        }
+        function formatImg(value,row){
+            var html = `<img class="link" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/link.png" alt="">`;
+            return html;
+        }
+        function formatCompany(value,row){
+            var html = `<p>公  司：<span>`+row.company_name+`</span></p>
+                        <p>联系人：<span>`+row.linkman+`</span></p>
+                        <p>手机号：<span style="color:#0b95ff">`+row.contact+`</span></p>`;
+            return html;
+        }
+
+    </script>
+</head>
+<body>
+    <div class="wrap">
+        <div class="topBox">
+            <p>
+<i class="fa fa-exclamation-circle" style="color:red;" aria-hidden="true"></i>点击“开始匹配”按钮，系统将自动检测出预留手机号相同的个人微信用户和公司联系人，并快速进行绑定操作</p>
+            <p><span class="btn_bg_blue" onclick="queryMatch()">开始匹配</span></p>
+        </div>
+        <div style="height:340px;width: 100%" id="match-div">
+            <table id="match-datagrid" style="display: table-column" class="easyui-datagrid datagrid" data-options="url:'ComPotential/matchView/type/init'">
+                <thead>
+                    <tr>
+                        <th data-options="field:'ck',checkbox:true"></th>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'company_id',hidden:true"></th>
+                        <th data-options="field:'linkman',width:250,align:'left',formatter:formatUser">个人微信用户</th>
+                        <th data-options="field:'img',width:150,align:'left',formatter:formatImg">&nbsp;</th>
+                        <th data-options="field:'name',width:300,align:'left',formatter:formatCompany">公司联系人</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="tabBox">
+<!--             <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" class="css-checkbox">
+                            <label  class="css-label">
+                                <span class="txt">全选</span>
+                            </label>
+                        </th>
+                        <th>个人微信用户</th>
+                        <th></th>
+                        <th>公司联系人</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="css-checkbox">
+                            <label  class="css-label">
+                                <span class="txt"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <span class="imgBox">
+                                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/picture.png" alt="">
+                                <span class="info">
+                                    <span class="name">爱情骗子</span>
+                                    <span class="tel">18254553636</span>
+                                </span>
+                            </span>
+                        </td>
+                        <td>
+                            <img class="link" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/link.png" alt="">
+                        </td>
+                        <td>
+                            <p>
+                                <span>公司：</span><span>厦门晖晟网络科技有限公司</span>
+                            </p>
+                            <p>
+                                <span>联系人：</span><span>18020602020</span>
+                            </p>
+                            <p>
+                                <span>手机号：</span><span>18020602020</span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="css-checkbox">
+                            <label  class="css-label">
+                                <span class="txt"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <span class="imgBox">
+                                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/picture.png" alt="">
+                                <span class="info">
+                                    <span class="name">爱情骗子</span>
+                                    <span class="tel">18254553636</span>
+                                </span>
+                            </span>
+                        </td>
+                        <td>
+                            <img class="link" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/link.png" alt="">
+                        </td>
+                        <td>
+                            <p>
+                                <span>公司：</span><span>厦门晖晟网络科技有限公司</span>
+                            </p>
+                            <p>
+                                <span>联系人：</span><span>18020602020</span>
+                            </p>
+                            <p>
+                                <span>手机号：</span><span>18020602020</span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="css-checkbox">
+                            <label  class="css-label">
+                                <span class="txt"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <span class="imgBox">
+                                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/picture.png" alt="">
+                                <span class="info">
+                                    <span class="name">爱情骗子</span>
+                                    <span class="tel">18254553636</span>
+                                </span>
+                            </span>
+                        </td>
+                        <td>
+                            <img class="link" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/header/link.png" alt="">
+                        </td>
+                        <td>
+                            <p>
+                                <span>公司：</span><span>厦门晖晟网络科技有限公司</span>
+                            </p>
+                            <p>
+                                <span>联系人：</span><span>18020602020</span>
+                            </p>
+                            <p>
+                                <span>手机号：</span><span>18020602020</span>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table> -->
+        </div>
+        <div class="form-actions" id='Organization-form-actions' style="height:auto;">
+            <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="saveMatch()">保存</a>
+                <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()">关闭</a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    var vue = new Vue({
+        el:"#match",
+        data:{
+            match:[]
+        },
+        methods:{
+            
+        }
+    });
+    function queryMatch() {
+        $("#match-datagrid").datagrid({
+            url:'ComPotential/matchView/type/search'
+        });
+        //$.post("/ComPotential/matchView/type/search",function(result) {
+            $('#match-datagrid').datagrid('reload');
+        //}, "json");
+    }
+    function saveMatch() {
+        var rows = $("#match-datagrid").datagrid("getSelections");
+        var user_ids = [];
+        var company_ids = [];
+        // console.info(rows);
+        if (rows.length > 0) {
+            for(var i=0;i<rows.length;i++)
+            {
+                user_ids.push(rows[i].id);
+                company_ids.push(rows[i].company_id);
+            }
+            $.post("/ComPotential/matchView",{ branch_ids: company_ids, user_ids: user_ids },function(result) {
+               $.dialog.tips(result.message,3.5);
+               queryMatch();
+               // closeDialog("dlg-bindCompany");
+            }, "json");
+        }else{
+            $.dialog.tips("请至少勾选一条数据");
+        }
+    }
+    </script>
+</body>
+</html>

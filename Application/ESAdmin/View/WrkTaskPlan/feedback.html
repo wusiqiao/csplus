@@ -1,0 +1,217 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/attachment.css" rel="stylesheet" />
+<style>
+.caption{
+    width: 100px;
+    height: 32px;
+    line-height: 32px;
+    text-align: right;
+    color: #333;
+}
+.btn-item-remove {
+    color: #fff;
+    background-color: red;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-weight: 700;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+#feedback-topbox::-webkit-scrollbar {
+    width: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+}
+
+#feedback-topbox::-webkit-scrollbar-thumb {
+    background: #b8b4b4;
+    border-radius: 4px;
+}
+</style>
+
+<div id="feedback" style="width: 500px;">
+    <div id="feedback-topbox" style="height: 460px;overflow-y: auto;overflow-x: hidden;">
+        <form id="tbjd" >
+            <input type="hidden" name="contract_id" value="{$model.contract_id}" />
+            <input type="hidden" name="branch_id" value="{$model.branch_id}" />
+            <input type="hidden" name="company_id" value="{$model.company_id}" />
+            <input type="hidden" name="attach_group" value="{$model.attach_group}" />
+            <input type="hidden" name="task_plan_id" value="{$model.task_plan_id}" />
+            <input type="hidden" name="progress_type_name" value="沟通反馈" />
+        <div style="display: flex;margin: 10px 0;">
+            <div class="caption">反馈内容：</div>
+            <div>
+                <textarea style="resize: none;border: 1px solid #d3d3d3;margin-left: 8px;" name="progress_situation" id="progress_situation" cols="40" rows="5" placeholder="请输入反馈内容"></textarea>
+            </div>
+        </div>
+
+        <div class="info-line important-input upload-file" style="display: flex;align-items: center;margin: 10px 0;">
+            <span class="info-title caption" style="margin-right: 10px;">上传文件</span>
+            <div style="position: relative;overflow: hidden;">
+                <div class="btn-speed" style="margin: 0;">点击上传文件</div>
+                <input name="attachment" type="hidden">
+                <input type="file" accept="application/msword,application/vnd.ms-powerpoint" class="input-upload"
+                    multiple="multiple" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;opacity: 0;">
+            </div>
+        </div>
+        <ul class="attachment-container" style="display: flex;flex-wrap: wrap;">
+            <li v-for="(file,index) in files" @click="removeFile(index)" :title="file.file_name" style="margin: 10px 5px;">
+                <div :class="'img-wrap attachment-icon attachment-icon-'+ file.type"
+                    style="position: relative;overflow: hidden;width: 60px;height: 60px;background-size: 100% 100%;">
+                    <span class="btn-item-remove">X</span>
+                </div>
+                <div style="width: 60px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                    {{file.file_name}}</div>
+            </li>
+        </ul>
+        <div class="info-line important-input upload-image" style="display: flex;align-items: center;margin: 10px 0;">
+            <span class="info-title caption" style="margin-right: 10px;">上传图片</span>
+            <div style="position: relative;overflow: hidden;">
+                <div class="btn-speed" style="margin: 0;">点击上传图片</div>
+                <input name="images" type="hidden">
+                <input type="file" accept="image/*" class="input-upload" multiple="multiple"
+                    style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;opacity: 0;">
+            </div>
+        </div>
+        <ul style="display: flex;flex-wrap: wrap;">
+            <li v-for="(image,index) in images" :title="image.file_name" style="margin: 10px 5px;border: 1px solid #d3d3d3;">
+                <div style="position: relative;overflow: hidden;width: 70px;height: 70px;">
+                    <span @click="removeImage(index)" class="btn-item-remove">X</span>
+                    <img style="width: 100%;height: 100%;" :src="image.src" alt="" />
+                </div>
+            </li>
+        </ul>
+
+        </form>
+    </div>
+    <div style="padding: 20px 0;text-align: center;">
+        <div class="btn-speed tjbtn" @click="postAttachmentData()">提报反馈</div>
+        <div class="btn-cancel" onclick="closeDialog('feedback')">关闭</div>
+    </div>
+</div>
+
+<script>
+    var reporting = new Vue({
+        el: "#feedback", data: {
+            images:[],
+            files:[],
+        },
+        methods: {
+            removeImage:function(index){
+                this.images.splice(index,1);
+            },
+            removeFile:function(index){
+                this.files.splice(index,1);
+            },
+            postAttachmentData:function(){
+                var content = $('#progress_situation').val();
+                if(content <= 0){
+                    $.dialog.tips('请输入反馈的内容');
+                    return;
+                }
+
+                showMaskLayer();
+
+                $(".tjbtn").removeClass('btn-speed').addClass('btn-speed-disable');
+
+                var formData = new FormData();
+                var attach_group = `{$model.attach_group}`;
+                if (attach_group != undefined && attach_group != "") {
+                    formData.append("attach_group", attach_group);
+                }
+                var images = this.images;
+                $(images).each(function (index) {
+                    formData.append(this.type+"-file-"+index, this.file);
+                });
+                var files = this.files;
+                $(files).each(function (index) {
+                    formData.append(this.type+"-file-"+index, this.file);
+                });
+                var filesArray = [];
+                var imageUrl = '';
+                var fileUrl = '';
+                $.ajax({
+                    url: "/ComAttachment/append",
+                    type: 'POST',
+                    data: formData,
+                    dataType:'json',
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        // layer.load(2, {shade: [0.1,'#fff'] });
+                    },
+                    success: function (response) {
+                        // layer.closeAll();
+
+                        if (response.code == 0) {
+                            // layer.msg("上传完成");
+                            $("input[name='images']").val(response.message.onlyimages);
+                            $("input[name='attachment']").val(response.message.onlyfiles);
+
+                            doReporting();
+
+                        }else{
+
+                            hideMaskLayer();
+
+                            // layer.msg('上传失败');
+                        }
+                    },
+                    error:function () {
+                        hideMaskLayer();
+
+                        $(".tjbtn").removeClass('btn-speed-disable').addClass('btn-speed');
+                        // layer.closeAll();
+                        // layer.msg('上传失败');
+                    }
+                });
+            },
+        },
+    })
+
+    $(".input-upload").change(function(){
+        var oFiles = $(this).get(0).files;
+        $(oFiles).each(function () {
+            var _file = this;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(this);
+                reader.onload = function () {
+                    reporting.images.push({type:"image",src: reader.result, file: _file, file_name: _file.name})
+                }
+            }else{
+                var type = "unknown";
+                if (/(\.xls|\.xlsx)$/i.test(this.name)) {
+                    type = "excel";
+                }else{
+                    if (/(\.doc|.\.docx)$/i.test(this.name)) {
+                        type = "word";
+                    }else{
+                        if (/(\.txt)$/i.test(this.name)) {
+                            type = "txt";
+                        }
+                    }
+                }
+                reporting.files.push({type:type,src: "", file: _file, file_name: _file.name})
+            }
+        });
+    });
+
+
+    function doReporting() {
+        $.post("WrkTaskPlan/addSchedule", $("#tbjd").serialize(), function (result) {
+            if (result.code == 0){
+                hideMaskLayer();
+
+                closeDialog();reloadTaskItem();
+            } else {
+                hideMaskLayer();
+
+                $(".tjbtn").removeClass('btn-speed-disable').addClass('btn-speed');
+                $.dialog.tips(result.message);
+            }
+        }, 'json')
+    }
+</script>

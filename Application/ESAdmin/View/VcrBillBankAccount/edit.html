@@ -1,0 +1,130 @@
+<input name="bill_flag" type="hidden" value="{$Think.const.FLAG_BILL_BANK}" />
+<div class="property-content">
+    <input name="bank_bill_type"  type="hidden" value="{$model.bank_bill_type}">
+    <ul class="input-contents">
+        <include file="error" />
+        <li class="third-width">
+            <div class="title required">录入日期</div>
+            <div class="input">
+                <input type="text" name="bill_date" style="width:100%" class="easyui-datebox easyui-validatebox" data-options="required:true,formatter:formatDate" value="{$model.bill_date}">
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title required">录入单号</div>
+            <div class="input">
+                <input type="text" name="bill_no" class="easyui-validatebox" data-options="required:true,formatter:formatDate" value="{$model.bill_no}">
+            </div>
+        </li>
+        <li  class="third-width">
+            <div class="title required">会计期间</div>
+            <div class="input">
+                <!--<input type="text" name="source_date" style="width:100%"  class="easyui-datebox easyui-validatebox" data-options="formatter:formatDate" value="{$model.source_date}">-->
+                <select class="chosen-select" style="width:100%;" name="accounting_section" data-value="{$model.accounting_section}"></select>
+            </div>
+        </li>
+        <li>
+            <div class="title required">银行账号</div>
+            <div class="input">
+                <!--<input type="text" name="source_date" style="width:100%"  class="easyui-datebox easyui-validatebox" data-options="formatter:formatDate" value="{$model.source_date}">-->
+                <div class="inputbox">
+                    <select name="bank_subject" class="chosen-select" style="width:100%" data-options="all:true,value:'{$model.bank_subject}',textField:'name',idField:'id',search_key_url:'VcrSubject/getBankSubject/'">
+                    </select>
+                </div>
+            </div>
+        </li>
+        <li class="third-width">
+            <div class="title"><span>类型</span></div>
+            <div class="input">
+                <fieldset style="border:1px #ccc solid;margin:0;border-radius:5px;padding:4px">
+                    <label style="padding: 0px 5px"><input name="source_flag" type="radio" value="{$Think.const.FLAG_SOURCE_PAY}" data-value="{$model.source_flag}">付款</label>
+                    <label style="padding: 0px 5px"><input name="source_flag" type="radio" value="{$Think.const.FLAG_SOURCE_INCOME}" data-value="{$model.source_flag}">收款</label>
+                </fieldset>
+            </div>
+        </li>
+        <li class="third-two-width">
+            <div class="title trade-partner"><span>对方单位（若对方是银行，可不填）</span></div>
+            <div class="input">
+                <input type="text" class="easyui-validatebox" name="name" data-options="required:false" placeholder="" value="{$model.name}">
+            </div>
+        </li>
+        <li>
+            <div class="title">资金用途</div>
+            <div class="input">
+                <textarea name="memo" rows="4" placeholder="">{$model.memo}</textarea>
+            </div>
+        </li>
+        <li class="detail-list" style="padding-top: 15px;">
+            <fieldset style="border:1px #ccc solid;margin:0;border-radius:5px"><legend>明细</legend>
+                <div class="contents"></div>
+            </fieldset>
+            <div style="text-align: center;width:100%;position: relative;text-align: center;padding: 10px">
+                <a href="javascript:void(0)" class="easyui-linkbutton" style="padding: 2px;color:blue;border:1px solid blue"  plain="true" icon="fa-plus fa-lg" onclick="action_add_bank_items()">继续添加明细</a>
+                <div style="position: absolute; top:10px; right:20px;"><span>合计：</span><span class="total-all" style="color:red">0</span>元</div>
+            </div>
+        </li>
+
+    </ul>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<div id="item-detail-tmp" style="display: none">
+    <div class="content content-{%index%}" style="padding: 5px;float:left;background: #F5F5F5;margin-bottom: 5px;border-bottom: 1px #ccc solid;width:98%">
+    <div style="position: relative;width:100%">
+        <div class="title required">{%index%}、款项内容</div>
+        <div style="position: absolute;right:10px;top:0px;color:red;cursor: pointer" onclick="$.dialog.confirm('确认删除当前项？', function(){$('.content-{%index%}').remove();calcTotalSum();})">删除</div>
+        <div class="input">
+            <input type="text" class="easyui-validatebox" name="goods_name[]" disabled data-options="required:true" placeholder="" value="{%goods_name%}">
+        </div>
+    </div>
+    <div style="height: auto;">               
+         <div  style="width:22%;float: left; margin-right: 2%">
+            <div class="title tax-type-amount-title required">金额</div>
+            <div class="input">
+                <input type="text" class="easyui-validatebox input-total-amount" name="amount[]" disabled data-options="required:true,precision:2,validType:'number'" placeholder="" value="{%amount%}">
+            </div>  
+        </div>                                     
+    </div> 
+   </div>
+</div>
+
+<script type="text/javascript">
+        $(function () {
+            initBillBankView();
+            loadBankItems('{$model.items}');
+            calcTotalSum();
+        });
+        function calcTotalSum() {
+            var total = 0;
+            $(".detail-list .input-total-amount").each(function () {
+                var val = $(this).val();
+                if (val != "") {
+                    total = total + parseFloat(isNaN(val) ? 0 : val);
+                }
+            })
+            $(".total-all").text(total.toFixed(2));
+        }
+        function action_add_bank_items() {
+            var datas = [{goods_name: '',  amount: ''}];
+            loadBankItems(JSON.stringify(datas));
+        }
+
+        function loadBankItems(json) {
+            var items;
+            if (json != '') {
+                 items = JSON.parse(json);
+            }else{
+                 items = [{goods_name: '',  amount: ''}];
+            }
+            $(items).each(function (index) {
+                this.index = $(".detail-list fieldset .content").length + 1;
+                var $tpl = $(parseTemplate($("#item-detail-tmp .content"), this));
+                $(".detail-list .contents").append($tpl);
+                $(".detail-list .contents").find("input").removeAttr("disabled"); //如果不这样设置，validate的时候会报错
+                $tpl.find(".input-total-amount").change(function () {
+                    calcTotalSum();
+                });
+            });
+            $(".detail-list .content").each(function () {
+                calcTotalSum();
+            });
+        }
+</script>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+    <style>
+        .sList .datebox + .datebox
+        {
+            display:none;
+        }
+
+        input[readonly]
+        {
+            background-color:#f7f5f5 !important;
+            cursor:not-allowed;
+        }
+
+        .grey
+        {
+            background-color:#bfbfbf;
+            cursor:not-allowed;
+        }
+
+        .edit-tips
+        {
+            color:#e91835;
+            /* position: relative; */
+            display:inline-block;
+            /* left: 5px */
+            padding:3px 0 0 5px;
+        }
+
+        .icon-query-new
+        {
+            background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_query_new.png');
+            background-size:100% 100%;
+            width:24px;
+            height:24px;
+            position:relative;
+            background-color:white !important;
+            top:8px;
+            left:10px;
+        }
+
+        .show_text
+        {
+            display:none;
+            position:absolute;
+            width:250px;
+            line-height:30px;
+            top:95px;
+            right:65px;
+            border:1px solid #666;
+            z-index:99;
+            background-color:whitesmoke;
+            color:#333;
+            padding:5px 10px;
+            text-align:center;
+        }
+
+        .red-point-another
+        {
+            height:11px;
+            width:11px;
+            border-radius:16px;
+            display:inline-block;
+            text-align:center;
+            font-size:0.12em;
+            color:#fff;
+            background:red;
+            position:absolute;
+            top:20px;
+            left:5px;
+            z-index:99;
+            -webkit-animation:twinkling 1s infinite ease-in-out;
+        }
+
+        .details-section .upload
+        {
+            border-radius:0px !important;
+            background:#529bfd !important;
+        }
+
+        li.search-choice
+        {
+            border-radius:1px !important;
+            background-color:#fff !important;
+            color:#333 !important;
+            border:1px solid #d3d3d3 !important;
+            margin:5px !important;
+            width:84px !important;
+        }
+
+        .chosen-choices
+        {
+            border-radius:1px;
+        }
+
+        input[type=checkbox].css-checkbox + label.css-label
+        {
+            top:0px;
+            left:0px;
+        }
+
+        .inputbox input
+        {
+            float:left;
+            width:270px;
+            height:30px;
+        }
+
+        .caption
+        {
+            float:left;
+            width:160px;
+            line-height:30px;
+            text-align:right;
+            color:#676767;
+        }
+
+        hr
+        {
+            height:1px;
+            border:none;
+            border-top:1px solid #d3d3d3;
+        }
+
+        .details-section
+        {
+            background:none;
+            text-indent:0;
+        }
+
+        .txt
+        {
+            padding-left:13px;
+            font-weight:700;
+            border-left:5px solid #529bfd;
+        }
+
+        .options-table
+        {
+            border-collapse:collapse;
+            margin:0 0;
+            text-align:center;
+        }
+
+        .options-table td,
+        .options-table th
+        {
+            border:1px solid #cad9ea;
+            color:#666;
+            height:30px;
+        }
+
+        .options-table thead,
+        .options-table th
+        {
+            background-color:#f6f7fa;
+        }
+
+        .options-table tr:nth-child(even)
+        {
+            background:#fbfafa;
+        }
+
+        .search-table .validatebox-text
+        {
+            width:270px;
+        }
+
+        .no-readonly input
+        {
+            background:none !important;
+            cursor:text !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="details-wrap">
+        <div style="overflow-y:scroll;height:500px;width: 1117px;">
+            <div class="details-section">
+                <div class="details-content">
+                    <p style="height: 23px;line-height: 23px;margin: 23px 0 37px 38px;">
+                        <span class="txt">合同详情</span>
+                        <span class="drop-down"></span>
+                    </p>
+                    <div class="search-table" style="display:flex;margin:22px 0;">
+                        <div style="flex: 1">
+                            <div class="caption">公司：</div>
+                            <div class="inputbox">
+                                <input name="company_name" class="easyui-validatebox" readonly="true" value="{$model.company_name}" />
+                            </div>
+                        </div>
+                        <div style="flex: 1">
+
+                        </div>
+                    </div>
+                    <div class="search-table" style="display:flex;margin:22px 0;">
+                        <div style="flex: 1">
+                            <div class="caption">合同名称：</div>
+                            <div class="inputbox">
+                                <input name="name" class="easyui-validatebox" readonly="true" value="{$model.name}">
+                            </div>
+                        </div>
+                        <div style="flex: 1">
+                            <div class="caption">客户任务负责人：</div>
+                            <div class="inputbox">
+                                <input name="customer_name" class="easyui-validatebox" readonly="true" value="{$model.customer_name}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>合同服务类型：</span></div>
+                    </div>
+                    <table class="options-table" id="product_options" style="width: 95%;margin-left: 35px;margin-bottom: 10px">
+                        <thead>
+                            <tr>
+                                <td>序号</td>
+                                <td>服务类型1</td>
+                                <td>服务类型2</td>
+                                <td>服务选项1</td>
+                                <td>服务选项2</td>
+                                <td>服务选项3</td>
+                            </tr>
+                        </thead>
+                        <foreach name="model.product_options" item="option">
+                            <tr>
+                                <td>{$option.id}</td>
+                                <td>{$option.type1}</td>
+                                <td>{$option.type2}</td>
+                                <td>{$option.attributes1}</td>
+                                <td>{$option.attributes2}</td>
+                                <td>{$option.attributes3}</td>
+                            </tr>
+                        </foreach>
+                    </table>
+                </div>
+                <div class="details-content">
+                    <p style="height: 23px;line-height: 23px;margin: 23px 0 23px 38px;">
+                        <span class="txt">任务计划</span>
+                        <span class="drop-down"></span>
+                    </p>
+                    <if condition="$pv eq 8 || $pv eq 4">
+                    <a style="margin: 0px 0 10px 38px;" href="javascript:void(0)" class="modal-save btn-update btn-confirm" plain="true" onclick="addTask();">添加任务</a>
+                    </if>
+                    <table class="options-table" id="task_plan" style="width: 95%;margin-left: 35px;margin-bottom: 10px">
+                        <thead>
+                            <tr>
+                                <td>序号</td>
+                                <td>任务名称</td>
+                                <td>任务状态</td>
+                                <td>商户负责人</td>
+                                <td>开通客户端</td>
+                                <td>操作</td>
+                            </tr>
+                        </thead>
+                        <foreach name="tasks" key="k" item="task">
+                            <tr>
+                                <td>{$k+1}</td>
+                                <td>{$task.task_name}</td>
+                                <td>
+                                    <if condition="$task['status'] eq 1">
+                                        服务中
+                                        <elseif condition="$task['status'] eq 2" />
+                                        冻结中
+                                        <else />
+                                        已结束
+                                    </if>
+                                </td>
+                                <td>{$task.leader_name}</td>
+                                <td>
+                                    <if condition="$task['is_to_customer'] eq 1">是
+                                        <else />否
+                                    </if>
+                                </td>
+                                <td>
+                                    <if condition="$pv eq 8 || $pv eq 4">
+                                    <a style="margin: 5px 2px;padding: 0 10px;" href="javascript:void(0)" class="modal-save btn-update btn-speed" plain="true" onclick="editTask({$task.id});">编辑任务</a>
+                                    </if>
+                                    <a style="margin: 5px 2px;padding: 0 10px;" href="javascript:void(0)" class="modal-save btn-update btn-speed" plain="true" onclick="taskInfo({$task.id});">任务进度</a>
+                                </td>
+                            </tr>
+                        </foreach>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-actions" id="WrkAgreement-form-actions1" style="padding:0;height: auto;border-top: 1px solid #d3d3d3;">
+        <div class="actions-sysdefault" style="padding: 20px 0;">
+            <a href="javascript:void(0)" class="btn-cancel" id="cancel" plain="true" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</body>
+<script>
+
+    var pv = "{$pv}";
+
+    function addTask() {
+        if (pv == 8 || pv == 4){
+            closeDialog();
+            createDialog('WrkTaskPlan/addTask/contract_id/{$model.id}', '添加任务', 'addTask');
+        } else {
+            $.dialog.alert("您没有操作权限！");
+        }
+    }
+
+    function editTask(id) {
+        if (pv == 8 || pv == 4){
+            closeDialog();
+            createDialog('WrkTaskPlan/detail/id/'+id, '编辑任务', 'editTask')
+        } else {
+            $.dialog.alert("您没有操作权限！");
+        }
+    }
+
+    function taskInfo(id) {
+        if (!id){
+            return;
+        }
+        showMaskLayer();
+        $.post("WrkTaskPlan/getPermitValue", { id: id }, function (result) {
+            if (result.code == 0) {
+                createDialog('WrkTaskPlan/schedule/id/'+id,'任务进度','schedule');
+            } else {
+                $.dialog.alert(result.message);
+            }
+            hideMaskLayer();
+        }, 'json')
+    }
+
+</script>
+</html>

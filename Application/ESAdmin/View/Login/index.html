@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>系统登录</title>
+        <script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.js"></script>
+		<script src="__ROOT__/{$Think.APP_PATH}/Public/lhgdialog/lhgdialog.js?skin=idialog"></script>
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/css/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+		<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/style.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/login.css" rel="stylesheet" />
+        <link href="__ROOT__/{$Think.APP_PATH}/Public/easyui/themes/default/easyui.css" rel="stylesheet" />
+		<style>
+			.select_type{
+				width: 50%;
+				height: 30px;
+				color: grey;
+				text-align: center
+			}
+			.branch_user_name{
+				float: right;
+				margin-left: 10px;
+				width: 35%;
+				color: #cccccc;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+		</style>
+        <script type="text/javascript">
+            $(function () {
+                $("#verify_image").click(function () {
+                    $(this).attr("src", "/Login/verify");
+                    $("#message").html("");
+                });
+            });
+            function login() {
+                var login_type = $("#login_type").data("type");
+                if(login_type == "account"){
+                    var account = $("input[name=user_account]").val();
+                    var password = $("input[name=user_password]").val();
+                    var tips = "请输入正确的用户名和密码！";
+				}else{
+                    var account = $("input[name=mobile]").val();
+                    var password = $("input[name=login_code]").val();
+                    var tips = "请输入正确的手机号和验证码！";
+				}
+                // var verify_code = $("input[name=verify_code]").val();
+				if($.trim(account) == "" || $.trim(password) == ""){
+                    $.dialog.alert(tips);
+                    return false;
+				}
+                var remember_account = $(":checkbox[name=remember_account]").prop("checked")?1:0;
+                var login_user_type = $("input[name='login_user_type']:checked").val();
+                var user_id = $("input[name='branch']:checked").val();
+                $.post("/Login/login", {account: account, password: password, remember_account: remember_account,
+						login_user_type:login_user_type,user_id:user_id,login_type:login_type},
+                        function (ret) {
+                            if (ret.code === 1) {
+                                $.dialog.alert(ret.message);
+                            } else {
+                                if (ret.code == 2) {
+                                    $.get("/Index/toggleCom",
+                                        function (result, status) {
+											var dlg = $.dialog({title: "请选择要进入的公司", content:result, autoSize: true,lock: true,max: false,min: false});
+                                            parseExternalComponents(dlg.Dom.content)
+                                        }
+                                    );
+                                } else if(ret.code == 3){
+                                    var options = {title: "提示", content:"<div style='font-size: 15px;color: red'>未绑定任何公司，无法进行登录，请联系商家处理！</div>", autoSize: true,lock: true,max: false,min: false,button:[{name: '确定', callback: function () {}}]};
+                                    $.dialog(options);
+                                } else if(ret.code == 5){
+                                    //选择登陆商户时，手机号绑定多个账户，选择需要登陆的商户
+                                    var data = ret.data;
+                                    var html = "";
+                                    for(var i = 0;i < data.length;i++){
+                                        html += `<div class="row" style="width: 350px;margin-bottom: 10px"><label class="demo_label">` +
+                                            `<input class="css-checkbox" type="radio" name="branch" value="${data[i].user_id}" id="radio-${data[i].user_id}">` +
+                                            `<label class="css-label" for="radio-${data[i].user_id}">${data[i].branch_name}</label>`+
+                                            `</label><div class="branch_user_name" title="${data[i].user_name}">用户：${data[i].user_name}</div>`+`</div>`;
+									}
+                                    $("#branches").html(html).find("input[name='branch']").eq(0).attr("checked","checked");
+                                    var options = {title: ret.message, content:$("#select_login_branch").html(), autoSize: true,lock: true,max: false,min: false};
+                                    $.dialog(options);
+                                } else {
+                                    window.location.href = "__MODULE__/Index";
+								}
+                            }
+                        },
+                        "json"
+                        ).error(function (xhr, errorText, errorType) {
+                    $.dialog.alert(xhr.responseText)
+                });
+            }
+
+            function getPassword(){
+                $.get("/Login/getPassword",
+                    function (result, status) {
+                        var dlg1 = $.dialog({title: "找回密码", content:result, autoSize: true,lock: true,max: false,min: false});
+                        //parseExternalComponents(dlg1.Dom.content);
+                    }
+                );
+			}
+
+			function toggleLoginType(showType,hideType){
+                $("#"+showType).hide();
+                $("#"+hideType).show();
+                $("#login_"+showType).show();
+                $("#login_"+hideType).hide();
+                $("#login_type").data("type",showType);
+			}
+
+            function getSMS(obj) {
+                if($(obj).hasClass("disabled")){
+                    return false;
+				}
+                if (!(/^1[345678]\d{9}$/.test($('input[name=mobile]').val()))) {
+                    $.dialog.alert('请输入正确的11位手机号');
+                } else {
+                    $.ajax({
+                        url: "/Login/Check/",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "phone": $('input[name=mobile]').val(),
+                            "type": "login"
+                        },
+                        success: function (json) {
+                            if (json.result == '0') {
+                                settime(obj);
+                            } else {
+                                alert(json.msg);
+                                $(obj).removeClass("disabled");
+                                return false;
+                            }
+                        },
+                        beforeSend: function () {
+                            $(obj).addClass("disabled");
+                        },
+                        errors: function () {
+                            $(obj).removeClass("disabled");
+                        }
+                    });
+                }
+            }
+            var countdown = 60;
+            function settime(setbtn) {
+                if (countdown == 0) {
+                    $(setbtn).removeClass("disabled");
+                    $(setbtn).css("color", "#fff");
+                    $(setbtn).text("获取验证码");
+                    $(setbtn).removeClass("check");
+                    countdown = 60;
+                    return;
+                } else {
+                    $(setbtn).addClass("disabled");
+                    $(setbtn).css("color", "#e4e4e4");
+                    $(setbtn).text("重新发送(" + countdown + ")");
+                    countdown--;
+                }
+                setTimeout(function () {
+                    settime(setbtn);
+                }, 1000);
+            }
+        </script>
+    </head>
+    <body>
+    	<div class="login-wrap">
+    		<div class="top-bar">
+    			<div class="logo-part">
+
+    				<div class="logo">
+			            <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/logo/logo.png">
+			        </div>
+	    			<div>最懂财务公司的营销管理系统</div>
+    			</div>
+    			<div class="telephone">
+    				<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/telephone.png" alt="" />
+    			</div>
+    		</div>
+    		
+	        <div class="login-main">
+	        	<form method="post" action="Login/login" id="login-form">
+	    			<div class="welcome" style="font-size: 18px">欢迎登录，请选择您要登录的后台页面</div>
+	    			<div class="form-group" style="padding: 0 20px;height: 30px">
+						<div class="input-row" style="border: none">
+							<span class="select_type">
+								<input type="radio" name="login_user_type" id="type_company" value="1" class="css-checkbox" checked>
+								<label class="css-label" for="type_company">我是服务商</label>
+							</span>
+							<span class="select_type">
+								<input type="radio" name="login_user_type" id="type_customer" value="0" class="css-checkbox">
+								<label class="css-label" for="type_customer">我是客户</label>
+							</span>
+						</div>
+					</div>
+	    			<div class="form-group" style="padding: 0 20px">
+						<div id="login_account" >
+							<div class="input-row">
+								<i class="account"></i>
+								<input type="text" name="user_account" id="user_account" value="{$user_account}" placeholder="请输入用户名"/>
+							</div>
+							<div class="input-row">
+								<i class="password"></i>
+								<input type="password" name="user_password" id="user_password" placeholder="请输入密码"/>
+							</div>
+						</div>
+						<div id="login_sms" style="display: none">
+							<div class="input-row">
+								<i class="account"></i>
+								<input type="text" name="mobile" value="{$user_account}" placeholder="请输入手机号"/>
+							</div>
+							<div class="input-row">
+								<i class="password"></i>
+								<input type="text" name="login_code" placeholder="请输入验证码" style="width: 50%"/>
+								<a class="common-blue-btn get-code" onclick="getSMS(this)" style="padding: 0 9px;width: 90px">发送验证码</a>
+							</div>
+						</div>
+		    			<div class="check">
+							<input id="remember-account" name="remember_account" type="checkbox" <notempty name="user_account">checked</notempty> />
+		    				<label for="remember-account">保存用户名</label>
+							<div style="margin-left: 35%" onclick="getPassword()">找回密码</div>
+		    			</div>
+		    			<div class="login-btn" onclick="login()" style="margin-top: 20px">登录</div>
+	    			</div>
+					<div class="form-group" style="padding: 0 20px" id="login_type" data-type="account">
+						<div class="input-row" style="margin-top: 0">
+							<div class="select_type input-row" onclick="toggleLoginType('sms','account')" id="sms" style="border: none">
+								<img src="/Application/EShop/Public/images/login/login-btn-code.png" alt="">
+								验证码登录
+							</div>
+							<div class="select_type input-row" onclick="toggleLoginType('account','sms')" id="account" style="display: none;border: none">
+								<i class="account" style="margin-right: 10px"></i>
+								账号登录
+							</div>
+						</div>
+					</div>
+    			</form>
+    		</div>
+    		<div class="heart">
+    			<img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/img/animate.png" alt="" />
+    		</div>
+    	</div>
+		<div class="easyui-section" id="select_login_branch">
+			<div class="easyui-section-item">
+				<div class="row" style="width: 350px;margin-bottom: 10px" id="branches">
+					<!--<label class="demo_label">
+						<input class="css-checkbox" type="radio" name="branch" value="{$vo.id}" id="radio-{$vo.id}">
+						<label class="css-label" for="radio-{$vo.id}">{$vo.name}</label>
+					</label>-->
+				</div>
+			</div>
+			<div style="text-align: center">
+				<a href="javascript:void(0)" class="common-blue-btn" onclick="login()">确定</a>
+				<a href="javascript:void(0)" class="common-red-btn" onclick="$.dialog.focus.close();">取消</a>
+			</div>
+		</div>
+    </body>
+</html>

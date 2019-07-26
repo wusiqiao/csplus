@@ -1,0 +1,381 @@
+<style>
+    #tuwen-select-edit {
+        width: 980px;
+        height: 664px;
+    }
+
+    .tuwenselect-edit-bd {
+        width: 960px;
+        height: 590px;
+        margin: 20px 10px 0;
+    }
+
+    .tuwenselect-edit-ft {
+        width: 100%;
+        border-top: 1px solid #d3d3d3;
+        padding: 22px 0;
+        text-align: center;
+    }
+
+    .tuwenbox-item {
+        float: left;
+        position: relative;
+        width: 300px;
+        height: 224px;
+        margin: 0 10px;
+        box-sizing: border-box;
+        border: 1px solid #d3d3d3;
+        background-color: #ffffff;
+        cursor: pointer;
+    }
+
+    .tuwenbox-item-mask {
+        position: absolute;
+        z-index: 111;
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+
+    .tuwenbox-item-checked {
+        position: absolute;
+        width: 54px;
+        height: 38px;
+        top: calc(50% - 19px);
+        left: calc(50% - 27px);
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-checked.png");
+        background-size: 100% 100%;
+    }
+
+    #tuwen-box {
+        width: 100%;
+        min-height: 525px;
+    }
+
+    /* 图文 */
+    .tuwen-title {
+        padding: 10px;
+        margin: 0;
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .tuwen-img {
+        width: calc(100% - 20px);
+        background-color: rgb(241, 230, 215);
+        overflow: hidden;
+        margin: 0px 10px 5px;
+    }
+
+    .tuwen-lastupdata {
+        width: 148px;
+        margin-left: 10px;
+        font-size: 14px;
+        color: #929292;
+        background-color: white;
+    }
+
+    .tuwen-item {
+        padding: 5px 13px;
+        display: flex;
+        border-top: solid 1px #e7e7eb;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tuwen-item-title {
+        width: calc(100% - 75px);
+        height: 50px;
+        margin: 0;
+        padding: 0 5px;
+        font-size: 16px;
+        background-color: #d3d3d3;
+    }
+
+    .tuwen-item-img {
+        width: 50px;
+        height: 50px;
+        margin: 0px;
+        background-color: #368bfe;
+    }
+
+    .tuwen-item-more {
+        height: auto;
+        width: 100%;
+        position: absolute;
+        z-index: 77;
+        right: 0px;
+        background-color: #fff;
+        border-bottom: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+
+    .tuwen-item-more-box {
+        width: 100%;
+        height: auto;
+        border-bottom: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+
+    .tuwen-tool {
+        width: 100%;
+        height: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+<!-- 图文素材选择弹窗 -->
+<div id="tuwen-select-edit">
+    <!--<div class="tuwenselect-edit-hd">-->
+    <!--<span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">选择素材</span>-->
+    <!--<span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"-->
+    <!--onclick="$(`#tuwen-select-edit`).hide(); $(`#mask`).hide();">X</span>-->
+    <!--</div>-->
+    <div class="tuwenselect-edit-bd">
+        <!-- 图文搜索 -->
+        <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()"
+             style="margin: 0 10px 0 auto;">
+            <input style="width:300px;" id="search" type="text" placeholder="请输入图文标题进行查询" class="filter-field"
+                   name=""><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt=""
+                                onclick="">
+        </div>
+        <!-- 第一行图文 -->
+        <div id="tuwen-box">
+
+        </div>
+        <!-- 分页 -->
+        <div class="datagrid-pager pagination" style="padding: 0 10px;">
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                <tr>
+                    <td><select class="pagination-page-list">
+                        <option>6</option>
+                    </select></td>
+                    <td>
+                        <div class="pagination-btn-separator"></div>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)"
+                           class="l-btn l-btn-small l-btn-plain l-btn-disabled l-btn-plain-disabled" group=""
+                           id="">
+                                <span class="l-btn-left l-btn-icon-left">
+                                    <span class="l-btn-text l-btn-empty">&nbsp;</span>
+                                    <span class="l-btn-icon pagination-first">&nbsp;</span>
+                                </span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)"
+                           class="l-btn l-btn-small l-btn-plain l-btn-disabled l-btn-plain-disabled" group=""
+                           id="">
+                                <span class="l-btn-left l-btn-icon-left">
+                                    <span class="l-btn-text l-btn-empty">&nbsp;</span>
+                                    <span class="l-btn-icon pagination-prev">&nbsp;</span>
+                                </span>
+                        </a>
+                    </td>
+                    <td>
+                        <div class="pagination-btn-separator"></div>
+                    </td>
+                    <td><span style="padding-left:6px;">第</span></td>
+                    <td><input class="pagination-num" id="pagination-num" type="text" value="1" size="2"></td>
+                    <td><span style="padding-right:6px;" id="pagination-count">共30页</span></td>
+                    <td>
+                        <div class="pagination-btn-separator"></div>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                <span class="l-btn-left l-btn-icon-left"><span
+                                        class="l-btn-text l-btn-empty">&nbsp;</span>
+                                    <span class="l-btn-icon pagination-next">&nbsp;</span>
+                                </span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                <span class="l-btn-left l-btn-icon-left"><span
+                                        class="l-btn-text l-btn-empty">&nbsp;</span>
+                                    <span class="l-btn-icon pagination-last">&nbsp;</span>
+                                </span>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="pagination-info" id="material-count"></div>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+    <!-- 确认、取消 -->
+    <div class="tuwenselect-edit-ft">
+        <span class="btn-confirm" onclick="picTextChecked()">确认</span>
+        <span class="btn-cancel" onclick="closeDialog('material-news-dialog'); $(`#mask`).hide();">取消</span>
+    </div>
+</div>
+<script>
+    var material = '{$material}';
+    var total_page = 0;
+    var single_count = 6;
+    $(".search_ipt input").keyup(function () {
+        loadingMaterial(1);
+    });
+    loadingMaterial(1);
+    //加载函数
+    function pagination(response, page) {
+        var count = response.rows.length;
+        if ((single_count * (page - 1) + count) < response.total) {
+            $('.pagination-next,.pagination-last').parents('a').removeClass('l-btn-disabled l-btn-plain-disabled');
+        } else {
+            $('.pagination-next,.pagination-last').parents('a').addClass('l-btn-disabled l-btn-plain-disabled');
+        }
+        if (page > 1) {
+            $('.pagination-first,.pagination-prev').parents('a').removeClass('l-btn-disabled l-btn-plain-disabled');
+        } else {
+            $('.pagination-first,.pagination-prev').parents('a').addClass('l-btn-disabled l-btn-plain-disabled');
+        }
+        total_page = (Math.ceil(response.total / single_count));
+        $('#pagination-count').text('共' + total_page + '页');
+        $('#pagination-num').val(page);
+        if (page > total_page) {
+            $('#material-count').text('显示' + (single_count * (page - 1) + 1) + '到' + (single_count * page) + ',共' + response.total + '记录')
+        } else {
+            $('#material-count').text('显示' + (single_count * (page - 1) + 1) + '到' + (single_count * (page - 1) + count) + ',共' + response.total + '记录')
+        }
+    }
+    $('.pagination-first,.pagination-prev,.pagination-next,.pagination-last').on('click', function () {
+        if (!$(this).parents('a').hasClass('l-btn-disabled')) {
+            if ($(this).hasClass('pagination-first')) {
+                loadingMaterial(1);
+            } else if ($(this).hasClass('pagination-prev')) {
+                loadingMaterial(parseInt($('#pagination-num').val()) - 1);
+            } else if ($(this).hasClass('pagination-next')) {
+                loadingMaterial(parseInt($('#pagination-num').val()) + 1);
+            } else if ($(this).hasClass('pagination-last')) {
+                loadingMaterial(total_page);
+            }
+        }
+    })
+    $("#pagination-num").keyup(function () {
+        loadingMaterial($('#pagination-num').val() > 0 ? $('#pagination-num').val() : 1);
+    });
+    function loadingMaterial(page) {
+        var keyword = $('#search').val();
+        $('#tuwen-box').empty();
+        $.post('ComMaterialLibrary/list/material/' + material, {
+            page: page,
+            qlname: keyword,
+            syn_status: 10,
+            rows: single_count
+        }, function (response) {
+            pagination(response, page);
+            var media_id = $('input[name=media_id]').data('news');
+            if (response.rows.length > 0) {
+                for (let i = 0; i < response.rows.length; i++) {
+                    console.log(response.rows[i])
+                    if (response.rows[i].childrens.length > 1) {
+                        var first_children = 0;
+                        for (let j = 0; j < response.rows[i].childrens.length; j++) {
+                            if (j == 0) {
+                                first_children = response.rows[i].media_id;
+                                var isShow = media_id == response.rows[i].media_id ? '' : 'display:none;';
+                                var html = `<div class="tuwenbox-item" style="margin: 19px 10px;" data-id="${response.rows[i].media_id}">
+                                        <div class="tuwenbox-item-mask" style="${isShow}">
+                                            <div class="tuwenbox-item-checked"></div>
+                                        </div>
+                                        <p class="tuwen-title" title=${response.rows[i].childrens[0].title}>${response.rows[i].childrens[0].title}</p>
+                                        <div class="tuwen-img" style="height: 85px;">
+                                            <img src="${response.rows[i].childrens[0].local_thumb_url}" alt="">
+                                        </div>
+                                        <div class="tuwen-children">
+
+                                        </div>
+
+                                        <div class="tuwen-item-more">
+                                            <div class="tuwen-item-more-box"></div>
+                                            <div class="tuwen-tool">
+                                                <span class="tuwen-lastupdata">${response.rows[i].updated_at}</span>
+                                                <div>
+                                                    <span id="btn-iseen-0" class="icon-btn-iseen" title="更多内容"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="width:100%;height:30px;"></div>
+                                    </div>`;
+                                $('#tuwen-box').append(html)
+                            } else {
+                                var style = '';
+                                if (j > 1) {
+                                    style = "style=\"display:none\"";
+                                }
+                                var html_children = `    <div class="tuwen-item" ${style}>
+                                                <div class="tuwen-item-title" title="${response.rows[i].childrens[j].title}" style="background-color:#fff">${response.rows[i].childrens[j].title}</div>
+                                                <div class="tuwen-item-img">
+                                                    <img style="width: 100%;height: 100%;" src="${response.rows[i].childrens[j].local_thumb_url}" alt="">
+                                                </div>
+                                            </div>`;
+                                $('.tuwenbox-item[data-id=' + first_children + '] > .tuwen-children').append(html_children)
+                            }
+                        }
+
+                    } else {
+                        var isShow = media_id == response.rows[i].media_id ? '' : 'display:none;';
+                        var html = `<div class="tuwenbox-item"  style="margin: 19px 10px;"  data-id="${response.rows[i].media_id}">
+                                    <div class="tuwenbox-item-mask" style="${isShow}">
+                                    <div class="tuwenbox-item-checked"></div>
+                                    </div>
+                                    <p class="tuwen-title" title=${response.rows[i].childrens[0].title}>${response.rows[i].childrens[0].title}</p>
+                                    <div class="tuwen-img" style="height: 145px;">
+                                    <img style="width: 100%;height: 100%;" src="${response.rows[i].childrens[0].local_thumb_url}" alt="">
+                                    </div>
+                                    <div class="tuwen-tool">
+                                    <span class="tuwen-lastupdata">${response.rows[i].updated_at}</span>
+                                    </div>
+                                    </div>`;
+                        $('#tuwen-box').append(html)
+                    }
+                }
+            } else {
+                var html = `<div id="empty-notice" style="color: rgb(180, 180, 180);width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 140px;font-size: 20px">暂无数据</div>`;
+                $('#tuwen-box').append(html)
+            }
+
+        }, 'json')
+    }
+    // 图文素材选中效果
+    $("body").on("click", ".tuwenselect-edit-bd .tuwenbox-item", function () {
+        $(".tuwenselect-edit-bd").find(".tuwenbox-item-mask").hide();
+        $(this).find(".tuwenbox-item-mask").show();
+    })
+    // 图文选择后展示效果的功能
+    function picTextChecked() {
+        if ($('.tuwenbox-item-mask:visible').parent('.tuwenbox-item').length == 1) {
+            var obj = $('.tuwenbox-item-mask:visible');
+            obj.hide();
+            var html = '';
+            html = `<div class="tuwenbox-item" style="margin: 15px auto 15px 30px;" onclick="picTextSelect('{$obj}')">`;
+            html += obj.parent('.tuwenbox-item').html();
+            html += `</div>`;
+            console.log(html);
+            $("#{$obj}-picText").html(html);
+            $('input[name=media_id]').data('news', obj.parent('.tuwenbox-item').data('id'));
+            var materialId = obj.parent('.tuwenbox-item').data('id');
+            closeDialog('material-news-dialog');
+            $(`#mask`).hide();
+            typeof setSelectMaterial == 'function' ? setSelectMaterial(materialId, 20) : false;
+        } else {
+            $.dialog.tips('请选择一项图文素材')
+        }
+    }
+    
+</script>
+<style>
+    #tuwen-box {
+        width: 100%;
+        min-height: 525px;
+    }
+</style>

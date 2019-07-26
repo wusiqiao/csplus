@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background-color: #eeeeee">
+<style>
+    .template-wrap .main-tab {
+        display: flex;
+        justify-content: flex-start;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 3px;
+        border: 1px solid #4591fe;
+    }
+    .template-wrap .main-tab li {
+        flex: 1;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        color: #4591fe;
+        background-color: #eeeeee;
+        box-shadow: -1px 0px 0 #4591fe;
+    }
+    .template-wrap .main-tab li.active {
+        color: #ffffff;
+        background-color: #4591fe;
+    }
+    .media-list a {
+        display: flex;
+        justify-content: flex-start;
+        width: 100%;
+        color: #111111;
+        background-color: #ffffff;
+    }
+    .media-list a div.media-pic {
+        width: 121px;
+        height: 80px;
+        padding: 0px;
+    }
+    .media-list a .media-content {
+        width: 204px;
+        padding: 2px 15px;
+    }
+    .media-list a div.media-pic img {
+        width: 85px;
+        height: 65px;
+    }
+    .media-list a .media-content p {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        font-size: 10px;
+        line-height: 25px;
+        margin: 0;
+        color: #8f8f94;
+    }
+    .media-list a .media-content h3 {
+        font-size: 13px;
+        color: #323232;
+        font-weight: normal;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        line-height: 25px;
+        margin: 0;
+    }
+    .media-list a .media-content span {
+        font-size: 0.26rem;
+        color: #ff840b;
+    }
+    .link-div {
+        padding: .2rem .15rem;
+        display: flex;
+        background-color: #fff;
+    }
+    .link-div .link-show {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        flex: 1;
+        padding: .1rem;
+        background-color: #EEEEEE;
+        color: #ACACAC;
+        margin-right: .1rem;
+    }
+    .link-div .link-button {
+        display: -webkit-inline-box;
+        flex: .3;
+        border: 1px solid #87B8FA;
+        color: #87B8FA;
+        padding: .1rem;
+    }
+    .article-preview {
+        display: flex;
+        justify-content: flex-start;
+        width: 100%;
+        height: 79.36px;
+        padding: 10.24px 0;
+        color: #111111;
+    }
+    .article-preview img {
+        width: 30%;
+        height: 100%;
+        margin-right: .2rem;
+        max-height: 90px;
+    }
+    .preview-part {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: #0f0f0f;
+        width: 65%;
+    }
+    .preview-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        font-size: 12px;
+        line-height: 18px;
+    }
+    .preview-info {
+        display: flex;
+        justify-content: space-between;
+        color: #1375d3;
+        font-size: .24rem;
+    }
+    .preview-info .preview-icons {
+        display: flex;
+        justify-content: space-between;
+        width: 50%;
+    }
+    .preview-info .time {
+        color: #87888d;
+    }
+    .preview-info .preview-icons .share {
+        display: inline-block;
+        width: 10px;
+        height: 8px;
+        margin-left: .05rem;
+        background-image: url('/{$Think.APP_PATH}/EShop/Public/images/spread/icon-article-share.png');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+    .preview-info .preview-icons .eye {
+        display: inline-block;
+        width: 15px;
+        height: 9px;
+        margin-left: .05rem;
+        background-image: url('/{$Think.APP_PATH}/EShop/Public/images/spread/icon-eye.png');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+    .link-div {
+        padding: 8px 6px;
+        display: flex;
+        background-color: #fff;
+    }
+</style>
+<section class="template-wrap mt85" id="show" style="width: 350px;height: 600px;overflow-y: scroll;">
+    <ul class="main-tab">
+        <li  :class="actionClass(1) ? 'active' : ''" @click="actionToggle(1)">商品</li>
+        <li :class="actionClass(2) ? 'active' : ''" @click="actionToggle(2)">广告</li>
+        <li :class="actionClass(3) ? 'active' : ''" @click="actionToggle(3)">其他</li>
+    </ul>
+    <div v-if="actionClass(1)" style="margin-top: 15px;">
+        <div class="item-wrap media-list" v-for="product in products" style="margin-bottom: .2rem">
+            <a href="javascript:;">
+                <div id="" class="media-pic" >
+                    <img v-bind:src="product.product_pic" alt="">
+                </div>
+                <div class="title1 media-content">
+                    <h3 style="">{{product.product_title}}</h3>
+                    <p style="">{{product.product_desc}}</p>
+                    <span>{{product.view_price}}</span>
+                </div>
+            </a>
+            <div class="link-div">
+                <div class="link-show">{{product.url}}</div>
+                <div class="link-button" @click="addLink(product.url)">添加该链接</div>
+            </div>
+        </div>
+    </div>
+    <div v-if="actionClass(2)"  style="margin-top: 15px;">
+        <div  v-for="tweet in tweets" style="background-color: #fff;margin-bottom: .2rem;">
+            <div  class="item-wrap media-list article-preview" style="border-bottom:0">
+                <img :src="tweet.pic" alt="" />
+                <div class="preview-part">
+                    <div class="preview-title">{{tweet.title}}</div>
+                    <div class="preview-info">
+                        <div class="preview-icons">
+                            <div>
+                                <span class="eye"></span>
+                                <span>{{tweet.eye}}</span>
+                            </div>
+                            <div>
+                                <span class="share"></span>
+                                <span>{{tweet.share}}</span>
+                            </div>
+                        </div>
+
+                        <div class="time">{{tweet.time}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="link-div">
+                <div class="link-show">{{tweet.url}}</div>
+                <div class="link-button" @click="addLink(tweet.url)">添加该链接</div>
+            </div>
+        </div>
+    </div>
+    <div v-if="actionClass(3)"  style="margin-top: 15px;">
+        <div class="item-wrap media-list" v-for="other in others" style="margin-bottom: .2rem;background-color: #fff;">
+            <div style="padding: 4px 8px;font-size: 16px;">{{other.title}}</div>
+            <div class="link-div">
+                <div class="link-show">{{other.url}}</div>
+                <div class="link-button" @click="addLink(other.url)">添加该链接</div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#show',
+        data:{
+            action:1,
+            products:{$products},
+            tweets:{$tweets},
+            others:{$others}
+        },
+        methods:{
+            actionClass(inc){
+                return this.action == inc ? 'active' :'';
+            },
+            actionToggle(inc) {
+                console.log(inc);
+                this.action = inc
+            },
+            addLink(inc){
+                vue.url = inc;
+                vue.xcx_space_url = inc;
+                closeDialog('dlg-link-select')
+            }
+        },
+        computed:{
+
+        }
+    });
+
+
+</script>
+</html>

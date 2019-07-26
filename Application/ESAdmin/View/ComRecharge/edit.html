@@ -1,0 +1,219 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <link rel="stylesheet" href="__ROOT__/{$Think.MODULE_PATH}/Public/css/step.css">
+    <style>
+        .tableForm .row .caption{
+            width: 30%;
+            display: inline-block;
+            margin-left:0px;
+            vertical-align:middle;
+            text-align: right;
+        }
+        .chosen-container-multi .chosen-choices{
+            border: 1px solid #D4D4D4;
+        }
+        .chosen-container-active .chosen-choices{
+            border: 1px solid #D4D4D4;
+            box-shadow: 0 0 0 0.5px #D4D4D4 !important;
+        }
+        .chosen-container .chosen-drop{
+            border: 0;
+        }
+        .chosen-container .chosen-results{
+            max-height: 180px;
+        }
+        .common-input-two span.label {
+            display: inline-block;
+            width:  50%;
+            height: 34px;
+            line-height: 34px;
+            text-align: right;
+            color: #666666;
+        }
+        .form-button-group {
+            text-align: center;
+        }
+        .form-button-group .form-button-operation{
+            background-color: #368bfe;
+            border-radius: 3px;
+            color: #fff;
+            width: 83px;
+            height: 29px;
+            border: initial;
+        }
+        .form-button-group .form-button-close{
+            border: 1px solid #368bfe;
+            background-color: #fff;
+            width: 83px;
+            height: 29px;
+            border-radius: 3px;
+            color: #368bfe;
+        }
+    </style>
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform" style="width: 360px">
+        <div class="tableForm" style="width: 320px;">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <input name="attach_group"  type="hidden"  value="{$model.attach_group}">
+            <div class="common-input-wrap" style="padding:initial">
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.CAPITAL_ACCOUNT}：</span>
+                    <empty name="model.id">
+                        <input name="capital_account" class="easyui-validatebox filter-field" value=""  placeholder="请输入账户名称" />
+                        <else/>
+                        <input name="capital_account" class="easyui-validatebox filter-field" readonly value="{$model.capital_account}"  placeholder="请输入账户名称" />
+                    </empty>
+                </div>
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.RECHARGE_DATE}：</span>
+                    <input name="pay_time" id="day_start" value="{$model.pay_time}" style="border: solid 0px #368bfe;width: 37%;" class="easyui-datebox filter-field" data-options="editable:false" value="" />
+                </div>
+                <div class="common-input-two">
+                   <span class="label">{$Think.lang.RECHARGE_MONEY}：</span>
+                    <empty name="model.id">
+                        <input name="account" type="number"  class="easyui-validatebox"  data-options="required:true,precision:2" value="{$model.account}"/>
+                        <else/>
+                        <input name="account" type="number" readonly  class="easyui-validatebox" data-options="required:true,precision:2" value="{$model.account}"/>
+                    </empty>
+                </div>
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.RECEIVING_ACCOUNT}：</span>
+                    <select name="origin" class="easyui-validatebox" style="width: 37%;" id="origin">
+                        <volist name="receivables_account" id="vo">
+                            <option value="{$vo.id}" >{$vo.name}</option>
+                        </volist>
+                    </select>
+                </div>
+                <div class="common-input-two">
+                   <span class="label">{$Think.lang.RECHARGE_FEE}：</span>
+                    <input name="third_fee" type="number"  class="easyui-validatebox"  data-options="required:true,precision:2" value="0.00"/>
+                </div>
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.RECHARGE_ACTUAL_MONEY}：</span>
+                    <input  type="number" id="actual_money"  class="easyui-validatebox" value="0.00" readonly/>
+                </div>
+                    <div class="common-input-two">
+                    <span class="label">{$Think.lang.RECHARGE_REMARKS}：</span>
+                    <a href="javascript:void(0)" class="common-blue-btn" onclick="uploadAttachment()" >备注附件</a>
+                </div>
+            </div>
+        </div>
+</form>
+    <div class="form-button-group" style="margin-top: 30px">
+        <notempty name="model.id">
+            <if condition="($permissions.rechargeRefuse eq 1) and $is_leader">
+                <button href="javascript:void(0)" class="form-button-operation" plain="true" onclick="operateRefuse()">充值失败</button>
+            </if>
+            <if condition="($permissions.rechargeAdopt eq 1) and $is_leader">
+                <button href="javascript:void(0)" class="form-button-operation" plain="true" onclick="operateAdopt()">确认</button>
+            </if>
+            <else/>
+            <if condition="($permissions.rechargeAdopt eq 1) ">
+                <button href="javascript:void(0)" class="form-button-operation" plain="true" onclick="operateAdopt()">确认</button>
+            </if>
+        </notempty>
+        <button href="javascript:void(0)" class="form-button-close" plain="true" onclick="closeDialog()">关闭</button>
+
+    </div>
+
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+    autocompleteAjax($("input[name='capital_account']"),"{$Think.const.CONTROLLER_NAME}/capitalAccountList/v/r");
+    recharge_change()
+    $("input[name=third_fee],input[name=account]").change(function(){
+        recharge_change()
+    })
+    function recharge_change() {
+        var recharge = $('input[name=account]').val();
+        var recharge_fee = $("input[name=third_fee]").val();
+        if (recharge == '' || recharge == NaN) {
+            remain = 0;
+            $('#actual_money').html(remain.toFixed(2)+'元');
+            return false;
+        };
+        recharge 	=	parseFloat(recharge);
+        recharge_fee = parseFloat(recharge_fee);
+        var remain = recharge - recharge_fee;
+        if (remain > 0) {
+            $('#actual_money').val(remain.toFixed(2));
+        } else {
+            $('#actual_money').val(recharge.toFixed(2));
+            $("input[name=third_fee]").val('0.00');
+            $.dialog.alert('充值手续费不能大于充值金额');
+        }
+    }
+    function operateAdopt()
+    {
+        var id = $('input[name=id]').val();
+        var actual = $('input[name=capital_account_id]').val();
+        if ($('#actual_money').val() > 0 && (actual || id > 0)) {
+            var frameId = '{$Think.const.CONTROLLER_NAME}';
+            $.dialog.confirm("是否通过该充值申请?",function(){
+                var url = "{$Think.const.CONTROLLER_NAME}/rechargeAdopt";
+                closeDialog();
+                showMaskLayer();
+                $.post(url,$('#{$Think.const.CONTROLLER_NAME}-dataform').serialize(),function(result){
+                    $.dialog.tips(result.message);
+                    hideMaskLayer();
+                    if(result.code == 0){
+                        closeDialog(frameId);
+                        if(typeof callHandler != 'undefined' && callHandler instanceof Function){
+                            callHandler(result.row);
+                            if(typeof callHandlerRecharge != 'undefined' && callHandlerRecharge instanceof Function){
+                                callHandlerRecharge(result.row);
+                            }
+                        }
+
+                        refreshGrid(frameId, result.row, 'edit');
+                        createDialog("{$Think.const.CONTROLLER_NAME}/rechargeAdopt/id/" + result.id,'充值成功通知', "RechargeAdopt-notice");
+                    }
+                },'json')
+            });
+        } else {
+            if (!actual && !id) {
+                $.dialog.tips('资金账户不能为空');
+                return false;
+            } else {
+                $.dialog.tips('充值实收金额不能小于0');
+                return false;
+            }
+        }
+    }
+    //状态操作
+    function operateRefuse(){
+        var id = $('input[name=id]').val();
+        var attach_group = $("input[name='attach_group']").val();
+        if (id > 0) {
+            var frameId = '{$Think.const.CONTROLLER_NAME}';
+            $.dialog.confirm("是否拒绝该充值申请?",function(){
+                var url = "{$Think.const.CONTROLLER_NAME}/rechargeRefuse";
+                showMaskLayer();
+                $.post(url,{id:id,attach_group:attach_group},function(result){
+                    $.dialog.tips(result.message);
+                    hideMaskLayer();
+                    if(result.code == 0){
+                        closeDialog(frameId);
+                        if(typeof callHandler != 'undefined' && callHandler instanceof Function){
+                            callHandler(result.row);
+                            if(typeof callHandlerRecharge != 'undefined' && callHandlerRecharge instanceof Function){
+                                callHandlerRecharge(result.row);
+                            }
+                        }
+
+                        refreshGrid(frameId, result.row, 'edit');
+                        createDialog("{$Think.const.CONTROLLER_NAME}/rechargeRefuse/id/" + id,'充值失败通知', "RechargeRefuse-notice");
+                    }
+                },'json')
+            });
+        } else {
+            $.dialog.tips('操作失败');
+            return false;
+        }
+    }
+    function uploadAttachment() {
+        var attach_group = $("input[name='attach_group']").val();
+        openAttachmentForm("附件备注", [{text:"类型1",attach_group:attach_group}],function(id){
+            //alert(id);
+        });
+    }
+</script>

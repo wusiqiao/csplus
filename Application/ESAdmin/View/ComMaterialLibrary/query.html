@@ -1,0 +1,343 @@
+<style>
+    #tuwen-select-edit {
+        width: 980px;
+        height: 664px;
+    }
+
+    .tuwenselect-edit-bd {
+        width: 960px;
+        height: 590px;
+        margin: 20px 10px 0;
+    }
+
+    .tuwenselect-edit-ft {
+        width: 100%;
+        border-top: 1px solid #d3d3d3;
+        padding: 22px 0;
+        text-align: center;
+    }
+
+    .tuwenbox-item {
+        float: left;
+        position: relative;
+        width: 300px;
+        height: 224px;
+        margin: 0 10px;
+        box-sizing: border-box;
+        border: 1px solid #d3d3d3;
+        background-color: #ffffff;
+        cursor: pointer;
+    }
+
+    .tuwenbox-item-mask {
+        position: absolute;
+        z-index: 111;
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+
+    .tuwenbox-item-checked {
+        position: absolute;
+        width: 54px;
+        height: 38px;
+        top: calc(50% - 19px);
+        left: calc(50% - 27px);
+        background-image: url("/Application/ESAdmin//Public/images/icon/icon-sucai-checked.png");
+        background-size: 100% 100%;
+    }
+
+    #tuwen-box {
+        width: 100%;
+        min-height: 525px;
+    }
+
+    /* 图文 */
+    .tuwen-title {
+        padding: 10px;
+        margin: 0;
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .tuwen-img {
+        width: calc(100% - 20px);
+        background-color: rgb(241, 230, 215);
+        overflow: hidden;
+        margin: 0px 10px 5px;
+    }
+
+    .tuwen-lastupdata {
+        width: 148px;
+        margin-left: 10px;
+        font-size: 14px;
+        color: #929292;
+        background-color: white;
+    }
+
+    .tuwen-item {
+        padding: 5px 13px;
+        display: flex;
+        border-top: solid 1px #e7e7eb;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tuwen-item-title {
+        width: calc(100% - 75px);
+        height: 50px;
+        margin: 0;
+        padding: 0 5px;
+        font-size: 16px;
+        background-color: #d3d3d3;
+    }
+
+    .tuwen-item-img {
+        width: 50px;
+        height: 50px;
+        margin: 0px;
+        background-color: #368bfe;
+    }
+
+    .tuwen-item-more {
+        height: auto;
+        width: 100%;
+        position: absolute;
+        z-index: 77;
+        right: 0px;
+        background-color: #fff;
+        border-bottom: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+
+    .tuwen-item-more-box {
+        width: 100%;
+        height: auto;
+        border-bottom: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+
+    .tuwen-tool {
+        width: 100%;
+        height: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+<div class="ui_content" style="padding: 10px;">
+    <!-- 图文素材选择弹窗 -->
+    <div id="tuwen-select-edit">
+        <div class="tuwenselect-edit-bd">
+            <!-- 图文搜索 -->
+            <div style="overflow: hidden;">
+                <div class="btn_bg_blue" style="margin: 0 8px;" onclick="createDialog('ComMaterialLibrary/upset_local','本地上传','upset-local');">本地上传</div>
+                <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()" style="margin: 0 10px 0 auto;">
+                    <input style="width:300px;" id="search" type="text" placeholder="请输入标题进行查询" class="filter-field">
+                    <img src="/Application/ESAdmin//Public/images/icon/icon-search.png" alt="" onclick="">
+                </div>
+            </div>
+            <!-- 第一行图文 -->
+            <div id="tuwen-box">
+
+            </div>
+            <!-- 分页 -->
+            <div class="datagrid-pager pagination" style="padding: 0 10px;">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                    <tr>
+                        <td><select class="pagination-page-list">
+                            <option>6</option>
+                        </select></td>
+                        <td>
+                            <div class="pagination-btn-separator"></div>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)"
+                               class="l-btn l-btn-small l-btn-plain l-btn-disabled l-btn-plain-disabled" group="" id="">
+                                <span class="l-btn-left l-btn-icon-left">
+                                    <span class="l-btn-text l-btn-empty">&nbsp;</span>
+                                    <span class="l-btn-icon pagination-first">&nbsp;</span>
+                                </span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)"
+                               class="l-btn l-btn-small l-btn-plain l-btn-disabled l-btn-plain-disabled" group="" id="">
+                                <span class="l-btn-left l-btn-icon-left">
+                                    <span class="l-btn-text l-btn-empty">&nbsp;</span>
+                                    <span class="l-btn-icon pagination-prev">&nbsp;</span>
+                                </span>
+                            </a>
+                        </td>
+                        <td>
+                            <div class="pagination-btn-separator"></div>
+                        </td>
+                        <td><span style="padding-left:6px;">第</span></td>
+                        <td><input class="pagination-num" id="pagination-num" type="text" value="1" size="2"></td>
+                        <td><span style="padding-right:6px;" id="pagination-count">共5页</span></td>
+                        <td>
+                            <div class="pagination-btn-separator"></div>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain"  id="">
+                                <span class="l-btn-left l-btn-icon-left"><span
+                                        class="l-btn-text l-btn-empty">&nbsp;</span>
+                                    <span class="l-btn-icon pagination-next">&nbsp;</span>
+                                </span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                <span class="l-btn-left l-btn-icon-left"><span
+                                        class="l-btn-text l-btn-empty">&nbsp;</span>
+                                    <span class="l-btn-icon pagination-last">&nbsp;</span>
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tuwenselect-edit-ft">
+                <span class="btn-confirm" onclick="Page.getSelected()">确认</span>
+                <span class="btn-cancel" onclick="closeDialog('material-dialog');">取消</span>
+            </div>
+        </div>
+        <!-- 确认、取消 -->
+    </div>
+</div>
+
+<script>
+    var page = function (){
+        var $body = $("#tuwen-box");
+        var material = "{$material}";
+        var where = {
+            qlname: '',
+            syn_status : 10,
+            rows: 6,
+            page: 1
+        };
+        var selected = null;
+        var result = null;
+        var emptyHtml = `<div id="empty-notice" style="color: rgb(180, 180, 180);width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;top: 140px;font-size: 20px">暂无数据</div>`;
+        var setTimeoutId = null;
+
+        var load = function () {
+            $body.empty();
+            $.post('ComMaterialLibrary/list/material/' + material, where, function (response) {
+                dataRender(response.rows);
+                pagnation(response.total);
+            }, 'json')
+        };
+        var search = function () {
+            where.page   = 1;
+            where.qlname = $(this).val();
+            if(setTimeoutId){
+                clearTimeout(setTimeoutId);
+            }
+
+            setTimeoutId = setTimeout(load, 600)
+        }
+        var getSelected = function () {
+            if (selected == null) {
+                $.dialog.tips('请选择一项素材');
+                return false;
+            }
+            console.log(typeof  parent.getMaterial);
+            closeDialog('material-dialog');
+            return typeof getMaterial == 'function' ? getMaterial(selected, material) : $.dialog.alert('请实现getMaterial接收数据');;
+        }
+        var setSelect = function (index, obj) {
+            selected = result[index];
+            $(".tuwenbox-item-mask").hide();
+            $(obj).find(".tuwenbox-item-mask").show();
+        }
+        var pagnation = function (total) {
+            $('.datagrid-pager').pagination({
+                total:total,
+                pageSize:where.rows,
+                loading: true,
+                onSelectPage : onSelectPage
+            });
+        }
+        var onSelectPage = function(pageNumber){
+            where.page = pageNumber;
+            load();
+        }
+        var dataRender = function (data) {
+            result = data;
+            var fun = getFunc();
+            var html = '';
+            for (var index in data) {
+                html += fun(data[index], index);
+            }
+
+            html == '' ? emptyHtml : html;
+            $body.html(html);
+        }
+        var getFunc = function () {
+            switch (material) {
+                case 'image':
+                    return renderImage;
+                    break;
+                case 'news':
+                    return renderNews;
+                default :
+                    return function () {
+                        return '';
+                    };
+            }
+        }
+        var renderImage = function (item, index) {
+            var Html = `<div class="tuwenbox-item" style="margin: 19px 10px;" onclick="Page.setSelect(${index}, this)">
+                    <div class="tuwenbox-item-mask" style="display:none;">
+                        <div class="tuwenbox-item-checked"></div>
+                    </div>
+                    <p class="tuwen-title" title="${item.name}">${item.name}</p>
+                    <div class="tuwen-img" style="height: 145px;">
+                        <img style="width: 100%;height: 100%;"
+                             src="${item.local_thumb_url}"
+                             alt="">
+                    </div>
+                </div>`;
+            $(Html).data('itme', item);
+            return Html;
+        }
+        var renderNews = function (item, index) {
+            var title = item.childrens[0].title;
+            var src = item.childrens[0].local_thumb_url;
+            var time = item.updated_at;
+            var Html = `<div class="tuwenbox-item" style="margin: 19px 10px;" onclick="Page.setSelect(${index}, this)">
+                    <div class="tuwenbox-item-mask" style="display:none;">
+                        <div class="tuwenbox-item-checked"></div>
+                    </div>
+                    <p class="tuwen-title" title="${title}">${title}</p>
+                    <div class="tuwen-img" style="height: 145px;">
+                        <img style="width: 100%;height: 100%;"
+                             src="${src}"
+                             alt="">
+                    </div>
+                    <div class="tuwen-tool">
+                        <span class="tuwen-lastupdata">${time}</span>
+                    </div>
+                </div>`;
+            return Html;
+        }
+        var init = function () {
+            load();
+            self.loadingMaterial = load;
+            $("#search").on('input',search);
+        }
+        init();
+        return {
+            getSelected: getSelected,
+            setSelect:setSelect,
+        }
+    }
+    var Page = new page();
+
+</script>

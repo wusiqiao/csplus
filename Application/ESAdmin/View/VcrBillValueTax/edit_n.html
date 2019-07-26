@@ -1,0 +1,400 @@
+<div class="content" id="intelligent" style="width: 96vw;">
+    <div class="main-content">
+        <div  class="intel-image">
+            <div>
+                <img id="image" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/1.png" alt="Picture">
+            </div>
+        </div>
+        <div class="intel-info">
+            <div class="table-detail">
+                <div>
+                    <label>录入时间</label>
+                    <p><input type="text" name="bill_date" class="easyui-datebox easyui-validatebox"
+                              data-options="required:true,formatter:formatDate" value="{$model.bill_date}">
+                    </p>
+                </div>
+                <div>
+                    <label>录入单号</label>
+                    <p><input type="text" name="bill_no" class="easyui-validatebox"
+                              data-options="required:true,formatter:formatDate" value="{$model.bill_no}"></p>
+                </div>
+                <div>
+                    <label>会计期间</label>
+                    <p><input type="text" name="bill_no"  name="accounting_section" id="accounting_section"
+                              value="{$model.accounting_section}"></p>
+                </div>
+                <div>
+                    <label>销售方</label>
+                    <p><input class="easyui-validatebox" name="name"></p>
+                </div>
+                <div>
+                    <label>摘要</label>
+                    <p><input class="easyui-validatebox" name="memo"></p>
+                </div>
+            </div>
+            <div class="easyui-tabs" id="tax-infoInsert">
+                <div title="非专用发票">
+                    <div style="overflow-y: auto; height: 300px">
+                        <div class="forms">
+                            <div class="form-wrap" id="formun1"><forminfoun></forminfoun></div>
+                        </div>
+                        <div class="btn-group">
+                            <a class="square-btn add-detail" id="formAdd1">+添加明细</a>
+                        </div>
+                    </div>
+                </div>
+                <div title="专用发票">
+                    <div style="overflow-y: auto; height: 300px">
+                        <div class="forms">
+                            <div class="form-wrap" id="form1"><forminfo></forminfo></div>
+                        </div>
+                        <div class="btn-group">
+                            <a class="square-btn add-detail" id="formunAdd1">+添加明细</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="totaltotal">总价：<span>0.00</span>元</div>
+            <div class="btn-group">
+                <input class="blue-btn" type="button" value="保存"/>
+                <input class="square-btn" type="button" value="取消"/>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__ROOT__/{$Think.APP_PATH}/Public/vender/vue.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        create_accounting_section_combox("#accounting_section");
+        $.post("/VcrBill/getPayReceiveKeyNames", function (result) {
+            autocomplete($("input[name='name']"), result);
+        }, "json");
+        setTimeout(function () {
+            var $image = $('#image');
+            $image.viewer({
+                inline:true,
+                navbar: false,
+                title: false,
+                movable: true,
+                rotatable: false,
+                scalable: false,
+                keyboard: false,
+                fullscreen: false,
+                zoomRatio:false,
+                transition:false
+            });
+            $image.viewer('zoomTo', 1);
+        },100);
+        var total = 0;
+        Vue.component("forminfoun", {
+            data: function(){
+                return {
+                    totalValue: "",
+                    price:"",
+                    num:"",
+                    tax: "",
+                    taxPrice: ""
+                }
+            },
+            computed:{
+            },
+            methods:{
+                delForm(){
+                    console.log(this)
+                    console.log(event.target)
+                    $(event.target).parents(".form-wrap").remove();
+                },
+//                changeVal(){
+//                    total = 0;
+//                    for(var i = 0; i < $(".total-price1").length; i++){
+//                        total += Number($(".total-price1").eq(i).text())
+//                    }
+//                    $(".totaltotal span").text(total.toFixed(2))
+//                },
+                calculateTotal1(){
+                    var that = event.target;
+                    if(Number(this.num) == 0 && Number(this.price) == 0 && Number(this.totalValue) == 0){
+                        return;
+                    }
+
+                    if(Number(this.totalValue) == 0){
+                        this.totalValue = Number(this.price) * Number(this.num);
+                    }
+
+                    if(Number(this.totalValue) != 0){
+                        this.num = Number(this.totalValue)/Number(this.price);
+                    }
+
+                    total = 0;
+                    for(var i = 0; i < $(".total-price1").length; i++){
+                        total += Number($(".total-price1").eq(i).text())
+                    }
+                    console.log(total)
+                    $(".totaltotal span").text(total.toFixed(2))
+                },
+                calculateTotal2(){
+                    var that = event.target;
+
+                    if(Number(this.num) == 0 && Number(this.price) == 0 && Number(this.totalValue) == 0){
+                        return;
+                    }
+
+                    if(Number(this.totalValue) == 0){
+                        this.totalValue = Number(this.price) * Number(this.num);
+                    }
+
+                    if(Number(this.totalValue) != 0){
+                        this.price = Number(this.totalValue)/Number(this.num);
+                    }
+
+                    total = 0;
+                    for(var i = 0; i < $(".total-price1").length; i++){
+                        total += Number($(".total-price1").eq(i).text())
+                    }
+                    console.log(total)
+                    $(".totaltotal span").text(total.toFixed(2))
+                },
+                totalCalculate(){
+                    var that = event.target;
+                    if(Number(this.totalValue) != 0){
+                        if(this.num == "" && this.price == ""){
+                            return;
+                        }
+
+                        if(Number(this.num) != 0 && Number(this.price) == 0){
+                            this.price = Number(this.totalValue)/Number(this.num);
+                        }
+
+                        if(Number(this.price) != 0 &&  Number(this.num) == 0){
+                            this.num = Number(this.totalValue)/Number(this.price);
+                        }
+
+                        if(Number(this.totalValue) == 0 && Number(this.num) != 0 && Number(this.price) != 0){
+                            this.totalValue = Number(this.price) * Number(this.num);
+                        }
+                    }else{
+                        this.totalValue = Number(this.price) * Number(this.num);
+                    }
+
+                    total = 0;
+                    for(var i = 0; i < $(".total-price1").length; i++){
+                        total += Number($(".total-price1").eq(i).text())
+                    }
+                    console.log(total)
+                    $(".totaltotal span").text(total.toFixed(2))
+                }
+            },
+            template: `<form>
+            <div>
+                <label><span>货物或劳务、服务名称：</span><input type="text" class="text-input" name="goods_name[]" />
+                </label><label><span>单价：</span><input type="text" class="text-input" v-model="price" v-on:blur="calculateTotal1" name="price[]" /></label>
+                </div>
+            <div>
+                <label><span>数量：</span><input type="text" class="text-input" v-model="num" v-on:blur="calculateTotal2" name="quantity[]"/></label>
+                <label><span>总价：</span><input class="text-input" v-on:blur="totalCalculate" v-model="totalValue"/><span class="total-price1" style="display:none">{{totalValue}}</span></label>
+            </div>
+            <div>
+                <label><span>单位：</span><input type="text" class="text-input" name="unit[]"/></label>
+            </div>
+            <a class="del-form" v-on:click="delForm">删除</a>
+        </form>`
+        });
+        var count = 1;
+        // var tab = $('#tax-infoInsert').tabs('getSelected');
+        var index0 = 0;//$('#tax-infoInsert').tabs('getTabIndex',tab);
+        if(index0 == 0){
+            new Vue({
+                el:"#formun1"
+            });
+            var count = 1;
+            $("#formAdd1").on("click", function(){
+                count++;
+                var div = $("<div/>");
+                div.addClass("form-wrap");
+                div[0].id = "formun" + count
+                div.html("<forminfoun></forminfoun>")
+                $(this).parent().siblings(".forms").append(div);
+                var id = "#formun" + count;
+                new Vue({
+                    el: id
+                })
+            })
+        }
+
+
+        Vue.component("forminfo", {
+            data: function(){
+                return {
+                    totalValue: "",
+                    price:"",
+                    num:"",
+                    tax: "",
+                    taxPrice: "",
+                    price1:""
+                }
+            },
+            computed:{
+                calculateTotal: function(){
+                    console.log(this)
+                    this.totalValue = Number(this.price) * Number(this.num);
+                    console.log(this.totalValue)
+                    return this.totalValue;
+                },
+                calulateTax: function(){
+                    console.log(this)
+                    this.taxPrice = ((Number(this.totalValue)/(100+Number(this.tax))) * Number(this.tax)).toFixed(2);
+                    console.log(this.taxPrice)
+                    return this.taxPrice;
+                },
+                calulatePrice: function(){
+                    this.price1 = Number(this.totalValue - this.taxPrice)
+                }
+            },
+            methods:{
+                delForm(){
+                    console.log(this)
+                    console.log(event.target)
+                    $(event.target).parents(".form-wrap").remove();
+                },
+                changeVal(){
+                    total = 0;
+                    for(var i = 0; i < $(".total-price2").length; i++){
+                        total += Number($(".total-price2").eq(i).text())
+                    }
+                    $(".totaltotal span").text(total.toFixed(2))
+                },
+                calculateTotal1(){
+                    var that = event.target;
+                    if(Number(this.num) == 0 && Number(this.price) == 0 && Number(this.totalValue) == 0){
+                        return;
+                    }
+
+                    if(Number(this.totalValue) == 0){
+                        this.totalValue = Number(this.price) * Number(this.num);
+                    }
+
+                    if(Number(this.totalValue) != 0){
+                        this.num = Number(this.totalValue)/Number(this.price);
+                    }
+
+                    total = 0;
+                    for(var i = 0; i < $(".total-price2").length; i++){
+                        total += Number($(".total-price2").eq(i).text())
+                    }
+                    console.log(total)
+                    $(".totaltotal span").text(total.toFixed(2))
+                },
+                calculateTotal2(){
+                    var that = event.target;
+
+                    if(Number(this.num) == 0 && Number(this.price) == 0 && Number(this.totalValue) == 0){
+                        return;
+                    }
+
+                    if(Number(this.totalValue) == 0){
+                        this.totalValue = Number(this.price) * Number(this.num);
+                    }
+
+                    if(Number(this.totalValue) != 0){
+                        this.price = Number(this.totalValue)/Number(this.num);
+                    }
+
+                    total = 0;
+                    for(var i = 0; i < $(".total-price2").length; i++){
+                        total += Number($(".total-price2").eq(i).text())
+                    }
+                    console.log(total)
+                    $(".totaltotal span").text(total.toFixed(2))
+                },
+                totalCalculate(){
+                    var that = event.target;
+                    if(Number(this.totalValue) != 0){
+                        if(this.num == "" && this.price == ""){
+                            return;
+                        }
+
+                        if(Number(this.num) != 0 && Number(this.price) == 0){
+                            this.price = Number(this.totalValue)/Number(this.num);
+                        }
+
+                        if(Number(this.price) != 0 &&  Number(this.num) == 0){
+                            this.num = Number(this.totalValue)/Number(this.price);
+                        }
+
+                        if(Number(this.totalValue) == 0 && Number(this.num) != 0 && Number(this.price) != 0){
+                            this.totalValue = Number(this.price) * Number(this.num);
+                        }
+                    }else{
+                        this.totalValue = Number(this.price) * Number(this.num);
+                    }
+
+
+                    total = 0;
+                    for(var i = 0; i < $(".total-price2").length; i++){
+                        total += Number($(".total-price2").eq(i).text())
+                    }
+                    console.log(total)
+                    $(".totaltotal span").text(total.toFixed(2))
+                }
+            },
+            template: `<form>
+            <div>
+                <label><span>货物或劳务、服务名称：</span><input type="text" class="text-input" name="goods_name[]" />
+                </label><label><span>单价：</span><input type="text" class="text-input" v-model="price" v-on:blur="calculateTotal1" name="price[]" /></label>
+                </div>
+            <div>
+                <label><span>数量：</span><input type="text" class="text-input" v-model="num" v-on:blur="calculateTotal2"  name="quantity[]"/></label>
+                <label><span>总额：</span><input class="text-input" v-on:blur="totalCalculate" v-model="totalValue" name="total_sum[]"/><span class="total-price2" style="display:none">{{totalValue}}</span></label>
+            </div>
+            <div>
+                <label><span>单位：</span><input type="text" class="text-input" name="unit[]"/></label>
+                <label><span>税率：</span><input type="text" class="text-input" v-model="tax" v-on:blur="changeVal" name="tax_rate[]" /></label>
+            </div>
+            <div>
+                <label><span>金额：</span><input class="text-input" readonly v-on="calulatePrice" :value="price1" name="amount[]"></label>
+                <label><span>税额：</span><input class="text-input total-price" readonly v-on="calulateTax" :value="taxPrice" name="tax_amount[]"/></label>
+            </div>
+            <a class="del-form" v-on:click="delForm">删除</a>
+        </form>`
+        });
+
+
+        $('#tax-infoInsert').tabs({
+            onSelect:function(title ,index){
+                if(index == 0){
+                    $("#formAdd1").on("click", function(){
+                        count++;
+                        var div = $("<div/>");
+                        div.addClass("form-wrap");
+                        div[0].id = "formun" + count
+                        div.html("<forminfoun></forminfoun>")
+                        $(this).parent().siblings(".forms").append(div);
+                        var id = "#formun" + count;
+                        new Vue({
+                            el: id
+                        })
+                    })
+                }else{
+                    $(".totaltotal span").text("0.00")
+                    new Vue({
+                        el:"#form1"
+                    })
+                    var countun = 1;
+                    $("#formunAdd1").on("click", function(){
+                        countun++;
+                        var div = $("<div/>");
+                        div.addClass("form-wrap");
+                        div[0].id = "form" + countun
+                        div.html("<forminfo></forminfo>")
+                        $(this).parent().siblings(".forms").append(div);
+                        var id = "#form" + countun;
+                        new Vue({
+                            el: id
+                        })
+                    })
+                }
+            }
+        });
+
+    })
+</script>

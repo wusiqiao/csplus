@@ -1,0 +1,73 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/adjustStaff" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm">
+            <input name="id" type="hidden" value="{$model.id}">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;max-height:200px">
+                <span><input id="inAll" type="checkbox" checked disabled="disabled" />已有用户</span>
+                <div style="float:right;word-break:break-all;width:500px;max-height:200px;overflow-y:auto;position: relative;top:3px;">
+                    <foreach name="model.in" item="v">
+                        <div style="float:left;width:30%;overflow-x: hidden; height:17px;text-overflow:ellipsis; white-space: nowrap;margin-bottom:8px;">
+                            <input disabled="disabled" readonly="true" class="in" type="checkbox" value="{$v.id}" checked /> {$v.staff_name}
+                        </div>
+                    </foreach>
+                </div>
+            </div>
+            <div style="height:1px;background:#ddd;margin-bottom:20px;"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:50px;max-height:200px">
+                <div class="inpWrap">
+                	<input id="outAll" type="checkbox" />待选用户
+                </div>
+                <div style="float:right;word-break:break-all;width:500px;max-height:200px;overflow-y:auto;position: relative;top:3px;">
+                    <foreach name="model.out" item="v">
+                        <div style="float:left;width:30%;overflow-x: hidden; text-overflow:ellipsis; white-space: nowrap;margin-bottom:8px;">
+                            <input name="user_ids[]" class="out" value="{$v.id}" type="checkbox" /> {$v.staff_name}
+                        </div>
+                    </foreach>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form-actions" id='Organization-form-actions'>
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="adjustDept()">保存</a>
+            <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$("#outAll").change(function() {
+    $(".out").prop("checked", $(this).prop("checked"));
+});
+
+function adjustDept() {
+    showMaskLayer();
+    var user_ids = [];
+
+    $("input[name='user_ids[]']:checked").each(function() {
+        user_ids.push($(this).val());
+    });
+    $.post('/Organization/adjustStaff/dept_id/{$dept_id}', { user_ids: user_ids }, function(result) {
+        hideMaskLayer();
+        if (result.code == 0) {
+            var selected = $('.department-tree').tree('getSelected');
+            var action = "/Organization/treeList";
+            var $tree_target = getDepartmentTree('{$Think.const.CONTROLLER_NAME}');
+            $.getJSON(action, {}, function(result) {
+                $tree_target.tree({
+                    data: result,
+                    onLoadSuccess: function(node, data) {
+                        if (data.length > 0) {
+                            var n = $('.department-tree').tree('find', selected.id);
+                            $('.department-tree').tree('select', n.target);
+                            getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                            $('#deptment-datagrid').datagrid('reload');
+                        }
+                    }
+                })
+            });
+            closeDialog();
+        }
+        $.dialog.tips(result.message);
+    }, 'json')
+}
+</script>

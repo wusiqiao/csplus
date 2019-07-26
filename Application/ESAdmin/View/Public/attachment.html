@@ -1,0 +1,1082 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/attachment.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    #cover-unselect{
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 11;
+        width: 100%;
+        height: 100%;
+        background-color: #f5f5f5;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<!-- 主体容器 -->
+<div class="attachment-container" style=" width: 900px;height: 615px;">
+    <!-- 左侧 -->
+    <div id="attach-left-list">
+        <!-- 系统 -->
+        <div id="attach-system" class="attach-user-group">
+            <!-- 分组标题 -->
+            <div class="attach-usergroup-title" @click="selectGroup('attach-system')">
+                <!-- 分组图标 -->
+                <div style="position: relative;">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/attach-system.png" alt="">
+                    <div v-show="statistics.sys_iteration > 0 || statistics.sys_notice > 0" class="red-dot"></div>
+                </div>
+                <span>系统消息</span>
+                <i class="icon-groupdown"></i>
+            </div>
+            <!-- 分组内容 -->
+            <div class="attach-groupcontent">
+                <!-- 聊天对象列表 -->
+                <div class="attach-user-list">
+                    <div id="sys_notice" class="attach-userlist-item" @click="selectUser(0,{name:'系统通知'},'system');getSystemMsgList(10,1);">
+                        <!-- 用户头像 -->
+                        <div style="position: relative;margin-right: 10px;background-color: #fff;border-radius: 4px;">
+                            <img style="width:40px;height:40px;border-radius: 4px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/logo/logo-attach-system.png" alt="">
+                            <!-- 红点提示 -->
+                            <div v-show="statistics.sys_notice > 0" class="red-dot"></div>
+                        </div>
+                        <!-- 信息 -->
+                        <div style="overflow: hidden;flex: 1;">
+                            <!-- 用户名、昵称 -->
+                            <div class="attach-userinfo-txt" style="color: #333;">系统通知</div>
+                        </div>
+                    </div>
+                    <div id="sys_iteration" class="attach-userlist-item" @click="selectUser(1,{name:'迭代通知'},'system');getSystemMsgList(20,1);">
+                        <!-- 用户头像 -->
+                        <div style="position: relative;margin-right: 10px;background-color: #fff;border-radius: 4px;">
+                            <img style="width:40px;height:40px;border-radius: 4px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/logo/logo-attach-system.png" alt="">
+                            <!-- 红点提示 -->
+                            <div v-show="statistics.sys_iteration > 0" class="red-dot"></div>
+                        </div>
+                        <!-- 信息 -->
+                        <div style="overflow: hidden;flex: 1;">
+                            <!-- 用户名、昵称 -->
+                            <div class="attach-userinfo-txt" style="color: #333;">迭代通知</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 员工 -->
+        <div id="attach-staff" class="attach-user-group">
+            <!-- 分组标题 -->
+            <div class="attach-usergroup-title" @click="selectGroup('attach-staff')">
+                <!-- 分组图标 -->
+                <div style="position: relative;">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/attach-staff.png" alt="">
+                    <div v-show="statistics.staff > 0" class="red-dot"></div>
+                </div>
+                <span>员工沟通</span>
+                <i class="icon-groupdown"></i>
+            </div>
+            <!-- 分组内容 -->
+            <div class="attach-groupcontent">
+                <!-- 聊天对象搜索框 -->
+                <div class="attachment-userlist-search">
+                    <input onkeyup="searchStaffList(this)" type="text" placeholder="输入昵称或员工姓名进行搜索">
+                </div>
+                <!-- 聊天对象列表 -->
+                <div class="attach-user-list">
+                    <div v-for="(k,i) in staffList" :id="k.id" :data-group_id="k.group_id" class="attach-userlist-item" @click="selectUser(i,k,'staff')">
+                        <!-- 用户头像 -->
+                        <div style="position: relative;margin-right: 10px;">
+                            <img style="width:40px;height:40px;border-radius: 4px;" :src="k.head_pic" alt="" onerror="this.onerror=null;this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                            <!-- 红点提示 -->
+                            <div v-show="k.count > 0" class="red-dot"></div>
+                        </div>
+                        <!-- 信息 -->
+                        <div style="overflow: hidden;flex: 1;">
+                            <!-- 用户名、昵称 -->
+                            <div class="attach-userinfo-txt" style="color: #333;" :title="k.staff_name ? k.staff_name + '（' + k.name + '）' : k.name">{{k.staff_name ? k.staff_name + '（' + k.name + '）' : k.name}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 用户 -->
+        <div id="attach-member" class="attach-user-group">
+            <!-- 分组标题 -->
+            <div class="attach-usergroup-title" @click="selectGroup('attach-member')">
+                <!-- 分组图标 -->
+                <div style="position: relative;">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/attach-member.png" alt="">
+                    <div v-show="statistics.member > 0" class="red-dot"></div>
+                </div>
+                <span id="user-type">用户沟通</span>
+                <i class="icon-groupdown"></i>
+            </div>
+            <!-- 分组内容 -->
+            <div class="attach-groupcontent">
+                <!-- 聊天对象搜索框 -->
+                <div class="attachment-userlist-search">
+                    <input onkeyup="searchMemberList(this)" type="text" placeholder="输入昵称或备注进行搜索">
+                </div>
+                <!-- 聊天对象列表 -->
+                <div class="attach-user-list">
+                    <div v-for="(k,i) in memberList" :id="k.id" :data-group_id="k.group_id" class="attach-userlist-item" @click="selectUser(i,k,'member')">
+                        <!-- 用户头像 -->
+                        <div style="position: relative;margin-right: 10px;">
+                            <img style="width:40px;height:40px;border-radius: 4px;" :src="k.head_pic" alt="" onerror="this.onerror=null;this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                            <!-- 红点提示 -->
+                            <div v-show="k.count > 0" class="red-dot"></div>
+                        </div>
+                        <!-- 信息 -->
+                        <div style="overflow: hidden;flex: 1;">
+                            <!-- 用户名、昵称 -->
+                            <div class="attach-userinfo-txt" style="color: #333;" :title="k.comments ? k.comments + '（' + k.name + '）' : k.name">{{k.comments ? k.comments + '（' + k.name + '）' : k.name}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 群 -->
+        <div id="attach-group" class="attach-user-group">
+            <!-- 分组标题 -->
+            <div class="attach-usergroup-title" @click="selectGroup('attach-group')">
+                <!-- 分组图标 -->
+                <div style="position: relative;">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/attach-group.png" alt="">
+                    <div v-show="statistics.group > 0" class="red-dot"></div>
+                </div>
+                <span>群聊</span>
+                <i class="icon-groupdown"></i>
+            </div>
+            <!-- 分组内容 -->
+            <div class="attach-groupcontent">
+                <!-- 添加群 -->
+                <div class="attach-add-group" @click="attachAddGroup">
+                    <div style="margin: 0 10px;width: 28px;height: 28px;">
+                        <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-add.png" alt="" style="width: 100%;height: 100%;">
+                    </div>
+                    <div style="color: #368BFE;">新增群聊</div>
+                </div>
+                <!-- 聊天对象列表 -->
+                <div class="attach-user-list">
+                    <div v-for="(k,i) in groupList" :id="k.group_id" :data-id="k.group_id" class="attach-userlist-item" @click="selectUser(i,k,'group')">
+                        <!-- 用户头像 -->
+                        <div style="position: relative;margin-right: 10px;">
+                            <img style="width:40px;height:40px;border-radius: 4px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/attach-group.png" alt="">
+                            <!-- 红点提示 -->
+                            <div v-show="k.count > 0" class="red-dot"></div>
+                        </div>
+                        <!-- 信息 -->
+                        <div style="overflow: hidden;flex: 1;">
+                            <!-- 用户名、昵称 -->
+                            <div class="attach-userinfo-txt" style="color: #333;" :title="`${k.name}`">{{k.name}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 右侧 -->
+    <div id="attach-right-box">
+        <!-- 未选中聊天对象提示 -->
+        <div id="cover-unselect">
+            <img style="width: 300px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-empty.png" alt="">
+            <p style="font-size: 18px;color: #666;">请先在左侧选择您要聊天的对象。</p>
+        </div>
+        <!-- tab分栏 -->
+        <div class="attach-right-header">
+            <div style="padding-left: 30px;">
+                <div id="chat-name" style="font-size: 18px;color: #333;"></div>
+            </div>
+            <div style="overflow: hidden;">
+                <div id="show-groupmember" class="btn-speed" onclick="mannerShow()" style="display: none;margin: 0 5px;">群成员</div>
+                <div v-show="isSysMsg == false" class="btn-speed" data-id='1' onclick="fileShow()" style="margin: 0;">附件</div>
+            </div>
+        </div>
+        <!-- 消息记录 -->
+        <div id="history" v-if="(historys != null) && (historys.length > 0)">
+            <!-- 系统消息 -->
+            <ul v-if="isSysMsg" class="records" onscroll="SysToMoreData(this)">
+                <li v-for="(item, idx) in historys">
+                    <!-- 时间 -->
+                    <div style="color:#666;text-align: center;">{{formatDateTime(item.send_time)}}</div>
+                    <!-- 聊天对象 -->
+                    <template>
+                        <div class="item-contents" style="border-bottom: none;">
+                            <!-- 头像 -->
+                            <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/logo/logo-attach-system.png" style="background-color: #fff;" alt="" />
+                            <div class="contents-box">
+                                <!-- <p class="contents-name">系统</p> -->
+                                <div class="contents-direction">
+                                    <span v-html="item.content"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </li>
+            </ul>
+            <!-- 非系统聊天历史记录 -->
+            <ul v-else class="records" onscroll="ToMoreData(this)">
+                <li v-for="(item, idx) in historys">
+                    <!-- 时间 -->
+                    <div style="color:#666;text-align: center;">{{formatDateTime(item.create_time)}}</div>
+                    <!-- 文本消息 -->
+                    <template v-if="item.type == 10">
+                        <!-- 自己 -->
+                        <template v-if="item.send_id == id">
+                            <div class="item-contents" style="justify-content: flex-end;border-bottom: none;">
+                                <div class="contents-box">
+                                    <!-- <p class="contents-name" style="text-align:right;">{{item.sendInfo.name}}</p> -->
+                                    <div class="contents-direction">
+                                        <span v-html="item.contents"></span>
+                                    </div>
+                                </div>
+                                <!-- 头像 -->
+                                <img :src="item.sendInfo.head_pic" alt="" />
+                            </div>
+                        </template>
+                        <!-- 聊天对象 -->
+                        <template v-else>
+                            <div class="item-contents" style="border-bottom: none;">
+                                <!-- 头像 -->
+                                <img :src="item.sendInfo.head_pic" alt="" />
+                                <div class="contents-box">
+                                    <!-- <p class="contents-name">{{item.sendInfo.name}}</p> -->
+                                    <div class="contents-direction">
+                                        <span v-html="item.contents"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                    <!-- 附件消息 -->
+                    <template v-else-if="item.type == 20">
+                        <!-- 自己 -->
+                        <template v-if="item.send_id == id">
+                            <div class="item-contents" style="justify-content: flex-end;border-bottom: none;">
+                                <div class="contents-box">
+                                    <!-- <p class="contents-name" style="text-align:right;">{{item.sendInfo.name}}</p> -->
+                                    <div class="contents-direction">
+                                        <ul class="attachments">
+                                            <li v-for="(item,index) in JSON.parse(item.contents)" :title="item.name" style="margin:5px 15px 5px 0;">
+                                                <div v-if="item.type=='image' || item.type=='png' || item.type=='jpg'" class="img-wrap">
+                                                    <img :src="item.url" alt="" />
+                                                </div>
+                                                <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type"></div>
+                                                <div style="white-space: nowrap;">
+                                                    <span v-if="item.type=='image' || item.type=='png' || item.type=='jpg'" style="margin-right:11px;color:#368BFE;cursor: pointer;" @click="previewFun(item.url)">预览</span>
+                                                    <span style="color:#368BFE;cursor: pointer;" @click="downloadFile(item.url,item.name)">下载</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- 头像 -->
+                                <img :src="item.sendInfo.head_pic" alt="" />
+                            </div>
+                        </template>
+                        <!-- 聊天对象 -->
+                        <template v-else>
+                            <div class="item-contents" style="border-bottom: none;">
+                                <!-- 头像 -->
+                                <img :src="item.sendInfo.head_pic" alt="" />
+                                <div class="contents-box">
+                                    <!-- <p class="contents-name">{{item.sendInfo.name}}</p> -->
+                                    <div class="contents-direction">
+                                        <ul class="attachments">
+                                            <li v-for="(item,index) in JSON.parse(item.contents)" :title="item.name"
+                                                style="margin:5px 15px 5px 0;">
+                                                <div v-if="item.type=='image' || item.type=='png' || item.type=='jpg'" class="img-wrap">
+                                                    <img :src="item.url" alt="" />
+                                                </div>
+                                                <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type"></div>
+                                                <div style="white-space: nowrap;">
+                                                    <span v-if="item.type=='image' || item.type=='png' || item.type=='jpg'" style="margin-right:11px;color:#368BFE;cursor: pointer;" @click="previewFun(item.url)">预览</span>
+                                                    <span style="color:#368BFE;cursor: pointer;" @click="downloadFile(item.url,item.name)">下载</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                </li>
+            </ul>
+        </div>
+        <!-- 无记录提示 -->
+        <div id="history" v-else class="empty-proxy">
+            <span>记录为空</span>
+        </div>
+        <!-- 附件 -->
+        <div id="attachment">
+            <!-- 头部 -->
+            <header class="attachment-header">
+                <div style="height: 32px;line-height: 32px;">查看附件</div>
+                <div onclick='fileShow()' style="height: 32px;line-height: 32px;cursor: pointer;">X</div>
+            </header>
+            <!-- 附件数据展示 -->
+            <div onscroll="ToMoreFileData(this)" class="attachment-databox">
+                <div v-for="(val, key) in filesList">
+                    <div v-for="(item,index) in JSON.parse(val.contents)" :title="item.name" style="display:flex;margin: 10px 0;background-color: #fff;padding: 5px 10px;">
+                        <div v-if="item.type=='image' || item.type=='png' || item.type=='jpg'" class="img-wrap" style="width:50px;height:50px;overflow: hidden;border:1px solid #d3d3d3;">
+                            <img style="width: 100%;" :src="item.url" alt=""/>
+                        </div>
+                        <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type" style="background-size: 50px;width: 50px; height: 50px;"></div>
+
+                        <div style="margin-left:10px;">
+                            <p style="color: #666;margin: 3px 0px;">附件名称：{{item.name}}</p>
+                            <p style="color: #666;margin: 3px 0px;">创建时间：{{formatDateTime(val.create_time)}}</p>
+                            <p style="color: #666;margin: 3px 0px;">创建人：{{val.sendInfo.staff_name}}</p>
+                            <span v-if="item.type=='image' || item.type=='png' || item.type=='jpg'" style="margin-right:11px;color:#368BFE;cursor: pointer;" @click="previewFun(item.url)">预览</span><span style="color:#368BFE;cursor: pointer;" @click="downloadFile(item.url,item.name)">下载</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 附件为空 -->
+                <div v-if="filesList.length == 0" v-else class="empty-proxy" style="height: 400px;">
+                    <span>附件为空</span>
+                </div>
+            </div>
+        </div>
+        <!-- 群成员 -->
+        <div id="attachmanner">
+            <!-- 头部 -->
+            <header class="attachmanner-header">
+                <div style="height: 32px;line-height: 32px;">查看群成员</div>
+                <div onclick='mannerShow()' style="height: 32px;line-height: 32px;cursor: pointer;">X</div>
+            </header>
+            <!-- 群名称修改 -->
+            <div style="padding: 0 10px;overflow: hidden;border-bottom: 1px solid #d3d3d3;">
+                <div style="width: 100%;margin: 5px 0;display: flex;align-items: center;">
+                    <div>群名称：</div>
+                    <input v-model="group_name" type="text" placeholder="输入群聊名称" style="width: 210px;height: 28px;border: 1px solid #d3d3d3;outline: none;text-indent: 8px;box-sizing: border-box;">
+                    <div v-if="group_name != ''" class="btn-speed" @click="changeGroupName" style="margin: 0 5px;padding: 0 10px;height: 28px;line-height: 28px;">修改</div>
+                </div>
+            </div>
+            <!-- 群成员列表 -->
+            <div class="attachmanner-databox">
+                <div class="attachmanner-member">
+                    <div class="attachmanner-member-item" @click="attachAddGroupMember">
+                        <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addnew.png" alt="" style="width: 40px;height: 40px;">
+                        <div style="width: 40px;color: #333;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">新增</div>
+                    </div>
+                    <div v-for="(item,index) in group_memberList" class="attachmanner-member-item">
+                        <img :src="item.head_pic" alt="" style="width: 40px;height: 40px;border-radius: 4px;">
+
+                        <template v-if="item.user_type > 3">
+                            <div style="width: 40px;color: #333;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" 
+                            :title="item.comments ? item.comments + '（' + item.name + '）' : item.name">
+                            {{item.comments ? item.comments + '（' + item.name + '）' : item.name}}</div>
+                        </template>
+                        <template v-else-if="item.user_type == 2">
+                            <div style="width: 40px;color: #333;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" 
+                            :title="item.staff_name ? item.staff_name + '（' + item.name + '）' : item.name">
+                            {{item.staff_name ? item.staff_name + '（' + item.name + '）' : item.name}}</div>
+                        </template>
+        
+                        <template v-if="id == chat.lord_id">
+                            <span v-if="item.role != 20" class="btn-item-remove" @click="removeGroupMember(item)"></span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 消息编辑模块 -->
+        <div id="edit-msg">
+            <div v-if="isfollow == 1" class="attachment-input" style="background-color: #fff;overflow: hidden;">
+                <div class="input-header">
+                    <!-- 聊天工具栏 -->
+                    <div style="padding: 5px 0px 5px 30px;border-bottom: 1px solid #d3d3d3;overflow: hidden;margin-bottom:5px;">
+                        <!-- 图片上传 -->
+                        <div class="btn-attachment-add icon-updata-img">
+                            <input onchange="img_attach_updata(this)" id="img-attach" type="file" accept="image/*,application/msword,application/vnd.ms-powerpoint" multiple="multiple">
+                        </div>
+                        <!-- 文档上传 -->
+                        <div class="btn-attachment-add icon-updata-file">
+                            <input onchange="file_attach_updata(this)" id="file-attach" type="file" accept="image/*,application/msword,application/vnd.ms-powerpoint" multiple="multiple">
+                        </div>
+                    </div>
+                    <!-- 聊天输入框 -->
+                    <div class="input-area">
+                        <div id="txt-content" onkeyup="contentFun(this)" onpaste="pasteFun()" contentEditable="true"></div>
+                    </div>
+                </div>
+                <!-- 附件上传展示列表 -->
+                <ul class="attachments" style="position: absolute;bottom: 0;left: 0;z-index: 9;">
+                    <li v-for="(item,index) in attachments" :title="item.file_name">
+                        <div v-if="item.type=='image'" class="img-wrap">
+                            <!-- <span class="btn-item-remove"></span> -->
+                            <img :src="item.src" alt="" />
+                        </div>
+                        <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type">
+                            <!-- <span class="btn-item-remove"></span> -->
+                        </div>
+                    </li>
+                </ul>
+                <!-- 发送按钮 -->
+                <div class="actions">
+                    <div id="btn-send-msg" class="btn-speed" style="margin: 0;" @click="postAttachmentData()">发送</div>
+                </div>
+            </div>
+            <div v-else-if="isfollow == 0" style="display: flex;justify-content: center;align-items: center;background-color: #fff;padding: 10px 0;">
+                <img style="width: 20px;height: 20px;margin-right:5px;" src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-prompt.png" alt="">
+                <div style="line-height: 20px;font-size: 18px;color: #333;">该用户已取消关注，无法发送消息。</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+    console.log(websocket)
+    var attachmentVue = new Vue({
+        el: ".attachment-container",
+        data: {
+            // 自己的id
+            id:"",
+            use_type:"",
+            // 用户列表
+            memberList:[],
+            // 员工列表
+            staffList:[],
+            // 用户列表（备份）
+            memberListCopy:[],
+            // 员工列表（备份）
+            staffListCopy:[],
+            // 群列表
+            groupList:[],
+            // 历史记录
+            historys:[],
+            // 当前选中的聊天对象
+            chat:{},
+            // 请求历史数据页数
+            history_page:1,
+            // 请求附件数据页数
+            file_page:1,
+            // 用户关注状态/0未关注/1已关注
+            isfollow:0,
+            // 附件上传
+            attachments: [],
+            // 聊天文本内容
+            contents: "",
+            // 附件列表
+            filesList: [],
+            //群成员列表
+            group_memberList:[],    
+            // 群聊名称
+            group_name:"",
+            // 当前选择的聊天对象是否是系统消息
+            isSysMsg:false,
+            // 消息总数
+            statistics:""
+        },
+        mounted() {
+            // 关闭消息提示框
+            $("div.msg-tips").hide();
+            // 初始化聊天对象列表 
+            this.loadingList();
+        },
+        methods: {
+            // 初始化聊天对象列表
+            loadingList(){
+                $.get("/MsgGroupMember/member",function (result){
+                    // console.log(result.data)
+                    // 自己的id
+                    attachmentVue.id = result.data.user.id.id
+                    attachmentVue.use_type = result.data.user.id.type
+                    if(result.data.user.id.type == 2){
+                        $("#user-type").text("用户沟通")
+                    }else{
+                        $("#user-type").text("商户沟通")
+                    }
+                    // member用户
+                    attachmentVue.memberList = result.data.member;
+                    attachmentVue.memberListCopy = result.data.member;
+                    // staff员工
+                    attachmentVue.staffList = result.data.staff;
+                    attachmentVue.staffListCopy = result.data.staff;
+                    // group群
+                    attachmentVue.groupList = result.data.group;
+                    // 消息总数统计
+                    attachmentVue.statistics = result.data.statistics;
+                },"json");
+            },
+            // 分组开关
+            selectGroup(group_id){
+                if($(`#${group_id}>.attach-groupcontent`).height() == 0){
+                    $(`#${group_id} .icon-groupdown`).css("transform","rotate(180deg)");
+                    $(`#${group_id}>.attach-groupcontent`).css("height","auto");
+
+                    $(`#${group_id}`).siblings(".attach-user-group").find(".icon-groupdown").css("transform","rotate(0deg)");
+                    $(`#${group_id}`).siblings(".attach-user-group").find(".attach-groupcontent").css("height","0");
+                }else{
+                    $(`#${group_id} .icon-groupdown`).css("transform","rotate(0deg)");
+                    $(`#${group_id}>.attach-groupcontent`).css("height","0");
+                }
+            },
+            // 清空历史消息记录
+            resethistorysList(){
+                this.history_page = 1;
+                this.file_page = 1;
+                this.historys = [];
+            },
+            // 清空聊天输入框
+            resetContent(){
+                $("#txt-content").text("");
+                this.attachments = [];
+                this.contents = "";
+            },
+            // 清空附件历史列表
+            resetHistoryFileList(){
+                this.filesList = [];
+                this.file_page = 1;
+            },
+            // 清空群成员列表/群名称
+            resetGroupMemberList(){
+                this.group_name = "";
+                this.group_memberList = [];
+            },
+            // 选择聊天对象
+            selectUser(index,item,type){
+                var chat_name = "";
+                // 切换聊天对象时清空数据
+                if(this.chat.group_id == item.group_id){
+
+                }else{
+                    // 清空历史消息记录
+                    this.resethistorysList();
+                    // 清空聊天输入框
+                    this.resetContent();
+                    // 清空附件历史列表
+                    this.resetHistoryFileList();
+                    // 清空群成员列表
+                    this.resetGroupMemberList();
+                    // 收起附件列表\群聊列表
+                    $("#attachment").css("width","0px");
+                    $("#attachmanner").css("width","0px");
+                }
+                // 隐藏提示
+                $("#cover-unselect").hide();
+                // 清除选中效果
+                $(".attach-user-group").each(function(idx,ele){
+                    $(ele).find(".attach-userlist-item").removeClass("active");
+                });
+                // 未读消息条数判断
+                if(item.count == 0){
+
+                }else{
+                    // 隐藏红点
+                    this.selectIteration(index,type)
+                }
+                // 系统
+                if(type == "system"){
+                    this.isSysMsg = true;
+                    chat_name = item.name;
+                    //选中效果
+                    $("#attach-system").find(".attach-userlist-item").eq(index).addClass("active");
+                    $("#show-groupmember").hide();
+                    // 隐藏输入框
+                    $("#edit-msg").hide();
+                    this.isfollow = 1;
+                }
+                // 员工// 用户
+                else if(type == "staff" || type == "member"){
+                    this.isSysMsg = false;
+                    $("#show-groupmember").hide();
+                    if(type == "staff"){
+                        chat_name = item.staff_name ? item.staff_name + '（'+ item.name +'）' : item.name;
+                    }else if(type == "member"){
+                        chat_name = item.comments ? item.comments + '（'+ item.name +'）' : item.name;
+                    }
+                    //选中效果
+                    $(`#${item.id}`).addClass("active");
+                    // 显示输入框
+                    $("#edit-msg").show();
+                    this.isfollow = item.is_follow;
+                    // 获取历史消息
+                    if(this.chat.id == item.id){
+                        // console.log("过滤连击，避免重复请求");
+                    }else{
+                        showMaskLayer();
+                        this.getAttachHistorys(item);
+                    }
+                }
+                // 群聊
+                else if(type == "group"){
+                    this.isSysMsg = false;
+                    chat_name = item.name;
+                    //选中效果
+                    $("#attach-group").find(".attach-userlist-item").eq(index).addClass("active");
+                    $("#show-groupmember").show();
+                    // 显示输入框
+                    $("#edit-msg").show();
+                    this.isfollow = 1;
+                    // 获取历史消息
+                    if(this.chat.group_id == item.group_id){
+                        // console.log("过滤连击，避免重复请求");
+                    }else{
+                        showMaskLayer();
+                        this.getAttachGroupHistorys(item,1);
+                    }
+                }
+                this.chat = item;
+                // 聊天对象标题
+                $("#chat-name").text(chat_name);
+                
+            },
+            // 获取聊天历史记录
+            getAttachHistorys(item){
+                $.post("/MsgGroupMember/getPrivateChat", {dialogueId:item.id}, (result)=>{
+                    // console.log(result)
+                    if(result.code == 0){
+                        this.historys = result.data.message;
+                        this.chat.group_id = result.data.group.group_id;
+                        $(`#${item.id}`).attr("data-group_id",result.data.group.group_id);
+                        // console.log($(`#${item.id}`).attr("data-group_id"))
+                        this.$nextTick(()=> {
+                            var scrollHeight = $('.records').prop("scrollHeight");
+                            $('.records').scrollTop(scrollHeight);
+                        });
+                    }
+                    setTimeout(function(){
+                        hideMaskLayer();
+                    },1000)
+                },"json");
+            },
+            // 获取群聊消息历史记录
+            getAttachGroupHistorys(item,page){
+                $.get("/MsgGroupMember/getMessage", {groupId:item.group_id,page:page}, (result)=>{
+                    // console.log(result);
+                    if(result.code == 0){
+                        // console.log(page)
+                        if(page == 1){
+                            this.historys = result.data;
+                            this.$nextTick(()=> {
+                                var scrollHeight = $('.records').prop("scrollHeight");
+                                $('.records').scrollTop(scrollHeight);
+                            });
+                        }else{
+                            if(result.data.length == 0){
+                                hideMaskLayer();
+                                $.dialog.tips("无更多数据");
+                                return false;
+                            }
+                            var ary = result.data.reverse();
+                            for(var k in ary){
+                                this.historys.unshift(ary[k])
+                            }
+                        }
+                    }else{
+                        
+                    }
+                    setTimeout(function(){
+                        hideMaskLayer();
+                    },750)
+                },"json");
+            },
+            // 获取历史附件列表
+            getHistorysFilelist(page){
+                $.post("/MsgGroupMember/getMessage", {groupId:this.chat.group_id,page:page,type:20}, (result)=>{
+                    // console.log(result);
+                    if(result.code == 0){
+                        if(page == 1){
+                            this.filesList = result.data;
+                            this.$nextTick(()=> {
+                            var scrollHeight = $('.attachment-databox').prop("scrollHeight");
+                                $('.attachment-databox').scrollTop(scrollHeight);
+                            });
+                        }else{
+                            if(result.data.length == 0){
+                            hideMaskLayer();
+                                $.dialog.tips("无更多数据");
+                                return false;
+                            }
+                            var ary = result.data.reverse();
+                            for(var k in ary){
+                                this.filesList.unshift(ary[k]);
+                            }
+                        }
+                    }
+                    setTimeout(function(){
+                        hideMaskLayer();
+                    },750)
+                },"json");
+            },
+            // 获取群成员列表
+            getGroupMemberList(){
+                $.post("/MsgGroupMember/getGroupMember", {groupId:this.chat.group_id}, (result)=>{
+                    // console.log(result);
+                    if(result.code == 0){
+                       this.group_memberList = result.data;
+                    }
+                },"json");
+            },
+            // 获取系统消息
+            getSystemMsgList(type,page){
+                var dataObj = {
+                    type:type,
+                    page:page
+                }
+                showMaskLayer();
+                $.get("/MsgGroupMember/getSysMessage",dataObj, (result)=>{
+                    console.log(result);
+                    if(result.code == 0){
+                       if(page == 1){
+                        this.historys = result.data;
+                        this.$nextTick(()=> {
+                            var scrollHeight = $('.records').prop("scrollHeight");
+                            $('.records').scrollTop(scrollHeight);
+                        });
+                    }else{
+                        if(result.data.length == 0){
+                            hideMaskLayer();
+                            $.dialog.tips("无更多数据");
+                            return false;
+                        }
+                        var ary = result.data.reverse();
+                        for(var k in ary){
+                            this.historys.unshift(ary[k])
+                        }
+                       }
+                    }
+                    setTimeout(function(){
+                        hideMaskLayer();
+                    },500)
+                },"json");
+            },
+            // 修改群名称
+            changeGroupName(){
+                if(this.group_name == ""){
+                    return false;
+                }
+                var data = {
+                    name:this.group_name,
+                    groupId:this.chat.group_id
+                }
+                $.post("/MsgGroupMember/updateGroup",data, (result)=>{
+                    // console.log(result);
+                    if(result.code == 0){
+                        this.loadingList();
+                        $("#chat-name").text(this.group_name);
+                    }
+                },"json");
+            },
+            // 处理消息
+            selectIteration(index,type){
+                $(`#attach-${type}`).find(".attach-userlist-item").find(".red-dot").eq(index).hide();
+                if(type == "system"){
+                    if(this.chat.name == "系统通知"){
+                        this.statistics.sys_notice = 0;
+                    }else if(this.chat.name == "迭代通知"){
+                        this.statistics.sys_iteration = 0;
+                    }
+                }else if(type == "group"){
+                    this.statistics.group = this.statistics.member - this.chat.count;
+                }else if(type == "staff" ){
+                    this.statistics.staff = this.statistics.member - this.chat.count;
+                }else if(type == "member"){
+                    this.statistics.member = this.statistics.member - this.chat.count;
+                }
+            },
+            // 新增组群弹窗
+            attachAddGroup(){
+                createDialog(`Index/attach_addgroup`, '添加群聊', 'attach_addgroup');
+            },
+            // 添加群成员
+            attachAddGroupMember(){
+                // console.log(this.chat.group_id)
+                createDialog(`Index/attach_editgroup/group_id/${this.chat.group_id}`, '添加群成员', 'attach_editgroup');
+            },
+            // 删除群成员
+            removeGroupMember(item){
+                showMaskLayer();
+                var data = {
+                    userId:item.id,
+                    groupId:this.chat.group_id
+                }
+                $.post("/MsgGroupMember/delMember",data,(result)=>{
+                    if(result.code == 0){
+                        // console.log(result)
+                        this.getGroupMemberList();
+                        // ws
+                        // websocket.sendMsgSocket("groupDel","response.data");
+                        hideMaskLayer();
+                    }else{
+                        $.dialog.alert("删除失败");
+                        hideMaskLayer();
+                    }
+                })
+            },
+            // 预览
+            previewFun(url){
+                $.dialog({
+                    title: "图片预览",
+                    content: `<div class="previewBox"><img src="${url}" alt=""></div>`,
+                    max: false,
+                    min: false,
+                    autoSize: true,
+                })
+            },
+            // 文件下载
+            downloadFile(url, name) {
+                window.location.href = "__MODULE__/ComPotential/downloadFile?url=" + url + "&name=" + name;
+            },
+            // 附件上传请求
+            fileAjaxFun(){
+                var formData = new FormData();
+                var files = this.attachments;
+                $(files).each(function (index) {
+                    formData.append(this.type + "-file-" + index, this.file);
+                });
+                formData.append("groupId",this.chat.group_id);
+                // acceptId
+                if(this.chat.id != undefined){
+                    formData.append("acceptId",this.chat.id);
+                }
+
+                $.ajax({
+                    url: "/MsgGroupMember/upload",
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        showMaskLayer();
+                    },
+                    success: (response) => {
+                        hideMaskLayer();
+                        if (response.code == 0) {
+                            // 清空聊天输入框
+                            this.resetContent();
+                            // 将这条消息添加到本地消息数组消息
+                            // console.log(response.data)
+                            this.historys.push(response.data)
+                            // console.log(this.historys)
+                            this.$nextTick(()=> {
+                                var scrollHeight = $('.records').prop("scrollHeight");
+                                $('.records').scrollTop(scrollHeight);
+                            });
+                            // ws
+                            websocket.sendMsgSocket("msg",response.data)
+                            $.dialog.tips("上传完成");
+                        } else {
+                            // $.dialog.alert("上传失败");
+                        }
+                    },
+                    error: function () {
+                        hideMaskLayer();
+                    }
+                });
+            },
+            // 文本消息上传请求
+            textContentAjaxFun(){
+                var formData = new FormData();
+                formData.append("contents",this.contents);
+                formData.append("groupId",this.chat.group_id);
+                if(this.chat.id != undefined){
+                    formData.append("acceptId",this.chat.id);
+                }  
+                $.ajax({
+                    url: "/MsgGroupMember/sendMeg",
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        showMaskLayer();
+                    },
+                    success: (response) => {
+                        if (response.code == 0) {
+                            // 清空聊天输入框
+                            this.resetContent();
+                            // 将这条消息添加到本地消息数组消息
+                            // console.log(response.data)
+                            this.historys.push(response.data)
+                            // console.log(this.historys)
+                            this.$nextTick(()=> {
+                                var scrollHeight = $('.records').prop("scrollHeight");
+                                $('.records').scrollTop(scrollHeight);
+                            });
+                            // ws
+                            websocket.sendMsgSocket("msg",response.data)
+                            $.dialog.tips("上传完成");
+                        } else {
+                            // $.dialog.alert("上传失败");
+                        }
+                        hideMaskLayer();
+                    },
+                    error: function () {
+                        hideMaskLayer();
+                    }
+                });
+            },
+            // 数据上传
+            postAttachmentData() {
+                if(this.attachments.length > 0){
+                    this.fileAjaxFun();
+                }
+                if(this.contents != ""){
+                    this.textContentAjaxFun();
+                }
+            },
+            // 用户列表伸缩功能
+            user_list_down(item, index) {
+                if ($(`#user-item${item.name}`).css("display") == "none") {
+                    $(`#user-item${item.name}`).show();
+                    $(`#user_list_down-${index}`).css("transform", "rotate(180deg)");
+                } else {
+                    $(`#user-item${item.name}`).hide();
+                    $(`#user_list_down-${index}`).css("transform", "rotate(0deg)");
+                }
+            }
+        }
+    });
+    // 监听绑定输入框的内容
+    function contentFun(that){
+        attachmentVue.contents = $(that).text();
+        // 键盘按键
+        if (13 == event.keyCode && event.ctrlKey) {
+
+        }
+        if (13 == event.keyCode) {
+            attachmentVue.postAttachmentData();
+        }
+    }
+    // 输入框粘贴事件绑定
+    function pasteFun(){
+        //阻止默认行为即不让剪贴板内容在div中显示出来
+        window.event.preventDefault();
+        // 处理粘贴事件
+        var imageRe = new RegExp(/image\/.*/);
+        var fileList = $.map(event.clipboardData.items, function (o) {
+            if (!imageRe.test(o.type)) {
+                return;
+            }
+            var blob = o.getAsFile();
+            return blob;
+        });
+        if (fileList.length <= 0) {
+            return;
+        }
+        for (var k in fileList) {
+            fileList[k].type = "image";
+            fileList[k].src = "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/update_img.png";
+            attachmentVue.attachments.push({ type: "image", src: fileList[k].src, file: fileList[k], file_name: fileList[k].name })
+        }
+    }    
+    // 图片上传
+    function img_attach_updata(that){
+        var oFiles = $(that).get(0).files;
+        $(oFiles).each(function () {
+            var _file = this;
+            //var rFilter = /^(image\/jpeg|image\/png)$/i;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(this);
+                reader.onload = function () {
+                    attachmentVue.attachments.push({ type: "image", src: reader.result, file: _file, file_name: _file.name })
+                }
+            } else {
+                return false;
+            }
+        })
+    }
+    // 文件上传
+    function file_attach_updata(that){
+        var oFiles = $(that).get(0).files;
+        $(oFiles).each(function () {
+            var _file = this;
+            //var rFilter = /^(image\/jpeg|image\/png)$/i;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(this);
+                reader.onload = function () {
+                    attachmentVue.attachments.push({ type: "image", src: reader.result, file: _file, file_name: _file.name })
+                }
+            } else {
+                var type = "unknown";
+                if (/(\.xls|\.xlsx)$/i.test(this.name)) {
+                    type = "excel";
+                } else {
+                    if (/(\.doc|.\.docx)$/i.test(this.name)) {
+                        type = "word";
+                    } else {
+                        if (/(\.txt)$/i.test(this.name)) {
+                            type = "txt";
+                        }
+                    }
+                }
+                attachmentVue.attachments.push({ type: type, src: "", file: _file, file_name: _file.name });
+            }
+        });
+    }
+    // 附件
+    function fileShow() {
+        if($("#attachment").width() == 0){
+            $("#attachment").css("width","360px");
+        }else{
+            $("#attachment").css("width","0px");
+            attachmentVue.resetHistoryFileList();
+        }
+        attachmentVue.getHistorysFilelist(1);
+    }
+    // 群成员
+    function mannerShow(){
+        if($("#attachmanner").width() == 0){
+            $("#attachmanner").css("width","360px");
+        }else{
+            $("#attachmanner").css("width","0px");
+            attachmentVue.resetGroupMemberList();
+        }
+        attachmentVue.group_name = attachmentVue.chat.name;
+        attachmentVue.getGroupMemberList();
+    }
+    // 历史记录上滚加载
+    function ToMoreData(el){
+        if(el.scrollTop == 0){
+            showMaskLayer();
+            attachmentVue.history_page += 1;
+            attachmentVue.getAttachGroupHistorys(attachmentVue.chat,attachmentVue.history_page);
+        }
+    }
+    // 系统消息上滚加载
+    function SysToMoreData(el){
+        if(el.scrollTop == 0){
+            attachmentVue.history_page += 1;
+            console.log(attachmentVue.chat.name)
+            if(attachmentVue.chat.name == "系统通知"){
+                attachmentVue.getSystemMsgList(10,attachmentVue.history_page);
+            }else if(attachmentVue.chat.name == "迭代通知"){
+                attachmentVue.getSystemMsgList(20,attachmentVue.history_page);
+            }
+        }
+    }
+     // 历史附件上滚加载
+     function ToMoreFileData(el){
+        if(el.scrollTop == 0){
+            showMaskLayer();
+            attachmentVue.file_page += 1;
+            attachmentVue.getHistorysFilelist(attachmentVue.file_page);
+        }
+    }
+    // 员工列表搜索
+    function searchStaffList(ele){
+        var key = $(ele).val();
+        attachmentVue.staffList = attachmentVue.staffListCopy.filter(function(v,i,ary){
+            var search_name = v.staff_name ? v.staff_name + '（'+ v.name +'）' : v.name;
+            return search_name.indexOf(key) != -1
+        })
+        // console.log(attachmentVue.staffList)
+    }
+    // 用户列表搜索
+    function searchMemberList(ele){
+        var key = $(ele).val();
+        attachmentVue.memberList = attachmentVue.memberListCopy.filter(function(v,i,ary){
+            var search_name = v.comments ? v.comments + '（'+ v.name +'）' : v.name;
+            return search_name.indexOf(key) != -1
+        })
+    }
+</script>

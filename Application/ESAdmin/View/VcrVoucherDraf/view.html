@@ -1,0 +1,170 @@
+<div class="recording-voucher" data-value="{$model.id}">
+    <div>
+        <span class="date">{$model.bill_date|date="Y年m月d日",###}</span>
+        <span class="date" style="padding-left: 20px">会计期间：</span>
+        <div style="width: 120px; display: inline-block;" class="date">
+            <span  style="border-bottom: 1px solid #ccc">{$model.accounting_section}</span>
+        </div>
+        <span class="number">记号第<span>{$model.number}</span>号</span>
+    </div>
+    <table class="datagrid-btable" width="100%">
+        <thead>
+        <tr>
+            <th rowspan="2" width="50%"><strong>摘要</strong></th>
+            <th rowspan="2" width="50%"><strong>会计科目</strong></th>
+            <th colspan="11"><strong>借方金额</strong></th>
+            <th colspan="11"><strong>贷方金额</strong></th>
+        </tr>
+        <tr>
+            <th class="dolar-unit" width="10px">亿</th>
+            <th class="dolar-unit" width="10px">千</th>
+            <th class="dolar-unit blue-l" width="10px">百</th>
+            <th class="dolar-unit" width="10px">十</th>
+            <th class="dolar-unit" width="10px">万</th>
+            <th class="dolar-unit blue-l" width="10px">千</th>
+            <th class="dolar-unit" width="10px">百</th>
+            <th class="dolar-unit" width="10px">十</th>
+            <th class="dolar-unit red-l" width="10px">元</th>
+            <th class="dolar-unit" width="10px">角</th>
+            <th class="dolar-unit" width="10px">分</th>
+            <th class="dolar-unit" width="10px">亿</th>
+            <th class="dolar-unit" width="10px">千</th>
+            <th class="dolar-unit blue-l" width="10px">百</th>
+            <th class="dolar-unit" width="10px">十</th>
+            <th class="dolar-unit" width="10px">万</th>
+            <th class="dolar-unit blue-l" width="10px">千</th>
+            <th class="dolar-unit" width="10px">百</th>
+            <th class="dolar-unit" width="10px">十</th>
+            <th class="dolar-unit red-l" width="10px">元</th>
+            <th class="dolar-unit" width="10px">角</th>
+            <th class="dolar-unit" width="10px">分</th>
+        </tr>
+        </thead>
+        <tbody>
+        <volist name="model.detail" id="vo">
+            <tr class="first-child data-row">
+                <td><div>{$vo.summary}</div></td>
+                <td><div>{$vo.full_name}</div></td>
+                <td class="dolar-unit debit"><div></div></td>
+                <td class="dolar-unit debit"><div></div></td>
+                <td class="dolar-unit debit blue-l"><div></div></td>
+                <td class="dolar-unit debit"><div></div></td>
+                <td class="dolar-unit debit"><div></div></td>
+                <td class="dolar-unit debit blue-l"><div></div></td>
+                <td class="dolar-unit debit"><div></div></td>
+                <td class="dolar-unit debit"><div></div></td>
+                <td class="dolar-unit debit red-l"><div></div></td>
+                <td class="dolar-unit debit"><div></div></td>
+                <td class="dolar-unit debit"><div></div></td>
+
+                <td class="dolar-unit credit"><div></div></td>
+                <td class="dolar-unit credit"><div></div></td>
+                <td class="dolar-unit credit blue-l"><div></div></td>
+                <td class="dolar-unit credit"><div></div></td>
+                <td class="dolar-unit credit"><div></div></td>
+                <td class="dolar-unit credit blue-l"><div></div></td>
+                <td class="dolar-unit credit"><div></div></td>
+                <td class="dolar-unit credit"><div></div></td>
+                <td class="dolar-unit credit red-l"><div></div></td>
+                <td class="dolar-unit credit"><div></div></td>
+                <td class="dolar-unit credit"><div></div></td>
+                <input name="debit_amount[]" type="hidden" value="{$vo.debit_amount}">
+                <input name="credit_amount[]" type="hidden" value="{$vo.credit_amount}">
+            </tr>
+        </volist>
+        <tr>
+            <td><strong>附单据 <span style="width:40px;height:25px;">{$model.attachment_count}张</span></strong></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit blue-l"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit blue-l"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit red-l"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit blue-l"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit blue-l"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+            <td class="dolar-unit red-l"><div></div></td>
+            <td class="dolar-unit"><div></div></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="account-info">
+        <span><strong>会计主管：</strong></span>
+        <span><strong>复核：</strong>{$model.reviewer}</span>
+        <span><strong>记账：</strong>{$model.creater}</span>
+        <span><strong>制单：</strong>{$model.creater}</span>
+    </div>
+</div>
+<div class="img-viewer" style="padding-left: 20px;">
+    <div class="imgs-tip">
+        <span><i class="red">*</i>账本附带图片  点击图片后可查看原图</span>
+    </div>
+    <div class="imgs">
+        <ul id="viewer"></ul>
+    </div>
+</div>
+<script>
+    var VoucherViewFunctions = {
+        showDetailAmount: function ($rowTarget, selector, amount) {
+            var amount_text = "";
+            if (amount > 0) {
+                var dotPos = (String(amount)).indexOf(".");
+                if (dotPos > -1) { //有小数点 181.82->____________18182
+                    amount_text = padLeft(amount.replace(".", ""), 11, "_");
+                } else {
+                    amount_text = padLeft(amount, 9, "0") + "__";
+                }
+                $rowTarget.find(selector).each(function (index) {
+                    var chr = amount_text.charAt(index);
+                    chr = (chr == "_") ? "" : chr;
+                    $(this).text(chr);
+                });
+            }
+        },
+        appendImage:function (src, docment_id) {
+            var item = $.format("<li>\n" +
+                " <img data-original=\"{0}\" src=\"{1}\" alt=\"图片1\">\n" +
+                " </li>",[src, src]);
+            $("#viewer").append(item);
+        }
+    };
+    $(".recording-voucher tbody tr.data-row").each(function () {
+        var amount_val = $(this).find("input[name='debit_amount[]']").val();
+        VoucherViewFunctions.showDetailAmount($(this), "td.debit div", amount_val);
+        amount_val = $(this).find("input[name='credit_amount[]']").val();
+        VoucherViewFunctions.showDetailAmount($(this), "td.credit div", amount_val);
+    });
+    var attachments = '{$attachments}';
+    if (attachments != ''){
+        var images = JSON.parse(attachments);
+        $(images).each(function () {
+            VoucherViewFunctions.appendImage(this.path, this.id);
+        })
+    };
+    $(function(){
+        $("#viewer").find("img").on("click",function(){
+            // console.log()
+            $.dialog({
+                title:"查看大图",
+                content: `<div id="lvistion" style="width: 70vw;max-height:70vh;overflow-y:auto;">
+                            <img style="width: 100%;" src="${this.src}" alt="">
+                        </div>`,
+                lock: true,
+                max: false,
+                min: false,
+            })
+        })
+    })
+</script>

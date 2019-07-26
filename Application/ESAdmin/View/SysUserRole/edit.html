@@ -1,0 +1,19 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+    <div class="tableForm">
+        <input name="id"  type="hidden"  value="{$model.id}">
+        <div class="row">
+ <div class="caption"><span>{$Think.lang.FLD_ROLE_ID}：</span></div>
+ <div class="inputbox"><input name="role_id" class="easyui-numberbox" data-options="required:true" value="{$model.role_id}" /></div>
+ <div class="caption"><span>{$Think.lang.FLD_ROLE_KIND}：</span></div>
+ <div class="inputbox"><input name="role_kind" type="radio" value="0" <eq name="model.role_kind" value="0">checked</eq> />{$Think.lang.ENUM_ROLE_KIND_0}</div>
+</div>
+<div class="row">
+ <div class="caption"><span>{$Think.lang.FLD_USER_ID}：</span></div>
+ <div class="inputbox"><input name="user_id" class="easyui-numberbox" data-options="required:true" value="{$model.user_id}" /></div>
+</div>
+                    
+    </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="SysUserRole" />
+</div>

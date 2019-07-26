@@ -1,0 +1,191 @@
+<script type="text/javascript">
+    function format_tpl_example(value){
+        return "<div style='padding:5px 0px'>"+value.replace(/\r\n/g,"<br>")+"<div>";
+    }
+    function format_NAME(value){
+        return `<div style="width:130px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function format_target(value, row){
+        return row.point == 1 ? '小程序' : '公众号';
+    }
+    function format_USER(value){
+        if(value == null || value == ""){
+            return `<div style="width:100px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="未填写收信人">-</div>`
+        }else{
+            return `<div style="width:130px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${value}">${value}</div>`
+        }
+    }
+    function format_SEND_TIME(value){
+        return `<div style="width:180px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function format_url(value, row){
+        if(row.point == 1){
+            if(row.xcx_space_url == ""){
+                return `<div style="width:280px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="未填写链接">-</div>`
+            }
+            return `<div style="width:280px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${row.xcx_space_url}">${row.xcx_space_url}</div>`
+        }else{
+            if(row.url == ""){
+                return `<div style="width:280px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="未填写链接">-</div>`
+            }
+            return `<div style="width:280px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" title="${row.url}">${row.url}</div>`
+        }
+    }
+    function format_operation(value ,row, index){
+        var html = '';
+        if (row.is_open === true) {
+            html += "<a style='color: #368BFE' onclick=\"editDraft("+row.id+")\">编辑草稿</a>";
+        } else {
+            html += "<a style='color: #b3b3b3' onclick=\"errorTip()\">编辑草稿</a>";
+        }
+        html += "<a style='color: red;margin: 0 15px' onclick=\"del("+row.id+")\">删除</a>";
+        return html;
+    }
+    setMainContainerConfig("{$Think.const.CONTROLLER_NAME}", {
+        onDblClickRow: function(){
+            return false;
+        }
+    })
+</script>
+<style>
+    .datagrid-cell{
+        text-overflow: ellipsis;
+    }
+    .tip-div{
+         position: absolute;
+         top: 0;
+         right: 50px;
+         height: 45px;
+         line-height: 45px;
+     }
+    .tip-div .tip-msg{
+        width: 28px;
+        height: 45px;
+        font-family: MicrosoftYaHei;
+        font-size: 14px;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 45px;
+        letter-spacing: 0px;
+        color: #676767;
+        display: -webkit-box;
+        float: right;
+    }
+    .tip-div .tip-icon{
+        font-size: 26px;
+        color: #e91835;
+        line-height: 45px;
+        display: inline-block;
+        width: 25px;
+        height: 45px;
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/img/tip-help.png') no-repeat;
+        background-size: 20px;
+        background-position-y: 13px;
+    }
+    .maincontainer{
+        height: 100% !important;
+    }
+</style>
+<div class="maincontainer" id="WxBranchTemplate-maincontainer">
+    <div href="javascript:void(0)" class="tip-div" onclick="showTip()">
+        <span class="tip-icon"></span>
+        <span class="tip-msg">帮助</span>
+    </div>
+    <div id="{$Think.const.CONTROLLER_NAME}-toolbar">
+        <div class="extend-nav-menu c-header">
+            <div class="tab-span menu_item" data-options="text:'客户发送详情', url:'{$Think.const.CONTROLLER_NAME}/userSendStatistics',params:''">客户发送详情</div>
+            <div class="tab-span menu_item tab-span-on" data-options="text:'草稿箱', url:'{$Think.const.CONTROLLER_NAME}/templateDraft',params:''">草稿箱</div>
+            <div class="tab-span menu_item" data-options="text:'历史数据', url:'{$Think.const.CONTROLLER_NAME}/templateHistory',params:''">历史数据</div>
+            <div class="tab-span menu_item" data-options="text:'模板导入', url:'{$Think.const.CONTROLLER_NAME}',params:''">模板导入</div> 
+        </div>
+        <div style="padding:0 10px;">
+            <div class="btn-speed" onclick="templateAppend()">发送通知</div>
+            <div style="float:right;" class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                <input name="ql-title"  class="easyui-validatebox filter-field" placeholder="模板标题" value="" onkeyup="doSearchQuery('{$Think.const.CONTROLLER_NAME}')" />
+                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+            </div>
+        </div>
+    </div>
+    <table class="datagrid" fitColumns="true" id="{$Think.const.CONTROLLER_NAME}-datagrid"
+           data-options="
+           url:'__MODULE__/{$Think.const.CONTROLLER_NAME}/draft_list',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#{$Think.const.CONTROLLER_NAME}-toolbar',
+           pageNumber:1,
+           checkOnSelect:false,
+           singleSelect:false,
+           border:true,
+           onRowContextMenu: function (e, rowIndex, rowData) {
+             $(this).datagrid('clearSelections');
+             $(this).datagrid('selectRow', rowIndex);
+           e.preventDefault();
+            $('#box_{$Think.const.CONTROLLER_NAME}').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+             });
+            }">
+        <thead>
+        <tr>
+            <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+            <th data-options="field:'title',width:'160',align:'left',formatter:format_NAME">{$Think.lang.TEMPLATE_NAME}</th>
+            <th data-options="field:'target',width:'120',align:'left',formatter:format_target">{$Think.lang.TEMPLATE_TARGET}</th>
+            <th data-options="field:'users',width:'160',align:'left',formatter:format_USER">{$Think.lang.TEMPLATE_USER}</th>
+            <th data-options="field:'updated_time',width:'180',align:'left',formatter:format_SEND_TIME">{$Think.lang.TEMPLATE_DRAFT_TIME}</th>
+            <th data-options="field:'url',width:'300',align:'left',formatter:format_url">{$Think.lang.TEMPLATE_URL}</th>
+            <th data-options="field:'operation',width:200,align:'center',formatter:format_operation">{$Think.lang.USER_OPERATION}</th>
+        </tr>
+        <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>
+<script>
+    $(".extend-nav-menu div.menu_item").click(function(){
+        var node = $.parser.parseOptions(this);
+        var url = app_config.module + "/" + node.url;
+        if (node.params){
+            url = url +  node.params;
+        }
+        $(this).siblings().removeClass('active');
+        $(this).addClass("active");
+        var title = $('.side-bar li.active').text() + ">" +  $(this).text();
+        $("#module-content .head").text(title);
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    });
+    function editDraft(id)
+    {
+        createDialog("{$Think.const.CONTROLLER_NAME}/preview_update/id/"+id, '查看详情','dlg-edit-select');
+    }
+    function del(id) {
+        var message = '是否删除该草稿?';
+        $.dialog.confirm(message, function() {
+            showMaskLayer();
+            $.post('{$Think.const.CONTROLLER_NAME}/deleteDraft', {id: id}, function (data) {
+                hideMaskLayer();
+                if (data.code == 0) {
+                    $.dialog.tips('删除成功');
+                    refreshGrid('{$Think.const.CONTROLLER_NAME}',{id:id}, 'delete');
+                } else {
+                    $.dialog.tips(data.message);
+                }
+            }, 'JSON')
+        })
+    }
+    function errorTip(){
+        $.dialog.tips('该草稿箱所属的微信消息模板不存在或已删除!');
+    }
+    function templateAppend()
+    {
+        createDialog('{$Think.const.CONTROLLER_NAME}/templateAppend', '查看详情','dlg-notice-select');
+    }
+    function showTip(){
+        createDialog('{$Think.const.CONTROLLER_NAME}/showTip', '提示','dlg-tip-select');
+    }
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+</script>

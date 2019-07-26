@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box{
+            width: 520px;
+            height: 130px;
+            text-align: center;
+        }
+        .box p{
+            margin-bottom: 40px;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <p>合同创建成功！</p>
+        <div id="InvoicePlan-form-actions" class="form-actions">
+            <div class="actions-sysdefault">
+                <a href="javascript:void(0)" plain="true" onclick="savePlan(this)" class="modal-save-btn btn-update notshow downLoad" style="">下载合同</a>
+                <input type="hidden" name="amount_paid" value="177">
+                <a href="javascript:void(0)" plain="true" onclick="closeDialog()" class="modal-close-btn">取消</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('.downLoad').click(function () {
+            createDialog("SysBranch/downLoad/", '下载成功');
+        })
+    </script>
+</body>
+</html>

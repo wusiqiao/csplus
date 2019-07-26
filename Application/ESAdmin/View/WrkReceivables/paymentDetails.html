@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <style>
+            .sList .datebox + .datebox{
+                display: none;
+            }
+            .red-point-another{
+                height:11px;
+                width:11px;
+                border-radius:16px;
+                display:inline-block;
+                text-align:center;
+                font-size:0.12em;
+                color:#fff;
+                background:red;
+                position:absolute;
+                top: 20px;
+                left: 5px;
+                z-index:99;
+                -webkit-animation: twinkling 1s infinite ease-in-out;
+            }
+            input[readonly]{
+                background-color: rgb(221, 221, 221) !important;
+            }
+            .blink-checkbox{
+                animation: flash .5s linear infinite;
+            }
+            @keyframes flash{
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            #receivables_item input[type=checkbox].css-checkbox + label.css-label{
+                top:-8px;
+                left:0;
+                height: 20px;
+                padding-left: 20px;
+                border:solid 1px !important;
+                border-radius: 5px !important;
+            }
+
+            #receivables_item input[type=checkbox]:checked.css-checkbox + label.css-label{
+                top:-8px;
+                left:0;
+                border: none !important;
+                height: 22px;
+                padding-left: 22px;
+            }
+
+            .sList{
+                line-height: 34px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="details-wrap" id="payment-detail">
+            <div style="overflow-y:auto;height:500px;width:1000px;">
+                <div class="details-section">
+                    <div class="details-content">
+                        <p class="line">
+                            <span class="txt">合同信息</span>
+                            <span class="drop-down"></span>
+                        </p>
+                        <table class="search-table">
+                            <tbody>
+                                <tr>
+                                    <td  class="width120">合同名称：</td>
+                                    <td>
+                                        <input name="agreement_name" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.name}">
+                                    </td>
+                                    <td class="block"></td>
+                                    <td class="width120">合同商家编号：</td>
+                                    <td>
+                                         <input name="agreement_sn" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.agreement_sn}" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="width120">合同金额：</td>
+                                    <td>
+                                        <input name="agreement_money" class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.agreement_money}">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="search-table">
+                            <tbody>
+                                <tr>
+                                    <td class="width120">合同开始日期：</td>
+                                    <td>
+                                        <input name="start_time"  class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.start_time}" />
+                                    </td>
+                                    <td class="block"></td>
+                                    <td class="width120">合同结束日期：</td>
+                                    <td>
+                                        <input name="finish_time"  class="easyui-validatebox" readonly="true" value="{$model.wrkAgreement.finish_time}" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="details-section">
+                    <div class="details-content">
+                        <p class="black">
+                            <span class="txt">已付数据：</span>
+                        </p>
+                        <div class="tab-div newTab clearFix" style="overflow-x: auto;width:100%" >
+                            <div class="fl" style="margin-left:15px;width:1200px" >
+                                <p class="title">
+                                    <span style="width:130px;">付款日期</span>
+                                    <span style="width:120px;">已付金额</span>
+                                    <span style="width:150px;">收款账户</span>
+                                    <span style="width:120px;">收款手续费</span>
+                                    <span style="width:120px;">线下付款</span>
+                                    <span style="width:120px;">余额付款</span>
+                                    <span style="width:120px;">微信付款</span>
+                                    <span style="width:120px;">优惠券付款</span>
+                                    <span style="width:120px;">付款附件</span>
+                                </p>
+                                <p v-for="(item,index) in advance" >
+                                    <span class="sList" style="width:130px;">{{item.pay_date}}</span>
+                                    <span class="sList" style="width:120px;">{{item.pay_amount}}</span>
+                                    <span class="sList" style="width:150px;">{{item.account_name}}</span>
+                                    <span class="sList" style="width:120px;">{{item.poundage}}</span>
+                                    <span class="sList" style="width:120px;">{{item.offline_amount}}</span>
+                                    <span class="sList" style="width:120px;">{{item.balance_amount}}</span>
+                                    <span class="sList" style="width:120px;">{{item.wechat_amount}}</span>
+                                    <span class="sList" style="width:120px;">{{item.coupon_amount}}</span>
+                                    <span class="sList" style="width:120px;"><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)' :data-group="item.attach_group">查看</a></span>
+                                </p>
+                                <p v-if="advance.length == 0" >
+                                    <span class="sList" style="width:760px;">无已付数据</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="details-content">
+                        <p class="black">
+                            <span class="txt">缴费清单</span>
+                        </p>
+                        <div class="tab-div newTab clearFix datagrid-0">
+                            <p style="padding:10px"><a href='javascript:void(0)' class='btn_disable' id="paybutton" onclick='payAction()'>立即缴费</a></p>
+                            <div style="overflow-x:auto;width:100%">
+                                
+                            <div id="receivables_item" class="fl" style="margin-left:15px;width:1350px;">
+                                <p class="title">
+<!--                                     <span style="width:80px;">&nbsp;</span> -->
+                                    <span style="width:50px;">&nbsp;</span>
+                                    <span style="width:50px;">期数</span>
+                                    <span style="width:150px;">应付日期</span>
+                                    <span style="width:100px;">应付金额</span>
+                                    <template v-if="is_show_service_date == '1'">
+                                    <span style="width:200px;">服务期间</span>
+                                    </template>
+                                    <span style="width:150px;">缴费日期</span>
+                                    <span style="width:100px;">缴费金额</span>
+                                    <span style="width:100px;">线下付款</span>
+                                    <span style="width:100px;">余额付款</span>
+                                    <span style="width:100px;">微信付款</span>
+                                    <span style="width:100px;">优惠券付款</span>
+                                    <span style="width:100px;">待确认金额</span>
+                                    <span style="width:100px;">状态</span>
+                                    <span style="width:100px;">付款备注附件</span>
+                                </p>
+                                <p v-for="(item,index) in datas0" :class="'row-0-'+index" style="position:relative;">
+                                <template v-if="item.prompt_flag == '1' && item.status != 2 && item.confirm_flag != '1'">
+                                    <span  class="red-point-another" ></span>
+                                    <span class="sList" style="width:50px">
+                                        <span v-if="item.status != 2 && item.confirm_flag != '1'" style="position:relative ;left:25px;top:4px;">
+                                            <span style="position: relative;top:3px;width:40px" class="datagrid-cell-check">
+                                                <input type="checkbox" name="receivable_id[]" :id=`ck_${index}` :value="item.id" :unpaid_amount="item.unpaid_amount" class="css-checkbox"  checked>
+                                                <label  :for=`ck_${index}` class="css-label blink-checkbox"></label>
+                                                <label :for=`ck_${index}` class="css-label"></label>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </template>
+                                <template v-else>
+                                    <span class="sList" style="width:50px">
+                                        <span v-if="item.status != 2 && item.confirm_flag != '1'" style="position:relative ;left:25px;top:4px;">
+                                            <span style="position: relative;top:3px;width:40px" class="datagrid-cell-check">
+                                                <input type="checkbox" name="receivable_id[]" :id=`ck_${index}` :value="item.id" :unpaid_amount="item.unpaid_amount" class="css-checkbox">
+                                                <label :for=`ck_${index}` class="css-label"></label>
+                                                <label :for=`ck_${index}` class="css-label"></label>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </template>
+                                <span class="sList" style="width:50px;line-height:34px;">{{index+1}}</span>
+                                <span class="sList" style="width:150px;">{{item.show_receivables_date}}</span>
+                                <span class="sList" style="width:100px;">{{item.receivables_amount}}</span>
+                                <template v-if="is_show_service_date == '1'">
+                                <span class="sList" style="width:90px;">{{item.show_begin_date}}</span>
+                                <span class="sList" style="width:20px;">至</span>
+                                <span class="sList" style="width:90px;">{{item.show_end_date}}</span>
+                                </template>
+                                <span class="sList" style="width:150px;">{{item.show_actual_date}}</span>
+                                <span class="sList" style="width:100px;">{{item.actual_amount}}</span>
+                                <span class="sList" style="width:100px;">{{item.offline_amount}}</span>
+                                <span class="sList" style="width:100px;">{{item.balance_amount}}</span>
+                                <span class="sList" style="width:100px;">{{item.wechat_amount}}</span>
+                                <span class="sList" style="width:100px;">{{item.coupon_amount}}</span>
+                                <span class="sList" style="width:100px;">{{item.unconfirmed_amount}}</span>
+                                <template v-if="item.confirm_flag != '1' || item.status == '2'">
+                                    <span class="sList" style="width:100px;">{{item.show_costmer_status}}</span>
+                                </template>
+                                <template v-else>
+                                    <span class="sList" style="width:100px;">待确认</span>
+                                </template>
+                                <span class="sList" style="width:100px;"><a href='javascript:void(0)' class='common-blue-btn' onclick='showRecordAttach(this)' :data-group="item.attach_group">查看</a></span>
+                                </p>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-section">
+                    <div class="details-content">
+                    <p class="black">
+                    <span class="txt">
+                        合同付款状态(总)：{{statistics.show_status}}
+                        已付总额：{{statistics.actual_amount}} 未付总额：{{statistics.unpaid_amount}}
+                        退款总额：{{statistics.refund_amount}}
+
+                    </span>
+                    </p>
+                    </div>
+                </div>
+                <div class="details-section" v-if="datas1 != null">
+                    <div class="details-content">
+                        <p class="black">
+                            <span class="txt">退款列表</span>
+                        </p>
+                        <div class="tab-div clearFix">
+                            <div class="fl" style="margin-left:15px;">
+                                <p class="title">
+                                    <span style="width:50px">序号</span>
+                                    <span style="width:150px">退款时间</span>
+                                    <span style="width:150px">退款金额</span>
+                                </p>
+                                <p v-for="(item,index) in datas1">
+                                <span class="sList" style="width:50px;line-height:34px;">{{index+1}}</span>
+                                <span class="sList" style="width:150px;">{{item.refund_date}}</span>
+                                <span class="sList" style="width:150px;">{{item.refund_amount}}</span>
+                                </p>
+                                <p v-if="datas1.length == 0">
+                                    <span class="sList" style="width:350px;">暂无退款数据</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="details-section">
+                    <div class="form-actions" id="ToolEnclosure-form-actions">
+                        <div class="actions-sysdefault">
+                            <a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+                        </div>
+                    </div>
+                </div>      
+            </div>
+        </div>
+        <script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+        <script>
+            statistics();
+            function statistics(){
+                $.post("/WrkReceivables/statistics/id/{$model.id}", function(result) {
+                    vue.$nextTick(function() {
+                        vue.statistics = result;
+                    });
+                }, "json");
+            }
+
+
+            function uploadAttachment(){
+                openAttachmentForm("合同附件", [{text:"收款任务上传附件",attach_group:'{$model.attach_group}' }],function(id){
+                });
+            }
+            //编辑时上传
+            function showRecordAttach(obj){
+                openAttachmentForm("查看备注附件",[{text:"备注附件",attach_group:'{$model.attach_group}' }],function(){
+                })
+            }
+            var vue = new Vue({
+                el:".details-wrap",
+                data:{
+                    datas0:[],
+                    datas1:[],
+                    datas2:[],
+                    advance:[],
+                    is_show_service_date:0
+                },
+                methods:{
+                    newItem0:function(){
+                    }
+                },
+                watch:{
+                    datas0:function(){
+
+                    },
+                }          
+            });
+            function queryAdvance() {
+                vue.advance = [];
+                $.post("/WrkReceivables/getAdvance/id/{$model.id}", function(result) {
+                    vue.advance = result;
+                }, "json");
+            }
+            queryAdvance();
+            //获取收款计划列表
+            function queryReceivablesItem() {
+                vue.datas0 = [];
+                $.post("/WrkReceivables/getItem/id/{$model.id}", function(result) {
+                    //vue.datas0 = result;
+                    var is_show_service_date = 0;
+                    var key = 0;
+                    $(result).each(function (index) {
+                        if (result[index].show_begin_date != '') {
+                            is_show_service_date = 1;
+                        }
+                        if(result[index].prompt_flag == '1' && result[index].status != 2 && result[index].confirm_flag != '1'){
+                            key = index;
+                        }
+                    });
+                    if(key){
+                        $(result).each(function (index) {
+                            if(index < key){
+                                result[index]['prompt_flag'] = 1;
+                            }
+                        });
+                    }
+                    vue.datas0 = result;
+                    vue.is_show_service_date = is_show_service_date;
+                    if (is_show_service_date == 1) {
+                        $('#receivables_item').css('width','1500px');
+                    }
+                    vue.$nextTick(function() {
+                        var num = 0;
+                        $("input[name='receivable_id[]']:checked").each(function(){
+                            num = num + 1;
+                        });
+                        if (num > 0) {
+                            $('#paybutton').addClass('btn_bg_blue');
+                            $('#paybutton').removeClass('btn_disable');
+                        }else{
+                            $('#paybutton').addClass('btn_disable');
+                            $('#paybutton').removeClass('btn_bg_blue');
+                        }
+                    });
+                }, "json");
+            }
+            queryReceivablesItem();
+            function queryRefund() {
+                $.post("/WrkReceivables/getRefund/id/{$model.id}", function(result) {
+                    vue.datas1 = result;
+                    // console.info(vue.datas1);
+                }, "json");
+            }
+            queryRefund();
+            // function queryRenew() {
+            //     $.post("/WrkReceivables/getRenew/id/{$model.id}", function(result) {
+            //         if(result.length != 0){
+            //             $(".other_pay").show();
+            //         }
+            //         vue.datas2 = result;
+            //     }, "json");
+            // }
+            // queryRenew();
+            function payAction() {
+                var num = 0;
+                var amount = 0;
+                $("input[name='receivable_id[]']:checked").each(function(){
+                    num = num + 1;
+                    amount = mathAdd(amount,$(this).attr("unpaid_amount"));
+                });
+                if (num > 0) {
+                    createDialog("{$Think.const.CONTROLLER_NAME}/customerPay/id/{$model.id}/amount/"+amount, '付款', 'dlg-customerPay');
+                }
+                //  else {
+                //     $.dialog.tips("请选择对应的缴费期数");
+                // }
+            }
+
+            $(document).on("change","input[name='receivable_id[]']:checkbox" ,function() {
+                var checked = $(this).prop("checked");
+                var val = $(this).val();
+                if(checked){
+                    $("input[name='receivable_id[]']").each(function(){
+                        if($(this).val() < val){
+                            $(this).prop("checked",true);
+                        }
+                    });
+                }else{
+                    $("input[name='receivable_id[]']:checked").each(function(){
+                        if($(this).val() > val){
+                            $(this).prop("checked",false);
+                        }
+                    });
+                }
+                var num = 0;
+                $("input[name='receivable_id[]']:checked").each(function(){
+                    num = num + 1;
+                });
+                if (num > 0) {
+                    $('#paybutton').addClass('btn_bg_blue');
+                    $('#paybutton').removeClass('btn_disable');
+                }else{
+                    $('#paybutton').addClass('btn_disable');
+                    $('#paybutton').removeClass('btn_bg_blue');
+                }
+            })
+
+            function payAction2() {
+                var amount = 0;
+                var num = 0;
+                $("input[name='renew_id[]']:checked").each(function(){
+                    num = num +1;
+                    amount = $(this).attr("unpaid_amount");
+                });
+                if (num > 0) {
+                    createDialog("{$Think.const.CONTROLLER_NAME}/customerPay/id/{$model.id}", '付款', 'dlg-customerPay');
+                } else {
+                    $.dialog.tips("请选择一条优惠项目");
+                }
+            }
+            //闪烁的勾选框点击一次后移除闪烁效果
+            $(document).on("click",".blink-checkbox",function(){
+                $(".blink-checkbox").removeClass("blink-checkbox");
+
+            });            function mathAdd(a,b) {
+               var sum = (a*100 + b*100)/100;
+               return sum.toFixed(2);
+            }
+        </script>
+    </body>
+</html>

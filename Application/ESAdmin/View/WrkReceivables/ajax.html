@@ -1,0 +1,7 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<input name="customer_leader_name" data-name="customer_leader_id" class="easyui-validatebox filter-field" value="" placeholder="全选" style="width:300px" />
+
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+    autocompleteAjax($("input[name='customer_leader_name']"), "WrkReceivables/customerList/branch_id/{$branch_id}", function(item) {});
+</script>

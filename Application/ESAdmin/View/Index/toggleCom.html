@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .demo_label{margin:10px 10px 0 20px;display:flex}
+        a{text-decoration: none}
+    </style>
+</head>
+<body>
+<div class="easyui-section">
+    <div class="easyui-section-item">
+        <notempty name="user_session.branchList" >
+            <span style="margin-bottom: 15px;margin-left: 20px;color: grey">当前公司：{$user_session.currBranchName}</span>
+            <volist name="user_session.branchList" id="vo">
+                <div class="row" style="width: 350px;margin-bottom: 10px">
+                    <label class="demo_label">
+                        <input class="css-checkbox" type="radio" name="company_name" value="{$vo.id}" id="radio-{$vo.id}">
+                        <label class="css-label" for="radio-{$vo.id}">{$vo.name}</label>
+                    </label>
+                </div>
+            </volist>
+            <else/>
+            <div style="text-align: center;margin: 60px;width: 350px">
+                <span>无其他待选公司</span>
+            </div>
+        </notempty>
+    </div>
+    <div style="text-align: center">
+        <a href="javascript:void(0)" plain="true" class="common-blue-btn" onclick="confirmCom()">确定</a>
+        <a href="javascript:void(0)" plain="true" class="common-red-btn" onclick="$.dialog.focus.close();">取消</a>
+    </div>
+</div>
+<script>
+    $(function(){
+        var currBranchId = "{$login_user.currBranchId}";
+        $("input[name='company_name'][value='"+currBranchId+"']").prop("checked", "checked");
+    })
+
+    function confirmCom(){
+        var branch_id = $("input[name='company_name']:checked").val();
+        var currBranchId = "{$login_user.currBranchId}";
+        if(branch_id==null ){
+            $.dialog.focus.close();
+            return false;
+        }
+        if(currBranchId != branch_id){
+            $.post("{:U('Login/choise_branch')}",{"branch_id":branch_id},function(result){
+                if (result.code === 1) {
+                    //$("#message").html(result.message);
+                } else {
+                    window.location.href = "__MODULE__/Index";
+                }
+            });
+        }
+        closeDialog();
+    }
+</script>
+</body>
+</html>

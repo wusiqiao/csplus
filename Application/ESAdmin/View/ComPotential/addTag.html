@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        /* 保存按钮 */
+        .btn_save_blue{
+           display: inline-block;
+           width: 84px;
+           height:34px;
+           line-height: 34px;
+           text-align: center;
+           background-color: #529bfd;
+           color: #fff;
+           padding: 0px 10px;
+           margin: 5px 10px;
+           cursor: pointer;
+       }
+       .btn_save_blue:hover{
+           background-color: #6eacfe;
+       }
+       /* 关闭按钮 */
+       .btn_close_gray{
+           display: inline-block;
+           width: 84px;
+           height:34px;
+           line-height: 34px;
+           text-align: center;
+           padding: 0px 10px;
+           margin: 5px 10px;
+           border:1px solid #d3d3d3;
+           cursor: pointer;
+       }
+       .btn_close_gray:hover{
+           border:1px solid #6eacfe;
+       }
+   </style>
+</head>
+<body>
+<div>
+    <form id=tag-form>
+        <div class="tableForm" style="width:540px;">
+            <input type="hidden" name="id" value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span><span style="color:#FF0000">*</span>标签名称：</span></div>
+                <div class="inputbox_x2">
+                    <input name="value" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" value="{$model.value}" title="" required>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions" style="height:auto;">
+            <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="saveTag()">保存</a>
+                <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()">关闭</a>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+function saveTag() {
+    var data = $('#tag-form').serialize();
+    $.post("/ComPotential/saveTag/id/{$model.id}",data, function(result){
+        if (result.code == 0){
+            queryTagList();
+            queryComPotential();
+            $.dialog.tips(result.message);
+            closeDialog("dlg-addTag");
+        }else{
+            $.dialog.alert(result.message);
+        }
+    },"json");
+}
+</script>
+</body>
+</html>

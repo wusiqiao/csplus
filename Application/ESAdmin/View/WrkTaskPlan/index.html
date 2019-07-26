@@ -1,0 +1,529 @@
+<style>
+    .datagrid-header-rownumber,
+    .datagrid-cell-rownumber {
+        width: 40px;
+    }
+
+    .drop,
+    .txtBlue {
+        color: #398bfe;
+        cursor: pointer;
+    }
+
+    .drop::after {
+        display: inline-block;
+        content: '';
+        width: 0;
+        height: 0;
+        border: 5px solid transparent;
+        border-top: 5px solid #A5A4A4;
+        border-bottom: none;
+    }
+
+    .lable {
+        display: inline-block;
+        height: 20px;
+        line-height: 20px;
+        width: 60px;
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        border: 1px solid #d3d3d3;
+        border-radius: 2px;
+        cursor: pointer;
+        padding: 0 5px;
+    }
+
+    #com_wrap {
+        position: relative;
+        height: 100%;
+    }
+
+    #app {
+        display: flex;
+        height: 100%;
+    }
+
+    .nav-rig {
+        padding: 10px 0 0 0px;
+        width: 100%;
+        height: calc(100% - 20px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        background: #fff;
+    }
+
+    .clearFix:after {
+        display: block;
+        content: '';
+        clear: both;
+    }
+
+    .map,
+    .up,
+    .down,
+    .map_tab {
+        display: inline-block;
+        padding: 3px 0;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .map {
+        background:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c8_che.png') 0 5px no-repeat;
+    }
+
+    .map_tab {
+        background:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png') 0 10px no-repeat;
+    }
+   
+    .up {
+        background:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c14.png') 0 5px no-repeat;
+    }
+
+    .down {
+        background:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c9.png') 0 5px no-repeat;
+    }
+
+    .tab-con {
+        padding: 30px 25px;
+        background: #fff;
+    }
+
+    .addPeople {
+        display: inline;
+        padding: 10px 25px;
+        background: #398bfe;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+    }
+
+    .selectList {
+        padding-left: 0;
+    }
+
+    .nav-rig .selectList li::after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+
+    .nav-rig .selectList .lef {
+        float: left;
+        line-height: 34px;
+    }
+
+    .nav-rig .selectList .spanBox {
+        float: left;
+        margin: 0;
+        width: calc(100% - 100px);
+    }
+
+    .nav-rig .selectList .spanBox span {
+        float: left;
+        user-select: none;
+    }
+
+    .nav-rig .selectList .spanBox i {
+        font-style: normal;
+        line-height: 34px;
+        color: #e91835;
+    }
+ 
+    .selectList .hidden {
+        display: none;
+    }
+
+    .selectList li {
+        display: flex;
+        align-items: center;
+        min-width: 415px;
+    }
+
+    /* 保存按钮 */
+    .ui_buttons input.ui_state_highlight {
+        display: inline-block;
+        width: 84px;
+        height: 34px;
+        line-height: 34px;
+        text-align: center;
+        background-color: #529bfd;
+        color: #fff;
+        padding: 0px 10px;
+        margin: 5px 10px;
+        cursor: pointer;
+        border-radius: 0px;
+    }
+
+    .ui_buttons input.ui_state_highlight:hover {
+        background-color: #6eacfe;
+    }
+
+    /* 关闭按钮 */
+    .ui_buttons input:last-child {
+        display: inline-block;
+        width: 84px;
+        height: 34px;
+        line-height: 34px;
+        text-align: center;
+        padding: 0px 10px;
+        margin: 5px 10px;
+        border: 1px solid #d3d3d3;
+        cursor: pointer;
+        border-radius: 0px;
+    }
+
+    .ui_buttons input:last-child:hover {
+        border: 1px solid #6eacfe;
+    }
+
+    .text_rig {
+        text-align: right;
+        width: 98px;
+    }
+
+    .spanLine_new {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn_bro_blue {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new.png');
+        background-size: 100% 100%;
+        width: 24px !important;
+        height: 24px !important;
+        margin-top: 10px !important;
+        border: none !important;
+    }
+
+    .btn_bro_blue:hover {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new_hover.png');
+    }
+
+    .btn_bro_blue:hover {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_add_new_hover.png');
+    }
+
+    .btn_bro_blue_remove {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_remove_new.png');
+    }
+
+    .datagrid-cell-check input[type='checkbox']:disabled {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-disablecheck.png') !important;
+    }
+
+    .btn_bro_blue_remove:hover {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_remove_new_hover.png');
+    }
+
+    /* 左侧列表样式 */
+    .nav-lef {
+        width: auto;
+        min-width: 15px;
+        height: calc(100% - 20px);
+        background-color: #f9fafb;
+        border-right: 1px solid #e7e7ed;
+        padding-top: 20px;
+        position: relative;
+    }
+
+    .nav-lef li {
+        padding: 0 20px 0 0;
+    }
+
+    .list_box {
+        width: auto;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .list_box ul {
+        padding-left: 25px;
+        padding-right: 25px;
+        overflow: hidden;
+    }
+
+    .le {
+        flex: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .ri {
+        width: 60px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* 返回顶部 */
+    #backUp {
+        width: 48px;
+        height: 48px;
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_tobackup.png');
+        background-size: 100% 100%;
+        position: fixed;
+        z-index: 99;
+        bottom: 80px;
+        right: 80px;
+    }
+
+    #backUp:hover {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon_tobackup_hover.png');
+    }
+
+    /* 底部分页栏 */
+    .datagrid-view {
+        padding-bottom: 40px;
+    }
+
+    .datagrid .datagrid-pager {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        z-index: 99;
+    }
+
+    /* 筛选条件框 */
+    .select-box {
+        display: none;
+        position: absolute;
+        top: 32px;
+        right: 0px;
+        z-index: 8;
+        padding: 0 10px 10px;
+        background-color: #fff;
+        box-shadow: 1px 1px 10px 1px;
+        overflow: hidden;
+    }
+
+    .select-box>p {
+        margin: 10px 5px;
+    }
+
+    .datagrid-header {
+        overflow: unset;
+    }
+
+    .datagrid-cell {
+        clear: both;
+        overflow: unset;
+    }
+
+    .datagrid .panel-body {
+        overflow: unset;
+    }
+
+    .datagrid-view {
+        overflow: unset;
+    }
+
+    .datagrid-view2 {
+        overflow: unset;
+    }
+
+    .datagrid-cell>span.lable {
+        float: left;
+        margin: 2px 3px;
+    }
+
+    .datagrid-cell>span.txtBlue {
+        float: left;
+        margin-left: 2px;
+    }
+    .followed-time-down {
+        display: inline-block;
+        width: 8px;
+        height: 18px;
+        margin: 0px 10px;
+        background-size: 100% 100%;
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c9.png');
+        cursor: pointer;
+    }
+    .followed-time-up {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c14.png');
+    }
+    .icon-communication {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin: 5px;
+        background-size: 100% 100%;
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-footer02-grey.png');
+        cursor: pointer;
+    }
+    .icon-communication:hover {
+        background-image:url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-footer02.png');
+    }
+</style>
+
+<div id="com_wrap">
+    <div id="app" class="clearFix">
+        <div class="nav-rig">
+            <ul class="selectList status">
+                <li id="topZero">
+                    <span class="lef text_rig">提报时间：</span>
+                    <p class="spanBox user_type_status">
+                        <span data-value="0" class="btn-screening btn-screening-on">全部</span>
+                        <span data-value="1" class="btn-screening">今日</span>
+                        <span data-value="2" class="btn-screening">本周</span>
+                        <span data-value="3" class="btn-screening">本月</span>
+                    </p>
+                </li>
+                <li>
+                    <span class="lef text_rig">任务状态：</span>
+                    <p class="spanBox is_follow_status">
+                        <span data-value="0" class="btn-screening">全部</span>
+                        <span data-value="1" class="btn-screening btn-screening-on">服务中</span>
+                        <span data-value="2" class="btn-screening">冻结中</span>
+                        <span data-value="3" class="btn-screening">已结束</span>
+                    </p>
+                </li>
+            </ul>
+            <div class="spanLine spanLine_new">
+                <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                    <input type="text" placeholder="请输入合同编号/合同名称/任务名称" style="width:300px;" class="filter-field" name="keyword"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="doSearch();">
+                    <input type="hidden" class="filter-field" id="order_followed_at" name="order_followed_at" value="desc">
+                </div>
+            </div>
+            <div style="width:100%" id="table-area">
+                <span id="total-count" style="margin-left:18px;"></span>
+                <table id="WrkTaskPlan-datagrid" class="easyui-datagrid" data-options="url:'WrkTaskPlan/list',queryParams:{status:1,sort:'update_time',order:'desc'},checkOnSelect:true,singleSelect:false" fit="false" fitColumns="true">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'id',width:170,align:'center',formatter:ckxq">操作</th>
+                            <th data-options="field:'company_name',width:220,align:'center',formatter:strName">公司名称</th>
+                            <th data-options="field:'agreement_sys_sn',width:170,align:'center',formatter:strName">合同编号</th>
+                            <th data-options="field:'agreement_name',width:170,align:'center',formatter:strName">合同名称</th>
+                            <th data-options="field:'task_name',width:170,align:'center',formatter:strName">任务名称</th>
+                            <th data-options="field:'leader_name',width:120,align:'center',formatter:strName">服务商负责人</th>
+                            <th data-options="field:'update_content',width:170,align:'center',formatter:strName">最新提报进度</th>
+                            <th data-options="field:'update_time',width:170,align:'center',formatter:strName">最新提报时间<i onclick="SreenFollowedTime(event)" class="followed-time-down"></i></th>
+                            <th data-options="field:'status',width:130,align:'center',formatter:formStatus">任务状态
+                                <span style="position: relative;">
+                                    <i class="map_tab" style="padding:0;margin: 0;" onclick="selectClick(this)"></i>
+                                    <div class="select-box">
+                                        <p>
+                                            <input type="radio" name="user_type_value" onclick="selectStatus(this)" value="0" checked id="141a" class="css-checkbox">
+                                            <label for="141a" class="css-label" style="background-position: 0 -20px;"><span>全部</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="user_type_value" onclick="selectStatus(this)" value="1" id="142a" class="css-checkbox">
+                                            <label for="142a" class="css-label"><span>服务中</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="user_type_value" onclick="selectStatus(this)" value="2" id="143a" class="css-checkbox">
+                                            <label for="143a" class="css-label"><span>冻结中</span></label>
+                                        </p>
+                                        <p>
+                                            <input type="radio" name="user_type_value" onclick="selectStatus(this)" value="3" id="144a" class="css-checkbox">
+                                            <label for="144a" class="css-label"><span>已结束</span></label>
+                                        </p>
+                                    </div>
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a id="backUp" href="#topZero"></a>
+
+<script>
+    function doSearch(){
+        $('#WrkTaskPlan-datagrid').datagrid('load',{
+            update_time: $('.user_type_status .btn-screening-on').data('value'),
+            status: $('.is_follow_status .btn-screening-on').data('value'),
+            keyword: $('input[name="keyword"]').val(),
+            sort:'update_time',
+            order: $('#order_followed_at').val(),
+        });
+    }
+
+    function ckxq(id) {
+        return `<div><a class="btn-speed" href="javascript:createDialog('WrkTaskPlan/schedule/id/${id}','任务进度','schedule');" style="color: #ffffff;">查看详情</a></div>`;
+    }
+
+    function strName(value,row) {
+        if (value != null && value != ""){
+            return `<div style="width:100%;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+        } else {
+            return `-`;
+        }
+    }
+
+    function formStatus(value) {
+        if (value == 1){
+            return `<div>服务中</div>`;
+        } else if (value == 2){
+            return `<div>冻结中</div>`;
+        } else {
+            return `<div>已结束</div>`;
+        }
+    }
+
+    function SreenFollowedTime(e){
+        if($(e.target).hasClass("followed-time-up")){
+            $("#order_followed_at").val("desc");
+            $(e.target).removeClass("followed-time-up")
+        }else{
+            $("#order_followed_at").val("asc");
+            $(e.target).addClass("followed-time-up")
+        }
+        doSearch();
+    }
+
+    function selectClick(el){
+        if($(el).siblings(".select-box").css("display") == "none"){
+            $(".select-box").each(function(i,ele){
+                $(ele).hide();
+            })
+            $(el).siblings(".select-box").show();
+        }else{
+            $(el).siblings(".select-box").hide();
+        }
+    }
+
+    function selectStatus(el){
+        if($(el).siblings("label.css-label").find("span").text() != "全部"){
+            $(el).parents(".select-box").find("label.css-label").eq(0).css("background-position","unset");
+        }else{
+            $(el).parents(".select-box").find("label.css-label").eq(0).css("background-position","0 -20px");
+        }
+        var value = $("input[name='user_type_value']:checked").val();
+        $(el).parents(".select-box").hide();
+        $('.is_follow_status .btn-screening').each(function () {
+            console.log($(this).data('value'));
+            console.log(value);
+            if ($(this).data('value') == value){
+                $(this).trigger('click');
+            }
+        });
+    }
+
+    $('.user_type_status .btn-screening').click(function () {
+        $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+        doSearch();
+    });
+    $('.is_follow_status .btn-screening').click(function () {
+        $(this).addClass('btn-screening-on').siblings().removeClass('btn-screening-on');
+        doSearch();
+    });
+
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+</script>

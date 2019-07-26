@@ -1,0 +1,193 @@
+<style>
+    .tips{
+        /*background-color:white;*/
+        padding: 0 15px;
+        width:100%;
+        position:relative;
+        /*border-radius:3px;*/
+        /*box-shadow:1px 1px 2px 2px rgba(0, 0, 0, 0.2);*/
+        /*left:15px;*/
+        color:dimgray;
+        font-size:13px;
+        line-height:1.7;
+        height: 100%;
+        /*display: none;*/
+    }
+    .icon-close{
+        height: 12px;
+        width: 12px;
+        float: right;
+        position: relative;
+        top:-5px;
+        right:25px;
+    }
+    .maincontainer{
+        height:calc(100% - 40px);
+    }
+</style>
+<script>
+    setMainContainerConfig("DistributionUser", {
+        onDblClickRow: function(){
+            return false;
+        }
+    });
+
+    /*$("#DistributionUser-datagrid").datagrid({
+        fitColumns:true
+    });*/
+
+    function formatIncome(value,row){
+        var html = value ;
+        html += "<a href='javascript:void(0)' style='margin-right: 10px;float: right' onclick='toDistributionIncome("+row.id+",\""+row.name+"\")'>查看详情</a>";
+        return html;
+    }
+
+    function formatLevelAccount(value,row){
+        var html = value;
+        html += "<a href='javascript:void(0)' style='margin-right: 20px;float: right' onclick='showLevelUser("+row.id+")'>查看</a>";
+        return html;
+    }
+
+    function formatNull(value){
+        if(value == "" || value == null){
+            value = "-";
+        }
+        return value;
+    }
+
+    function formatName(value,row){
+        if(!row.head_pic){
+            row.head_pic = "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg";
+        }
+        if(!value){
+            value = "-";
+        }
+        return `<div style="width:80%;height:35px;display:flex;margin-left: 5px">
+                    <img src="`+row.head_pic+`" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;">
+                    <div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="${value}">`+value+`</div>
+                </div>`;
+    }
+</script>
+<div class="c-header">
+    <div class="tab-span tab-span-on" onclick="toggleIndex('DistributionUser')">分销用户</div>
+    <div class="tab-span" onclick="toggleIndex('ComBusinessCard')">推广二维码</div>
+    <div class="tab-span" onclick="toggleIndex('DistributionIncome')">佣金明细</div>
+    <div class="tab-span" onclick="toggleIndex('DistributionSetting')">佣金设置</div>
+</div>
+<div id="DistributionUser-toolbar">
+    <div class="action-panel" style="background: #F4F5F9;padding: 0">
+        <div class="actions" style="">
+            <p class="tips" style="height: 100%;">
+                <img class="icon-close" src="/Application/ESAdmin/Public/images/icon/icon-close.png">
+                <span>1.仅展示拥有下级人员的客户<br>
+                2.当客户昵称有备注时，优先展示备注<br>
+                3.佣金 = 未解冻金额 + 已解冻金额</span>
+                <!--<span class="regular-tips">4.分销规则>></span>-->
+            </p>
+        </div>
+    </div>
+    <div class="search-panel" style="display:block;height: 50px">
+        <table class="search-table">
+            <tr>
+                <th>搜索：</th>
+                <td>
+                    <input class="filter-field easyui-validatebox" name="search" value="" placeholder="请输入昵称或手机号搜索">
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!--<div style="width: 100%;height: 50px">
+
+</div>-->
+<div class="maincontainer" id="DistributionUser-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header.html"  controller="DistributionUser" />
+    <tr>
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'name',width:180,align:'left',formatter:formatName">
+            <!--<img class="icon-tips" src="/Application/ESAdmin//Public/images/icon/icon-tips.png" style="width: 12px;height: 12px;margin-right: 5px;">-->
+            分销用户</th>
+        <th data-options="field:'mobile',width:130,align:'center',formatter:formatNull">手机号码</th>
+        <!--<th data-options="field:'withdraw_amount',width:120,align:'center'">已提现金额</th>
+        <th data-options="field:'withdrawable_amount',width:120,align:'center'">可提现金额</th>-->
+        <th data-options="field:'unthaw_amount',width:120,align:'center'">未解冻金额</th>
+        <th data-options="field:'thaw_amount',width:120,align:'center'">已解冻金额</th>
+        <!--<th data-options="field:'invalid_amount',width:120,align:'center'">无效金额</th>-->
+        <th data-options="field:'total_commission',width:160,align:'center',formatter:formatIncome">佣金</th>
+        <th data-options="field:'member_num',width:120,align:'center',formatter:formatLevelAccount">下级数量（人）</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="DistributionUser" />
+    <div id="empty-notice" style="color: rgb(180, 180, 180);display:none;width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 40px;font-size: 20px">暂无数据</div>
+</div>
+<!--<p class="tips">
+    <img class="icon-close" src="/Application/ESAdmin/Public/images/icon/icon-close.png">
+    1.仅展示拥有下级人员的客户<br>
+    2.当客户昵称有备注时，优先展示备注
+</p>-->
+<div style="position: absolute;background-color: white;height: 500px;width: 500px;">
+    <p>123</p>
+</div>
+<script>
+    function toggleIndex(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+
+    function showLevelUser(id){
+        createDialog("DistributionUser/showLevelUser/id/"+id,"查看下级","dlg-level-user");
+    }
+
+    function toDistributionIncome(id,name){
+        $.get("DistributionIncome/index/id/"+id+"/name/"+name, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+
+    /*$(".icon-tips").on("click",function(){
+        var h0 = $(".maincontainer").height();
+        var h1 = $(".datagrid-header").height();
+        if($(".tips").is(":visible")){
+            $(".tips").hide();
+        }else{
+            $(".tips").css("bottom",h0-h1).show();
+        }
+    });*/
+
+    $(".icon-close").on("click",function(){
+        $(".tips").slideUp(300);
+        setTimeout(function(){
+            $('#DistributionUser-datagrid').datagrid('resize');
+        },300);
+    });
+
+    $(function(){
+        var H1 = $("#DistributionUser-toolbar").height();
+        var H2 = $(".c-header").height();
+        $("#empty-notice").css("top",H1+H2+100);
+    });
+
+    $("#DistributionUser-datagrid").bind("onLoadSuccess",function(event,data){
+        if(data.total == 0){
+            $("#empty-notice").show();
+        }else{
+            $("#empty-notice").hide();
+        }
+    });
+
+    var search_time;
+    $("input[name='search']").bind("input propertychange",function(){
+        clearTimeout(search_time);
+        search_time=setTimeout(function(){
+            doSearchQuery("DistributionUser");
+        },350)
+    });
+
+    $(".regular-tips").on("click",function(){
+        createDialog("DistributionUser/distributionRegular","分销规则","dlg-tip-regular");
+    })
+
+</script>

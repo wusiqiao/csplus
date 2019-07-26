@@ -1,0 +1,212 @@
+<style>
+    .example-dialog{position: absolute; width:50%; height:80%; top:5%; left:25%;background: #cccccc;border: 1px solid #c2ccd1;display: none}
+    .example-dialog .close-dlg{width: 100%;position: absolute;left: 0;bottom: 0;color: red;font-size: 2rem;text-align: center;background: #fff;overflow-y: auto}
+    .tpl-item-active{color:blue}
+    .example-dialog .content{padding: 10px;}
+    .example-dialog .content-header{width: 100%;font-weight: bold;text-align: center;background: #fff;padding: 10px 0px}
+    .tableForm table{ border-collapse:collapse; border:solid 1px Black; }
+    .tableForm table td{ width: 300px; height:20px;  border:solid 1px Black; padding:5px;}
+    .table-lo{border:0 !important; }
+    .table-lo td{ border:0 !important;}
+    .table-lo .lo-line{border-bottom: solid 1px Black;}
+    .tableForm a{padding: 10px 20px;background-color: #00AFFF;color: #fff;text-align: center;border: 1px;border-radius: 5px;}
+    .tableForm .complete{padding: 10px 20px;background-color: #fff;border: 1px solid #999;color: #999;text-align: center;border-radius: 5px;}
+ 
+</style>
+<div class="detailcontainer" id="indexesCompany-detailcontainer" style="position: relative">
+    <form id="indexesCompany-form">
+        <input type="hidden" name="id" value="{$user.id}">
+        <div class="tableForm" style="overflow-y: auto;height:400px">
+            <notempty name="model">
+                <div>
+                    <volist name="model" id="vo">
+                    <div class="blue-check flex-start-center mb15">
+                        <input type="checkbox" name="user_id" company_id="{$vo.company_id}" value="{$vo.id}" checked>
+                        <div class="info-box">
+                            <div class="title">用户信息{$i}</div>
+                            <div class="box-content">
+                                <div class="flex-start">
+                                    <div class="justified">昵称<i></i></div>：
+                                    <div>{$vo.name}</div>
+                                </div>
+                                <div class="flex-start">
+                                    <div class="justified">绑定手机<i></i></div>：
+                                    <div>{$vo.contact}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="icon-connect" style="margin: 3px"></div>
+                        <div class="info-box">
+                            <div class="title">公司信息{$i}</div>
+                            <div class="box-content">
+                                <div class="flex-start">
+                                    <div class="justified">公司名称<i></i></div>：
+                                    <div class="description">{$vo.company_name}</div>
+                                </div>
+                                <div class="flex-start">
+                                    <div class="justified">手机<i></i></div>：
+                                    <div>{$vo.contact}</div>
+                                </div>
+                                <div class="flex-start">
+                                    <div class="justified">联系人<i></i></div>：
+                                    <div>{$vo.linkman}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </volist>
+
+                </div>
+                <else />
+                <div style="padding: 20px; margin-top:190px;width:90%;text-align: center;font-weight: bold">没有匹配成功的公司信息</div>
+            </notempty>
+        </div>
+    </form>
+    <div class='actions-sysdefault' style="text-align: center;margin-top: 10px">
+    <div class="blue-checkbox mb15" style="text-align:left;float:left;">
+        <input id="checkAll" type="checkbox" checked />
+        <label class="ml15" for="checkAll">全选/反选</label>
+    </div>
+    	<a href="javascript:void(0)" class="common-blue-btn btn-update" plain="true" onclick="bindBtn()">确认匹配</a>
+        <a href="javascript:void(0)" class="common-red-btn bg_red" plain="true" onclick="closeButton()">取消</a>
+    </div>
+    <div class="example-dialog">
+        <div class="content-header"></div>
+        <div class="content"></div><i class="close-dlg fa fa-check-circle-o"></i>
+    </div>
+</div>
+<!-- <div id="">
+    <div class="blue-check flex-start-center mb15">
+        <input type="checkbox" />
+        <div class="info-box">
+            <div class="title">人员信息1</div>
+            <div class="box-content">
+                <div class="flex-start">
+                    <div class="justified">昵称<i></i></div>：
+                    <div>张三</div>
+                </div>
+                <div class="flex-start">
+                    <div class="justified">绑定手机<i></i></div>：
+                    <div>15126265858</div>
+                </div>
+            </div>
+        </div>
+        <div class="icon-connect"></div>
+        <div class="info-box">
+            <div class="title">公司信息1</div>
+            <div class="box-content">
+                <div class="flex-start">
+                    <div class="justified">公司名称<i></i></div>：
+                    <div>网易科技</div>
+                </div>
+                <div class="flex-start">
+                    <div class="justified">手机<i></i></div>：
+                    <div>15126265858</div>
+                </div>
+                <div class="flex-start">
+                    <div class="justified">联系人<i></i></div>：
+                    <div>李四</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="blue-check flex-start-center mb15">
+        <input type="checkbox" />
+        <div class="info-box">
+            <div class="title">人员信息1</div>
+            <div class="box-content">
+                <div class="flex-start">
+                    <div class="justified">昵称<i></i></div>：
+                    <div>张三</div>
+                </div>
+                <div class="flex-start">
+                    <div class="justified">绑定手机<i></i></div>：
+                    <div>15126265858</div>
+                </div>
+            </div>
+        </div>
+        <div class="icon-connect"></div>
+        <div class="info-box">
+            <div class="title">公司信息1</div>
+            <div class="box-content">
+                <div class="flex-start">
+                    <div class="justified">公司名称<i></i></div>：
+                    <div>网易科技</div>
+                </div>
+                <div class="flex-start">
+                    <div class="justified">手机<i></i></div>：
+                    <div>15126265858</div>
+                </div>
+                <div class="flex-start">
+                    <div class="justified">联系人<i></i></div>：
+                    <div>李四</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="blue-checkbox mb15">
+        <input id="checkAll" type="checkbox" />
+        <label class="ml15" for="checkAll">全选/反选</label>
+    </div>
+</div> -->
+<script type="text/javascript">
+$(function() {
+    wordlimit('description', 9);
+});
+        
+$("#checkAll").change(function() {
+    $("input[name='user_id']").prop("checked", $(this).prop("checked"));
+    // alert("");
+});
+function wordlimit(cname, wordlength) {
+    var cname = document.getElementsByClassName(cname);
+    for (var i = 0; i < cname.length; i++) {　　　　　　
+        var nowLength = cname[i].innerHTML.length;
+        if (nowLength > wordlength) {
+            cname[i].innerHTML = cname[i].innerHTML.substr(0, wordlength) + '...';
+        }　　　　　　
+    }　
+};
+// function matchView(obj)
+// {
+//     if ($.dialog.confirm("请务必确定需要绑定的公司！", function(){
+//             showMaskLayer();
+//             var companyId = $(obj).data('companyid');
+//             var id = $('input[name=id]').val();
+//             $.post("{$Think.const.CONTROLLER_NAME}/matchView", {id:id,company_id:companyId}, function(result){
+//                 if (result.code == 0){
+//                     $(obj).text('已绑定').addClass('complete').removeAttr('onclick');
+
+//                 }
+//                 $.dialog.tips(result.message);
+//                 hideMaskLayer();
+//             },"json");
+//         }));
+// }
+function bindBtn() {
+    var user_ids = [];
+    var company_ids = [];
+    $("input[name='user_id']:checkbox:checked").each(function() {
+        user_ids.push($(this).attr("value"));
+        company_ids.push($(this).attr("company_id"));
+    });
+    if (user_ids.length > 0) {
+        showMaskLayer();
+        $.post("/ComPotential/matchView", { branch_ids: company_ids, user_ids: user_ids }, function(result) {
+            if (result.code == 0) {
+                getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                closeDialog("dlg-company-select");
+            }
+            $.dialog.tips(result.message);
+        }, "json");
+        hideMaskLayer();
+    } else {
+        alert("请至少勾选一条记录");
+    }
+}
+
+function closeButton() {
+    getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+    closeDialog("dlg-company-select");
+}
+</script>

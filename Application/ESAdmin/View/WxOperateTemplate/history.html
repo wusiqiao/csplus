@@ -1,0 +1,150 @@
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/flatfoot.css?version={$version}" rel="stylesheet" />
+<style>
+    .whole-substance{
+        flex:1;
+    }
+    .whole-message{
+        flex:0.8;
+    }
+    .chooseSpan .on{
+        background-color: #398bfe;
+        border-radius: 3px;
+        color: #fff;
+    }
+</style>
+<script>
+    function fixWidth(percent)
+    {
+        return document.body.clientWidth * percent ; //这里你可以自己做调整
+    }
+    function formatState(value){
+        if (value == 1) {
+            return '<span style="color:red">未确认</span>';
+        } else if (value == 0) {
+            return '<span>无须确认</span>';
+        }else if (value == 2) {
+            return '<span >已确认</span>';
+        }else if (value == 3) {
+            return '<span >已取消确认</span>';
+        } else if (value == 4){
+            return '<span >待确认</span>';
+        }
+    }
+    function formatOperation(value,row){
+        return "<a href='javascript:;' onclick=\"toggleType('{$Think.const.CONTROLLER_NAME}/send_detail/id/"+row.relation_id+"')\" >查看详情</a>";
+    }
+    setMainContainerConfig("{$Think.const.CONTROLLER_NAME}", {
+        onDblClickRow: function(){
+            return false;
+        }
+    })
+</script>
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+    <div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="height: 100%;">
+        <div class="content-wrap">
+            <div class="c-select">
+                <div id="{$Think.const.CONTROLLER_NAME}-toolbar">
+                    <div class="c-header" style="margin:0 15px;padding-top:5px ">
+                        <span class="tab-span " onclick="toggleType('{$Think.const.CONTROLLER_NAME}')">概述</span>
+                        <span class="tab-span " onclick="toggleType('{$Think.const.CONTROLLER_NAME}/plan')">发送计划</span>
+                        <span class="tab-span on" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/history')">发送记录</span>
+                        <span class="tab-span" onclick="toggleType('{$Think.const.CONTROLLER_NAME}/clear_notice')">清卡通知</span>
+                    </div>
+                    <div class="c-select">
+                        <div class="search-table" style="font-weight: 600;margin: 15px 15px 0px 15px;width: 70%;display: flex">
+                            <div style="flex: 1">
+                                <span style="font-weight: initial;">计划名称:</span>
+                                <select name="q-template_id" class="chosen-select easyui-validatebox filter-field q-select" style="width: 70%" id="template">
+                                    <option value="" class="search-option">全部</option>
+                                    <volist name="templates" id="vo">
+                                        <option value="{$vo.template_id}" class="search-option">{$vo.title}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                            <div style="flex: 1">
+                                <span style="font-weight: initial;">发送类型:</span>
+                                <select name="q-relation*mold" class="chosen-select easyui-validatebox filter-field q-select" style="width: 70%" id="invoice">
+                                    <option value="" class="search-option">全部</option>
+                                    <option value="1" class="search-option">微信模板</option>
+                                    <option value="0" class="search-option">短信模板</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1">
+                                <span style="font-weight: initial;">消息状态:</span>
+                                <select name="q-relation*message_state" class="chosen-select easyui-validatebox filter-field q-select"  style="width: 70%" id="message">
+                                    <option value="" class="search-option">全部</option>
+                                    <option value="0" class="search-option">无须确认</option>
+                                    <option value="4" class="search-option">待确认</option>
+                                    <option value="1" class="search-option">未确认</option>
+                                    <option value="2" class="search-option">已确认</option>
+                                    <option value="3" class="search-option">已取消确认</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="search-table" style="font-weight: 600;margin: 15px 15px 0px 15px;width: 100%;display: flex">
+                            <div style="flex: 1;">
+                                <span class="chooseSpan view-date " style="border-radius: 3px;" data-date="1">上月</span>
+                                <span class="chooseSpan view-date on" style="border-radius: 3px;" data-date="2">自定义</span>
+                                <input type="hidden" name="view-date" class="filter-field " value="2"/>
+                                <div id="date-input" style="display: -webkit-inline-box">
+                                    <input id="latest_start" class="easyui-datebox filter-field datebox-f combo-f textbox-f" value="" textboxname="qdr-relation*created_at[]" style="display: none;" data-options="prompt:'选择时间',editable:false">－
+                                    <input id="latest_end" class="easyui-datebox filter-field datebox-f combo-f textbox-f" value="" textboxname="qdr-relation*created_at[]" style="display: none;" data-options="prompt:'选择时间',editable:false">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <include file="./Application/Common/Layout/Default/list_header.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+        <tr>
+            <th data-options="field:'id',hidden:true">ID</th>
+            <th data-options="field:'name',width:fixWidth(0.12),align:'left'">{$Think.lang.POT_PLAN_NAME}</th>
+            <th data-options="field:'view_name',width:fixWidth(0.12),align:'left'">{$Think.lang.POT_COMPANY_NAME}</th>
+            <th data-options="field:'send_type',width:fixWidth(0.12),align:'left'">{$Think.lang.POT_SEND_TYPE}</th>
+            <th data-options="field:'relation_created_at',width:fixWidth(0.12),align:'left',formatter:formatDateTime">{$Think.lang.POT_CREATER_AT}</th>
+            <th data-options="field:'send_state',width:fixWidth(0.12),align:'left'">{$Think.lang.POT_SEND_STATE}</th>
+            <th data-options="field:'message_state',width:fixWidth(0.12),align:'left',formatter:formatState">{$Think.lang.POT_MESSAGE_STATE}</th>
+            <th data-options="field:'operation',width:fixWidth(0.12),align:'left',formatter:formatOperation">{$Think.lang.POT_OPERATION}</th>
+        </tr>
+        <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+
+    </div>
+
+<script type="text/javascript">
+
+    $("#invoice").on("change",function(){
+        doSearchQuery("{$Think.const.CONTROLLER_NAME}")
+    });
+    $("#template").on("change",function(){
+        doSearchQuery("{$Think.const.CONTROLLER_NAME}")
+    });
+    $("#message").on("change",function(){
+        doSearchQuery("{$Think.const.CONTROLLER_NAME}")
+    });
+    $("#latest_start").datebox({onSelect:function () {
+        doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+    }});
+    $("#latest_end").datebox({onSelect:function () {
+        doSearchQuery("{$Think.const.CONTROLLER_NAME}");
+    }});
+    function toggleType(url){
+        $.get(url, function(result){
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+    $('.chooseSpan').click(function(){
+        $('.chooseSpan').removeClass('on');
+        $(this).addClass('on');
+        $('input[name=view-date]').val($(this).data('date'));
+        if ($(this).data('date') == 2){
+            $('#date-input').show();
+        } else {
+            $('#date-input').hide();
+        }
+        doSearchQuery("{$Think.const.CONTROLLER_NAME}")
+    })
+
+
+</script>

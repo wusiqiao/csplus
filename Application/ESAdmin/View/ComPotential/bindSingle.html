@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            width: 1000px;
+        }
+        .wrap .tabBox tbody td:nth-child(4){
+            padding-left: 0;
+            text-align: center;
+        }
+        .boxLeft span{
+            float: left;
+            margin: 0 8px;
+            padding: 0 12px;
+            height: 34px;
+            line-height: 34px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .topBox{
+            display: flex;
+            justify-content: space-between;
+        }
+        .boxRight{
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            width: 370px;
+            height: 36px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-left:15px;
+        }
+        .boxRight input{
+            border: none;
+            width: 90%;
+            height: 100%;
+            outline: none;
+            text-indent: 12px;
+        }
+        .boxRight img{
+            margin: 7px 5px 0 0;
+            width: 21px;
+            height: 22px;
+        }
+        .form-actions{
+            margin: 40px 0 25px;
+        }
+        .boxLeft span.on{
+            border-color:#398bfe;
+            color:#398bfe;
+        }
+    </style>
+    <script type="text/javascript">
+        function formatBindStatus(value,row){
+            if (value > 0) {
+                user.user_list.push(row.users);
+                var len = user.user_list.length - 1;
+                return `已绑定`+value+`个微信用户&nbsp;&nbsp;&nbsp;<span class="txtBlue" data-value="`+len+`" onmouseover="showUser(this)">查看详情</span>`;
+            }else{
+                return `未绑定微信用户`;
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <div class="wrap">
+        <div class="topBox">
+<!--             <p class="boxLeft">
+                <span data-value="0" class="on">全部</span>
+                <span data-value="1">已绑定公司</span>
+                <span data-value="2">未绑定公司</span>
+            </p> -->
+            <!-- <p class="boxRight">
+                <input type="text" name="search" placeholder="请输入公司名称">
+                <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="">
+            </p> -->
+            <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()">
+                <input style="width:300px;" type="text" placeholder="请输入公司名称" class="filter-field" name="search"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+            </div>
+        </div>
+        <div style="height:340px;">
+            <table id="bindSingle-datagrid" class="easyui-datagrid datagrid" data-options="url:'ComPotential/bindSingle/id/{$id}/type/search'">
+                <thead>
+                    <tr>
+                        <th data-options="field:'id',hidden:true"></th>
+                        <th data-options="field:'ck',checkbox:true"></th>
+                        <th data-options="field:'name',width:200,align:'left'">公司名称</th>
+                        <th data-options="field:'linkman',width:120,align:'left'">联系人</th>
+                        <th data-options="field:'contact',width:120,align:'left'">联系手机</th>
+                        <th data-options="field:'user_count',width:300,align:'left',formatter:formatBindStatus">绑定情况</th><!-- 
+                        <th data-options="field:'operation',width:120,align:'left',formatter:formatOperation">操作</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div id="showUser" style="position:fixed;background:white;display:none" onmouseout="hideUser()" style="z-index:999">
+                <table style="width:300px;border: 1px solid grey">
+                    <thead >
+                        <th style="width:40px">头像</th>
+                        <th style="width:130px">用户名称</th>
+                        <th style="width:130px">绑定手机</th>
+                    </thead>
+                    <tbody >
+                        <tr v-for="(item,index) in showUser">
+                            <td style="border: 1px solid grey"><img :src="item.head_pic" style="width:40px;height:40px;"></td>
+                            <td style="border: 1px solid grey">{{item.name}}</td>
+                            <td style="border: 1px solid grey">{{item.mobile}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+<!--         <div id="tabBox" class="tabBox">
+            <table>
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>公司名称</th>
+                        <th>联系人</th>
+                        <th>联系手机</th>
+                        <th>绑定情况</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>厦门游戏网络科技有限公司</td>
+                        <td>高渐离</td>
+                        <td>13333333333</td>
+                        <td>
+                            <span class="txtGray">已绑定1个微信用户</span>
+                            <span class="txtBlue">查看详情</span>
+                        </td>
+                        <td>
+                            <span class="txtBlue">绑定</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>厦门游戏网络科技有限公司</td>
+                        <td>程咬金</td>
+                        <td>13333333333</td>
+                        <td>
+                            <span class="txtGray">已绑定1个微信用户</span>
+                            <span class="txtBlue">查看详情</span>
+                        </td>
+                        <td>
+                            <span class="txtBlue">绑定</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>厦门游戏网络科技有限公司</td>
+                        <td>鲁班七号</td>
+                        <td>13333333333</td>
+                        <td>
+                            <span class="txtGray">未绑定微信用户</span>
+                        </td>
+                        <td>
+                            <span class="txtBlue">绑定</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>厦门游戏网络科技有限公司</td>
+                        <td>妲己</td>
+                        <td>13333333333</td>
+                        <td>
+                            <span class="txtGray">已绑定1个微信用户</span>
+                            <span class="txtBlue">查看详情</span>
+                        </td>
+                        <td>
+                            <span class="txtBlue">绑定</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div> -->
+        <div class="form-actions" id='Organization-form-actions'>
+            <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="bindCompany()">保存</a>
+                <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()">关闭</a>
+            </div>
+        </div>
+    </div>
+    <script src="__ROOT__/{$Think.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script>
+        var user = new Vue({
+            el:"#showUser",
+            data:{
+                user_list:[],
+                showUser:[]
+            },
+            methods:{
+            }
+        });
+        function showUser(e){
+            var X = $(e).offset().top; 
+            var Y = $(e).offset().left;
+            var index = $(e).attr("data-value");
+            user.showUser = user.user_list[index];
+
+            $("#showUser").css("top",X);
+            $("#showUser").css("left",Y);
+            $("#showUser").show();
+        }
+        function hideUser(){
+            $("#showUser").hide();
+        }
+
+        $('.boxLeft span').click(function (){
+            $(this).addClass('on').siblings().removeClass('on');
+            queryBindSingle();
+        });
+        $("input[name='search']").keyup(function(){
+            queryBindSingle();
+        });
+        function queryBindSingle() {
+            var search = $("[name='search']").val();
+            var is_bind = $(".boxLeft .on").attr("data-value");
+            $('#bindSingle-datagrid').datagrid('load',{
+                search:search,
+                is_bind:is_bind
+            });
+        }
+
+        function bindCompany() {
+            var ids = new Array();
+            var rows = getGridSelections("bindSingle");
+            if (rows.length === 0) {
+                $.dialog.tips('请先勾选公司!');
+            } else {
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    ids.push(row.id);
+                }
+            }
+            if (rows.length > 0) {
+                $.post("ComPotential/bindSingle/id/{$id}",{branch_ids:ids}, function(result){
+                    if (result.code == 0){
+                        queryComPotential();
+                        queryCompanyData();
+                        $.dialog.tips(result.message);
+                        closeDialog("dlg-bindSingle");
+                    }else{
+                        $.dialog.alert(result.message);
+                    }
+                },"json");
+            }
+        }
+        // 搜索框悬停效果
+        function queryIcon_bule(){
+            $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+        }
+        function queryIcon_gray(){
+            $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+        }
+    </script>
+</body>
+</html>

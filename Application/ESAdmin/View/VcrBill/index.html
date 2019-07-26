@@ -1,0 +1,1057 @@
+<style>
+    .square-btn {
+        cursor: pointer
+    }
+
+    #all-departments .square-btn {
+        color: #ccc;
+        border-color: #ccc;
+        margin: 5px;
+        text-align: center;
+    }
+
+    #select-departments .square-btn {
+        color: #368bfe;
+        border-color: #368bfe;
+        margin: 5px;
+        text-align: center;
+    }
+
+    .datagrid-view {
+        margin-left: 0;
+    }
+
+    ul.tabs>li:nth-child(2){
+        margin-right: 50px;
+    }
+
+    #VcrBill-tax-toolbar .choose-month a{
+        width: 115px;
+        margin-left: 5px;
+    }
+</style>
+<link rel="stylesheet" type="text/css"
+      href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css"/>
+<div class="content" id="intelligent">
+    <div class="main-content">
+        <div class="easyui-tabs" id="bill-tabs">
+            <!--<div title="工资册" data-targetgrid="salary">
+                <div id="VcrBill-salary-toolbar">
+                    <div class="choose-month">
+                        <div>
+                            <span>会计期间：</span>
+                            <select class="easyui-combobox" name="state" style="width:100px;">
+                                <option value="2019">2019年</option>
+                                <option value="2018">2018年</option>
+                            </select>
+                            <a>一月</a><a>二月</a><a>三月</a><a>四月</a><a>五月</a><a>六月</a><a>七月</a><a>八月</a><a>九月</a><a>十月</a><a>十一月</a><a>十二月</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="insert-btn-group">
+                    <div class="opt-group">
+                        <a class="opt-import-salary bule-btn" onclick="VcrBillFunctions.showSalaryTableImportDialog(this)">导入</a>
+                        <div id="import-salarytable-content" style="display: none;">
+                            <span class="import-file-name"></span><i class="icon excel"></i>
+                            <a class="opt-del bule-btn" onclick="VcrBillFunctions.showSalaryTableDeleteDialog(this)">删除工资册明细表</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="intel-done">
+                    <table id="VcrBill-salary-datagrid" class="easyui-datagrid datagrid" width="100%" cellspacing="0" data-options="url:'/VcrBill/salaryList',fit:false,pagination:true,pageSize:20">
+                        <thead>
+                        <tr>
+                            <th data-options="field:'id',width:0,hidden:true"></th>
+                            <th data-options="field:'bill_date',align:'center',resizable:false,formatter:formatDate", width="10%">录入日期</th>
+                            <th data-options="field:'accounting_section',align:'center',resizable:false", width="10%">会计期间</th>
+                            <th data-options="field:'name',align:'center',resizable:false", width="30%">摘要</th>
+                            <th data-options="field:'fee_department_name',align:'center',resizable:false", width="30%">部门</th>
+                            <th data-options="field:'total_sum',align:'center',resizable:false", width="10%">实发工资</th>
+                            <th data-options="field:'cashpayed',align:'center',resizable:false,formatter:formatTF", width="10%">现金已付</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>-->
+            <div title="银行对账单" data-targetgrid="bank">
+                <div id="VcrBill-bank-toolbar">
+                    <div class="choose-month">
+                        <div style="width:100%;display: flex;flex-wrap: wrap;">
+                            <span style="line-height: 32px;">会计期间：</span>
+                            <select class="easyui-combobox" name="state" style="width:100px;">
+                                <!-- <option value="all">全部</option> -->
+                                <option value="2019">2019年</option>
+                                <option value="2018">2018年</option>
+                            </select>
+                            <div style="height: 10px;width: 100%;"></div>
+                            <a>一月<span style="color: red;"></span></a><a>二月<span
+                                style="color: red;"></span></a><a>三月<span style="color: red;"></span></a><a>四月<span
+                                style="color: red;"></span></a><a>五月<span style="color: red;"></span></a><a>六月<span
+                                style="color: red;"></span></a><a>七月<span style="color: red;"></span></a><a>八月<span
+                                style="color: red;"></span></a><a>九月<span style="color: red;"></span></a><a>十月<span
+                                style="color: red;"></span></a><a>十一月<span style="color: red;"></span></a><a>十二月<span
+                                style="color: red;"></span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="insert-btn-group">
+                    <div class="opt-group">
+                        <a class="opt-importbank bule-btn" href="javascript:;"
+                           onclick="VcrBillFunctions.showBankAccountImportDialog(this)">导入</a>
+                        <div style="float: right;display: flex;align-items: center;">
+                            <div style="margin-right: 10px;">删除已导入对账单：</div>
+                            <div style="margin: 0 20px 0 0;width: 300px;" class="search_ipt">
+                                <input style="width:300px;" type="text" name="del_bank_attach" placeholder="请选择要删除的文件">
+                                <!-- <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick=""> -->
+                                <input type="hidden" class="easyui-validatebox filter-field" name="q-id"/>
+                            </div>
+                        </div>
+
+                        <div id="import-bank-content" style="display: none;">
+                            <span class="import-file-name"></span><i class="icon excel"></i>
+                            <!--<a class="opt-del bule-btn" onclick="VcrBillFunctions.showBankAccountDeleteDialog(this)">删除银行对账单明细</a>-->
+                        </div>
+
+                    </div>
+                </div>
+                <div class="intel-done">
+                    <table id="VcrBill-bank-datagrid" width="100%" class="easyui-datagrid datagrid" cellspacing="0"
+                           data-options="url:'/VcrBill/bankList',fit:false,pagination:true,pageSize:20">
+                        <thead>
+                        <tr>
+                            <th data-options="field:'id',width:0,hidden:true"></th>
+                            <th data-options="field:'bill_date',align:'center',resizable:false,formatter:formatDate" ,
+                                width="10%">录入日期
+                            </th>
+                            <th data-options="field:'accounting_section',align:'center',resizable:false" , width="10%">
+                                会计期间
+                            </th>
+                            <th data-options="field:'source_date',align:'center',resizable:false,formatter:formatDate" ,
+                                width="10%">交易日期
+                            </th>
+                            <th data-options="field:'goods_name',align:'center',resizable:false" , width="10%">摘要</th>
+                            <th data-options="field:'name',align:'center',resizable:false" , width="20%">对方账号名称</th>
+                            <th data-options="field:'total_sum',align:'center',resizable:false" , width="10%">借方发生额</th>
+                            <th data-options="field:'total_sum',align:'center',resizable:false" , width="10%">贷方发生额</th>
+                            <th data-options="field:'receipt_id',align:'center',resizable:false,formatter:formatBankStatementAssociation"
+                                , width="10%">银行回单关联
+                            </th>
+                            <th data-options="field:'bank_subject',align:'center',resizable:false" , width="10%">开户行
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div title="银行回单" data-targetgrid="receipt"  data-options="tabPosition:'right'">
+                <div id="VcrBill-receipt-toolbar">
+                    <div class="choose-month">
+                        <div style="width:100%;display: flex;flex-wrap: wrap;">
+                            <span style="line-height: 32px;">会计期间：</span>
+                            <select class="easyui-combobox" name="state" style="width:100px;">
+                                <!-- <option value="all">全部</option> -->
+                                <option value="2019">2019年</option>
+                                <option value="2018">2018年</option>
+                            </select>
+                            <div style="height: 10px;width: 100%;"></div>
+                            <a>一月<span style="color: red;"></span></a><a>二月<span style="color: red;"></span></a><a>三月<span style="color: red;"></span></a><a>四月<span style="color: red;"></span></a><a>五月<span style="color: red;"></span></a><a>六月<span style="color: red;"></span></a><a>七月<span style="color: red;"></span></a><a>八月<span style="color: red;"></span></a><a>九月<span style="color: red;"></span></a><a>十月<span style="color: red;"></span></a><a>十一月<span style="color: red;"></span></a><a>十二月<span style="color: red;"></span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="insert-btn-group">
+                    <div class="opt-group">
+                        <a class="opt-importbank bule-btn" href="javascript:;" onclick="ToAddReceipt()">添加回单</a>
+                    </div>
+                </div>
+                <div class="intel-done">
+                    <table id="VcrBill-receipt-datagrid" width="100%" class="easyui-datagrid datagrid" cellspacing="0" data-options="url:'/VcrBill/receiptList',fit:false,pagination:true,pageSize:20">
+                        <thead>
+                        <tr>
+                            <th data-options="field:'id',width:0,hidden:true"></th>
+                            <th data-options="field:'origin',align:'center',resizable:false,formatter:formatVcrBillOrigin", width="10%">来源</th>
+                            <th data-options="field:'accounting_section',align:'center',resizable:false", width="12%">会计期间</th>
+                            <th data-options="field:'source_date',align:'center',resizable:false,formatter:formatDate", width="12%">回单日期</th>
+                            <th data-options="field:'total_sum',align:'center',resizable:false", width="12%">回单金额</th>
+                            <th data-options="field:'memo',align:'center',resizable:false", width="20%">回单内容</th>
+                            <th data-options="field:'bill_date',align:'center',resizable:false,formatter:formatDate", width="13%">录入日期</th>
+                            <th data-options="field:'operation',align:'center',resizable:false,formatter:formatReceiptOperation", width="18%">操作</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div title="自开票明细"  data-targetgrid="sale">
+                <div id="VcrBill-sale-toolbar">
+                    <div class="choose-month">
+                        <div>
+                            <span>会计期间：</span>
+                            <select class="easyui-combobox" name="state" style="width:100px;">
+                                <option value="2019">2019年</option>
+                                <option value="2018">2018年</option>
+                            </select>
+                            <div style="height: 10px;width: 100%;"></div>
+                            <a>一月<span style="color: red;"></span></a><a>二月<span style="color: red;"></span></a><a>三月<span style="color: red;"></span></a><a>四月<span style="color: red;"></span></a><a>五月<span style="color: red;"></span></a><a>六月<span style="color: red;"></span></a><a>七月<span style="color: red;"></span></a><a>八月<span style="color: red;"></span></a><a>九月<span style="color: red;"></span></a><a>十月<span style="color: red;"></span></a><a>十一月<span style="color: red;"></span></a><a>十二月<span style="color: red;"></span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="insert-btn-group">
+                    <div class="opt-group">
+                        <a class="opt-import blue-btn" onclick="VcrBillFunctions.showInvoiceImportDialog(this)">导入自开明细</a>
+
+                        <!--<a class="bule-btn" onclick="VcrBillFunctions.showImageSelectDialog(0)">录入发票</a>-->
+                        <a class="bule-btn" onclick="VcrBillFunctions.showTaxSelectDialog(0,'{$Think.const.FLAG_BILL_TAX_INCOME}')">录入发票（代开）</a>
+                        <!--<span><i class="red">*</i>用于代开发票</span>-->
+                        <span ><i class="red">*</i><span id="free_amount_tips"></span></span>
+                        <div id="import-invoice-content" style="display: none;">
+                            <span class="import-file-name"></span><i class="icon excel"></i>
+                            <!--<a class="opt-del bule-btn" onclick="VcrBillFunctions.showInvoiceDeleteDialog(this)">删除自开票明细</a>-->
+                        </div>
+                        <div style="float: right;display: flex;align-items: center;">
+                            <div style="margin-right: 10px;">删除已导入自开票明细：</div>
+                            <div style="margin: 0 20px 0 0;width: 300px;" class="search_ipt">
+                                <input style="width:300px;" type="text" name="del_invoice_attach" placeholder="请选择要删除的文件">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="intel-done">
+                    <div class="list-table on">
+                        <table id="VcrBill-sale-datagrid" class="easyui-datagrid datagrid" width="100%" cellspacing="0" data-options="url:'/VcrBill/saleList',fit:false,pagination:true,pageSize:20,onLoadSuccess:setTips,showFooter: true,">
+                            <thead>
+                            <tr>
+                                <th data-options="field:'id',width:0,hidden:true"></th>
+                                <th data-options="field:'attachment_id',align:'center',resizable:false,formatter:formatBillOrigin", width="9%">来源</th>
+                                <th data-options="field:'bill_date',align:'center',resizable:false,formatter:formatBillDate", width="9%">录入日期</th>
+                                <th data-options="field:'accounting_section',align:'center',resizable:false", width="9%">会计期间</th>
+                                <th data-options="field:'name',align:'center',resizable:false", width="19%">购买方</th>
+                                <th data-options="field:'detail',align:'center',resizable:false", width="21%">货物或劳务、服务名称</th>
+                                <th data-options="field:'total_sum',align:'center',resizable:false", width="10%">含税合计</th>
+                                <th data-options="field:'attach',align:'center',resizable:false,formatter:formatLinkTax", width="10%">发票附件</th>
+                                <th data-options="field:'operations',align:'center',resizable:false,formatter:format_salebill_operate" width="10%">操作</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div title="外取票明细" data-targetgrid="buy">
+                <div id="VcrBill-buy-toolbar">
+                    <div class="choose-month">
+                        <div>
+                            <span>会计期间：</span>
+                            <select class="easyui-combobox" name="state" style="width:100px;">
+                                <option value="2019">2019年</option>
+                                <option value="2018">2018年</option>
+                            </select>
+                            <div style="height: 10px;width: 100%;"></div>
+                            <a>一月<span style="color: red;"></span></a><a>二月<span style="color: red;"></span></a><a>三月<span style="color: red;"></span></a><a>四月<span style="color: red;"></span></a><a>五月<span style="color: red;"></span></a><a>六月<span style="color: red;"></span></a><a>七月<span style="color: red;"></span></a><a>八月<span style="color: red;"></span></a><a>九月<span style="color: red;"></span></a><a>十月<span style="color: red;"></span></a><a>十一月<span style="color: red;"></span></a><a>十二月<span style="color: red;"></span></a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="opt-group">
+                        <!--<a class="opt-add" onclick="VcrBillFunctions.showImageSelectDialog(0)">添加</a>-->
+                        <a class="opt-add" onclick="VcrBillFunctions.showTaxSelectDialog(0,'{$Think.const.FLAG_BILL_TAX_PAY}')">添加</a>
+                    </div>
+                    <div class="intel-done">
+                        <table id="VcrBill-buy-datagrid" class="easyui-datagrid datagrid" width="100%" cellspacing="0" data-options="url:'/VcrBill/buyList',fit:false,pagination:true,pageSize:20">
+                            <thead>
+                            <tr>
+                                <th data-options="field:'id',width:0,hidden:true"></th>
+                                <th data-options="field:'bill_date',align:'center',resizable:false,formatter:formatDate", width="9%">录入日期</th>
+                                <th data-options="field:'accounting_section',align:'center',resizable:false", width="9%">会计期间</th>
+                                <th data-options="field:'name',align:'center',resizable:false", width="18%">销售方名称</th>
+                                <th data-options="field:'detail',align:'center',resizable:false", width="23%">货物或劳务、服务名称</th>
+                                <th data-options="field:'total_sum',align:'center',resizable:false", width="10%">含税合计</th>
+                                <th data-options="field:'attach',align:'center',resizable:false,formatter:formatLinkTax", width="10%">发票附件</th>
+                                <th data-options="field:'operations',align:'center',resizable:false,formatter:format_buybill_operate", width="20%">操作</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div title="上传发票" data-targetgrid="tax">
+                <div id="VcrBill-tax-toolbar">
+                    <div class="choose-month">
+                        <div>
+                            <span>会计期间：</span>
+                            <select class="easyui-combobox" name="state" style="width:100px;">
+                                <option value="2019">2019年</option>
+                                <option value="2018">2018年</option>
+                            </select>
+                            <div style="height: 10px;width: 100%;"></div>
+                            <a>一月<span style="color: red;"></span></a><a>二月<span style="color: red;"></span></a><a>三月<span style="color: red;"></span></a><a>四月<span style="color: red;"></span></a><a>五月<span style="color: red;"></span></a><a>六月<span style="color: red;"></span></a><a>七月<span style="color: red;"></span></a><a>八月<span style="color: red;"></span></a><a>九月<span style="color: red;"></span></a><a>十月<span style="color: red;"></span></a><a>十一月<span style="color: red;"></span></a><a>十二月<span style="color: red;"></span></a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="opt-group">
+                        <a class="opt-add" onclick="VcrBillFunctions.addTax()">添加</a>
+                    </div>
+                    <div class="intel-done">
+                        <table id="VcrBill-tax-datagrid" class="easyui-datagrid datagrid" width="100%" cellspacing="0" data-options="url:'/VcrBill/taxList',fit:false,pagination:true,pageSize:20">
+                            <thead>
+                            <tr>
+                                <th data-options="field:'id',width:0,hidden:true"></th>
+                                <th data-options="field:'origin',align:'center',resizable:false,formatter:formatVcrBillOrigin", width="10%">来源</th>
+                                <th data-options="field:'source_flag',align:'center',resizable:false,formatter:formatTaxType", width="9%">发票类型</th>
+                                <th data-options="field:'bill_date',align:'center',resizable:false,formatter:formatDate", width="12%">录入日期</th>
+                                <th data-options="field:'accounting_section',align:'center',resizable:false", width="10%">会计期间</th>
+                                <th data-options="field:'bill_no',align:'center',resizable:false", width="13%">发票号码</th>
+                                <th data-options="field:'total_amount',align:'center',resizable:false", width="13%">发票金额</th>
+                                <th data-options="field:'source_date',align:'center',resizable:false,formatter:formatDate", width="12%">开票日期</th>
+                                <!--<th data-options="field:'total_sum',align:'center',resizable:false", width="10%">含税合计</th>-->
+                                <th data-options="field:'is_link_bill',align:'center',resizable:false,formatter:formatTaxState" width="10%">状态</th>
+                                <th data-options="field:'operations',align:'center',resizable:false,formatter:format_tax_operate", width="11%">操作</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="dialog-temp" id="invoice-import-dialog">
+    <div class="importTax">
+        <form id="bill-import-form" method="post" enctype="multipart/form-data" style="width:360px;position: relative">
+            <!--<div style="margin: 10px 0px">
+                <span>&ensp;&ensp;会计期间：</span>
+                <input type="text" style="width: 118px" name="accounting-section-year" id="sale-accounting-section-year" value=""/>
+                <input type="text" style="width: 117px" name="accounting-section-month" id="sale-accounting-section-month" value=""/>
+                &lt;!&ndash;<input name="bank_subject" type="hidden">&ndash;&gt;
+            </div>-->
+            <input type="file" id="import-invoice-file" name="import_file" accept="*.xls,*.xlsx" class="easyui-file" title="自开票明细："/>
+            <div style="margin: 10px 0px">
+                <span>&ensp;&ensp;使用模板：</span>
+                <input name="template_id" id="self_open_template_id" style="width:240px" class="easyui-validatebox">
+            </div>
+        </form>
+
+        <div class="btn-group">
+            <input class="blue-btn" type="button" value="导入" onclick="VcrBillFunctions.importInvoice(this)"/>
+            <input class="square-btn" type="button" value="取消" onclick="closeDialog();"/>
+        </div>
+    </div>
+</div>
+<div class="dialog-temp" id="invoice-attachment-del-dialog">
+    <div class="del-content">
+        <p>删除后，凭证信息将会从系统中移除，可以再次选择进行生成凭证！</p>
+        <p><label>
+            <span class="checkbox"><span></span><input type="hidden" value="1" name="" /></span>
+            注意：删除时，同时删除对应的原始凭证和附件
+        </label>
+        </p>
+        <div class="btn-group">
+            <input class="blue-btn" type="button" value="确定" onclick="VcrBillFunctions.removeAttachment('#import-invoice-content')"/>
+            <input class="square-btn" type="button" value="取消" onclick="closeDialog()"/>
+        </div>
+    </div>
+</div>
+<div class="dialog-temp" id="bank-attachment-del-dialog">
+    <div class="del-content">
+        <p>删除后，凭证信息将会从系统中移除，可以再次选择进行生成凭证！</p>
+        <p><label>
+            <span class="checkbox"><span></span><input type="hidden" value="1" name="" /></span>
+            注意：删除时，同时删除对应的原始凭证和附件
+        </label>
+        </p>
+        <div class="btn-group">
+            <input class="blue-btn" type="button" value="确定" onclick="VcrBillFunctions.removeAttachment('#import-bank-content')"/>
+            <input class="square-btn" type="button" value="取消" onclick="closeDialog()"/>
+        </div>
+    </div>
+</div>
+<div class="dialog-temp" id="salarytable-attachment-del-dialog">
+    <div class="del-content">
+        <p>删除后，凭证信息将会从系统中移除，可以再次选择进行生成凭证！</p>
+        <p><label>
+            <span class="checkbox"><span></span><input type="hidden" value="1" name="" /></span>
+            注意：删除时，同时删除对应的原始凭证和附件
+        </label>
+        </p>
+        <div class="btn-group">
+            <input class="blue-btn" type="button" value="确定" onclick="VcrBillFunctions.removeAttachment('#import-salarytable-content')"/>
+            <input class="square-btn" type="button" value="取消" onclick="closeDialog()"/>
+        </div>
+    </div>
+</div>
+<div class="dialog-temp" id="bank-import-dialog">
+    <div class="importTax">
+        <form  id="bank-import-form" method="post" enctype="multipart/form-data" style="width:360px;position: relative">
+            <!--<div style="margin: 10px 0px">
+                <span>&ensp;&ensp;会计期间：</span>
+                <input type="text" style="width: 118px" name="accounting-section-year" id="bank-accounting-section-year" value=""/>
+                <input type="text" style="width: 117px" name="accounting-section-month" id="bank-accounting-section-month" value=""/>
+                &lt;!&ndash;<input name="bank_subject" type="hidden">&ndash;&gt;
+            </div>-->
+            <div style="margin: 10px 0px">
+                <span>&ensp;&ensp;银行科目：</span><input name="bank_subject"  id="bank-subjects" style="width:240px" class="easyui-validatebox">
+                <!--<input name="bank_subject" type="hidden">-->
+            </div>
+            <div style="margin: 10px 0px">
+                <span>&ensp;&ensp;使用模板：</span><input name="template_id"  id="template_id" style="width:240px" class="easyui-validatebox">
+                <!--<input name="bank_subject" type="hidden">-->
+            </div>
+            <input type="file" id="import-bank-file" name="import_file" accept="*.xls,*.xlsx" class="easyui-file" title="银行对账单："/>
+        </form>
+
+        <div class="btn-group">
+            <input class="blue-btn" type="button" value="导入" onclick="VcrBillFunctions.importBankAccount(this)"/>
+            <input class="square-btn" type="button" value="取消" onclick="closeDialog();"/>
+        </div>
+    </div>
+</div>
+<div class="dialog-temp" id="salarytable-import-dialog">
+    <div class="importTax">
+        <form  id="salarytable-import-form" method="post" enctype="multipart/form-data" style="width:450px;position: relative">
+            <div>
+                <div id="all-departments" class="list-group col"style="min-height: 30px; ">
+                    <div class="square-btn"  data-value="{$Think.const.FEE_DEPATMENT_SALES}">销售部门</div>
+                    <div class="square-btn"  data-value="{$Think.const.FEE_DEPATMENT_FINANCE}">财务部门</div>
+                    <div class="square-btn"  data-value="{$Think.const.FEE_DEPATMENT_RD}">研发部门</div>
+                    <div class="square-btn"  data-value="{$Think.const.FEE_DEPATMENT_PRODUCTION}">生产部门</div>
+                    <div class="square-btn"  data-value="{$Think.const.FEE_DEPATMENT_PROJECT}">施工部门</div>
+                </div>
+            </div>
+            <div style="margin: 10px 0px; border: 1px dotted #ccc;height: 70px; line-height: 24px" id="select-departments">
+                <div class="square-btn"  data-value="{$Think.const.FEE_DEPATMENT_MANAGE}">管理部门
+                    <input type='hidden' name='fee_department[]' class='fee_department' value='{$Think.const.FEE_DEPATMENT_MANAGE}'/>
+                </div>
+            </div>
+            <span style="color: #ccc">工资册内包含多部门发放的话，点击需要发放的部门拖动到下方的虚线框内
+                    （可以拖动调整顺序，拖动回原处移除选择，如果只有一个部门默认无需选择）</span>
+            <div style="margin: 10px 0px">
+                <span>会计期间：</span>
+                <!--<input name="bank_subject"  id="salary-subjects" style="width:240px" class="easyui-validatebox">-->
+                <input type="text"  name="accounting_section" id="salary-accounting-section" style="width:345px">
+                <!--<input name="bank_subject" type="hidden">-->
+            </div>
+            <input type="file" id="import-salarytable-file" name="import_file" accept="*.xls,*.xlsx" class="easyui-file" title="&ensp;&ensp;工资册："/>
+            <div style="margin: 10px 0px 0px">
+                <input name="cashpayed" type="checkbox"  value="1"  class="css-checkbox" id="salary-cashpayed">
+                <label  class="css-label" for="salary-cashpayed"><span>&nbsp;&nbsp;现金已付</span></label>
+            </div>
+        </form>
+
+        <div class="btn-group">
+            <input class="blue-btn" type="button" value="导入" onclick="VcrBillFunctions.importSalaryTable(this)"/>
+            <input class="square-btn" type="button" value="取消" onclick="closeDialog();"/>
+        </div>
+    </div>
+</div>
+<div class="dialog-temp" id="image-select-dialog">
+    <input type="hidden" name="model_id" />
+    <div style="height: 60vh;width:60vw; overflow-y: hidden">
+        <div class="tree-wrap" style="height: 100%; overflow-y: auto;width:20vw;float: left;overflow-x: hidden">
+            <ul class="easyui-tree" id="bill-image-tree">
+            </ul>
+        </div>
+        <div style="float: right; height: 100%; width:40vw">
+            <div class="tree-content" id="bill-image-content" style="height: 90%;overflow-y: auto">
+                <img src="" width="100%">
+            </div>
+            <div class="btn-group" style="clear: both;padding-top: 10px;text-align: center">
+                <input class="blue-btn" type="button" value="确定" onclick="VcrBillFunctions.showEditDialog()"/>
+                <input class="square-btn" type="button" value="取消" onclick="closeDialog()"/>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__ROOT__/{$Think.APP_PATH}/Public/vender/Sortable.min.js"></script>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script>
+    function _SetCookie(name,value){
+        document.cookie = name + "="+ escape (value);
+        $("input[name='del_invoice_attach']").val("").flushCache();
+        $("input[name='del_bank_attach']").val("").flushCache();
+    }
+
+    // 自开票明细
+    create_year_combox($("#VcrBill-sale-toolbar .choose-month select"), function(value){
+        $("#VcrBill-sale-toolbar .choose-month a").removeClass("month-on");
+        VcrBillFunctions.requery(value.id);
+        _SetCookie('year_1', value.id);
+        getSalesTotal();
+    });
+    monthChoose($("#VcrBill-sale-toolbar .choose-month a"), function (index, isChecked) {
+        var accounting_section = getMonthChooseValue($("#VcrBill-sale-toolbar .choose-month"));
+        _SetCookie('mon_1', accounting_section);
+        VcrBillFunctions.requery(accounting_section);
+    });
+    // 外取票明细
+    create_year_combox($("#VcrBill-buy-toolbar .choose-month select"), function(value){
+        $("#VcrBill-buy-toolbar .choose-month a").removeClass("month-on");
+        VcrBillFunctions.requery(value.id);
+        _SetCookie('year', value.id);
+        getBuyTotal();
+    });
+    monthChoose($("#VcrBill-buy-toolbar .choose-month a"), function (index, isChecked) {
+        var accounting_section = getMonthChooseValue($("#VcrBill-buy-toolbar .choose-month"));
+        _SetCookie('mon', accounting_section);
+        VcrBillFunctions.requery(accounting_section);
+    });
+    // 银行对账单
+    create_year_combox($("#VcrBill-bank-toolbar .choose-month select"), function(value){
+        $("#VcrBill-bank-toolbar .choose-month a").removeClass("month-on");
+        VcrBillFunctions.requery(value.id);
+        _SetCookie('year_4', value.id);
+        $.post("VcrBill/bankTotal",{year:value.id},function(resData){
+           var ary = [];
+            for(k in resData){
+                for(l in resData[k]){
+                    if(resData[k][l].bill_flag == 4){
+                       ary = resData[k];
+                        break;
+                    }
+                }
+            }
+            var mon;
+            for(var m = 1;m<13;m++){
+                $("#VcrBill-bank-toolbar span.combo").siblings("a").eq(m-1).find("span").text(`（0）`);
+                if(m<10){
+                    mon = '' + '0' + m;
+                }else{
+                    mon = m+1;
+                }
+                var monStr =  value.id + '/' + mon;
+                for(var i=0;i<ary.length;i++){
+                    if(monStr == ary[i].accounting_section){
+                        $("#VcrBill-bank-toolbar span.combo").siblings("a").eq(m-1).find("span").text(`（${ary[i].num}）`);
+                        break;
+                    }
+                }
+            }      
+        },"json")
+    });
+    monthChoose($("#VcrBill-bank-toolbar .choose-month a"), function (index, isChecked) {
+        var accounting_section = getMonthChooseValue($("#VcrBill-bank-toolbar .choose-month"));
+        _SetCookie('mon_4', accounting_section);
+        VcrBillFunctions.requery(accounting_section);
+    });
+    // 工资册
+    create_year_combox($("#VcrBill-salary-toolbar .choose-month select"), function(value){
+        $("#VcrBill-salary-toolbar .choose-month a").removeClass("month-on");
+        _SetCookie('year', value.id);
+        VcrBillFunctions.requery(value.id);
+    });
+    monthChoose($("#VcrBill-salary-toolbar .choose-month a"), function (index, isChecked) {
+        var accounting_section = getMonthChooseValue($("#VcrBill-salary-toolbar .choose-month"));
+        _SetCookie('mon',accounting_section);
+        VcrBillFunctions.requery(accounting_section);
+    });
+    //银行回单会计期间
+    create_year_combox($("#VcrBill-receipt-toolbar .choose-month select"), function(value){
+        $("#VcrBill-receipt-toolbar .choose-month a").removeClass("month-on");
+        VcrBillFunctions.requery(value.id);
+        _SetCookie('year', value.id);
+        $.post("VcrBill/billTotal",{year:value.id,bill_flag:"{$Think.const.FLAG_BILL_RECEIPT}"},function(result){
+            for(k in result){
+                $("#VcrBill-receipt-toolbar span.combo").siblings("a").eq(k-1).find("span").text(`（${result[k].num}）`);
+            }
+        },'json')
+    });
+    monthChoose($("#VcrBill-receipt-toolbar .choose-month a"), function (index, isChecked) {
+        var accounting_section = getMonthChooseValue($("#VcrBill-receipt-toolbar .choose-month"));
+        _SetCookie('mon',accounting_section);
+        VcrBillFunctions.requery(accounting_section);
+    });
+
+    //上传发票列表
+    create_year_combox($("#VcrBill-tax-toolbar .choose-month select"), function(value){
+        $("#VcrBill-sale-toolbar .choose-month a").removeClass("month-on");
+        VcrBillFunctions.requery(value.id);
+        getTaxTotal();
+    });
+    monthChoose($("#VcrBill-tax-toolbar .choose-month a"), function (index, isChecked) {
+        var accounting_section = getMonthChooseValue($("#VcrBill-tax-toolbar .choose-month"));
+        VcrBillFunctions.requery(accounting_section);
+    });
+
+    var VcrBillFunctions =  {
+        showInvoiceImportDialog: function () {
+            $.post("/VcrBillTemplates/list?type=20", function (Template) {
+                if (Template.total == 0) {
+                    $.dialog.alert('请配导入配置');
+                    return false;
+                }
+
+                var html = $("#invoice-import-dialog").html();
+                $.dialog({max: false, min: false, title: "自开票明细导入", content: html});
+                parseInputFile("#bill-import-form");
+                easyui_combobox("#self_open_template_id", Template.rows);
+                create_accounting_section_combox("#sale-accounting-section-year","","year");
+                create_accounting_section_combox("#sale-accounting-section-month","","month");
+            }, 'json');
+        },
+        showInvoiceDeleteDialog: function (){
+            var html = $("#invoice-attachment-del-dialog").html();
+            $.dialog({max:false,min:false, title: "删除确认", content: html});
+        },
+        importInvoice: function(){
+            var customer = $(".page-selected .company-name").text();
+            if (customer != "") {
+                action_import("import-invoice-file", "VcrBill/importInvoice", "确定导入客户【" + customer + "】的自开票？", function (result) {
+                    setTimeout(function () {
+                        VcrBillFunctions.showAttachmentContent("#import-invoice-content",result.attachment_id, result.file_name);
+                        $("#VcrBill-sale-datagrid").datagrid("reload");
+                        $("input[name='del_invoice_attach']").val("").flushCache();
+                        getSalesTotal();
+                    }, 2000);
+                })
+            }
+        },
+        //显示导入文件名
+        showAttachmentContent: function(target, attachment_id, file_name){
+            if (attachment_id != undefined && attachment_id != null) {
+                $(target).css("display", "inline-block");
+                $(target).data("attachment_id", attachment_id);
+                $(target).find(".import-file-name").text("已导入：" + file_name);
+            }
+        },
+        removeAttachment:function(target){
+            showMaskLayer();
+            var _this = this;
+            var attachment_id = $(target).data("attachment_id");
+            if (attachment_id){
+               $.post("/VcrBill/removeAttachment", {attachment_id: attachment_id}, function (result) {
+                   hideMaskLayer();
+                   closeDialog();
+                   $(target).hide();
+                   $.dialog.tips(result.message);
+                   _this.getActiveGrid().datagrid("reload");
+                   if(target == "#import-invoice-content"){
+                       getSalesTotal();
+                   }else{
+                       getBankTotal();
+                   }
+               },"json");
+            }
+        },
+        showBankAccountImportDialog: function () {
+            $.post("VcrBill/getBankKeyNames", function (result) {
+                if (result.length == 0) {
+                    $.dialog.alert('请配置银行科目');
+                    return false;
+                }
+                $.post("/VcrBillTemplates/list", {type:10}, function (Template) {
+                    if (Template.total == 0) {
+                        $.dialog.alert('请配导入配置');
+                        return false;
+                    }
+                    var html = $("#bank-import-dialog").html();
+                    $.dialog({max: false, min: false, title: "银行对账单", content: html});
+                    parseInputFile("#bank-import-form");
+                    easyui_combobox("#bank-subjects", result);
+                    easyui_combobox("#template_id", Template.rows);
+                    create_accounting_section_combox("#bank-accounting-section-year","","year");
+                    create_accounting_section_combox("#bank-accounting-section-month","","month");
+                }, 'json');
+            }, "json");
+        },
+        queryTemplate : function(){
+            self.queryTemplateData = function(data){
+                $("input[name=template_name]").val(data.name);
+                $("input[name=template_id]").val(data.id);
+            };
+
+            createDialog('/VcrBillTemplate/query', '选择导入模板', 'VcrBillTemplate/query');
+            $("#import-bank-file").next('div').remove();
+        },
+        importBankAccount:function(){
+            var customer = $(".page-selected .company-name").text();
+            var bank_subject= $("#bank-subjects").combobox("getText");
+            if(! $("input[name=template_id]").val()){
+                $.dialog.alert('请选择导入模板');
+                return false;
+            }
+            if (bank_subject != "" && customer != "") {
+                action_import("import-bank-file", "VcrBill/importBankAccount", "确定导入客户【" + customer + "】的"+ bank_subject +"对账单？", function (result) {
+                    setTimeout(function () {
+                        VcrBillFunctions.showAttachmentContent("#import-bank-content", result.attachment_id, result.file_name);
+                        $("#VcrBill-bank-datagrid").datagrid("reload");
+                        $("input[name='del_bank_attach']").val("").flushCache();
+                        getBankTotal();
+                    }, 2000);
+                })
+            }
+        },
+        showBankAccountDeleteDialog:function(){
+            var html = $("#bank-attachment-del-dialog").html();
+            $.dialog({max:false,min:false, title: "删除确认", content: html,lock:true});
+        },
+        showSaleEditDialog: function(data){
+            createDialog(`/VcrBill/addSale/image_id/${data.image_id}/tax_id/${data.tax_id}`, "录入自开发票", "VcrBill");
+        },
+        showBuyEditDialog: function(data){
+            createDialog(`/VcrBill/addBuy/image_id/${data.image_id}/tax_id/${data.tax_id}`, "录入外取发票", "VcrBill");
+        },
+        saveValueTaxBill :function(){
+            var _this = this;
+            showMaskLayer();
+            var validate = $("#VcrBill-dataform").form("validate");
+            if(!validate){
+                hideMaskLayer();
+                $.dialog.tips("请输入必填项！");
+                return validate;
+            }
+            var dataForm = getDataForm("VcrBill");
+            dataForm.form('submit', {
+                success: function (ret) {
+                    var result = $.parseJSON(removeJsonQuote(ret));
+                    if (result.code === 0) {
+                        closeDialog();
+                        $.dialog.tips("保存成功！");
+                        refreshDatagrid(_this.getActiveGrid(), result.message);
+                        $("#VcrBill-tax-datagrid").datagrid("reload");//刷新上传发票的列表
+                        getSalesTotal();
+                        getBuyTotal();
+                    } else {
+                        $.dialog.alert(result.message);
+                    }
+                    hideMaskLayer();
+                },
+                error:function(){
+                    hideMaskLayer();
+                }
+            });
+        },
+        getActiveGrid:function(){
+            var tab = $("#bill-tabs").tabs("getSelected");
+            return $("#VcrBill-" + tab.data("targetgrid") + "-datagrid");
+        },
+        showSalaryTableImportDialog:function(){
+            var html = $("#salarytable-import-dialog").html();
+            $.dialog({max:false,min:false, title: "工资册", content: html});
+            parseInputFile("#salarytable-import-form");
+            create_accounting_section_combox("#salary-accounting-section");
+            new Sortable(document.getElementById("all-departments"), {
+                group: 'shared', // set both lists to same group
+                animation: 150,
+                onAdd: function (evt) {
+                    $(evt.item).find("input").remove();
+                }
+            });
+            new Sortable(document.getElementById("select-departments"), {
+                group: 'shared',
+                animation: 150,
+                onAdd: function (evt) {
+                    $(evt.item).append($.format("<input type='hidden' name='fee_department[]' class='fee_department' value='{0}'/>",[$(evt.item).data("value")]));
+                }
+            });
+        },
+        importSalaryTable:function(){
+            var customer = $(".page-selected .company-name").text();
+            if ($("#salarytable-import-form input.fee_department").length == 0){
+                $.dialog.alert("必须最少选择一个发放部门");
+                return false;
+            }
+            var accounting_section = $("#salary-accounting-section").combobox("getValue");
+            if (accounting_section != "" && customer != "") {
+                action_import("import-salarytable-file", "VcrBill/importSalaryTable", "确定导入客户【" + customer + "】的工资册？", function (result) {
+                    setTimeout(function () {
+                        VcrBillFunctions.showAttachmentContent("#import-salarytable-content", result.attachment_id, result.file_name);
+                        $("#VcrBill-salary-datagrid").datagrid("reload");
+                    }, 2000);
+                })
+            }
+        },
+        showSalaryTableDeleteDialog :function(){
+            var html = $("#salarytable-attachment-del-dialog").html();
+            $.dialog({max:false,min:false, title: "删除确认", content: html});
+        },
+        //显示附件选择窗
+        showImageSelectDialog(id){
+            $.post("/VcrBill/getImageTree/type/selectTax", function (result) {
+                $("#bill-image-content img").removeAttr("src");
+                $("#image-select-dialog input[name=model_id]").val(id);
+                var html = $("#image-select-dialog").html();
+                $.dialog({max:false,min:false, title: "选择附件", content: html});
+                $("#bill-image-tree").tree({
+                    data: result,
+                    onlyLeafCheck: true,
+                    onLoadSuccess: function(){
+                        $(this).tree("collapseAll");
+                        //对齐
+                        $(this).find("div.tree-node").each(function(){
+                            $(this).attr("title",$(this).find("span.tree-title").text());
+                            if($(this).next().html() == undefined){
+                                $(this).find(".tree-indent").eq(0).hide();
+                            }
+                        })
+                    },
+                    onSelect:function(node){
+                        if(node.path != null && node.path != ""){
+                            $("#bill-image-content img").attr("src",node.path).data("image", node.id);
+                        }else{
+                            $("#bill-image-content img").attr("src","").data("image", "");
+                        }
+                    }
+                });
+            },"json");
+        },
+        //选择附件确定弹出编辑窗
+        showEditDialog:function(){
+            var image_id = $("#bill-image-content img").data("image");
+            if (image_id == "" || image_id == 0 || image_id == undefined){
+                $.dialog.alert("请选择附件");
+                return false;
+            }
+            var model_id = $("input[name=model_id]").val();
+            if (model_id != "" && model_id != "0"){
+                $.post("/VcrBill/setImage", {image_id: image_id, model_id: model_id}, function (result) {
+                    refreshDatagrid(VcrBillFunctions.getActiveGrid(), result.message, "edit");
+                    closeDialog();
+                },"json");
+            }else {
+                var data = {image_id: image_id};
+                closeDialog();
+                var tab = $("#bill-tabs").tabs("getSelected");
+                if (tab.data("targetgrid") == "sale") {
+                    this.showSaleEditDialog(data);
+                } else {
+                    this.showBuyEditDialog(data);
+                }
+            }
+        },
+        requery:function(accounting_section){
+            if (accounting_section == "0"){
+                this.getActiveGrid().datagrid("load", {});
+            }else {
+                var queryParams = isNaN(accounting_section) ? {'q-accounting_section': accounting_section} : {'ql-accounting_section': accounting_section};
+                this.getActiveGrid().datagrid("load", queryParams);
+            }
+        },
+        //上传发票新增
+        addTax:function(){
+            createDialog("/VcrBill/editTax","上传发票","editTax");
+        },
+        //关联发票时选择发票
+        showTaxSelectDialog:function(id,type){
+            createDialog(`/VcrBill/selectTax/type/${type}/id/${id}`,"选择发票","selectTax");
+        },
+        //关联发票之后的查看发票对话框
+        showTaxDialog:function(tax_id){
+            createDialog("/VcrBill/editTax/type/1/id/"+tax_id,"查看发票","editTax");
+        }
+    };
+    $(function(){
+        var year = $("#VcrBill-bank-toolbar").find("select").combobox("getValue");
+        var mon = getMonthChooseValue($("#VcrBill-bank-toolbar .choose-month"));
+        //对账单
+        autocompleteAjax($("input[name='del_bank_attach']"), "VcrBill/getImportedFile/bill_flag/{$Think.const.FLAG_BILL_BANK}", function (item) {
+            $("#import-bank-content").data("attachment_id",item.id);
+            VcrBillFunctions.showBankAccountDeleteDialog();
+            $("input[name='del_bank_attach']").val("").flushCache();
+        });
+
+        autocompleteAjax($("input[name='del_invoice_attach']"), "VcrBill/getImportedFile/bill_flag/{$Think.const.FLAG_BILL_TAX_INCOME}", function (item) {
+            $("#import-invoice-content").data("attachment_id",item.id);
+            VcrBillFunctions.showInvoiceDeleteDialog();
+            $("input[name='del_invoice_attach']").val("").flushCache();
+        });
+
+        $.post("VcrBill/billTotal",{year:2019,bill_flag:"{$Think.const.FLAG_BILL_RECEIPT}"},function(result){
+            for(k in result){
+                $("#VcrBill-receipt-toolbar span.combo").siblings("a").eq(k-1).find("span").text(`（${result[k].num}）`);
+            }
+        },'json')
+    });
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+    (function(){
+        getBankTotal();
+        getSalesTotal();
+        getBuyTotal();
+        getTaxTotal();
+    })();
+    function getBankTotal(){
+        $.post("VcrBill/bankTotal",{year:2019},function(resData){
+            var ary = [];
+           for(k in resData){
+               for(l in resData[k]){
+                   if(resData[k][l].bill_flag == 4){
+                      ary = resData[k];
+                       break;
+                   }
+               }
+           }
+           var mon;
+           for(var m = 1;m<13;m++){
+               $("#VcrBill-bank-toolbar span.combo").siblings("a").eq(m-1).find("span").text(`（0）`);
+               if(m<10){
+                   mon = '' + '0' + m;
+               }else{
+                   mon = m+1;
+               }
+               var monStr =  2019 + '/' + mon;
+               for(var i=0;i<ary.length;i++){
+                   if(monStr == ary[i].accounting_section){
+                       // console.log(ary[i])
+                       $("#VcrBill-bank-toolbar span.combo").siblings("a").eq(m-1).find("span").text(`（${ary[i].num}）`);
+                       break;
+                   }
+               }
+           }      
+       },"json")
+    }
+
+    function ToAddReceipt(){
+        createDialog("VcrBill/editReceipt","银行回单_新增");
+        formCache["editReceipt"] = {data:null, action:"add"};
+    }
+    function ToBankStatementAssociation(id){
+        createDialog(`VcrBill/linkBill/id/${id}`,"关联回单","bank_statement");
+    }
+    function formatReceiptOperation(value,row){
+        var html = `<a style="color:blue;padding-left: 10px" href="javascript:;" onclick="createDialog('VcrBill/editReceipt/id/${row.id}','银行回单_查看');">查看</a>`;
+        html += `<a style="color:blue;padding-left: 10px" href="javascript:;" onclick="deleteReceipt(${row.id},${row.is_link_bank})">删除</a>`;
+        return html;
+    }
+    function formatBankStatementAssociation(value,row){
+        if(value > 0){
+            return `<div onclick="showReceipt(${value})" style="color:#368bfe;cursor: pointer;">查看回单</div>`
+        }else{
+            return `<div onclick="ToBankStatementAssociation(${row.id})" style="color:red;cursor: pointer;">关联回单</div>`
+        }
+    }
+    function deleteReceipt(id,is_link_bank){
+        var tips = is_link_bank > 0 ? "该回单已被关联</br>" : "";
+        tips += "是否确认删除该银行回单？";
+        $.dialog.confirm(tips,function(){
+            $.post("VcrBill/deleteReceipt",{id:id},function(result){
+                $.dialog.tips(result.message);
+                if(result.code == 0){
+                    refreshGrid("VcrBill-receipt", {id:id}, "delete");
+                    if(is_link_bank > 0){
+                        refreshDatagrid($("#VcrBill-bank-datagrid"));
+                    }
+                    getBillTotal();
+                }
+            },'json')
+        })
+    }
+
+    function showReceipt(id){
+        if(id > 0){
+            createDialog("VcrBill/editReceipt/id/"+id+"/type/1","查看回单",'edit_receipt');
+        }
+    }
+
+    function getBillTotal(){
+        var year = $("#VcrBill-receipt-toolbar").find("select").combobox("getValue");
+        $.post("VcrBill/billTotal",{year:year,bill_flag:"{$Think.const.FLAG_BILL_RECEIPT}"},function(result){
+            for(k in result){
+                $("#VcrBill-receipt-toolbar span.combo").siblings("a").eq(k-1).find("span").text(`（${result[k].num}）`);
+            }
+        },'json')
+    }
+
+    //自开票会计期间数量
+    function getSalesTotal(){
+        var year = $("#VcrBill-sale-toolbar").find("select").combobox("getValue");
+        $.post("VcrBill/billTotal",{year:year,bill_flag:"{$Think.const.FLAG_BILL_TAX_INCOME}"},function(result){
+            for(k in result){
+                $("#VcrBill-sale-toolbar span.combo").siblings("a").eq(k-1).find("span").text(`（${result[k].num}）`);
+            }
+        },'json')
+    }
+
+    $("#VcrBill-sale-datagrid").bind("afterDelete",function(){
+        getSalesTotal();
+    })
+
+    //自开票会计期间数量
+    function getBuyTotal(){
+        var year = $("#VcrBill-buy-toolbar").find("select").combobox("getValue");
+        $.post("VcrBill/billTotal",{year:year,bill_flag:"{$Think.const.FLAG_BILL_TAX_PAY}"},function(result){
+            for(k in result){
+                $("#VcrBill-buy-toolbar span.combo").siblings("a").eq(k-1).find("span").text(`（${result[k].num}）`);
+            }
+        },'json')
+    }
+
+    $("#VcrBill-buy-datagrid").bind("afterDelete",function(){
+        getBuyTotal();
+    })
+
+    function format_tax_operate(value,row){
+        var html = `<a style="color:blue;padding-left: 10px" href="javascript:;" onclick="createDialog('VcrBill/editTax/id/${row.id}','上传发票_查看');">查看</a>`;
+        html += `<a style="color:blue;padding-left: 10px" href="javascript:;" onclick="deleteTax(${row.id},${row.is_link_bill})">删除</a>`;
+        return html;
+    }
+
+    function formatTaxType(value,row){
+        return value == "{$Think.const.FLAG_SOURCE_INCOME}" ? "自开票":"外取票";
+    }
+
+    function getTaxTotal($target,bill_flag){
+        var year = $("#VcrBill-tax-toolbar").find("select").combobox("getValue");
+        $.post("VcrBill/taxCount",{year:year},function(result){
+            for(k in result){
+                $("#VcrBill-tax-toolbar span.combo").siblings("a").eq(k-1).find("span").text(`（${result[k].num}-${result[k].unselected_count}）`);
+            }
+        },'json')
+    }
+
+    function deleteTax(id,is_link_bill){
+        var tips = is_link_bill > 0 ? "该发票已被关联</br>" : "";
+        tips += "是否确认删除该发票？";
+        $.dialog.confirm(tips,function(){
+            $.post("VcrBill/deleteTax",{id:id},function(result){
+                $.dialog.tips(result.message);
+                if(result.code == 0){
+                    refreshGrid("VcrBill-tax", {id:id}, "delete");
+                    if(is_link_bill > 0){
+                        refreshDatagrid($("#VcrBill-buy-datagrid"));
+                        refreshDatagrid($("#VcrBill-sale-datagrid"));
+                    }
+                    getTaxTotal();
+                }
+            },'json')
+        })
+    }
+
+    function formatLinkTax(value,row){
+        if(row.id == undefined) return "";
+        var html = "";
+        if (row.image_id == undefined || row.image_id == null || row.image_id == "" || !(row.tax_id > 0)){
+            html =  `<a style='color:red;padding-left: 10px' href='javascript:;'  onclick='VcrBillFunctions.showTaxSelectDialog(${row.id},1)'>关联发票</a>`;
+        }else{
+            html =  `<a style='color:blue;padding-left: 10px' href='javascript:;' onclick='VcrBillFunctions.showTaxDialog(${row.tax_id})'>查看发票</a>`;
+        }
+        return html;
+    }
+
+
+
+    function setTips(data){
+        //var tips = data.total_money != undefined ? `本月免税额度：${data.free_amount}，本月已开：${data.total_money}。` : "";
+
+        if(data.tips != ""){
+            $("#free_amount_tips").html(data.tips).parent().show();
+        }else{
+            $("#free_amount_tips").html(data.tips).parent().hide();
+        }
+    }
+
+    function formatBillDate(value,row){
+        if(row.id == undefined){
+            return ""
+        }else{
+            return formatDate(value);
+        }
+    }
+
+    function formatTaxState(value){
+        return value > 0 ? "已选用":"未选用";
+    }
+
+</script>

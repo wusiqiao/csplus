@@ -1,0 +1,51 @@
+<div class="tableForm" style="width: 400px">
+	<input name="id"  type="hidden"  value="{$id}">
+	<div class="row">
+		<div style="text-align: center;"><span>请选择您要交接的客户：</span>
+			<input class="easyui-validatebox"  value="" name="tracker"/>
+			<input type="hidden"  value="" name="tracker_id"/>
+		</div>
+	</div>
+</div>
+<div class="form-actions" id='SysBranch-form-actions'>
+	<div class='actions-sysdefault'>
+		<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="transfer()">保存</a>
+		<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+	</div>
+</div>
+<script src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script>
+	function transfer(){
+        var tracker_id = $("input[name=tracker_id]").val();
+        var tracker_name = $("input[name=tracker]").val();
+        if(tracker_id == ""){
+            $.dialog.tips("请选择您要交接的业务员！");
+            return false;
+		}
+	    //$.dialog.confirm("是否确认交接",function(){
+	        var id = $("input[name='id']").val();
+	        $.post("SysBranch/transferTracker",{id:id,tracker_id:tracker_id,tracker_name:tracker_name},function(result){
+	            closeDialog();
+	            $.dialog.tips(result.message);
+	            if(result.error == 0){
+	                $("input[name='tracker_name']").val(tracker_name);
+	                if(result.close == 1){
+	                    closeDialog("SysBranch");
+					}
+					refreshDatagrid(getDataGrid("SysBranch"));
+                    vue.operation_logs.unshift(result.log);
+				}
+			},'json')
+		//})
+	}
+
+	$(function(){
+	    autocompleteAjax($("input[name='tracker']"),"Organization/staffListForSearch",function(){})
+		$("input[name='tracker']").on("change",function(){
+		    if($("input[name='tracker']").length > 0 && $("input[name='tracker']").val == ""){
+		        $("input[name='tracker_id']").val("");
+			}
+		})
+	})
+
+</script>

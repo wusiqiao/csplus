@@ -1,0 +1,18 @@
+<script type="text/javascript">
+    function Search() {
+        $('#list_data').datagrid('load',
+            {
+                "[Contains]Name": $("#Name").val()
+            });
+    }
+</script>
+
+<table style="margin-top: 0px">
+    <tr>
+        <td align="left">名称 ：</td>
+        <td width="175">
+            <input id="Name" name="Name" value="" class="easyui-validatebox">
+        </td>
+    </tr>
+</table>
+

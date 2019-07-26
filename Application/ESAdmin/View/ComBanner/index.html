@@ -1,0 +1,54 @@
+<script type="text/javascript">
+    function format_banner_title(value){
+        return `<div style="width: 160px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" title="${value}">${value}</div>`
+    }
+    function format_banner_url(value, row){
+        var scale_text = ["已关闭","已开启"];
+        return scale_text[parseInt(value)];
+    }
+    function format_banner_switch(value, row){
+        var scale_text = ["已关闭","已开启"];
+        return scale_text[parseInt(value)];
+    }
+    function show_date(value,row){
+        var result = '';
+        var theDate = new Date(parseInt(value) * 1000);
+        result = result + theDate.getFullYear()+'年';
+        result = result + (parseInt(theDate.getMonth()) + 1) +'月';
+        result = result + theDate.getDate()+'日'+' ';
+        result = result + theDate.getHours()+':';
+        result = result + theDate.getMinutes()+':';
+        result = result + theDate.getSeconds();
+        return result;
+    }
+    function show_url(value,row){
+        if(value == ''){
+            return '<div class="btn-speed-disable" style="padding:0 10px;color:#fff;">无法查看</div>';
+        }else{
+            return '<a href="'+value+'" class="easyui-linkbutton btn-speed" target="_blank" style="padding:0 10px;color:#fff">查看{$Think.lang.BANNER_URL}</a>';
+        }
+    }
+    function show_pic(value,row){
+        return '<a href="'+value+'" class="easyui-linkbutton btn-speed" target="_blank" style="padding:0 10px;color:#fff">查看{$Think.lang.BANNER_PIC}</a>';
+    }
+</script>
+<style>
+    .maincontainer {
+        height: 100%;
+    }
+</style>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer">
+    <include file="./Application/Common/Layout/Default/list_header_auto.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th data-options="field:'id',hidden:true">id</th>
+        <th data-options="field:'title',width:180,formatter:format_banner_title" sortable="true">{$Think.lang.BANNER_TITLE}</th>
+        <th data-options="field:'pic',width:130,align:'center',formatter:show_pic">{$Think.lang.BANNER_PIC}</th>
+        <th data-options="field:'url',width:130,align:'center',formatter:show_url">{$Think.lang.BANNER_URL}</th>
+        <th data-options="field:'updated_at',width:160,align:'left',formatter:show_date">{$Think.lang.UPDATED_AT}</th>
+        <th data-options="field:'url_switch',width:75,align:'left',formatter:format_banner_url">{$Think.lang.BANNER_URL_SWITCH}</th>
+        <th data-options="field:'switch',width:75,align:'left',formatter:format_banner_switch" sortable="true" order="desc">{$Think.lang.BANNER_SWITCH}</th>
+        <th data-options="field:'orders',width:75,align:'left'">{$Think.lang.BANNER_ORDER}</th>
+        <th data-options="field:'view_show',width:90,align:'left'">{$Think.lang.BANNER_VIEW_SHOW}</th>
+    </tr>
+    <include file="./Application/Common/Layout/Default/list_footer.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+</div>

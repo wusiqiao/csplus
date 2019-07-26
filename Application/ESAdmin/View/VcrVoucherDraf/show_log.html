@@ -1,0 +1,64 @@
+<style>
+    .options-table {
+        border-collapse: collapse;
+        margin: 0 0;
+        text-align: center;
+    }
+
+    .options-table td,
+    .options-table th {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+
+    .options-table thead,
+    .options-table th {
+        background-color: #f6f7fa;
+    }
+
+    .options-table tr:nth-child(even) {
+        background: #fbfafa;
+    }
+</style>
+
+<div id="logTable" style="width: 70vw;max-height: 70vh;overflow-y: auto">
+    <table class="options-table" style="width: 100%;">
+        <thead>
+            <tr>
+                <td><div style="padding: 0 10px;">序号</div></td>
+                <td>操作人</td>
+                <td>操作</td>
+                <td>时间</td>
+            </tr>
+        </thead>
+        <tr v-for="(item,index) in logList">
+            <td><div style="padding: 0 10px;">{{index+1}}</div></td>
+            <td><div style="padding: 0 10px;">{{item.user_name}}</div></td>
+            <td>
+                <div v-for="(v,i) in JSON.parse(item.content)" style="text-align: left;margin: 5px 0;padding: 0 10px;">{{i+1}}、{{v}}</div>
+            </td>
+            <td><div style="padding: 0 10px;">{{item.log_time_fmt}}</div></td>
+        </tr>
+        <tr v-if="logList.length == 0">
+            <td colspan="4"><span>暂无操作记录</span></td> 
+        </tr>
+    </table>
+</div>
+<script src="__ROOT__/{$Think.APP_PATH}/Public/vender/vue.min.js"></script>
+<script>
+    var log = new Vue({
+        el:"#logTable",
+        data: {
+            logList:[]
+        }
+    });
+    $(function(){
+        /*$.post("VcrVoucherDraf/getVoucherLog",{id:$("input[name='id']").val()},function(result){
+            //for(var i in result){
+                log.logList = result
+            //}
+        },'json')*/
+        log.logList = VcrVoucherFunctions.logs;
+    })
+</script>

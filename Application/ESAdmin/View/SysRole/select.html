@@ -1,0 +1,42 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="width:480px; height:480px">
+    <include file="./Application/Common/Layout/Default/select_header.html"  controller="SysRole" />
+    <tr> 
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>  
+        <th data-options="field:'name',width:120,align:'left'">{$Think.lang.FLD_NAME}</th>
+        <th data-options="field:'is_valid',width:40,align:'left',formatter:formatValidState">{$Think.lang.FLD_IS_VALID}</th>
+    </tr>
+</thead>
+</table>
+<div id="toolbar_SysRole_select">
+    <div class="action_panel">
+        <div class="search_form">
+            <table class="search_table">
+                <tr>
+                    <th>角色名称：</th>
+                    <td>
+                        <input name="name" id="name" class="easyui-validatebox" value="" />
+                    </td>                  
+                </tr>
+            </table>
+        </div>
+        <div class="search_btn">
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:auto" icon="fa-search" plain ="true" onclick="action_search_daily()">查询</a>
+        </div>
+        <div class="h-separator"></div>
+        <div class="select_action_btn">
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" style="width:auto" icon="fa-square-o" plain ="true" onclick="select_all(this, 'SysRole')">全选</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton get-back" icon="fa-mail-reply-all" plain ="true" onclick="get_back('SysRole')">取回</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $(getSelectGrid_ID("SysRole")).datagrid();
+    });
+    function action_search_daily() {
+        var data = {};
+        data.name = $("#toolbar_SysRole_select input[name=name]").val();
+        $(getSelectGrid_ID("SysRole")).datagrid("load", {data: data});
+    }
+
+</script>

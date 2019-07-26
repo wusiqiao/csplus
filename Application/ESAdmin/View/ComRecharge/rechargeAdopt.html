@@ -1,0 +1,87 @@
+<style>
+    .form-button-group {
+        text-align: center;
+    }
+    .form-button-group .form-button-operation{
+        background-color: #368bfe;
+        border-radius: 3px;
+        color: #fff;
+        width: 83px;
+        height: 29px;
+        border: initial;
+    }
+    .form-button-group .form-button-close{
+        border: 1px solid #368bfe;
+        background-color: #fff;
+        width: 83px;
+        height: 29px;
+        border-radius: 3px;
+        color: #368bfe;
+    }
+    .refuse-div{
+        text-align: center;
+    }
+    .refuse-div div{
+        margin: 15px 5px;
+    }
+    .common-input-two span.label {
+        display: inline-block;
+        width: 45%;
+        height: 34px;
+        line-height: 34px;
+        text-align: right;
+        color: #666666;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="width: 350px;
+	height: 360px;">
+    <input type="hidden" name="id" value="{$model.id}" />
+    <div class="refuse-div" style="height: 150px">
+        <div>
+            <img src="/Application/ESAdmin//Public/images/icon/adopt-icon.png" width="50" height="50" alt="">
+        </div>
+        <div style="color: #09bb07">
+            充值成功
+        </div>
+        <div style="color: #666666">
+            您好，您的充值金额已入账，请查看确认。
+        </div>
+    </div>
+    <div class="common-input-wrap" style="padding: initial;">
+        <div class="common-input-two">
+            <span class="label">{$Think.lang.RECHARGE_DATE}：</span>
+            <input class="easyui-validatebox filter-field" readonly value="{$model.pay_time}" />
+        </div>
+        <div class="common-input-two">
+            <span class="label">{$Think.lang.RECHARGE_MONEY}：</span>
+            <input class="easyui-validatebox filter-field" readonly value="{$model.account}" />
+        </div>
+        <div class="common-input-two">
+            <span class="label">{$Think.lang.RECHARGE_BALANCE_MONEY}：</span>
+            <input  class="easyui-validatebox filter-field" readonly value="{$model.balance_money}" />
+        </div>
+    </div>
+    <div class="form-button-group" style="margin-top: 20px">
+        <button href="javascript:void(0)" class="form-button-close" plain="true" onclick="closeDialog()">关闭</button>
+        <button href="javascript:void(0)" class="form-button-operation" plain="true" onclick="operateAdoptNotice()">发送</button>
+    </div>
+</div>
+<script>
+    //状态操作
+    function operateAdoptNotice(){
+        var id = $('input[name=id]').val();
+        if (id > 0) {
+            $.dialog.confirm("是否发送该充值成功通知?",function(){
+                var url = "{$Think.const.CONTROLLER_NAME}/rechargeNotice";
+                closeDialog();
+                $.post(url,{id:id,notice:'adopt'},function(result){
+                    closeDialog('RechargeAdopt-notice');
+                    $.dialog.tips('发送成功');
+                },'json')
+            });
+        } else {
+            $.dialog.alert('操作失败');
+            return false;
+        }
+    }
+</script>

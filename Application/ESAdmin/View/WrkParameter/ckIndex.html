@@ -1,0 +1,135 @@
+<style>
+    .tableForm .row .caption{
+        width: 35%;
+        display: inline-block;
+        margin-left:0px;
+        vertical-align:middle;
+        text-align: right;
+        color: #666666;
+    }
+    .tableForm .row .inputbox_x2{
+        width: 60%;
+        display: inline-block;
+    }
+    .small-header{
+        border-bottom: 1px dashed #eeeeee;
+        padding: 19px;
+        color:#525252;
+    }
+    #WrkParameter-detailcontainer .caption{
+        width: 250px !important;
+    }
+    #WrkParameter-detailcontainer .inputbox_x2{
+        width: 750px !important;
+    }
+    #WrkParameter-detailcontainer .row{
+        width: 1100px !important;
+    }
+    /* 保存(确认)按钮 */
+    #WrkParameter-detailcontainer .btn_save_blue{
+        display: inline-block;
+        width: 84px;
+        height:34px;
+        line-height: 34px;
+        text-align: center;
+        background-color: #529bfd;
+        color: #fff;
+        padding: 0px 10px;
+        margin: 5px 10px;
+        cursor: pointer;
+    }
+    #WrkParameter-detailcontainer .btn_save_blue:hover{
+        background-color: #6eacfe;
+    }
+    #WrkParameter-detailcontainer .fontawesome-icon-button{
+        background: #529bfd;
+    }
+    #WrkParameter-detailcontainer .l-btn{
+        border-radius: 0px;
+    }
+    #WrkParameter-detailcontainer .l-btn-plain:hover {
+        padding: 0px 10px;
+    }
+    #WrkParameter-detailcontainer .l-btn:hover {
+        background: #6eacfe;
+        color: #fff;
+        border: none;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="margin: 0 0 0 10px;background: #fff;width:100%">
+    <div class="c-header">
+        <div class="tab-span" onclick="toggleType('WrkParameter/index')">合同消息模板</div>
+        <div class="tab-span" onclick="toggleType('WrkParameter/skIndex')">收款消息模板</div>
+        <div class="tab-span tab-span-on" onclick="toggleType('WrkParameter/ckIndex')">催款消息模板</div>
+        <div class="tab-span" onclick="toggleType('WrkParameter/kpIndex')">开票消息模板</div>
+        <div class="tab-span" onclick="toggleType('ComProgressParameter/index')">任务消息设置</div>
+    </div>
+    <div id="parameter-seenbox" style="padding: 18px;">
+        <form action="{$Think.const.CONTROLLER_NAME}/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" enctype="multipart/form-data" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-section">
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>催款参数</span></div>
+                <div class="tableForm">
+                    <div class="row">
+                        <div class="caption"><span>客户端,自动续费通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="automatic_renewal_notice" value="{$model.automatic_renewal_notice}" placeholder="您好，您的服务费即将到期，系统将在续费日自动扣款续费，请保证资金账户余额充足，谢谢您对我们工作的支持" class="easyui-validatebox"   /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>商户端,自动续费通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="branch_automatic_renewal_notice" value="{$model.branch_automatic_renewal_notice}" placeholder="客户续费通知，点击查看详情" class="easyui-validatebox"   /></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="caption"><span>客户端,手动续费通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="manual_renewal_notice" value="{$model.manual_renewal_notice}" placeholder="您好，您的服务费即将到期，请及时续费，谢谢您对我们工作的支持" class="easyui-validatebox"   /></div>
+                    </div>
+                    <div class="row">
+                        <div class="caption"><span>商户端,手动续费通知内容：</span></div>
+                        <div class="inputbox_x2"><input name="branch_manual_renewal_notice" value="{$model.branch_manual_renewal_notice}" placeholder="客户续费通知，点击查看详情" class="easyui-validatebox"  /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions' style="height: auto;padding: 5px 0 15px 0;">
+            <div class='actions-sysdefault'>
+                <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button btn_save_blue" plain="true" icon="fa-save fa-lg"  onclick="saveComStoreForm()">保存</a>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+
+<script>
+    function saveComStoreForm(){
+        showMaskLayer();
+        var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+        dataForm.trigger("Update");//触发子表grid获取数据，如果没有子表，不需要触发。
+        dataForm.form('submit', {
+            url: dataForm.attr("action"),
+            onSubmit:function(){
+                var validate = $(this).form('validate');
+                if (!validate){
+                    hideMaskLayer();
+                }
+                return validate;
+            },
+            success: function (ret) {
+                var result = $.parseJSON(removeJsonQuote(ret));
+                if (result.code === 0) {
+                    $.dialog.tips("保存成功！");
+                } else {
+                    $.dialog.tips(result.message);
+                }
+                hideMaskLayer();
+            }
+        });
+    }
+    //
+    function toggleType(url) {
+        $.get(url, function (result) {
+            $("#module-content .content").html("").append(result);
+            $.parser.parse("#module-content .content");
+        });
+    }
+</script>
+

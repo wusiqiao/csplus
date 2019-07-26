@@ -1,0 +1,126 @@
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<style>
+    .tableForm .row .caption{
+        width: 35%;
+        display: inline-block;
+        margin-left:0px;
+        vertical-align:middle;
+        text-align: right;
+        color: #666666;
+    }
+    .tableForm .row .inputbox_x2{
+        width: 60%;
+        display: inline-block;
+    }
+    .small-header{
+        border-bottom: 1px dashed #eeeeee;
+        padding: 19px;
+        color:#525252;
+    }
+    input[readonly],input:disabled,select:disabled,.chosen-disabled .chosen-choices{
+        background: initial !important;
+        background-color: #EEEEEE !important;
+        border: 1px solid #cccccc;
+        -webkit-transition:initial;
+        box-shadow:initial;
+        -webkit-box-shadow:initial;
+    }
+    .datebox input[readonly] {
+        background: initial !important;
+        background-color: initial !important;
+        border: initial;
+        -webkit-transition:initial;
+        box-shadow:initial;
+        -webkit-box-shadow:initial;
+    }
+    .chosen-disabled{
+        opacity: initial !important;
+    }
+</style>
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer" style="margin: 10px;background: #fff;width:800px;">
+    <form action="{$Think.const.CONTROLLER_NAME}/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" enctype="multipart/form-data" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="easyui-section">
+            <div class="easyui-section-item">
+                <div class="tab-header"><span>资金管理参数</span></div>
+                <if condition="$has_leader">
+                    <div class="tableForm">
+                        <div class="row">
+                            <div class="caption"><span>资金负责人：</span></div>
+                            <div class="inputbox_x2">
+                                <input name="customer_capital_leader_view" style="width: 95%;" class="easyui-validatebox filter-field" value="{$account_belong.customer_capital_leader_view}" data-name="customer_capital_leader_id" placeholder="请输入账户名称" />
+                                <input type="hidden" name="customer_capital_leader_id" value="{$account_belong.customer_capital_leader_id}">
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="caption"><span>资金可见人：</span></div>
+                            <div class="inputbox ">
+                                <select name="customer_capital_visiblers[]" class="chosen-select"  data-placeholder=" " id="recharge_visiblers_select" data-options="all:true,value:'{$account_belong.customer_capital_visiblers}',search_key_url:'{$Think.const.CONTROLLER_NAME}/company_belong/type/1'"  multiple style="width:100%">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <else/>
+                    <div class="tableForm">
+                        <div class="row">
+                            <div class="caption"><span>资金负责人：</span></div>
+                            <div class="inputbox_x2">
+                                <input name="customer_capital_leader_view" style="width: 95%;" disabled class="easyui-validatebox filter-field" value="{$account_belong.customer_capital_leader_view}" data-name="customer_capital_leader_id"  />
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="caption"><span>资金可见人：</span></div>
+                            <div class="inputbox ">
+                                <select name="customer_capital_visiblers[]" class="chosen-select" disabled data-placeholder=" " id="recharge_visiblers_select" data-options="all:true,value:'{$account_belong.customer_capital_visiblers}',search_key_url:'{$Think.const.CONTROLLER_NAME}/company_belong/type/1'"  multiple style="width:100%">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </if>
+            </div>
+        </div>
+        <div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+            <if condition="$has_leader">
+                <div class='actions-sysdefault'>
+                        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="saveComStoreForm()">保存</a>
+                 </div>
+            </if>
+        </div>
+    </form>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script>
+    autocompleteAjax($("input[name='customer_capital_leader_view']"),"{$Think.const.CONTROLLER_NAME}/company_belong", function(item) {});
+    $("input[name='customer_capital_leader_view']").on('change', function() {
+        if ($("input[name='customer_capital_leader_view']").val()=="") {
+            $('input[name="customer_capital_leader_id"]').val("");
+        }
+    });
+    parseForm($("#{$Think.const.CONTROLLER_NAME}-detailcontainer"));
+    function saveComStoreForm(){
+        showMaskLayer();
+        var dataForm = getDataForm("{$Think.const.CONTROLLER_NAME}");
+        dataForm.trigger("Update");//触发子表grid获取数据，如果没有子表，不需要触发。
+        dataForm.form('submit', {
+            url: dataForm.attr("action"),
+            onSubmit:function(){
+                var validate = $(this).form('validate');
+                if (!validate){
+                    hideMaskLayer();
+                }
+                return validate;
+            },
+            success: function (ret) {
+                var result = $.parseJSON(removeJsonQuote(ret));
+                if (result.code === 0) {
+                    $.dialog.tips("保存成功！");
+                } else {
+                    $.dialog.tips(result.message);
+                }
+                hideMaskLayer();
+            }
+        });
+    }
+</script>
+

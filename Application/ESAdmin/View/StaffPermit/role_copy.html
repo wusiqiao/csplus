@@ -1,0 +1,105 @@
+<meta charset="UTF-8">
+<title>Title</title>
+<style>
+    .tableForm .row .caption{
+        width:135px;
+    }
+    /* 保存(确认)按钮 */
+    .btn_save_blue{
+        display: inline-block;
+        width: 84px;
+        height:34px;
+        line-height: 34px;
+        text-align: center;
+        background-color: #529bfd;
+        color: #fff;
+        padding: 0px 10px;
+        margin: 5px 10px;
+        cursor: pointer;
+    }
+    .btn_save_blue:hover{
+        background-color: #6eacfe;
+    }
+    /* 关闭(取消)按钮 */
+    .btn_close_gray{
+        display: inline-block;
+        width: 84px;
+        height:34px;
+        line-height: 34px;
+        text-align: center;
+        padding: 0px 10px;
+        margin: 5px 10px;
+        color: #333;
+        border:1px solid #d3d3d3;
+        cursor: pointer;
+    }
+    .btn_close_gray:hover{
+        border:1px solid #6eacfe;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<form action="">
+    <div class="tableForm" style="width:580px;">
+        <p style="margin-left: 20px">
+            <span style="float: left;position: relative;left:-15px" class="tips-danger"><img src="../../Application/ESAdmin/Public/images/img/danger.png"></span>
+            <span style="color:grey">系统将根据选择的角色复制生成一个新的角色，新角色与选择角色的配置完全相同。</span>
+        </p>
+        <div class="row" style="margin-left: 50px;margin-top: 20px">
+            <div class="caption"><span><span style="color:#FF0000">*</span>选择要复制的角色：</span></div>
+            <div class="inputbox">
+                <!--<select id="role_select" name="role_ids" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization/roleList/'" data-placeholder="请选择一个角色">
+                    <option value=""></option>
+                </select>
+                <input type="hidden" name="role_ids_changed" value="1">-->
+                <input name="copy_role_name" class="easyui-validatebox" placeholder="请选择一个角色" data-name="role_id" required>
+                <input name="role_id" type="hidden">
+            </div>
+        </div>
+        <div class="row" style="margin-left: 50px;margin-top: 20px">
+            <div class="caption"><span><span style="color:#FF0000">*</span>角色名称：</span></div>
+            <div class="inputbox">
+                <input name="role_name" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')"
+                      placeholder="请输入角色名(最多10个字)" value="" title="" required>
+            </div>
+        </div>
+    </div>
+    <div class="form-actions" id='Organization-form-actions' style="margin-top: 20px;margin-bottom: 10px;height: auto;">
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="save_copy()">保存</a>
+            <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()" style="margin-left: 20px">关闭</a>
+        </div>
+    </div>
+</form>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script>
+    function save_copy(){
+        var id = $("input[name='role_id']").val();
+        if(id != ""){
+            var name = $("input[name='role_name']").val();
+            if(name == ""){
+                $.dialog.tips("请输入角色名称！");
+                return false;
+            }
+            $.post("StaffPermit/role_copy",{id:id,name:name},function(result){
+                if(result.error == 0){
+                    $('#role-datagrid').datagrid("reload");
+                    closeDialog();
+                }
+                $.dialog.tips(result.message);
+            },'json')
+        }else{
+            $.dialog.tips("请选择一个角色！");
+        }
+    }
+
+    $(function(){
+        autocompleteAjax($("input[name='copy_role_name']"),"StaffPermit/roleListForCopy",function(item){
+            $("input[name='role_id']").val(item.id);
+        });
+        $("input[name='copy_role_name']").on("change",function(){
+            if($("input[name='copy_role_name']").length > 0 && $("input[name='copy_role_name']").val() == ""){
+                $("input[name='role_id']").val("");
+            }
+        })
+    })
+</script>

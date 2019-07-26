@@ -1,0 +1,539 @@
+<script type="text/javascript">
+    function getPicName(head_pic,name){
+        if(head_pic){
+            return `<div style="width:80%;height:35px;display:flex;">
+                    <img src="`+head_pic+`" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;" onerror="this.onerror=null;this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                    <div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="`+name+`">`+name+`</div>
+                </div>`;
+        }else{
+            return `<div style="width:80%;height:35px;display:flex;">
+                    <img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg" style="max-width:30px;max-height:30px;border-radius:30px;margin-right:5px;">
+                    <div style="align-self:center;width:100px;overflow:hidden; white-space: nowrap;text-overflow: ellipsis;" title="`+name+`">`+name+`</div>
+                </div>`;
+        }
+    }
+    function formatComCompanyName(value, row) {
+        if(value == null||value == ""){
+            return "-"
+        }else{
+            return `<div style="width:160px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`;
+        }
+    }
+    function formatNull(value){
+        if(value == null||value == ""){
+            return "-"
+        }else{
+            return `<div style="width:100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" title="${value}">${value}</div>`
+        }
+    }
+
+    function formatAgreementAccount(value,row){
+        var html = value;
+        if(value != 0){
+            html += "<a href='javascript:void(0)' style='margin-left: 10px' onclick='toAgreementIndex("+row.id+",\""+row.name+"\")'>查看详情{$permission.list}</a>";
+        }
+        return html;
+    }
+
+    function toAgreementIndex(id,name){
+        if("{$WrkAgreement.list}" == 1 || "{$permissions._IS_ADMIN_}" == 1){
+            $("#main-menu-"+"{$menu_parent_id}").trigger('click');
+            $(".menu-"+"{$menu_id}").addClass('active');
+            $.get("WrkAgreement/index/company_id/"+id+"/name/"+name, function(result){
+                $("#module-content .content").html("").append(result);
+                $.parser.parse("#module-content .content");
+                var title = $('.side-bar li.active').text() + ">" +  "合同";
+                $("#module-content .head").text(title);
+            });
+        }else{
+            $.dialog.tips("您没有查看合同的权限");
+        }
+
+    }
+</script>
+<style>
+    .chosen-container-single .chosen-single {
+        border-radius: 0 !important;
+    }
+    .chosen-container .chosen-drop{
+        width: 100%;
+    }
+    #mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 88;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+    .map,.map_tab{
+        display: inline-block;
+        padding:3px 0;
+        width:20px;
+        height:20px;
+        cursor: pointer;
+    }
+    .map{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c8_che.png') 0 5px no-repeat;
+    }
+    .map_tab{
+        background: url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/c10.png') 0 10px no-repeat;
+    }
+
+    /* 筛选条件框 */
+    .select-box{
+        display: none;
+        position: absolute;
+        top: 32px;
+        right: -30px;
+        z-index: 8;
+        padding: 0 10px 10px;
+        background-color: #fff;
+        box-shadow: 1px 1px 10px 1px;
+        overflow: hidden;
+    }
+    .select-box>p{
+        margin: 10px 5px;
+    }
+    .datagrid-header {
+        overflow:unset;
+    }
+    .datagrid-cell{
+        clear: both;
+        overflow:unset;
+    }
+
+    .datagrid-cell>span.lable{
+        float: left;
+        margin: 2px 3px;
+    }
+    .datagrid-cell>span.txtBlue{
+        float: left;
+        margin-left:2px;
+    }
+
+    .select-box-checked{
+        background-position: 0 -20px !important;
+    }
+
+    #ComCompany-maincontainer input[type=radio].css-checkbox:checked + label.css-label{
+        background-position: 0 0;
+    }
+
+</style>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<div id="mask" style="display:none;"></div>
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="height: 100%">
+    <include file="./Application/Common/Layout/Default/list_header_auto.html" controller="{$Think.const.CONTROLLER_NAME}" />
+    <tr>
+        <th data-options="field:'ck',checkbox:true"></th>
+        <th data-options="field:'id',hidden:true">{$Think.lang.FLD_ID}</th>
+        <th data-options="field:'tag_type_value',width:110,align:'left',formatter:formatNull">客户类型
+            <span style="position: relative;">
+                <i class="map_tab" style="padding:0;margin: 0;"></i>
+                <div class="select-box select-box-type" style="max-height: 200px;overflow-y: scroll">
+                    <p>
+                        <input type="radio" name="tag_type" @click="selectTag(this,'',0)" value="0" id="typeAll" class="css-checkbox">
+                        <label for="typeAll" id="tl" class="css-label select-box-checked" ><span>全部</span></label>
+                    </p>
+                    <p v-for="item in tag_type">
+                        <input type="radio" name="tag_type" :value="item.value" @click="selectTag(this,item.value,0)" :id="'t'+item.value" class="css-checkbox">
+                        <label :for="'t'+item.value" :id="'tl'+item.value"  class="css-label" ><span>{{item.text}}</span></label>
+                    </p>
+                </div>
+            </span>
+        </th>
+        <th data-options="field:'tag_origin_value',width:110,align:'left',formatter:formatNull">客户来源
+            <span style="position: relative;">
+                <i class="map_tab" style="padding:0;margin: 0;"></i>
+                <div class="select-box select-box-origin" style="max-height: 200px;overflow-y: scroll">
+                    <p>
+                        <input type="radio" name="user_type_value" @click="selectTag(this,'',1)" value="0" id="originAll" class="css-checkbox">
+                        <label for="originAll" id="ol" class="css-label select-box-checked" ><span>全部</span></label>
+                    </p>
+                    <p v-for="item in tag_origin">
+                        <input type="radio" name="user_type_value" :value="item.value" @click="selectTag(this,item.value,1)" :id="'o'+item.value" class="css-checkbox">
+                        <label :for="'o'+item.value" :id="'ol'+item.value" class="css-label" ><span>{{item.text}}</span></label>
+                    </p>
+                </div>
+            </span>
+        </th>
+        <th data-options="field:'name',width:180,align:'left',formatter:formatComCompanyName">{$Think.lang.FLD_COMPANY_NAME}</th>
+        <th data-options="field:'linkman',width:120,align:'left',formatter:formatNull">联系人</th>
+        <th data-options="field:'contact',width:120,align:'left',formatter:formatNull">手机号码</th>
+        <th data-options="field:'agreement_count',width:100,align:'left',formatter:formatAgreementAccount">服务合同数</th>
+        <th data-options="field:'leader_staff_name',width:120,align:'left',formatter:formatNull">档案负责人</th>
+        <th data-options="field:'create_time',title:123,width:160,align:'left',formatter:formatDateTime">档案创建时间</th>
+        <th data-options="field:'customer_leader_id',title:123,width:110,align:'center',formatter:formatBindCustomer">是否绑定客户
+            <span style="position: relative;">
+                <i class="map_tab" style="padding:0;margin: 0;"></i>
+                <div class="select-box select-box-bind" style="text-align: left">
+                    <p>
+                        <input type="radio" name="is_bind" onclick="selectBind(this,'')" id="bindAll" value="22" class="css-checkbox">
+                        <label for="bindAll" class="css-label select-box-checked" ><span>全部</span></label>
+                    </p>
+                    <p>
+                        <input type="radio" name="is_bind" onclick="selectBind(this,1)" id="bind" value="1" class="css-checkbox">
+                        <label for="bind" class="css-label" ><span>是</span></label>
+                    </p>
+                    <p>
+                        <input type="radio" name="is_bind" onclick="selectBind(this,0)" id="unbind" value="0" class="css-checkbox">
+                        <label for="unbind" class="css-label" ><span>否</span></label>
+                    </p>
+                </div>
+            </span>
+        </th>
+        <th data-options="field:'attach_group',title:123,width:120,align:'center',formatter:formatComCompanyOperation">沟通记录</th>
+    </tr>
+    </thead>
+    </table>
+    <div id="empty-notice" style="color: rgb(180, 180, 180);display:none;width:80%;height:40px;text-align:center;min-width: 180px;line-height: 40px;position: absolute;
+            top: 500px;font-size: 20px">暂无数据</div>
+    <div id="{$Think.const.CONTROLLER_NAME}-toolbar">
+        <div class="search-panel" style="display: none">
+        </div>
+        <div class="action-panel">
+            <div class="actions">
+                <if condition="($permissions.add eq 1) ">
+                    <!--<a href="javascript:void(0)" class="btn-speed detail-add" style="width:auto" plain="true"
+                        onclick="createDialog('ComCompany/add','新增客户','ComCompany')">新增{$title}</a>-->
+                    <a href="javascript:void(0)" class="btn-speed detail-add" style="width:auto" plain="true"
+                       onclick="addCompany()">新增{$title}</a>
+                </if>
+                <if condition="($permissions.import eq 1) ">
+                    <a href="javascript:void(0)" class="btn-speed" style="width:auto" plain="true"
+                        onclick="action_dominantForm()">导入\导出客户</a>
+                </if>
+                <a href="javascript:void(0)" class="btn-speed-disable detail-delete" style="width:auto" plain="true"
+                   onclick="ComCompanyFunctions.openTransferDialog()">移交</a>
+                <if condition="($permissions.delete eq 1) ">
+                    <a href="javascript:void(0)" class="btn-speed-disable detail-delete" style="width:auto" plain="true"
+                        onclick="action_delete('ComCompany')">删除</a>
+                </if>
+                <a href="javascript:void(0)" class="btn-speed-disable detail-delete" style="width:auto" plain="true"
+                   onclick="ComCompanyFunctions.fileCompany()">档案归档</a>
+                <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()" style="float: right;">
+                    <input type="text" name="keyword" placeholder="请输入公司名称/联系人/手机号码搜索" style="width: 300px;"
+                        class="filter-field"><img src="/Application/ESAdmin//Public/images/icon/icon-search.png" alt=""
+                        onclick="doSearchQuery('ComCompany')">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="search-panel" id="{$Think.const.CONTROLLER_NAME}-search-panel" style="display: none">
+    <div class="search-table">
+        <div id="routine-select" style="width:800px;height:54px;line-height: 54px;position: relative;margin-left: 13px">
+            <div class="btn-screening-label" style="float: left">创建时间：</div>
+            <span class="view-st-state btn-screening btn-screening-on view-time" data-time="">全部</span>
+            <span class="view-st-state btn-screening view-time" data-time="4">本年</span>
+            <span class="view-st-state btn-screening view-time" data-time="3">本月</span>
+            <span id="user-defined" class="btn-screening view-time" data-time="user">自定义</span>
+            <div id="user-defined-time" style="position: relative;float: right;display: none">
+                <input name="qdr-create_time" id="create_time_start" class="easyui-datebox filter-field" value=""
+                    data-options="prompt:'选择时间',editable:false" onkeydown="this.value='' " style="display: none" />－
+                <input name="qdr-create_time" id="create_time_end" class="easyui-datebox filter-field" value=""
+                    data-options="prompt:'选择时间',editable:false" style="display: none" />
+            </div>
+        </div>
+        <div id="" style="width:800px;height:54px;line-height: 54px;position: relative;margin-left: 13px">
+            <div class="btn-screening-label" style="float: left">客户状态：</div>
+            <span class="btn-screening btn-screening-on view-valid" data-valid="1">未归档</span>
+            <span class="btn-screening view-valid" data-valid="0">已归档</span>
+        </div>
+        <div style="width:900px;height:54px;line-height: 54px;position: relative;margin-left: 13px">
+            <div style="float:left;">
+                <div class="btn-screening-label" style="float: left;margin-right: 8px">客户类型：</div>
+                <div class="btn-screening-input" style="padding-top: 10px;width: 330px">
+                    <select name="q-tag_type" id="tag_type_select" class="chosen-select filter-field"
+                            data-options="all:true" style="width: 230px">
+                        <!--data-options="all:true,search_key_url:'ComCompany/companyTagList/type/0'" style="width: 230px">-->
+                        <option value="">全部</option>
+                    </select>
+                </div>
+            </div>
+            <div style="float:left;">
+                <div class="btn-screening-label" style="float: left;margin:0 8px">客户来源：</div>
+                <div class="btn-screening-input" style="padding-top: 10px;width: 330px">
+                    <select name="q-tag_origin" id="tag_origin_select" class="chosen-select filter-field"
+                        data-options="all:true" style="width: 230px;">
+                        <!--data-options="all:true,search_key_url:'ComCompany/companyTagList/type/1'" style="width: 230px;">-->
+                        <option value="">全部</option>
+                    </select>
+                </div>
+
+            </div>
+            <a href="javascript:void(0)" class="btn-speed" style="width:auto" plain="true"
+               onclick="setCompanyTag()">设置客户来源</a>
+        </div>
+    </div>
+    <table class="search-table">
+        <tr style="display: none" id="create_time_input"></tr>
+        <input type="hidden" name="is_bind" class="filter-field">
+        <input type="hidden" name="q-is_valid" class="filter-field">
+    </table>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script type="text/javascript">
+    function action_dominantForm() {
+        createDialog("__CONTROLLER__/showDominantForm", "导入导出");
+    }
+
+    $(function () {
+        $(".search-action-panel").hide();
+    });
+
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+
+    $(function () {
+        initial_easyui_grid("ComCompany", "{$title}");
+        var H4 = $("#ComCompany-toolbar").height() + 100;
+        $("#empty-notice").css("top", H4);
+    });
+
+    $("#ComCompany-datagrid").bind("onLoadSuccess",function(event,data){
+        if (data.total == 0) {
+            $("#empty-notice").show();
+        } else {
+            $("#empty-notice").hide();
+        }
+    });
+
+    /*$("#ComCompany-datagrid").datagrid({
+        onLoadSuccess: function (data) {
+            if (data.total == 0) {
+                $("#empty-notice").show();
+            } else {
+                $("#empty-notice").hide();
+            }
+        },
+        onDblClickRow:function(index,row){
+            createDialog("ComCompany/detail/id/"+row.id,"客户详情页",'ComCompany');
+            formCache["ComCompany"] = {data:null, action:"edit"};
+            parseForm();
+        }
+    });*/
+
+    function setCompanyTag() {
+       /* $("#mask").show();
+        $("#setCompanyTag-edit").show();*/
+        createDialog("ComCompany/setCompanyTag","设置客户来源",'dlg-set-tag');
+    }
+
+    $(".view-time").on("click", function () {
+        $(this).addClass("btn-screening-on");
+        $(this).siblings().removeClass("btn-screening-on");
+        var time = $(this).data("time");
+        if (time == "user") {
+            $("#user-defined-time").show();
+            var html = "";
+            $("#create_time_input").html(html);
+        } else {
+            $("#user-defined-time").hide();
+            $("input[name='qdr-create_time']").val("");
+            $(".textbox-text").val("");
+            var html = "<input name='create_time' class='filter-field' value='" + time + "'>";
+            $("#create_time_input").html(html);
+            doSearchQuery("ComCompany");
+        }
+    });
+
+    $("input[name='qdr-create_time']").datebox({
+        onSelect: function () {
+            doSearchQuery("ComCompany");
+        }
+    });
+
+    var searchTime = "";
+    $("input[name='keyword']").bind("input propotychange", function () {
+        clearTimeout(searchTime);
+        searchTime = setTimeout(function () {
+            doSearchQuery("ComCompany");
+        }, "500");
+    });
+
+    $("#tag_origin_select").on("change", function () {
+        selectTag('',$(this).val(),1);
+        //doSearchQuery("ComCompany");
+    });
+
+    $("#tag_type_select").on("change", function () {
+        selectTag('',$(this).val(),0);
+        //doSearchQuery("ComCompany");
+    });
+
+    $("#ComCompany-maincontainer").on("click", function () {
+        toggleDeleteAble();
+    });
+
+    $(function () {
+        $("input:checkbox").click(function () {
+            toggleDeleteAble();
+        })
+    });
+
+    function toggleDeleteAble() {
+        var data = $("#ComCompany-datagrid").datagrid("getSelections");
+        if (data.length > 0) {
+            $(".detail-delete").removeClass("btn-speed-disable").addClass("btn-speed");
+        } else {
+            $(".detail-delete").addClass("btn-speed-disable").removeClass("btn-speed");
+        }
+    }
+
+    function addCompany(){
+        /*createDialog("ComCompany/add","",'ComCompany');
+        formCache["ComCompany"] = {data:null, action:"add"};
+        parseForm();*/
+        action_add("ComCompany","");
+    }
+
+    var ComCompanyFunctions = {
+        showTip:function(){
+            createDialog("ComCompany/permissionTips","帮助","permissionTips");
+        },
+        openTransferDialog:function(){
+            var selected = getGridSelections("ComCompany");
+            if(selected.length === 0){
+                $.dialog.tips("请至少选择一项！");
+                return false;
+            }
+            createDialog("/ComCompany/transferStaff","移交客户");
+        },
+        //归档
+        fileCompany:function(){
+            var selections = $("#ComCompany-datagrid").datagrid("getSelections");
+            if(selections == undefined || selections.length == 0){
+                $.dialog.tips("请至少选择一项！");
+                return false;
+            }
+            var ids = [];
+            for(var i in selections){
+                if(selections[i].is_valid == 0){
+                    $.dialog.alert("已归档客户档案无法再次进行归档操作");
+                    return false;
+                }
+                ids.push(selections[i].id);
+            }
+            $.dialog.confirm("是否确认归档？",function(){
+                $.post("/ComCompany/fileCompany",{id:ids},function(result){
+                    if(result.code == 0){
+                        doSearchQuery("ComCompany");
+                    }
+                    $.dialog.alert(result.message);
+                },'json')
+            })
+        }
+    };
+
+    function formatComCompanyOperation(value){
+        var html = "<a href='javascript:void(0)' style='margin-left: 10px' onclick='showCommunication(\""+value+"\")'>沟通记录</a>";
+        return html;
+    }
+
+    function formatBindCustomer(value,row){
+        if (value > 0) {
+            return "<i class='fa fa-check fa-lg' style='color:#00aaee' title='是'></i>";
+        } else {
+            return "";
+        }
+    }
+
+    function showCommunication(attach_group){
+        openAttachmentForm("沟通记录", [{ text: "", attach_group: attach_group }], function (id) {
+        });
+    }
+    document.onclick = function(){
+        if($(event.target).hasClass("map_tab")){
+            if($(event.target).siblings(".select-box").css("display") == "none"){
+                $(".select-box").each(function(i,ele){
+                    $(ele).hide();
+                })
+                $(event.target).siblings(".select-box").show();
+            }else{
+                $(event.target).siblings(".select-box").hide();
+            }
+        }else{
+            $(".select-box").hide();
+        }
+    }
+
+    var tag_type_vue = new Vue({
+        el:".select-box-type",
+        data:{
+            tag_type:[]
+        }
+    });
+
+    var tag_origin_vue = new Vue({
+        el:".select-box-origin",
+        data:{
+            tag_origin:[]
+        }
+    });
+
+    //更新客户分类来源选择框
+    function updateChosen(type){
+        $.post("ComCompany/companyTagList/type/"+type,function(result){
+            var html = "<option value=''>全部</option>";
+            for (var i in result) {
+                html += "<option value='" + result[i].value + "'>" + result[i].text + "</option>"
+            }
+            if(type == 0){
+                tag_type_vue.tag_type = result;
+                $("#tag_type_select").empty().append(html).trigger("chosen:updated");
+            }else{
+                tag_origin_vue.tag_origin = result;
+                $("#tag_origin_select").empty().append(html).trigger("chosen:updated");
+            }
+        },'json');
+    }
+
+    $(function(){
+        updateChosen(0);
+        updateChosen(1);
+    });
+
+    //客户类型来源筛选
+    function selectTag(obj,id,type){
+        if(type == 0){
+            $(".select-box-type").find(".select-box-checked").removeClass("select-box-checked");
+            $("#tl"+id).addClass("select-box-checked");
+            $("#tag_type_select").val(id).trigger("chosen:updated");
+            $(".select-box-type").hide();
+        }else{
+            $(".select-box-origin").find(".select-box-checked").removeClass("select-box-checked");
+            $("#ol"+id).addClass("select-box-checked");
+            $("#tag_origin_select").val(id).trigger("chosen:updated");
+            $(".select-box-origin").hide();
+        }
+        doSearchQuery("ComCompany");
+    }
+
+    //客户是否绑定筛选
+    function selectBind(obj,is_bind){
+        $(obj).parent("p").siblings("p").find("label.css-label").removeClass("select-box-checked");
+        $(obj).siblings("label.css-label").addClass("select-box-checked");
+        $(obj).parents(".select-box").hide();
+        $("input[name='is_bind']").val(is_bind);
+        doSearchQuery("ComCompany");
+    }
+
+    $(".view-valid").on("click",function () {
+        $(this).addClass("btn-screening-on").siblings().removeClass("btn-screening-on");
+        $("input[name='q-is_valid']").val($(this).data("valid"));
+        doSearchQuery("ComCompany");
+    })
+
+
+</script>

@@ -1,0 +1,25 @@
+<div class="main-content" id="VcrSubject-select">
+    <ul class="c-header">
+        <li title="资产" class="tab-span  tab-span-on" data-value="1"></li>
+        <li title="负债" class="tab-span" data-value="2"></li>
+        <li title="权益" class="tab-span" data-value="3"></li>
+        <li title="成本" class="tab-span" data-value="4"></li>
+        <li title="损益" class="tab-span" data-value="5"></li>>
+    </ul>
+    <select id="VcrSubject-select-tree" class="easyui-combotree" style="width:200px;"></select>
+</div>
+<script type="text/javascript">
+
+    $('#VcrSubject-select .c-header .tab-span').click(function () {
+        $(this).addClass('tab-span-on').siblings().removeClass('tab-span-on');
+        VcrSelectFunctions.loadData($(this).data("value"));
+    });
+
+    var VcrSelectFunctions = {
+        loadData:function(type){
+            $.post("/VcrSubject/getDataByType/type/" + type, function(result){
+                $("#VcrSubject-select-tree").combotree("loadData", result);
+            });
+        }
+    }
+</script>

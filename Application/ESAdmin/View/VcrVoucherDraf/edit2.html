@@ -1,0 +1,233 @@
+<link href="__ROOT__/{$Think.APP_PATH}/Public/css/page.css" rel="stylesheet" />
+<div class="maincontainer" id="{$Think.const.CONTROLLER_NAME}-maincontainer" style="text-align:left;height: 88%;overflow-y: auto ">
+    <div class="action-panel">
+        <div class="actions">
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-reviewed" style="width:auto" icon="fa fa-pencil-square fa-lg" plain="true"><span class="txt-reviewed">审核</span></a><div class="btn-separator"></div>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-remove" style="width:auto;background: red" icon="fa fa-trash fa-lg" plain ="true">删除</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-voucher-export" style="width:auto" icon="fa fa-newspaper-o fa-lg" plain="true">导出</a><div class="btn-separator"></div>
+            <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-except" style="width:auto;background:orange;display:none" icon="fa fa-warning fa-lg" plain ="true">查看异常</a>
+        </div>
+    </div> 
+    <input type="hidden" id="draf_id" value="">
+    <input type="hidden" id="reviewed" value="">
+    <div class="top-content">
+        <div class="bottom-content-header" style="text-align:left;position:relative">
+            <span>会计期间：</span><span id="accounting_section"></span>
+            <div style="position: absolute;right:10px;top:0px">凭证单号：<span id="draf-bill-no"></span></div>
+        </div>
+        <table class="gridtable detail-table">
+            <thead>
+                <tr><th style="width:20%">摘  要</th><th>科目代码</th><th>科目名称</th><th>借 方 金 额</th><th>贷 方 金 额</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3" style="text-align:left">合计：</td>                
+                    <td id="debit_amount"></td>
+                    <td id="credit_amount"></td> 
+                </tr>  
+                <tr>
+                    <td class="footer">主管：</td>                
+                    <td class="footer">出纳：</td>
+                    <td class="footer">复核：</td>
+                    <td class="footer">制单：</td>
+                    <td class="footer">记账：<span class="reviewer"></span></td> 
+                </tr>        
+            </tbody>
+        </table>
+    </div>
+    <div class="bottom-content">
+        <div class="bottom-content-header"><span>来源单</span></div>
+        <table class="gridtable source-table">
+            <thead>
+                <tr><th>录入日期</th><th>销售/购买单位名称</th><th>货物或劳务、服务名称</th><th>金额</th><th>税额</th><th style="width:20%">摘  要</th><th style="width:20%">附件</th></tr>
+            </thead>
+            <tbody> 
+                <tr>
+                    <td>合计：</td>
+                    <td></td><td></td>
+                    <td id="amount-total"></td> 
+                    <td id="tax-amount-total"></td>
+                    <td></td><td></td> 
+                </tr>  
+            </tbody>
+        </table>
+    </div>
+    <div class="attachment-view drag-box"><img><div class="attachment-view-close"><i class="fa fa-close fa-lg"></i></div></div>
+    <div class="page" style="position: fixed; bottom:25px">{$page}</div>
+</div>
+<script src="__ROOT__/{$Think.APP_PATH}Public/jquery/drag.js"></script> 
+<script type="text/javascript">
+    $(".action-reviewed").click(function () {
+        var reviewed = 1 - parseInt($("#reviewed").val());
+        var text = $(this).text();
+        $.dialog.confirm("确定" + text + "本凭证？",
+                function () {
+                    var draf_id = $("#draf_id").val();
+                    $.post("/{$Think.const.CONTROLLER_NAME}/reviewed", {id: draf_id, reviewed: reviewed}, function () {
+                        $.dialog.tips(text + "完成！");
+                        var action-exceptpage = $(".page span.current").text();
+                        gotoPage(page);
+                    }, "json");
+                });
+    });
+    $(".action-voucher-export").click(function(){
+        createDialog("/{$Think.const.CONTROLLER_NAME}/exportView","导出凭证");
+    });
+    $(".action-refresh").click(function(){
+        refreshDraf();
+    });
+
+    $(".action-except").click(function(){
+        createDialog("/{$Think.const.CONTROLLER_NAME}/exceptions","查看异常凭证科目");
+    });
+
+    $(".action-remove").click(function () {
+        var reviewed = $("#reviewed").val();
+        if (reviewed == 1) {
+            $.dialog.alert("已经审核无法删除");
+            return;
+        }
+        $.dialog.confirm("确定删除本凭证？",
+                function () {
+                    var draf_id = $("#draf_id").val();
+                    if (draf_id) {
+                        $.post("/{$Think.const.CONTROLLER_NAME}/delete", {id: [draf_id]}, function (result) {
+                            if (result.code == 0) {
+                                gotoPage(1);
+                            } else {
+                                $.dialog.alert(result.message);
+                            }
+                        }, "json");
+                    } else {
+                        $.dialog.alert("无效单据！");
+                    }
+                });
+    });
+    function gotoPage(page) {
+        $.post("/{$Think.const.CONTROLLER_NAME}/list", {p: page}, function (result) {
+            if (result.code == 0) {
+                loadDraf(result.message.detail);
+                loadSource(result.message.source);
+                $(".page").html(result.message.pager);
+                $(".page a").click(function () {
+                    var page = $(this).attr("page-index");
+                    gotoPage(page);
+                });
+                $('.attachment-view').myDrag({
+                    parent: "body",
+                    direction: 'all',
+                    randomPosition: false
+                });
+            }else{
+                $(".detail-table tr.data-item").remove();
+                $(".source-table tr.data-item").remove();
+                $.dialog.tips("已经没有其他单据了！");
+            }
+        }, "json");
+    }
+    function loadDraf(details) {
+        var reviewed = details[0].reviewed;
+        $(".detail-table tr.data-item").remove();
+        $("#accounting_section").text(details[0].accounting_section);
+        $("#draf-bill-no").text(details[0].bill_no);
+        $("#draf_id").val(details[0].parent_id);
+        $("#reviewed").val(reviewed);
+        $(".txt-reviewed").text(reviewed == 1 ? "取消审核" : "审核");
+        var amount_credit_total = 0;
+        var amount_debit_total = 0;
+        $(details).each(function () {
+            var _detailData = this;
+            var amount_credit = this.direction == "{$Think.const.DIRECTION_CREDIT}" ? this.amount : "";
+            var amount_debit = this.direction == "{$Think.const.DIRECTION_DEBIT}" ? this.amount : "";
+            amount_credit_total = amount_credit_total + parseFloat(amount_credit == "" ? "0" : amount_credit);
+            amount_debit_total = amount_debit_total + parseFloat(amount_debit == "" ? "0" : amount_debit);
+            var summary = (this.summary == null) ? "" : this.summary;
+            var subject_no = (this.subject_no == null) ? "" : this.subject_no;
+            var subject_name = (this.subject_name == null) ? "<span style='color:red;text-decoration:line-through'>找不到科目："+this._subject_name : this.subject_name +"</span>";
+            var $content = $('<tr class="data-item">' +
+                    '<td>' + summary + '</td>' +
+                    '<td><span  class="subject-no">' + subject_no + '</span></td>' +
+                    '<td class="subject-item"><span  class="subject-name">' + subject_name + '</span><a href="javascript:;" title="点击修改"><i class="fa fa-caret-down fa-lg"></i></a></td>' +
+                    '<td>' + amount_debit + '</td>' +
+                    '<td>' + amount_credit + '</td>' +
+                    '</tr>');
+            $content.find("a").click(function () {
+                if (reviewed == 1){
+                    $.dialog.alert("已经审核无法修改");
+                    return;
+                }
+                createDialog("/VcrSubject/select", "选择科目（双击取回）", "dlg-VcrSubject-select", {callback: function (rows) {
+                        var current_subject = rows[0];
+                        $.post("/{$Think.const.CONTROLLER_NAME}/changeSubject", {detail_id: _detailData.id, subject_id: current_subject.id}, function (result) {
+                            if (result.code == 0){
+                                var subject_name = current_subject.name;
+                                if (current_subject.parent_name){
+                                    subject_name = current_subject.parent_name + "-" + subject_name 
+                                }
+                                $($content).find(".subject-name").text(subject_name);
+                                $($content).find(".subject-no").text(current_subject.no);
+                            }
+                        }, "json");
+                    }});
+            });
+            $(".detail-table tbody").prepend($content);
+        });
+        $("#debit_amount").text(amount_debit_total.toFixed(2));
+        $("#credit_amount").text(amount_credit_total.toFixed(2));
+        $(".detail-table .reviewer").text(toString(details[0].reviewer));
+    }
+
+    function loadSource(source_list) {
+        $(".source-table tr.data-item").remove();
+        var amount_total = 0;
+        var tax_amount_total = 0;
+        $(source_list).each(function () {
+            var attachment = "";
+            if (this.url != undefined && this.url != null && this.url != ""){
+                attachment = "<img class='attachment' style='width:15%;padding:5px' src='" + this.url + "'>";
+            }
+            var bill_date = formatDate(this.bill_date);
+            var content = '<tr class="data-item">' +
+                    '<td>' + bill_date + '</td>' +
+                    '<td>' + formatOtherSide(this.name,this) + '</td>' +
+                    '<td>' + strval(this.goods_name) + '</td>' +
+                    '<td>' + strval(this.amount) + '</td>' +
+                    '<td>' + strval(this.tax_amount) + '</td>' +
+                    '<td>' + strval(this.memo) + '</td>' +
+                    '<td>' + attachment + '</td>' +
+                    '</tr>';
+            $(".source-table tbody").prepend(content);
+            amount_total = amount_total + parseFloat(this.amount);
+            tax_amount_total = tax_amount_total + parseFloat(this.tax_amount);
+        });
+        $("#amount-total").text(amount_total.toFixed(2));
+        $("#tax-amount-total").text(tax_amount_total.toFixed(2));
+        $(".attachment").click(function () {
+            var container_h = $(".maincontainer").height();
+            $(".attachment-view img").attr("src", $(this).attr("src")).height(container_h);
+            $(".attachment-view").show();
+        });
+        $(".attachment-view-close").click(function () {
+            $(".attachment-view").hide();
+        })
+    }
+
+    function refreshDraf(){
+        gotoPage(1);
+        $.post("/{$Think.const.CONTROLLER_NAME}/getExceptionCount", {}, function (result) {
+            if (result > 0){
+                $(".action-except").show();
+            } else{
+                $(".action-except").hide();
+            }
+        });
+    }
+
+    function strval(val){
+        if (val == undefined || val == null){
+            return ""
+        }
+        return val;
+    }
+    refreshDraf();
+</script>

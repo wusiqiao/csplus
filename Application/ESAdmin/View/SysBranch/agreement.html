@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            overflow: hidden;
+            height:750px;
+        }
+        .scrollView{
+            overflow-y:scroll;
+            height:750px;
+        }
+        .scrollBox{
+            height:1160px;
+        }
+        .supTab,.subTab{
+            border-collapse: collapse;
+            text-align: center;
+        }
+        .lineOne{
+            height: 100px;
+        }
+        .lineOne .title{
+            font-size: 16px;
+        }
+        .lineOne td{
+            position: relative;
+        }
+        .fRight{
+            position: absolute;
+            top:35px;
+            right:20px;
+            width: 310px;
+            text-align:right;
+        }
+        .fRight p{
+            margin:0;
+        }
+        .fRight .border{
+            margin-bottom:6px;
+            display: inline-block;
+            width: 110px;
+            height: 30px;
+            border:1px solid #ccc;
+            text-align: center;
+            line-height: 30px;
+        }
+        .orange{
+            color:#ff9a29;
+        }
+        .orange .icon{
+            margin-right: 5px;
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            text-align: center;
+            line-height: 14px;
+            border: 1px solid #ff9a29;
+            border-radius: 50%;
+        }
+        .lineTwo td{
+            margin: 0;
+            padding: 0 !important;
+            width: 439px;
+        }
+        .alignL{
+            margin-bottom:48px;
+        }
+        .labelBox span{
+            display: inline-block;
+            width: 70px;
+            text-align: justify;
+        }
+        .star::before{
+            display: inline-block;
+            content: '*';
+            color: red;
+        }
+        .subTab{
+            margin:auto;
+            width: 850px;
+        }
+        .subTab tr{
+            height:45px;
+        }
+        .flexBox{
+            display: flex;
+            margin:20px auto;
+            width: 850px;
+            justify-content: space-between;
+        }
+        .spanBtn{
+            padding:6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input{
+            width: 185px;
+            height: 28px;
+        }
+        .lineTwo select{
+            width: 185px;
+            height: 34px;
+        }
+        input.short{
+            margin-right: 5px !important;
+            width: 105px;
+        }
+        .green{
+            color:#009688;
+        }
+        .purple{
+            color:#3f51b5;
+            cursor: pointer;
+        }
+        .lineFive input{
+            margin: 10px 0;
+            width: 120px;
+        }
+        textarea{
+            width: 770px;
+            height: 80px;
+            resize: none;
+        }
+        .lineSeven .spanBtn{
+            cursor: pointer;
+        }
+        tfoot select{
+            margin:10px 15px 20px 0;
+            width: 130px;
+            height: 30px;
+        }
+        tfoot .spanBtn{
+            margin:15px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="scrollView">
+            <div class="scrollBox">
+                <table class="supTab" border="1" bordercolor="#ccc">
+                    <tbody>
+                        <tr class="lineOne">
+                            <td colspan="2">
+                                <p class="title">客户服务协议</p>
+                                <div class="fRight">
+                                    <p>
+                                        <span>合同编号：</span>
+                                        <span class="border">201821901</span>
+                                    </p>
+                                    <p class="orange"><span class="icon">i</span>合同编号自动创建，默认为创建当天日期+序号</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="lineTwo">
+                            <td>
+                                <p class="smallTitle alignL">甲方联系资料（客户方）</p>
+                                <p class="labelBox star">
+                                    <span>客户名称：</span>
+                                    <input type="text">
+                                </p>
+                                <p class="labelBox star">
+                                    <span>联系人：<span style="display:inline-block;padding-left:100%;"></span></span>
+                                    <input type="text">
+                                </p>
+                                <p class="labelBox star">
+                                    <span>手机号：<span style="display:inline-block;padding-left:100%;"></span></span><input type="text">
+                                </p>
+                                <p class="labelBox star">
+                                    <span>联系地址：</span>
+                                    <input type="text">
+                                </p>
+                            </td>
+                            <td>
+                                <p class="smallTitle">乙方联系资料（我方）</p>
+                                <p class="orange"><span class="icon">i</span>系统已为您自动载入商城店铺内填写的资料</p>
+                                <p class="labelBox star">
+                                    <span>服务机构：</span>
+                                    <input type="text">
+                                </p>
+                                <p class="labelBox star">
+                                    <span>服务人员：</span>
+                                    <select>
+                                        <option selected>李豪</option>
+                                    </select>
+                                </p>
+                                <p class="labelBox star">
+                                    <span>服务电话：</span>
+                                    <input type="text">
+                                </p>
+                                <p class="labelBox star">
+                                    <span>联系地址：</span>
+                                    <input type="text">
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <p class="smallTitle">服务明细</p>
+                            </td>
+                        </tr>
+                        <tr class="lineFour">
+                            <td colspan="2">
+                                <p class="flexBox">
+                                    <span class="star">合同服务明细：</span>
+                                    <span class="spanBtn">新增服务明细</span>
+                                </p>
+                                <table  class="subTab" border="1" bordercolor="#ccc">
+                                    <thead>
+                                    <tr>
+                                        <td>序号</td>
+                                        <td>服务名称</td>
+                                        <td>服务费用</td>
+                                        <td>服务状态</td>
+                                        <td>操作</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>财穗加营销管理系统（版本：公众号）</td>
+                                        <td>
+                                            <input type="text" class="short">元
+                                        </td>
+                                        <td>
+                                            <span class="green">正常</span>
+                                        </td>
+                                        <td>
+                                            <span class="paused purple">暂停</span>
+                                            <span class="del purple">删除</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>代运营（服务周期：1年）</td>
+                                        <td>
+                                            <input type="text" class="short">元
+                                        </td>
+                                        <td>
+                                            <span class="orange">暂停</span>
+                                        </td>
+                                        <td>
+                                            <span class="paused purple">启用</span>
+                                            <span class="del purple">删除</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="lineFive">
+                            <td>
+                                <span>合同起止日期：</span>
+                                <input name="qdr-finish_time" class="easyui-datebox filter-field" value="" />－
+                                <input name="qdr-finish_time" class="easyui-datebox filter-field" value=""  />
+                            </td>
+                            <td>
+                                <span>合同总金额：</span>
+                                <input type="text" class="short">元
+                            </td>
+                        </tr>
+                        <tr class="lineSix">
+                            <td colspan="2">
+                                <p class="flexBox">
+                                    <span>合同备注：</span>
+                                    <textarea></textarea>
+                                </p>
+                                <p class="smallTitle">收款账号</p>
+                            </td>
+                        </tr>
+                        <tr class="lineSeven">
+                            <td>
+                                <p class="smallTitle">银行收款账户</p>
+                                <p class="orange"><span class="icon">i</span>系统已经自动载入商城商铺内填写的资料</p>
+                                <p class="labelBox">
+                                    <span>开户行</span>
+                                    <input type="text">
+                                </p>
+                                <p class="labelBox">
+                                    <span>户名</span>
+                                    <input type="text">
+                                </p>
+                                <p class="labelBox">
+                                    <span>账号</span>
+                                    <input type="text">
+                                </p>
+                            </td>
+                            <td>
+                                <p class="smallTitle">在线收款二维码</p>
+                                <p class="orange"><span class="icon">i</span>可上传个人（企业）微信或支付宝的收款二维码</p>
+                                <p>
+                                    <span class="spanBtn">上传二维码</span>
+                                </p>
+                                <p>支持扩展名：.jpg,.png,.mb</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">
+                                <p>
+                                    <span class="star">合同条款模板：</span>
+                                    <select name="" id="">
+                                        <option select>
+                                            公司注册
+                                        </option>
+                                    </select>
+                                    <span class="purple">
+                                        添加新的条款模板
+                                    </span>
+                                </p>
+                                <p>
+                                    <span class="spanBtn creatContract">生成合同</span>
+                                    <span class="spanBtn">取消</span>
+                                </p>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('.creatContract').click(function () {
+            createDialog("SysBranch/creatSuccess/", '创建合同');
+        })
+    </script>
+</body>
+</html>

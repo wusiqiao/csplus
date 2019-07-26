@@ -1,0 +1,106 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <style>
+        #edui_fixedlayer{
+            z-index: 2333 !important;
+        }
+        #upload_ue{
+            display: none;
+        }
+        .chosen-container .chosen-results{
+            max-height: 160px;
+        }
+        .chosen-container .chosen-drop{
+            width: 100%;
+        }
+    </style>
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform" enctype="multipart/form-data">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox"><input name="name" class="easyui-validatebox" data-options="required:true,validType:'length[1,6]'" value="{$model.name}" /></div>
+                <div class="caption"><span>上级类别：</span></div>
+                <div class="inputbox">
+                    <select name="parent_id" class="chosen-select" data-options="all:true,value:'{$model.parent_id}',search_key_url:'ComCategory/keyNameList/'">
+                        <option value="0">--选择类别--</option>
+                    </select>
+                </div>
+            </div>            
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_IS_VALID}：</span></div>
+                <div class="inputbox"><input type="hidden" name="is_valid" value="0" />
+                    <input name="is_valid" class="easyui-validatebox"  type="checkbox" value="1" <eq name="model.is_valid" value="1">checked</eq> />
+                </div>              
+            </div>            
+            <div class="row">
+                <div class="caption"><span>首页展示：</span></div>
+                <div class="inputbox">
+                    <input name="is_hot" class="easyui-validatebox"  type="checkbox" value="1" data-value="{$model.is_hot}" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_SORT}：</span></div>
+                <div class="inputbox">
+                    <input name="sort" class="easyui-numberbox easyui-validatebox"  value="{$model.sort}" />
+                </div> 
+            </div>
+            <div class="row" style="position: relative">
+                <div class="caption block"><span>图标：</span></div>
+                <div class="inputbox">
+                    <input type="text" class="easyui-validatebox" id="icon" name="icon"  value="{$model.icon}"/>
+                </div>
+                <a href="javascript:void(0);" class="easyui-linkbutton fontawesome-icon-button" onclick="upImage();">上传图片</a>
+                <a href="{$model.icon}"
+                   class="easyui-linkbutton fontawesome-icon-button"
+                   plain="true"
+                   target="_blank"
+                   placeholder="大小60*60"
+                <empty name="model.icon">
+                    style="display: none"
+                </empty>
+                id="show_pic">查看图片</a>
+                <!--<div class="inputbox_x2">-->
+                    <!--<input type="file" id="icon-import-file" name="icon_file" accept="*.png,*.jpg" class="easyui-file" placeholder="大小60*60" value="{$model.icon}" />-->
+                <!--</div>-->
+            </div>
+            <div class="row">
+                <div class="caption block"><span>{$Think.lang.FLD_COMMENTS}：</span></div>
+                <div class="inputbox_x2"><textarea name="comments" class="easyui-validatebox">{$model.comments}</textarea></div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="{$Think.const.CONTROLLER_NAME}" />
+    <!--添加上传图片 start-->
+    <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editorUploadImages/js/ueditor.config.js"></script>
+    <script type="text/javascript" src="__ROOT__/{$Think.MODULE_PATH}Public/editorUploadImages/js/ueditor.all.js"></script>
+    <script type="text/plain" id="upload_ue"></script>
+    <!--添加上传图片 end-->
+    <!--上传图片模块-->
+    <script type="text/javascript">
+        var _editor;
+        var _editor2;
+        $(function() {
+            //重新实例化一个编辑器，防止在上面的editor编辑器中显示上传的图片或者文件
+            _editor = UE.getEditor('upload_ue',
+                {
+                    upload_model: "icon_file",
+                    UEDITOR_HOME_URL:'__ROOT__Application/ESAdmin/Public/editorUploadImages/js/',
+                });
+            _editor.ready(function () {
+                //隐藏编辑器，因为不会用到这个编辑器实例，所以要隐藏
+                _editor.hide();
+                //侦听图片上传
+                _editor.addListener('beforeInsertImage', function (t, arg) {
+                    //将地址赋值给相应的input,只去第一张图片的路径
+                    $("#icon").attr("value", '.'+arg[0].src);
+                    //图片预览
+                    $("#show_pic").attr("href", arg[0].src);
+                    $("#show_pic").show();
+                })
+            });
+        });
+        //弹出图片上传的对话框
+        function upImage() {
+            var myImage = _editor.getDialog("insertimage");
+            myImage.open();
+        }
+    </script>
+</div>

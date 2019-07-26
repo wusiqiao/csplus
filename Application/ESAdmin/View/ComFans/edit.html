@@ -1,0 +1,363 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm" style="width:1000px;height: 550px;overflow-y: auto ">
+            <input name="id" type="hidden" value="{$model.id}">
+            <div class="common-title">基本资料</div>
+            <div class="common-input-wrap">
+                <img class="head-img" src="{$model.head_pic}" alt="" />
+                <div class="common-input-two">
+                    <span class="label">昵称：</span>
+                    <input name="name" class="easyui-validatebox" data-options="" value="{$model.name}" readonly />
+                    <!--<span>关注时间：</span>
+                    <input class="easyui-validatebox" readonly value="{$model.follow_time}" />-->
+                    <span class="label">{$Think.lang.FLD_COMMENTS}：</span>
+                    <input class="easyui-validatebox" name="comments" value="{$model.comments}" />
+                </div>
+                <div class="common-input-two">
+                    <span class="label">绑定手机：</span>
+                    <input name="mobile" class="easyui-validatebox" data-options="validType:'mobile'" value="{$model.mobile}" readonly />
+                    <span class="label">绑定时间：</span>
+                    <input class="easyui-validatebox" readonly value="{$model.binded_time}" />
+                </div>
+            </div>
+            <div class="common-title">用户设置</div>
+            <div class="common-input-wrap">
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.FLD_USER_TYPE}：</span>
+                    <div class="select-input">
+                        <select name="user_type" style="width: 100%;" class="chosen-select" data-value="{$model.user_type}">
+                            <option value="" selected> </option>
+                            <option value="{$Think.const.USER_TYPE_CUSTOMER}">成交客户</option>
+                            <option value="{$Think.const.USER_TYPE_PROSPECTIVE}">意向客户</option>
+                        </select>
+                    </div>
+                    <!--<span class="label">{$Think.lang.FLD_ROLE_GROUP}：</span>
+                    <div class="select-input">
+                        //<select name="role_ids[]" class="chosen-select" style="width: 100%;" data-options="all:true,value:'{$model.role_ids}',search_key_url:'SysRole/keyNameList/'" multiple>
+                        //</select>
+                        <select id="role_ids" name="role_ids" class="chosen-select customer-select" data-options="value:'{$model.role_ids}',all:true,search_key_url:'Organization1/roleList/'" style="width: 100%;">
+                            <option value="">&nbsp;</option>
+                        </select>
+                    </div>-->
+                    <span class="label">{$Think.lang.FLD_ACCOUNT}：</span>
+                    <input name="account" class="easyui-validatebox" data-options="required:true,validType:'mobile'" autocomplete="off" value="{$model.account}" placeholder="请填写常用的手机号码" />
+                </div>
+            </div>
+            <div class="common-title">分组标签</div>
+            <div class="common-input-wrap">
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.FLD_GROUP}：</span>
+                    <div class="select-input">
+                        <select name="group_id" style="width: 100%;" class="chosen-select" data-options="all:true,value:'{$model.group_id}',search_key_url:'SysTargetGroup/keyNameList/'">
+                        </select>
+                    </div>
+                    <span class="label">{$Think.lang.FLD_TAG}：</span>
+                    <div class="select-input">
+                        <select name="tag_ids[]" style="width: 100%;" class="chosen-select" data-options="all:true,value:'{$model.tag_ids}',search_key_url:'SysTargetTag/keyNameList/'" multiple>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="common-title">用户联系信息</div>
+            <div class="common-input-wrap">
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.FLD_CONTACTS}：</span>
+                    <input name="contacts" class="easyui-validatebox" value="{$model.contacts}" />
+                    <span class="label">{$Think.lang.FLD_TELPHONE}：</span>
+                    <input name="telephone" class="easyui-validatebox" value="{$model.telephone}" />
+                </div>
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.FLD_EMAIL}：</span>
+                    <input name="email" class="easyui-validatebox" value="{$model.email}" />
+                    <span class="label">{$Think.lang.FLD_FAX}：</span>
+                    <input name="fax_number" class="easyui-validatebox" value="{$model.fax_number}" />
+                </div>
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.FLD_QQ}：</span>
+                    <input name="qq" class="easyui-validatebox" value="{$model.qq}" />
+                </div>
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.FLD_ADDRESS}：</span>
+                    <div class="select-address province">
+                        <select name="province" class="chosen-select province" data-options="required:true" data-value="{$model.province}" style="width:100%">
+                            <volist name="province_lists" id="vo">
+                                <option value="{$vo.id}">{$vo.name}</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="select-address city">
+                        <select name="city" class="chosen-select city" data-options="required:true" data-value="{$model.city}" style="width:100%">
+                            <volist name="city_lists" id="vo">
+                                <option value="{$vo.id}">{$vo.name}</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="select-address district">
+                        <select name="district" class="chosen-select district" data-options="required:true" data-value="{$model.district}" style="width:100%">
+                            <volist name="district_lists" id="vo">
+                                <option value="{$vo.id}">{$vo.name}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="common-input-two">
+                    <span class="label"></span>
+                    <textarea name="address" placeholder="详细地址" value="{$model.address}" class="easyui-validatebox" data-options="validType:'maxlength[32]'">{$model.address}</textarea>
+                    </div>
+                <div class="common-input-two">
+                    <span class="label">{$Think.lang.FLD_CUSTOM_TYPE}：</span>
+                    <select name="add-custom-type">
+                        <option selected value=0>文本</option>
+                        <option value=1>日期</option>
+                    </select>
+                </div>
+                <div id="custom-attr">
+                    <div class="common-input-two">
+                        <span class="label">自定义信息：</span>
+                        <input name="add-custom-title" class="easyui-validatebox" placeholder="请输入自定义信息标题" />
+                        <a href="javascript:void(0);" class="common-blue-btn" style="margin-left: 15px;" onclick="addCustomAttr(this);">添加</a>
+                    </div>                 
+                    <foreach name="model.custom" item="v">
+                        <div class="common-input-two">
+                            <span class="label">{$v.title}：</span>
+                            <if condition="$v.type eq 0 ">
+                                <input name="custom-value[]" placeholder="请输入{$v.title}" value="{$v.value}" class="easyui-validatebox" />
+                                <else />
+                                <input name="custom-value[]" placeholder="请输入{$v.title}" value="{$v.value}" class="easyui-datebox" />
+                            </if>
+                            <input name="custom-type[]" value="{$v.type}" type="hidden" />
+                            <input name="custom-title[]" value="{$v.title}" type="hidden" />
+                            <a href="javascript:void(0);" class="common-blue-btn" style="margin-left: 15px;" onclick="removeCustomAttr(this);">删除</a>
+                        </div>
+                    </foreach>
+                </div>
+            </div>
+            <if condition="$companys neq null">
+            <div id="companys_list">
+            <div class="common-title">公司信息</div>
+            <div class="common-input-wrap">
+                <foreach name="companys" key="k" item="vo">
+                    <div class="companys_lists">
+                    <div class="row">
+                        <span>公司信息{$k + 1}</span>
+                    </div>
+                    <div class="common-input-two">
+                        <span class="label">公司名称：</span>
+                        <input readonly id="name{$k+ 1}" class="easyui-validatebox" value="{$vo.name}" />
+                        <span class="label">机构代码：</span>
+                        <input readonly class="easyui-validatebox" value="{$vo.org_code}" />
+                    </div>
+                    <div class="common-input-two">
+                        <span class="label">法人代表：</span>
+                        <input readonly class="easyui-validatebox" value="{$vo.corporation}" />
+                        <span class="label">法人身份证：</span>
+                        <input readonly class="easyui-validatebox" value="{$vo.corporate_idcard}" />
+                    </div>
+                    <div class="common-input-two">
+                        <span class="label">开户银行：</span>
+                        <input readonly class="easyui-validatebox" value="{$vo.bank}" />
+                        <span class="label">银行账号：</span>
+                        <input readonly class="easyui-validatebox" value="{$vo.bank_account}" />
+                    </div>
+                    <div class="common-input-two">
+                        <span class="label">注册地址：</span>
+                        <textarea readonly class="easyui-validatebox"  style="background: #f7f6f6" value="{$vo.reg_address}" >{$vo.reg_address}</textarea>
+                    </div>
+                    <div class="common-input-two">
+                        <span class="label">联系人：</span>
+                        <input readonly class="easyui-validatebox" value="{$vo.linkman}" />
+                        <span class="label">传真：</span>
+                        <input readonly class="easyui-validatebox" value="{$vo.tax_no}" />
+                    </div>
+                    <div class="common-input-two">
+                        <span class="label">手机：</span>
+                        <input readonly class="easyui-validatebox" value="{$vo.contact}" />
+                        <span class="label">E-mail：</span>
+                        <input readonly class="easyui-validatebox" value="{$vo.email}" />
+                    </div>
+                    <div class="common-input-two">
+                        <span class="label">QQ：</span>
+                        <input readonly class="easyui-validatebox" value="{$vo.qq}" />
+
+                    </div>
+                    <div class="common-input-two">
+                        <span class="label">联系地址：</span>
+                        <textarea readonly class="easyui-validatebox"  style="background: #f7f6f6" value="{$vo.contact}" >{$vo.address}</textarea>
+                    </div>
+                    <div class="common-input-two">
+                        <span class="label">解除绑定：</span>
+                        <span style="padding: 5px;background-color: #0b95ff;color: #fff;border-radius: 2px"
+                                  k={$k+1} data-companyid="{$vo.id}" onclick="unbindCompany(this)">解绑公司</span>
+                    </div>
+                    </div>
+                </foreach>
+            </div>
+            </div>
+            </if>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html" controller="ComFans" />
+</div>
+<script type="text/javascript">
+$(function() {
+    $("input[name=dac_type]").change(function() {
+        dacType_Changed();
+    });
+    $("select[name=branch_id]").bind("change", function(evt, data) {
+        if (data.selected) {
+            var text = $(this).find("option:selected").text().replace("└─", "").replace("　", "");
+            $("#user-branch").html("所在部门【" + text + "】");
+        }
+    });
+    $(".btn-data-find").click(function() {
+        createDialog("/ComCompany/select", "选择客户", "dlg-company-select", { callback: setCompanySelect }, inital_selected_items);
+    });
+    dacType_Changed();
+    //显示多选数据
+    initial_select_components('{$model.dac_branchs_data}');
+
+    if (/^1[3-8]+\d{9}$/.test('{$model.account}')) {
+        $("input[name='account']").val('{$model.account}');
+    }else{
+        $("input[name='account']").val('{$model.mobile}');
+    }    
+});
+//弹出框初始化，填充已选
+function inital_selected_items() {
+    var objs = $.data($("#dac_branchs_names").get(0), "items_data");
+    addSelectItems(objs);
+}
+
+function unbindCompany(obj, k) {
+    $.dialog.confirm("请确定是否取消该公司的绑定！", function() {
+        var companyId = $(obj).data('companyid');
+        var id = $('input[name=id]').val();
+        showMaskLayer();
+        $.post('{$Think.const.CONTROLLER_NAME}/unbindCompany', { id: id, company_id: companyId }, function(data) {
+            hideMaskLayer();
+            $.dialog.tips(data.message);
+            //解绑后删除所在公司中已选择的这个公司
+            var k = $(obj).attr("k");
+            var name = $("#name" + k).val();
+            $('.chosen-choices li').each(function() {
+                if ($(this).text() == name) {
+                    //$(this).remove();
+                    $(this).children('a').trigger('click');
+                }
+            });
+            if (data.code == 0) {
+                // $(obj).parents('.companys_lists').remove();
+                $("#companys_list").load('{$Think.const.CONTROLLER_NAME}/branchList/id/{$model.id}');
+                getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+            }
+        }, 'JSON')
+    })
+}
+
+function initial_select_components(branchs_json) {
+    if (branchs_json) {
+        var objs = $.parseJSON(branchs_json);
+        $.data($("#dac_branchs_names").get(0), "items_data", objs);
+        setCompanySelect(objs);
+    }
+}
+
+function setCompanySelect(datas) {
+    var ids = "";
+    var texts = "";
+    $("#dac_branchs_names span").text("");
+    $("#dac_branchs_names input").val("");
+    if ($.isArray(datas)) {
+        $(datas).each(function() {
+            ids = ids + this.id + ",";
+            texts = texts + this.name + ",";
+        });
+    }
+    $("#dac_branchs_names span").text(texts);
+    $("#dac_branchs_names input").val(ids);
+}
+
+function dacType_Changed() {
+    var val = $("input[name=dac_type]:checked").val() || "0";
+    if (val !== "1") {
+        $("#dac_branchs_names").hide();
+    } else {
+        $("#dac_branchs_names").show();
+    }
+}
+
+function addCustomAttr(e) {
+    var custom_type = $('select[name="add-custom-type"]').val();
+    var str;
+    if (custom_type == 0) {
+        str = "easyui-validatebox";
+    } else {
+        str = "easyui-datebox";
+    }
+    var custom_title = $('input[name="add-custom-title"]').val();
+    if (custom_title === undefined || custom_title == null || $.trim(custom_title) == '') {
+        alert('自定义属性名称不能为空');
+    } else {
+    $("#custom-attr").append('<div class="common-input-two"><span  class="label">' + custom_title 
+        + '：</span><input name="custom-value[]" value="" class="' 
+        + str + '" placeholder="请输入'+custom_title+'" /><input name="custom-type[]" value="' 
+        + custom_type + '" type="hidden" /><input name="custom-title[]" value="' 
+        + custom_title 
+        + '" type="hidden" /><a href="javascript:void(0);" class="common-blue-btn" style="margin-left: 15px;" onclick="removeCustomAttr(this);">删除</a></div>');
+    }
+    parseForm($(e).parents("div.tab"));
+}
+
+function removeCustomAttr(e) {
+    div = $(e).parents('div.common-input-two');
+    div.remove();
+}
+$('.province .chosen-select').chosen().change(function() {
+    var province = $(this).val();
+    var hanlderDom = $(this).parents('.common-input-two');
+    if (province > 0) {
+        $.post('__MODULE__/ComCompany/getLevelLists.html', { level: 2, pid: province }, function(data) {
+            if (data.error == 0) {
+                var html = '<option value="">请选择城市</option>';
+                var view = '';
+                for (var i = 0; i < data.data.length; i++) {
+                    html += '<option value="' + data.data[i]['id'] + '">' + data.data[i]['name'] + '</option>';
+                    // view += '<li class="active-result" data-option-array-index='+i+' style="">'+data.data[i]['name']+'</li>'
+                }
+                // alert($('.city .chosen-select').html());
+                $('.city .chosen-select').html(html);
+                $('.city .chosen-select').trigger("chosen:updated");
+            } else {
+                $.dialog.tips("数据丢失,请刷新重试");
+            }
+        }, 'JSON')
+    } else {
+        hanlderDom.find('.city .chosen-select').html('<option value="">请选择城市</option>');
+        hanlderDom.find('.district .chosen-select').html('<option value="">请选择县级市</option>');
+        hanlderDom.find('.district .chosen-select').trigger("chosen:updated");
+        hanlderDom.find('.city .chosen-select').trigger("chosen:updated");
+    }
+});
+$('.city .chosen-select').chosen().change(function() {
+    var city = $(this).val();
+    var hanlderDom = $(this).parents('.common-input-two');
+    if (city > 0) {
+        $.post('__MODULE__/ComCompany/getLevelLists.html', { level: 3, pid: city }, function(data) {
+            if (data.error == 0) {
+                var html = '<option value="">请选择县级市</option>';
+                var view = '';
+                for (var i = 0; i < data.data.length; i++) {
+                    html += '<option value="' + data.data[i]['id'] + '">' + data.data[i]['name'] + '</option>';
+                }
+                hanlderDom.find('.district .chosen-select').html(html);
+                hanlderDom.find('.district .chosen-select').trigger("chosen:updated");
+            } else {
+                $.dialog.tips("数据丢失,请刷新重试");
+            }
+        }, 'JSON')
+    } else {
+        hanlderDom.find('.district .chosen-select').html('<option value="">请选择县级市</option>');
+        hanlderDom.find('.district .chosen-select').trigger("chosen:updated");
+    }
+});
+</script>

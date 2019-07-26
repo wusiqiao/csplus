@@ -1,0 +1,18 @@
+<div class="detailcontainer" id="ComArticleCategory-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="ComArticleCategory-dataform" method="post" name="ComArticleCategory-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox">
+                    <input name="name" class="easyui-validatebox"  value="{$model.name}" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_SORT}：</span></div>
+                <div class="inputbox">
+                    <div class="inputbox"><input name="sort" class="easyui-numberbox easyui-validatebox"  value="{$model.sort}" /></div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="ComArticleCategory" />
+</div>

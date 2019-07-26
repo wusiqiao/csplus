@@ -1,0 +1,18 @@
+<div class="detailcontainer" id="WrkInventoryTemplate-detailcontainer">
+    <form action="__CONTROLLER__/{$Think.__FORM_ACTION__}" id="WrkInventoryTemplate-dataform" method="post" name="WrkInventoryTemplate-dataform">
+        <div class="tableForm">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <div class="row">
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox">
+                    <input name="name" class="easyui-validatebox"  value="{$model.name}" />
+                </div>
+                <div class="caption"><span>{$Think.lang.FLD_NAME}：</span></div>
+                <div class="inputbox">
+                    <input name="title" class="easyui-validatebox"  value="{$model.title}" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <include file="./Application/Common/Layout/Default/detail_toolbar.html"  controller="WrkInventoryTemplate" />
+</div>

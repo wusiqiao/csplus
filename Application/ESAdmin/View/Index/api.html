@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.js"></script>
+        <script type="text/javascript">
+            function post_action(){
+                var action = $("input[name='api_action']").val();
+                var access_token = $("input[name='access_token']").val();
+                var value_key = $("input[name='value_key']").val();
+                var value = $("textarea[name='value']").val();
+                var postdata = {};
+                postdata['access_token'] = access_token;
+                postdata[value_key] = value;
+                $.post(action, postdata, function(ret){
+                    var result = $.parseJSON(ret);
+                    $("#message").html(result.message);
+                });
+            }
+        </script>
+        <style>
+            body,input{font-size: 20px;}
+        </style>
+    </head>
+    <body>
+        <form id="apiform" style="display:block;margin: auto auto; width:50%">
+            access_token<input name="access_token" value="82e474b9bfd1045b799e4a037d0162b8" style="display: block; width: 100%; margin-bottom: 10px"/>
+            api_action<input name="api_action" value="../Api/uploadFault" style="display: block; width: 100%; margin-bottom: 10px"/>
+            value_key<input name="value_key" value="taskFault_datas" style="display: block; width: 100%; margin-bottom: 10px"/>
+            value<textarea name="value" style="display: block; width: 100%;height: 200px;margin-bottom: 10px"></textarea>
+            <input type="button" onclick="post_action()" value="提交"/>
+            <label id="message"></label>
+        </form>
+    </body>
+</html>

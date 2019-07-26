@@ -1,0 +1,1863 @@
+<style>
+    #app {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .publicMenu-header {
+        width: 100%;
+        height: 150px;
+        background-color: #f4f5f9;
+    }
+
+    .publicMenu-content {
+        width: 100%;
+        min-height: 660px;
+        background-color: #ffffff;
+    }
+
+    .publicMenu-content-view,
+    .publicMenu-content-operation {
+        float: left;
+        height: 582px;
+    }
+
+    .publicMenu-content-view {
+        width: 428px;
+    }
+
+    .publicMenu-content-operation {
+        width: calc(100% - 428px);
+        position: relative;
+    }
+
+    #view {
+        width: 300px;
+        height: 582px;
+        border: solid 1px #e7e7eb;
+        margin: 34px 64px;
+        box-sizing: border-box;
+    }
+
+    #view-header {
+        width: 100%;
+        height: 61px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/view-phone-header.jpg");
+        background-size: 100% 100%;
+    }
+
+    #view-content {
+        width: 100%;
+        height: 468px;
+        position: relative;
+    }
+
+    .sub-menu-box {
+        position: absolute;
+        bottom: 16px;
+    }
+
+    #sub-menu0 {
+        left: 56px;
+        width: 124px;
+    }
+
+    #sub-menu1 {
+        left: 136px;
+        width: 80px;
+    }
+
+    #sub-menu2 {
+        left: 216px;
+        width: 82px;
+    }
+
+    .submenu-icon-btn {
+        width: 100%;
+        height: 52px;
+        line-height: 52px;
+        border: 1px solid #e7e7eb;
+        box-sizing: border-box;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .submenu-text {
+        font-size: 14px;
+        color: #7f8389;
+    }
+
+    .submenu-icondown {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        bottom: -13px;
+        left: calc(50% - 8px);
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-triangle.png");
+        background-size: 100% 100%;
+    }
+
+    #view-footer {
+        width: 100%;
+        height: 52px;
+    }
+
+    .view-footer-left,
+    .view-footer-right,
+    .addmenu-icon-btn {
+        float: left;
+        height: 52px;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .view-footer-left {
+        width: 55px;
+        background-color: #fafafa;
+        border-top: solid 1px #e7e7eb;
+        border-bottom: solid 1px #e7e7eb;
+    }
+
+    .view-footer-left-icon {
+        width: 26px;
+        height: 25px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-key.png");
+        background-size: 100% 100%;
+        position: absolute;
+        top: calc(50% - 12.5px);
+        left: calc(50% - 13px);
+    }
+
+    .view-footer-right {
+        width: 243px;
+        background-color: #ffffff;
+        border: solid 1px #e7e7eb;
+        cursor: pointer;
+        text-align: center;
+        line-height: 52px;
+    }
+
+    .addmenu-box {
+        height: 14px;
+        width: 80px;
+        position: absolute;
+        top: calc(50% - 7px);
+        left: calc(50% - 38px);
+    }
+
+    .addmenu-icon {
+        float: left;
+        width: 14px;
+        height: 14px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu.png");
+        background-size: 100% 100%;
+        margin-right: 2px;
+    }
+
+    .addmenu-text {
+        float: left;
+        margin-left: 2px;
+        line-height: 14px;
+        font-size: 14px;
+        color: #368bfe;
+    }
+
+    .addmenu-icon-btn {
+        width: 115px;
+        border: 1px solid #e7e7eb;
+        text-align: center;
+        line-height: 52px;
+        cursor: pointer;
+    }
+
+    .addmenu-icon-gray {
+        position: absolute;
+        bottom: 19px;
+        left: calc(50% - 7px);
+        width: 14px;
+        height: 14px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray.png");
+        background-size: 100% 100%;
+    }
+
+    .addmenu-icon-gray:hover {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png");
+    }
+
+    #operation-init {
+        position: absolute;
+        top: calc(50% - 7px);
+        left: calc(50% - 98px);
+        line-height: 14px;
+        font-size: 14px;
+        color: #666666;
+    }
+
+    #operation-content {
+        width: calc(100% - 72px);
+        height: 582px;
+        margin: 34px 72px 34px 0px;
+        background-color: #ffffff;
+    }
+
+    .operation-content-body {
+        width: 100%;
+        height: 582px;
+        position: relative;
+        overflow-x: auto;
+        background-color: #f4f5f9;
+        border: solid 1px #e7e7eb;
+    }
+
+    .publicMenu-footer {
+        width: 100%;
+        height: 88px;
+        background-color: #ffffff;
+        text-align: center;
+    }
+
+    .operation-save,
+    .operation-synchronous {
+        display: inline-block;
+        width: 113px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        color: #fbfbfc;
+        font-size: 14px;
+        background-color: #368bfe;
+        margin: 0 11px 25px 11px;
+        cursor: pointer;
+    }
+
+    .publicMenu-header-title {
+        padding-left: 22px;
+        height: 50px;
+    }
+
+    .publicMenu-header-icon {
+        float: left;
+        width: 20px;
+        height: 20px;
+        margin: 15px 13px 15px 0;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-prompt.png");
+        background-size: 100% 100%;
+    }
+
+    .publicMenu-header-text {
+        float: left;
+        line-height: 20px;
+        font-size: 16px;
+        margin: 15px 0;
+        color: #353535;
+    }
+
+    .publicMenu-header-contentext {
+        font-size: 14px;
+        color: #666;
+        margin: 6px 0;
+        padding: 0;
+    }
+
+    #operation-remove {
+        position: absolute;
+        top: 16px;
+        right: 24px;
+        line-height: 14px;
+        font-size: 14px;
+        color: #666666;
+        cursor: pointer;
+    }
+
+    .no-submenu-prompt {
+        height: 15px;
+        margin: 17px 0;
+        padding: 0 30px;
+        color: #e91836;
+        font-size: 14px;
+    }
+
+    .mainMenuName-change {
+        width: 550px;
+        height: 32px;
+        line-height: 32px;
+        margin: 23px 0 23px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #mainMenuName-change-input {
+        width: 268px;
+        height: 30px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        font-size: 14px;
+        padding-left: 13px;
+        outline: none;
+    }
+
+    .mainMenu-active {
+        border: 1px solid #529bfd !important;
+    }
+
+    .action-select {
+        width: 295px;
+        height: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 39px 0 19px 32px;
+    }
+
+    .action-select-icon {
+        float: left;
+        width: 14px;
+        height: 14px;
+        margin-right: 13px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-one-select.png");
+        background-size: 100% 100%;
+    }
+
+    .action-select-icon-checked {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-one-select-checked.png");
+    }
+
+    .send-msg-operation {
+        margin: 0 17px;
+        width: calc(100% - 34px);
+        height: 230px;
+        background-color: #ffffff;
+    }
+
+    .send-msg-operation-tab {
+        width: 100%;
+        height: 45px;
+        background-color: #f6f8f9;
+    }
+
+    .send-msg-operation-item {
+        float: left;
+        height: 45px;
+        line-height: 45px;
+        margin: 0 21px;
+        cursor: pointer;
+    }
+    .jump-page-operation{
+        margin: 0 17px;
+        width: calc(100% - 34px);
+        height: 230px;
+    }
+    .allText-icon,
+    .picText-icon,
+    .allPic-icon {
+        float: left;
+        width: 14px;
+        height: 14px;
+        margin: 15.5px 10px 15.5px 0;
+        background-size: 100% 100%;
+    }
+
+    .allText-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText-on.png");
+    }
+
+    .picText-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText.png");
+    }
+
+    .allPic-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic.png");
+    }
+
+    #show-allText,
+    #show-picText,
+    #show-allPic {
+        width: 100%;
+        height: 253px;
+        background-color: #ffffff;
+    }
+
+    #show-picText,
+    #show-allPic {
+        position: relative;
+    }
+
+    #textarea-allText {
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        border: none;
+        resize: none;
+        outline: none;
+        text-indent: 18px;
+        font-size: 14px;
+        color: #666666;
+        padding: 5px;
+    }
+
+    .add-picText,
+    .add-allPic {
+        width: 325px;
+        height: 186px;
+        border: 1px solid #e7e7eb;
+        cursor: pointer;
+        position: absolute;
+        top: calc(50% - 93px);
+        left: calc(50% - 167.5px);
+    }
+
+    .add-picText-checked,
+    .add-allPic-checked {
+        width: 300px;
+        height: 225px;
+        border: 1px solid #e7e7eb;
+        cursor: pointer;
+        position: absolute;
+        top: calc(50% - 112.5px);
+        left: 30px;
+    }
+
+    .img-add {
+        width: 32px;
+        height: 32px;
+        margin: 0 auto;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png");
+        background-size: 100% 100%;
+    }
+
+    #mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 88;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+
+    #tuwen-select-edit,
+    #tupian-select-edit {
+        width: 980px;
+        height: 760px;
+        background-color: #ffffff;
+        position: fixed;
+        top: calc(50% - 380px);
+        left: calc(50% - 490px);
+        z-index: 99;
+    }
+    #MallLink-select-edit{
+        width: 600px;
+        height: 740px;
+        background-color: #ffffff;
+        position: fixed;
+        top: calc(50% - 370px);
+        left: calc(50% - 300px);
+        z-index: 99;
+    }
+    #NotSaved-edit,
+    #add-Submenu-edit,
+    #removeMenu-edit{
+        width: 552px;
+        height: 300px;
+        background-color: #ffffff;
+        position: fixed;
+        top: calc(50% - 150px);
+        left: calc(50% - 276px);
+        z-index: 99;
+    }
+    .tuwenselect-edit-hd,
+    .tupianselect-edit-hd,
+    .MallLinkselect-edit-hd {
+        width: 100%;
+        height: 50px;
+        background-color: #f9fafb;
+        color: #35323b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: move;
+    }
+
+    .tuwenselect-edit-bd,
+    .tupianselect-edit-bd {
+        width: 960px;
+        height: 590px;
+        margin: 20px 10px 0;
+    }
+    .MallLinkselect-edit-bd{
+        padding: 0 20px;
+    }
+   #Mall-page,
+   #Commodity-page,
+   #Promotion-page{
+       width: 100%;
+       height: 552px;
+       overflow-y: auto;
+       margin-top: 24px; 
+   }
+   #Mall-page::-webkit-scrollbar,
+   #Commodity-page::-webkit-scrollbar,
+   #Promotion-page::-webkit-scrollbar {
+       /*滚动条整体样式*/
+        width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+    }
+    #Mall-page::-webkit-scrollbar-thumb,
+    #Commodity-page::-webkit-scrollbar-thumb,
+    #Promotion-page::-webkit-scrollbar-thumb{
+        /*滚动条里面小方块*/
+        border-radius: 5px;
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #d3d3d3;
+    }
+    #Mall-page::-webkit-scrollbar-track,
+    #Commodity-page::-webkit-scrollbar-track,
+    #Promotion-page::-webkit-scrollbar-track{
+        /*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        border-radius: 5px;
+        background: #ededed;
+    }
+    #tuwen-box-1,
+    #tuwen-box-2,
+    #tupian-box-1,
+    #tupian-box-2 {
+        width: 100%;
+        height: 224px;
+        margin: 19px 0;
+    }
+
+    .tuwenbox-item,.tupianbox-item {
+        float: left;
+        position: relative;
+        width: 300px;
+        height: 224px;
+        margin: 0 10px;
+        box-sizing: border-box;
+        border: 1px solid #d3d3d3;
+        background-color: #ffffff;
+        cursor: pointer;
+    }
+    .tuwenbox-item-mask,.tupianbox-item-mask{
+        position: absolute;
+        z-index: 111;
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+    .tuwenbox-item-checked,.tupianbox-item-checked{
+        position: absolute;
+        width: 54px;
+        height: 38px;
+        top: calc(50% - 19px);
+        left: calc(50% - 27px);
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-checked.png");
+        background-size: 100% 100%;
+    }
+    .tuwenselect-edit-ft,.tupianselect-edit-ft {
+        width: 100%;
+        height: 72px;
+        text-align: center;
+    }
+    /* 确认、取消 */
+    .btn-sure,
+    .btn-cancel {
+        display: inline-block;
+        width: 88px;
+        height: 32px;
+        line-height: 32px;
+        margin: 20px 10px;
+        cursor: pointer;
+    }
+
+    .btn-sure {
+        color: #ffffff;
+        background-color: #368bfe;
+    }
+
+    .btn-cancel {
+        box-sizing: border-box;
+        border: solid 1px #368bfe;
+        color: #368bfe;
+    }
+    /* 图文 */
+    .tuwen-title {
+        padding: 10px;
+        margin: 0;
+        font-size: 16px;
+    }
+    .tuwen-img,.tupian-img {
+        width: calc(100% - 20px);
+        background-color: rgb(241, 230, 215);
+        overflow: hidden;
+        margin: 0px 10px 5px;
+    }
+    .tuwen-lastupdata {
+        width: 148px;
+        margin-left: 10px;
+        font-size: 14px;
+        color: #929292;
+        background-color: white;
+    }
+    .tuwen-item{
+        padding: 2px 10px;
+        display: flex;
+        border-top: solid 1px #e7e7eb;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .tuwen-item-title{
+        width: calc(100% - 50px);
+        height: 50px;
+        margin: 2.5px 0;
+        padding: 0 5px;
+        font-size: 16px; 
+        background-color: #d3d3d3;
+    }
+    .tuwen-item-img{
+        width: 50px;
+        height: 50px;
+        margin: 2.5px 0px;
+        background-color: #368bfe;
+    }
+    .tuwen-item-more{
+        height: auto;
+        width: 100%;
+        position: absolute;
+        z-index: 77;
+        right: 0px;
+        background-color: #fff;
+        border-bottom: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+    .tuwen-item-more-box{
+        width: 100%;
+        height: auto;
+        border-bottom: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+   
+    .tuwen-tool {
+        width: 100%;
+        height: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .icon-btn-iseen{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin: 5px 5px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-down.png");
+        background-size: 100% 100%;
+        cursor: pointer;
+    }
+    .icon-btn-iseen:hover{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-down-hover.png");
+    }
+    .tupian-name{
+        font-size: 16px;
+        color: #35323b;
+        padding: 0px 10px;
+    }
+    .jump-page-select{
+        width: 270px;
+        height: 32px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        color: #666666;
+        font-size: 14px;
+        text-indent: 10px;
+        outline: none;
+        box-sizing: border-box;
+    }
+    .custom-link{
+        width: 495px;
+        height: 32px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        outline: none;
+        text-indent: 10px;
+        box-sizing: border-box;
+    }
+    #mall-link{
+        font-size: 14px;
+        line-height: 28px;
+        color: #2c68bf;
+        margin-top:10px; 
+        margin-left: 70px;
+        cursor: pointer;
+    }
+    .link-box{
+        width: 100%;
+	    height: 95px;
+        margin: 24px 0;
+        box-sizing: border-box;
+        border-bottom: 1px solid #d3d3d3;
+    }
+    .link-box-text{
+        color: #35323b;
+        font-size: 16px;
+        line-height: 16px;
+        margin: 0 8px;
+    }
+    .link-box-left,.link-box-right{
+        float: left;
+        height: 32px;
+        line-height: 32px;
+        box-sizing: border-box;
+    }
+    .link-box-left{
+        width: 418px;
+        margin-right: 8px;
+        padding-left:13px; 
+        text-align: left;
+        color: #666666;
+        background-color: #f7f5f5;
+	    border: solid 1px #d3d3d3;
+    }
+    .link-box-right{
+        width: 110px;
+        font-size: 14px;
+        color: #368bfe;
+        text-align: center;
+        border: solid 1px #368bfe;
+        cursor: pointer;
+    }
+    .Commodity-box{
+        width: 100%;
+	    height: 163px;
+        margin: 24px 0;
+        box-sizing: border-box;
+        border-bottom: 1px solid #d3d3d3;
+    }
+    .Commodity-box-img{
+        float: left;
+        width: 103px;
+        height: 83px;
+        margin-right: 20px;
+        overflow: hidden;
+        background-color: #b4c5df;
+    }
+    .Commodity-box-txt{
+        float: left;
+        width: 417px;
+        height: 83px;
+    }
+    .Commodity-box-title{
+        color: #35323b;
+        font-size: 16px;
+        line-height: 16px;
+        margin-bottom: 12px;
+    }
+    .Commodity-box-content{
+        width: 427px;
+	    line-height: 16px;
+        font-size: 16px;
+        color: #ada9aa;
+        margin-bottom: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .Commodity-box-price{
+        color: #e91835;
+        font-size: 16px;
+        line-height: 16px;
+    }
+    .link-focus,.link-share{
+        float: left;
+        margin-right: 13px;
+        height: 20px;
+    }
+    .link-focus{
+        width: 79px;
+    }
+    .link-share{
+        width: 50px;
+    }
+    .icon-focus,.icon-share{
+        float: left;
+        height: 20px;
+        margin-right:10px; 
+        background-size: 100% 100%; 
+    }
+    .icon-focus{
+        width: 30px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-focus.png");
+    }
+    .icon-share{
+        width: 20px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-share.png");
+    }
+    .link-date{
+        float: right;
+        height: 20px;
+        color: #ada9aa;
+        font-size: 16px;
+    }
+    .num-focus,.num-share{
+        line-height: 20px;
+        color: #ada9aa;
+        font-size: 16px;
+    }
+    
+</style>
+<!-- publicMenu -->
+<div id="app" style="position:relative;">
+    <!-- 头部说明 -->
+    <div class="publicMenu-header">
+        <div class="publicMenu-header-title">
+            <span class="publicMenu-header-icon"></span>
+            <span class="publicMenu-header-text">操作说明:</span>
+        </div>
+        <div style="padding-left:55px;">
+            <p class="publicMenu-header-contentext">1、一级菜单最多创建3个,二级菜单最多创建5个。</p>
+            <p class="publicMenu-header-contentext">2、创建/编辑菜单或子菜单后,需点击保存,否则系统将不会保存您修改的内容。</p>
+            <p class="publicMenu-header-contentext">3、菜单全部设置完毕会后,点击立即同步才会更新到公众号中,编辑过程不会被用户看到,请反选操作。</p>
+        </div>
+    </div>
+    <!-- 主体内容 -->
+    <div class="publicMenu-content">
+        <!-- 左侧菜单预览 -->
+        <div class="publicMenu-content-view">
+            <div id="view">
+                <div id="view-header"></div>
+                <div id="view-content">
+                    <!-- 子菜单容器一 -->
+                    <div id="sub-menu0" class="sub-menu-box" style="display:none;">
+                        <div class="submenu-box">
+                            <!-- <div class="submenu-icon-btn" style="border-bottom:none;"><span class="submenu-text">子菜单</span></div> -->
+                        </div>
+                        <div id="addBtn-subMenu0" class="submenu-icon-btn" onclick="addSubMenu(0)"><span
+                                class="addmenu-icon-gray"></span></div>
+                        <div class="submenu-icondown"></div>
+                    </div>
+                    <!-- 子菜单容器二 -->
+                    <div id="sub-menu1" class="sub-menu-box" style="display:none;">
+                        <div class="submenu-box">
+                            <!-- <div class="submenu-icon-btn" style="border-bottom:none;"><span class="submenu-text">子菜单</span></div> -->
+                        </div>
+                        <div id="addBtn-subMenu1" class="submenu-icon-btn" onclick="addSubMenu(1)"><span
+                                class="addmenu-icon-gray"></span></div>
+                        <div class="submenu-icondown"></div>
+                    </div>
+                    <!-- 子菜单容器三 -->
+                    <div id="sub-menu2" class="sub-menu-box" style="display:none;">
+                        <div class="submenu-box">
+                            <!-- <div class="submenu-icon-btn" style="border-bottom:none;"><span class="submenu-text">子菜单</span></div> -->
+                        </div>
+                        <div id="addBtn-subMenu2" class="submenu-icon-btn" onclick="addSubMenu(2)"><span
+                                class="addmenu-icon-gray"></span></div>
+                        <div class="submenu-icondown"></div>
+                    </div>
+                </div>
+                <!-- 底部 -->
+                <div id="view-footer">
+                    <!-- 键盘图标 -->
+                    <div class="view-footer-left">
+                        <div class="view-footer-left-icon"></div>
+                    </div>
+                    <!-- 主菜单栏 -->
+                    <div id="addmenu-0" class="view-footer-right mainMenu-active" onclick="addMenu0()">
+                        <div class="addmenu-box">
+                            <span class="addmenu-icon"></span>
+                            <span class="addmenu-text">添加菜单</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 右侧操作区域 -->
+        <div class="publicMenu-content-operation">
+            <!-- 文字提示 -->
+            <div id="operation-init">点击左侧添加菜单进行编辑操作</div>
+            <!-- 操作区域主体内容 -->
+            <div id="operation-content" style="display:none;">
+                <div class="operation-content-body">
+                    <!-- 删除按钮 -->
+                    <span id="operation-remove">删除子菜单</span>
+                    <p class="no-submenu-prompt">*当前菜单存在子菜单,只能进行修改菜单名称操作。</p>
+                    <hr
+                        style="margin:0 17px;width: calc(100% - 34px);height:1px;border:none;border-top:1px solid #e7e7eb;" />
+                    <!-- 修改菜单名称 -->
+                    <div class="mainMenuName-change">
+                        <span style="width: 56px;height: 32px;color: #666;">菜单名称</span>
+                        <input id="mainMenuName-change-input" type="text" placeholder="菜单名称">
+                        <span style="width: 185px;height: 32px;color: #666;">字数不超过4个汉字或8个字母</span>
+                    </div>
+                    <!-- 选择动作 -->
+                    <div class="action-select">
+                        <span style="line-height: 14px;font-size: 14px;color: #666666;">选择动作</span>
+                        <div id="send-msg" style="width: 91px;cursor: pointer;">
+                            <span class="action-select-icon action-select-icon-checked"></span>
+                            <span style="line-height: 14px;font-size: 14px;color: #368bfe;">发送消息</span>
+                        </div>
+                        <div id="jump-page" style="width: 91px;cursor: pointer;">
+                            <span class="action-select-icon"></span>
+                            <span style="line-height: 16px;font-size: 14px;color: #666666;">跳转页面</span>
+                        </div>
+                    </div>
+                    <!-- 发送消息 -->
+                    <div class="send-msg-operation">
+                        <!-- tab切换 -->
+                        <div class="send-msg-operation-tab">
+                            <div id="send-msg-operation-tab-0" class="send-msg-operation-item" onclick="checkAllText()">
+                                <span class="allText-icon"></span>
+                                <span style="color: #368bfe;font-size:14px;">纯文本</span>
+                            </div>
+                            <div id="send-msg-operation-tab-1" class="send-msg-operation-item" onclick="checkPicText()">
+                                <span class="picText-icon"></span>
+                                <span style="color: #8d8d8d;font-size:14px;">图文信息</span>
+                            </div>
+                            <div id="send-msg-operation-tab-2" class="send-msg-operation-item" onclick="checkAllPic()">
+                                <span class="allPic-icon"></span>
+                                <span style="color: #8d8d8d;font-size:14px;">图片</span>
+                            </div>
+                        </div>
+                        <!-- 内容区域 -->
+                        <!-- 纯文本 -->
+                        <div id="show-allText">
+                            <textarea name="" id="textarea-allText" placeholder="请在此输入文字内容"></textarea>
+                        </div>
+                        <!-- 图文 -->
+                        <div id="show-picText" style="display:none;">
+                            <div class="add-picText" onclick="picTextSelect()">
+                                <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                                    从素材库中选择</div>
+                                <div class="img-add"></div>
+                            </div>
+                        </div>
+                        <!-- 图片 -->
+                        <div id="show-allPic" style="display:none;">
+                            <div class="add-allPic" onclick="allPicSelect()">
+                                <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                                    从素材库中选择</div>
+                                <div class="img-add"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 跳转页面 -->
+                    <div class="jump-page-operation" style="display:none;">
+                        <div style="padding:17px 15px;">
+                            <span style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">跳转方式</span>
+                            <select class="jump-page-select" name="" id="">
+                                <option value="自定义链接" selected="selected">自定义链接</option>
+                                <option value="商城">商城</option>
+                            </select>
+                        </div>
+                        <div style="padding:17px 15px;">
+                            <span id="link-text" style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">链接地址</span>
+                            <input class="custom-link" type="text">
+                            <div id="mall-link" style="display:none;" onclick="SelectMallLink()">点击选择商城链接</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 底部保存、同步 -->
+    <div class="publicMenu-footer" style="display:none;">
+        <span class="operation-save" onclick="saveOperation()">保存</span>
+        <span class="operation-synchronous">立即同步</span>
+    </div>
+    <!-- 遮罩层 -->
+    <div id="mask" style="display:none;"></div>
+    <!-- 未保存提示弹窗 -->
+    <div id="NotSaved-edit" style="display:none;">
+        <div class="tuwenselect-edit-hd">
+            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                onclick="$(`#NotSaved-edit`).hide(); $(`#mask`).hide();">X</span>
+        </div>
+        <div style="width: 200px;height: 93px;margin: 45px auto;">
+            <div style="font-size:16px;color: #666666;line-height: 16px;margin-bottom:30px; ">当前内容未保存,确定离开?</div>
+            <div style="font-size:14px;color: #666666;line-height: 14px;">如需保存,请点击前往保存。</div>
+            <div style="font-size:14px;color: #666666;line-height: 14px;">如需要,请点击直接离开。</div>
+        </div>
+        <div style="width: 212px;margin: 0 17px 0 auto;">
+            <span class="btn-confirm" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #ffffff;background-color: #368bfe;margin: 0px 8px;cursor: pointer;">前往保存</span>
+            <span class="btn-cancel" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #368bfe;background-color: #f6f9fe;border: 1px solid #368bfe;box-sizing: border-box;margin: 0px 8px;
+            cursor: pointer;">直接离开</span>
+        </div>
+    </div>
+    <!-- 添加子菜单提示弹窗 -->
+    <div id="add-Submenu-edit" style="display:none;">
+        <div class="tuwenselect-edit-hd">
+            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                onclick="$(`#add-Submenu-edit`).hide(); $(`#mask`).hide();">X</span>
+        </div>
+        <div style="width: 410px;height: 40px;margin: 55px auto 90px;font-size: 14px;color: #666666;">
+            当前主菜单已设置动作，若继续添加子菜单则清除主菜单动作内容,是否继续?
+        </div>
+        <div style="width: 212px;margin: 0 17px 0 auto;">
+            <span class="btn-confirm" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #ffffff;background-color: #368bfe;margin: 0px 8px;cursor: pointer;">确定</span>
+            <span class="btn-cancel" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #368bfe;background-color: #f6f9fe;border: 1px solid #368bfe;box-sizing: border-box;margin: 0px 8px;
+            cursor: pointer;">取消</span>
+        </div>
+    </div>
+    <!-- 删除菜单提示弹窗 -->
+    <div id="removeMenu-edit" style="display:none;">
+        <div class="tuwenselect-edit-hd">
+            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                onclick="$(`#removeMenu-edit`).hide(); $(`#mask`).hide();">X</span>
+        </div>
+        <div style="width: 327px;height: 40px;margin: 55px auto 90px;font-size: 14px;color: #666666;">
+            点击确定，“菜单名称”菜单下的内容将一起被删除。
+        </div>
+        <div style="width: 212px;margin: 0 17px 0 auto;">
+            <span class="btn-confirm" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #ffffff;background-color: #368bfe;margin: 0px 8px;cursor: pointer;">确定</span>
+            <span class="btn-cancel" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #368bfe;background-color: #f6f9fe;border: 1px solid #368bfe;box-sizing: border-box;margin: 0px 8px;
+            cursor: pointer;">取消</span>
+        </div>
+    </div>
+    <!-- 图文素材选择弹窗 -->
+    <div id="tuwen-select-edit" style="display:none;">
+        <div class="tuwenselect-edit-hd">
+            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">选择素材</span>
+            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                onclick="$(`#tuwen-select-edit`).hide(); $(`#mask`).hide();">X</span>
+        </div>
+        <div class="tuwenselect-edit-bd">
+            <!-- 图文搜索 -->
+            <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()"
+                style="margin: 0 10px 0 auto;">
+                <input style="width:300px;" type="text" placeholder="请输入图文标题/作者进行查询" class="filter-field" name=""><img
+                    src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+            </div>
+            <!-- 第一行图文 -->
+            <div id="tuwen-box-1">
+                <!-- 有子标题的图文模板 -->
+                <div class="tuwenbox-item">
+                    <div class="tuwenbox-item-mask" style="display:none;">
+                        <div class="tuwenbox-item-checked"></div>
+                    </div>
+                    <p class="tuwen-title">标题</p>
+                    <div class="tuwen-img" style="height: 85px;">
+                        <img src="" alt="">
+                    </div>
+                    <div class="tuwen-item">
+                        <div class="tuwen-item-title">子标题</div>
+                        <div class="tuwen-item-img">
+                            <img src="" alt="">
+                        </div>
+                    </div>
+                    <div class="tuwen-item-more">
+                        <div class="tuwen-item-more-box"></div>
+                        <div class="tuwen-tool">
+                            <span class="tuwen-lastupdata">最后更新时间</span>
+                            <div>
+                                <span id="btn-iseen-0" class="icon-btn-iseen" title="更多内容"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width:100%;height:30px;"></div>
+                </div>
+                <!-- 无子标题的图文模板 -->
+                <div class="tuwenbox-item">
+                    <div class="tuwenbox-item-mask" style="display:none;">
+                        <div class="tuwenbox-item-checked"></div>
+                    </div>
+                    <p class="tuwen-title">标题</p>
+                    <div class="tuwen-img" style="height: 145px;">
+                        <img src="" alt="">
+                    </div>
+                    <div class="tuwen-tool">
+                        <span class="tuwen-lastupdata">最后更新时间</span>
+                    </div>
+                </div>
+                <!-- 无子标题的图文模板 -->
+                <div class="tuwenbox-item">
+                    <div class="tuwenbox-item-mask" style="display:none;">
+                        <div class="tuwenbox-item-checked"></div>
+                    </div>
+                    <p class="tuwen-title">标题</p>
+                    <div class="tuwen-img" style="height: 145px;">
+                        <img src="" alt="">
+                    </div>
+                    <div class="tuwen-tool">
+                        <span class="tuwen-lastupdata">最后更新时间</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 第二行图文 -->
+            <div id="tuwen-box-2">
+                <div class="tuwenbox-item">
+                    <div class="tuwenbox-item-mask" style="display:none;">
+                        <div class="tuwenbox-item-checked"></div>
+                    </div>
+                    <p class="tuwen-title">标题</p>
+                    <div class="tuwen-img" style="height: 145px;">
+                        <img src="" alt="">
+                    </div>
+                    <div class="tuwen-tool">
+                        <span class="tuwen-lastupdata">最后更新时间</span>
+                    </div>
+                </div>
+                <div class="tuwenbox-item">
+                    <div class="tuwenbox-item-mask" style="display:none;">
+                        <div class="tuwenbox-item-checked"></div>
+                    </div>
+                    <p class="tuwen-title">标题</p>
+                    <div class="tuwen-img" style="height: 145px;">
+                        <img src="" alt="">
+                    </div>
+                    <div class="tuwen-tool">
+                        <span class="tuwen-lastupdata">最后更新时间</span>
+                    </div>
+                </div>
+                <div class="tuwenbox-item">
+                    <div class="tuwenbox-item-mask" style="display:none;">
+                        <div class="tuwenbox-item-checked"></div>
+                    </div>
+                    <p class="tuwen-title">标题</p>
+                    <div class="tuwen-img" style="height: 145px;">
+                        <img src="" alt="">
+                    </div>
+                    <div class="tuwen-tool">
+                        <span class="tuwen-lastupdata">最后更新时间</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 分页 -->
+            <div class="datagrid-pager pagination" style="padding: 0 10px;">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                        <tr>
+                            <td><select class="pagination-page-list">
+                                    <option>6</option>
+                                </select></td>
+                            <td>
+                                <div class="pagination-btn-separator"></div>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)"
+                                    class="l-btn l-btn-small l-btn-plain l-btn-disabled l-btn-plain-disabled" group=""
+                                    id="">
+                                    <span class="l-btn-left l-btn-icon-left">
+                                        <span class="l-btn-text l-btn-empty">&nbsp;</span>
+                                        <span class="l-btn-icon pagination-first">&nbsp;</span>
+                                    </span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)"
+                                    class="l-btn l-btn-small l-btn-plain l-btn-disabled l-btn-plain-disabled" group=""
+                                    id="">
+                                    <span class="l-btn-left l-btn-icon-left">
+                                        <span class="l-btn-text l-btn-empty">&nbsp;</span>
+                                        <span class="l-btn-icon pagination-prev">&nbsp;</span>
+                                    </span>
+                                </a>
+                            </td>
+                            <td>
+                                <div class="pagination-btn-separator"></div>
+                            </td>
+                            <td><span style="padding-left:6px;">第</span></td>
+                            <td><input class="pagination-num" id="pagination-num" type="text" value="1" size="2"></td>
+                            <td><span style="padding-right:6px;" id="pagination-count">共30页</span></td>
+                            <td>
+                                <div class="pagination-btn-separator"></div>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                    <span class="l-btn-left l-btn-icon-left"><span
+                                            class="l-btn-text l-btn-empty">&nbsp;</span>
+                                        <span class="l-btn-icon pagination-next">&nbsp;</span>
+                                    </span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                    <span class="l-btn-left l-btn-icon-left"><span
+                                            class="l-btn-text l-btn-empty">&nbsp;</span>
+                                        <span class="l-btn-icon pagination-last">&nbsp;</span>
+                                    </span>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination-info" id="material-count"></div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+        <!-- 分割线 -->
+        <hr style="margin:0 20px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+        <!-- 确认、取消 -->
+        <div class="tuwenselect-edit-ft">
+            <span class="btn-sure" onclick="picTextChecked()">确认</span>
+            <span class="btn-cancel" onclick="$(`#tuwen-select-edit`).hide(); $(`#mask`).hide();">取消</span>
+        </div>
+    </div>
+    <!-- 图片素材选择弹窗 -->
+    <div id="tupian-select-edit" style="display:none;">
+        <div class="tupianselect-edit-hd">
+            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">选择素材</span>
+            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                onclick="$(`#tupian-select-edit`).hide(); $(`#mask`).hide();">X</span>
+        </div>
+         <!-- 图片搜索 -->
+        <div class="tupianselect-edit-bd">
+            <div class="search_ipt" onmouseover="queryIcon_bule()" onmouseout="queryIcon_gray()"
+                style="margin: 0 10px 0 auto;">
+                <input style="width:300px;" type="text" placeholder="请输入图片名称进行查询" class="filter-field" name=""><img
+                    src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png" alt="" onclick="">
+            </div>
+            <!-- 第一行图片 -->
+            <div id="tupian-box-1">
+                <div class="tupianbox-item">
+                    <div class="tupianbox-item-mask" style="display:none;">
+                        <div class="tupianbox-item-checked"></div>
+                    </div>
+                    <p class="tupian-name">图片名称.jpg</p>
+                    <div class="tupian-img" style="height: 155px;">
+                        <img src="" alt="">
+                    </div>
+                </div>
+                <div class="tupianbox-item">
+                    <div class="tupianbox-item-mask" style="display:none;">
+                        <div class="tupianbox-item-checked"></div>
+                    </div>
+                    <p class="tupian-name">图片名称.jpg</p>
+                    <div class="tupian-img" style="height: 155px;">
+                        <img src="" alt="">
+                    </div>
+                </div>
+                <div class="tupianbox-item">
+                    <div class="tupianbox-item-mask" style="display:none;">
+                        <div class="tupianbox-item-checked"></div>
+                    </div>
+                    <p class="tupian-name">图片名称.jpg</p>
+                    <div class="tupian-img" style="height: 155px;">
+                        <img src="" alt="">
+                    </div>
+                </div>
+            </div>
+            <!-- 第二行图片 -->
+            <div id="tupian-box-2">
+                <div class="tupianbox-item">
+                     <div class="tupianbox-item-mask" style="display:none;">
+                        <div class="tupianbox-item-checked"></div>
+                    </div>
+                    <p class="tupian-name">图片名称.jpg</p>
+                    <div class="tupian-img" style="height: 155px;">
+                        <img src="" alt="">
+                    </div>
+                </div>
+                <div class="tupianbox-item">
+                     <div class="tupianbox-item-mask" style="display:none;">
+                        <div class="tupianbox-item-checked"></div>
+                    </div>
+                    <p class="tupian-name">图片名称.jpg</p>
+                    <div class="tupian-img" style="height: 155px;">
+                        <img src="" alt="">
+                    </div>
+                </div>
+                <div class="tupianbox-item">
+                     <div class="tupianbox-item-mask" style="display:none;">
+                        <div class="tupianbox-item-checked"></div>
+                    </div>
+                    <p class="tupian-name">图片名称.jpg</p>
+                    <div class="tupian-img" style="height: 155px;">
+                        <img src="" alt="">
+                    </div>
+                </div>
+            </div>
+            <!-- 分页 -->
+            <div class="datagrid-pager pagination" style="padding: 0 10px;">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                        <tr>
+                            <td><select class="pagination-page-list">
+                                    <option>6</option>
+                                </select></td>
+                            <td>
+                                <div class="pagination-btn-separator"></div>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)"
+                                    class="l-btn l-btn-small l-btn-plain l-btn-disabled l-btn-plain-disabled" group=""
+                                    id="">
+                                    <span class="l-btn-left l-btn-icon-left">
+                                        <span class="l-btn-text l-btn-empty">&nbsp;</span>
+                                        <span class="l-btn-icon pagination-first">&nbsp;</span>
+                                    </span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)"
+                                    class="l-btn l-btn-small l-btn-plain l-btn-disabled l-btn-plain-disabled" group=""
+                                    id="">
+                                    <span class="l-btn-left l-btn-icon-left">
+                                        <span class="l-btn-text l-btn-empty">&nbsp;</span>
+                                        <span class="l-btn-icon pagination-prev">&nbsp;</span>
+                                    </span>
+                                </a>
+                            </td>
+                            <td>
+                                <div class="pagination-btn-separator"></div>
+                            </td>
+                            <td><span style="padding-left:6px;">第</span></td>
+                            <td><input class="pagination-num" id="pagination-num" type="text" value="1" size="2"></td>
+                            <td><span style="padding-right:6px;" id="pagination-count">共30页</span></td>
+                            <td>
+                                <div class="pagination-btn-separator"></div>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                    <span class="l-btn-left l-btn-icon-left"><span
+                                            class="l-btn-text l-btn-empty">&nbsp;</span>
+                                        <span class="l-btn-icon pagination-next">&nbsp;</span>
+                                    </span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                    <span class="l-btn-left l-btn-icon-left"><span
+                                            class="l-btn-text l-btn-empty">&nbsp;</span>
+                                        <span class="l-btn-icon pagination-last">&nbsp;</span>
+                                    </span>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination-info" id="material-count"></div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+        <!-- 分割线 -->
+        <hr style="margin:0 20px;height:1px;border:none;border-top:1px solid #d3d3d3;" />
+        <!-- 确认、取消 -->
+        <div class="tupianselect-edit-ft">
+            <span class="btn-sure" onclick="allPicChecked()">确认</span>
+            <span class="btn-cancel" onclick="$(`#tupian-select-edit`).hide(); $(`#mask`).hide();">取消</span>
+        </div>
+    </div>
+    <!-- 商城链接选择弹窗 -->
+    <div id="MallLink-select-edit" class="easyui-draggable" data-options="handle:'#MallLinkselect-edit-hd'" style="display:none;">
+        <div id="MallLinkselect-edit-hd" class="MallLinkselect-edit-hd">
+            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">选择服务</span>
+            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                onclick="$(`#MallLink-select-edit`).hide(); $(`#mask`).hide();">X</span>
+        </div>
+        <div class="MallLinkselect-edit-bd">
+            <div class="c-header" style="margin:10px 0px 0">
+                <span class="tab-span on" onclick="MallClick(event)">商城页面</span>
+                <span class="tab-span" onclick="CommodityClick(event)">商品</span>
+                <span class="tab-span" onclick="PromotionClick(event)">推广</span>
+            </div>
+            <!-- 商城页面 -->
+            <div id="Mall-page">
+                <div class="link-box">
+                    <div class="link-box-text" style="color: #35323b;font-size: 16px;line-height: 16px;margin: 0 8px;">商城首页</div>
+                    <div style="height: 32px;padding:0 8px;margin: 17px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+                <div class="link-box">
+                    <div class="link-box-text" style="color: #35323b;font-size: 16px;line-height: 16px;margin: 0 8px;">公司介绍</div>
+                    <div style="height: 32px;padding:0 8px;margin: 17px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+                <div class="link-box">
+                    <div class="link-box-text" style="color: #35323b;font-size: 16px;line-height: 16px;margin: 0 8px;">服务分类</div>
+                    <div style="height: 32px;padding:0 8px;margin: 17px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+                <div class="link-box">
+                    <div class="link-box-text" style="color: #35323b;font-size: 16px;line-height: 16px;margin: 0 8px;">领券中心</div>
+                    <div style="height: 32px;padding:0 8px;margin: 17px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 商品 -->
+            <div id="Commodity-page" style="display:none;">
+                <div class="Commodity-box">
+                    <div style="height:83px">
+                        <div class="Commodity-box-img"><img style="width:100%;" src="" alt=""></div>
+                        <div class="Commodity-box-txt">
+                            <div class="Commodity-box-title">小规模记账</div>
+                            <div class="Commodity-box-content" title="此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方">此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方</div>
+                            <div class="Commodity-box-price">￥240.00元</div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 32px;margin: 20px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+                <div class="Commodity-box">
+                    <div style="height:83px">
+                        <div class="Commodity-box-img"><img src="" alt=""></div>
+                        <div class="Commodity-box-txt">
+                            <div class="Commodity-box-title">小规模记账</div>
+                            <div class="Commodity-box-content" title="此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方">此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方</div>
+                            <div class="Commodity-box-price">￥240.00元</div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 32px;margin: 20px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+                <div class="Commodity-box">
+                    <div style="height:83px">
+                        <div class="Commodity-box-img"><img src="" alt=""></div>
+                        <div class="Commodity-box-txt">
+                            <div class="Commodity-box-title">小规模记账</div>
+                            <div class="Commodity-box-content" title="此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方">此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方</div>
+                            <div class="Commodity-box-price">￥240.00元</div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 32px;margin: 20px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+                <div class="Commodity-box">
+                    <div style="height:83px">
+                        <div class="Commodity-box-img"><img src="" alt=""></div>
+                        <div class="Commodity-box-txt">
+                            <div class="Commodity-box-title">小规模记账</div>
+                            <div class="Commodity-box-content" title="此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方">此为标准参考价格，可能根据您公司此为标准参考价格考考撒发生的地方</div>
+                            <div class="Commodity-box-price">￥240.00元</div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 32px;margin: 20px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 推广 -->
+            <div id="Promotion-page" style="display:none;">
+                <div class="Commodity-box">
+                    <div style="height:83px">
+                        <div class="Commodity-box-img"><img src="" alt=""></div>
+                        <div class="Commodity-box-txt">
+                            <div style="margin-bottom: 47px;" class="Commodity-box-content" title="钱付了，对方不给发票，会计怎么做账？财务们快看过来！">钱付了，对方不给发票，会计怎么做账？财务们快看过来！</div>
+                            <div style="width: 100%;height: 20px;line-height: 20px;">
+                                <div class="link-focus">
+                                    <span class="icon-focus"></span>
+                                    <span class="num-focus">200</span>
+                                </div>
+                                <div class="link-share">
+                                    <span class="icon-share"></span>
+                                    <span class="num-share">66</span>
+                                </div>
+                                <div class="link-date">2019年2月14日</div>    
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 32px;margin: 20px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+                <div class="Commodity-box">
+                    <div style="height:83px">
+                        <div class="Commodity-box-img"><img src="" alt=""></div>
+                        <div class="Commodity-box-txt">
+                            <div style="margin-bottom: 47px;" class="Commodity-box-content" title="钱付了，对方不给发票，会计怎么做账？财务们快看过来！">钱付了，对方不给发票，会计怎么做账？财务们快看过来！</div>
+                            <div style="width: 100%;height: 20px;line-height: 20px;">
+                                <div class="link-focus">
+                                    <span class="icon-focus"></span>
+                                    <span class="num-focus">200</span>
+                                </div>
+                                <div class="link-share">
+                                    <span class="icon-share"></span>
+                                    <span class="num-share">66</span>
+                                </div>
+                                <div class="link-date">2019年2月14日</div>    
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 32px;margin: 20px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+                <div class="Commodity-box">
+                    <div style="height:83px">
+                        <div class="Commodity-box-img"><img src="" alt=""></div>
+                        <div class="Commodity-box-txt">
+                            <div style="margin-bottom: 47px;" class="Commodity-box-content" title="钱付了，对方不给发票，会计怎么做账？财务们快看过来！">钱付了，对方不给发票，会计怎么做账？财务们快看过来！</div>
+                            <div style="width: 100%;height: 20px;line-height: 20px;">
+                                <div class="link-focus">
+                                    <span class="icon-focus"></span>
+                                    <span class="num-focus">200</span>
+                                </div>
+                                <div class="link-share">
+                                    <span class="icon-share"></span>
+                                    <span class="num-share">66</span>
+                                </div>
+                                <div class="link-date">2019年2月14日</div>    
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 32px;margin: 20px 0;">
+                        <span class="link-box-left">http://www.caisuijia.com/</span>
+                        <span class="link-box-right">选择该链接</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var mainMenu = 0;
+    var subMenu = [0, 0, 0];
+    // subMenu[0]
+    // 创建主菜单一
+    function addMenu0() {
+        if (mainMenu == 0) {
+            $("#addmenu-0").html(`<span style="font-size: 14px;color: #368bfe;">菜单名称</span>`);
+            $("#addmenu-0").width(126);
+            $("#view-footer").append(`<div id="addmenu-1" onclick="addMenu1()" class="addmenu-icon-btn"><span class="addmenu-icon-gray"></span></div>`);
+            $("#sub-menu0").show();
+            mainMenu = 1;
+        } else if (mainMenu == 2) {
+            $("#addmenu-0").addClass("mainMenu-active");
+            $("#addmenu-1").removeClass("mainMenu-active");
+            $("#addmenu-2").removeClass("mainMenu-active");
+            $("#sub-menu0").width(80);
+            $("#sub-menu0").show()
+            $("#sub-menu1").hide();
+            $("#sub-menu2").hide();
+            $(`#sub-menu0`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        } else if (mainMenu == 3) {
+            $("#addmenu-0").addClass("mainMenu-active");
+            $("#addmenu-1").removeClass("mainMenu-active");
+            $("#addmenu-2").removeClass("mainMenu-active");
+            $("#sub-menu0").width(80);
+            $("#sub-menu0").show()
+            $("#sub-menu1").hide();
+            $("#sub-menu2").hide();
+            $(`#sub-menu0`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        }
+        $("#operation-init").hide();
+        $("#operation-content").show();
+        $(".publicMenu-footer").show();
+        console.log(mainMenu)
+    }
+    // 创建主菜单二
+    function addMenu1() {
+        if (mainMenu == 1) {
+            $("#addmenu-0").width(78);
+            $("#addmenu-0").removeClass("mainMenu-active");
+            $("#addmenu-1").addClass("mainMenu-active");
+            $("#addmenu-1").width(79);
+            $("#addmenu-1").html(`<span style="font-size: 14px;color: #368bfe;">菜单名称</span>`);
+            $("#view-footer").append(`<div id="addmenu-2" onclick="addMenu2()" class="addmenu-icon-btn"><span class="addmenu-icon-gray"></span></div>`);
+            $("#addmenu-2").width(80);
+            $("#sub-menu0").hide();
+            $("#sub-menu1").show();
+            mainMenu = 2;
+        } else if (mainMenu == 2) {
+            $("#addmenu-0").removeClass("mainMenu-active");
+            $("#addmenu-1").addClass("mainMenu-active");
+            $("#addmenu-2").removeClass("mainMenu-active");
+            $("#sub-menu0").hide();
+            $("#sub-menu1").show();
+            $("#sub-menu2").hide();
+            $(`#sub-menu1`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        } else if (mainMenu == 3) {
+            $("#addmenu-0").removeClass("mainMenu-active");
+            $("#addmenu-1").addClass("mainMenu-active");
+            $("#addmenu-2").removeClass("mainMenu-active");
+            $("#sub-menu0").hide();
+            $("#sub-menu1").show();
+            $("#sub-menu2").hide();
+            $(`#sub-menu1`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        }
+        console.log(mainMenu)
+    }
+    // 创建主菜单三
+    function addMenu2(str) {
+        if (mainMenu == 2) {
+            $("#addmenu-0").removeClass("mainMenu-active");
+            $("#addmenu-1").removeClass("mainMenu-active");
+            if (!str) {
+                $("#addmenu-1").html(`<span style="font-size: 14px;color: #368bfe;">菜单名称</span>`);
+            } else {
+                $("#addmenu-1").html(`<span style="font-size: 14px;color: #368bfe;">${str}</span>`);
+            }
+            $("#addmenu-2").addClass("mainMenu-active");
+            $("#sub-menu0").hide();
+            $("#sub-menu1").hide();
+            $("#sub-menu2").show();
+            mainMenu = 2;
+        } else if (mainMenu == 3) {
+            $("#addmenu-0").removeClass("mainMenu-active");
+            $("#addmenu-1").removeClass("mainMenu-active");
+            $("#addmenu-2").addClass("mainMenu-active");
+            $("#sub-menu0").hide();
+            $("#sub-menu1").hide();
+            $("#sub-menu2").show();
+            $(`#sub-menu2`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        }
+        console.log(mainMenu)
+    }
+    // 增加子菜单
+    function addSubMenu(id) {
+        if (subMenu[id] < 4) {
+            $(`#sub-menu${id}`).find(".submenu-box").append(`<div class="submenu-icon-btn" style="border-bottom:none;" onclick="onSubMenu(${id},${subMenu[id]})"><span class="submenu-text">子菜单</span></div>`);
+            subMenu[id] = subMenu[id] + 1;
+        } else if (subMenu[id] == 4) {
+            $(`#sub-menu${id}`).find(".submenu-box").append(`<div class="submenu-icon-btn" onclick="onSubMenu(${id},${subMenu[id]})"><span class="submenu-text">子菜单</span></div>`);
+            $(`#sub-menu${id}`).find(`#addBtn-subMenu${id}`).hide();
+        }
+    }
+    // 选中操作子菜单名称
+    function onSubMenu(id, index) {
+        $(`#sub-menu${id}`).find(".submenu-box").find(".submenu-icon-btn").eq(index).addClass("mainMenu-active");
+        $(`#sub-menu${id}`).find(".submenu-box").find(".submenu-icon-btn").eq(index).siblings().removeClass("mainMenu-active");
+        $(`#addmenu-${id}`).removeClass("mainMenu-active");
+    }
+    // 保存操作
+    var str;
+    function saveOperation() {
+        // 获取输入内容
+        str = $("#mainMenuName-change-input").val().replace(/(^\s+)|(\s+$)/g, "");
+        if (str == "") {
+            str = "菜单名称";
+        }
+        if (mainMenu == 1 || $("#addmenu-0").hasClass("mainMenu-active")) {
+            if (!str.match(/^[\u4e00-\u9fa5a-zA-Z0-9]{0,4}$|^[\a-zA-Z0-9]{0,8}$/)) {
+                alert("只能输入0-4个汉字或者0-8个字母、数字");
+                return false;
+            }
+            $("#addmenu-0").find("span").text(str);
+        }
+        if (mainMenu == 2 && $("#addmenu-1").hasClass("mainMenu-active")) {
+            if (!str.match(/^[\u4e00-\u9fa5a-zA-Z0-9]{0,4}$|^[\a-zA-Z0-9]{0,8}$/)) {
+                alert("只能输入0-4个汉字或者0-8个字母、数字");
+                return false;
+            }
+            $("#addmenu-1").find("span").text(str);
+        }
+        if (mainMenu == 3 && $("#addmenu-1").hasClass("mainMenu-active")) {
+            if (!str.match(/^[\u4e00-\u9fa5a-zA-Z0-9]{0,4}$|^[\a-zA-Z0-9]{0,8}$/)) {
+                alert("只能输入0-4个汉字或者0-8个字母、数字");
+                return false;
+            }
+            $("#addmenu-1").find("span").text(str);
+        }
+        if (mainMenu == 2 && $("#addmenu-2").hasClass("mainMenu-active")) {
+            if (!str.match(/[\u4e00-\u9fa5a-zA-Z0-9]{0,4}[\a-zA-Z0-9]{0,8}/)) {
+                alert("只能输入0-4个汉字或者0-8个字母、数字");
+                return false;
+            }
+            $("#addmenu-2").html(`<span style="font-size: 14px;color: #368bfe;">${str}</span>`);
+            mainMenu = 3;
+        }
+        if (mainMenu == 3 && $("#addmenu-2").hasClass("mainMenu-active")) {
+            if (!str.match(/^[\u4e00-\u9fa5a-zA-Z0-9]{0,4}$|^[\a-zA-Z0-9]{0,8}$/)) {
+                alert("只能输入0-4个汉字或者0-8个字母、数字");
+                return false;
+            }
+            $("#addmenu-2").find("span").text(str);
+        }
+        //子菜单保存
+        if (subMenu[0] != 0 && $(`#sub-menu0`).find(".submenu-box").find(".submenu-icon-btn").eq(subMenu[0] - 1).hasClass("mainMenu-active")) {
+            if (!str.match(/^[\u4e00-\u9fa5a-zA-Z0-9]{0,4}$|^[\a-zA-Z0-9]{0,8}$/)) {
+                alert("只能输入0-4个汉字或者0-8个字母、数字");
+                return false;
+            }
+            $(`.mainMenu-active`).find("span").text(str);
+        }
+        // 清空输入框
+        $("#mainMenuName-change-input").attr("value", "")
+    }
+
+    // 发送消息/跳转页面 切换功能
+    $("#send-msg").on("click", function () {
+        // 按钮样式切换
+        $("#send-msg").find(".action-select-icon").addClass("action-select-icon-checked");
+        $("#send-msg").find("span").eq(1).css("color","#368bfe");
+        $("#jump-page").find(".action-select-icon").removeClass("action-select-icon-checked");
+        $("#jump-page").find("span").eq(1).css("color","#666666");
+        // 区域显隐
+        $(".send-msg-operation").show();
+        $(".jump-page-operation").hide();
+    })
+    $("#jump-page").on("click", function () {
+        // 按钮样式切换
+        $("#jump-page").find(".action-select-icon").addClass("action-select-icon-checked");
+        $("#jump-page").find("span").eq(1).css("color","#368bfe");
+        $("#send-msg").find(".action-select-icon").removeClass("action-select-icon-checked");
+        $("#send-msg").find("span").eq(1).css("color","#666666");
+        // 区域显隐
+        $(".jump-page-operation").show();
+        $(".send-msg-operation").hide();
+    })
+    // 纯文本、图文、图片tab切换功能
+    function checkAllText() {
+        $("#show-allText").show();
+        $("#show-picText").hide();
+        $("#show-allPic").hide();
+        $("#send-msg-operation-tab-0").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText-on.png')");
+        $("#send-msg-operation-tab-0").find("span").eq(1).css("color", "#368bfe");
+        $("#send-msg-operation-tab-1").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText.png')");
+        $("#send-msg-operation-tab-1").find("span").eq(1).css("color", "#8d8d8d");
+        $("#send-msg-operation-tab-2").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic.png')");
+        $("#send-msg-operation-tab-2").find("span").eq(1).css("color", "#8d8d8d");
+    }
+    function checkPicText() {
+        $("#show-allText").hide();
+        $("#show-picText").show();
+        $("#show-allPic").hide();
+        $("#send-msg-operation-tab-1").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText-on.png')");
+        $("#send-msg-operation-tab-1").find("span").eq(1).css("color", "#368bfe");
+        $("#send-msg-operation-tab-0").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText.png')");
+        $("#send-msg-operation-tab-0").find("span").eq(1).css("color", "#8d8d8d");
+        $("#send-msg-operation-tab-2").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic.png')");
+        $("#send-msg-operation-tab-2").find("span").eq(1).css("color", "#8d8d8d");
+    }
+    function checkAllPic() {
+        $("#show-allText").hide();
+        $("#show-picText").hide();
+        $("#show-allPic").show();
+        $("#send-msg-operation-tab-2").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic-on.png')");
+        $("#send-msg-operation-tab-2").find("span").eq(1).css("color", "#368bfe");
+        $("#send-msg-operation-tab-1").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText.png')");
+        $("#send-msg-operation-tab-1").find("span").eq(1).css("color", "#8d8d8d");
+        $("#send-msg-operation-tab-0").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText.png')");
+        $("#send-msg-operation-tab-0").find("span").eq(1).css("color", "#8d8d8d");
+    }
+    // 图文素材选择功能
+    function picTextSelect() {
+        $("#mask").show();
+        $("#tuwen-select-edit").show();
+    }
+    // 图文素材选中效果
+    $(".tuwenselect-edit-bd").on("click",".tuwenbox-item",function(){
+        $(".tuwenselect-edit-bd").find(".tuwenbox-item-mask").hide();
+        $(this).find(".tuwenbox-item-mask").show();
+    })
+    // 图片素材选中效果
+    $(".tupianselect-edit-bd").on("click",".tupianbox-item",function(){
+        $(".tupianselect-edit-bd").find(".tupianbox-item-mask").hide();
+        $(this).find(".tupianbox-item-mask").show();
+    })
+    // 图片素材选择功能
+    function allPicSelect() {
+        $("#mask").show();
+        $("#tupian-select-edit").show();
+    }
+    // 选择商城链接弹窗
+    function SelectMallLink(){
+        $("#MallLink-select-edit").show();
+        $("#mask").show();
+    }
+    // 搜索框悬停效果
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+    // 链接选择对应输入框变化效果
+    $(".jump-page-select").on("change",function(){
+        if($(".jump-page-select").val() == "自定义链接"){
+            $("#link-text").show();
+            $(".custom-link").show();
+            $("#mall-link").hide();
+            $(".custom-link").css("background-color","#ffffff");
+            $(".custom-link").removeAttr("readonly");
+        }else if($(".jump-page-select").val() == "商城"){
+            $("#link-text").show();
+            $(".custom-link").show();
+            $("#mall-link").show();
+            $(".custom-link").css("background-color","#f7f5f5");
+            $(".custom-link").attr("readonly","readonly");
+        }
+    })
+    // 商城页面、商品、推广tab切换功能
+    function MallClick(e){
+        $(e.target).addClass("on").siblings().removeClass("on");
+        $(`#Mall-page`).show();
+        $(`#Commodity-page`).hide();
+        $(`#Promotion-page`).hide();
+    }
+    function CommodityClick(e){
+        $(e.target).addClass("on").siblings().removeClass("on");
+        $(`#Mall-page`).hide();
+        $(`#Commodity-page`).show();
+        $(`#Promotion-page`).hide();
+    }
+    function PromotionClick(e){
+        $(e.target).addClass("on").siblings().removeClass("on");
+        $(`#Mall-page`).hide();
+        $(`#Commodity-page`).hide();
+        $(`#Promotion-page`).show();
+    }
+    // 图文选择后展示效果的功能
+    function picTextChecked(){
+        $("#show-picText").html(`
+            <div class="tuwenbox-item" style="margin: 15px auto 15px 30px;" onclick="picTextSelect()">
+                <div class="tuwenbox-item-mask" style="display:none;">
+                    <div class="tuwenbox-item-checked"></div>
+                </div>
+                <p class="tuwen-title">标题</p>
+                <div class="tuwen-img" style="height: 85px;">
+                    <img src="" alt="">
+                </div>
+                <div class="tuwen-item">
+                    <div class="tuwen-item-title">子标题</div>
+                    <div class="tuwen-item-img">
+                        <img src="" alt="">
+                    </div>
+                </div>
+                <div class="tuwen-item-more">
+                    <div class="tuwen-item-more-box"></div>
+                    <div class="tuwen-tool">
+                        <span class="tuwen-lastupdata">最后更新时间</span>
+                        <div>
+                            <span id="btn-iseen-0" class="icon-btn-iseen" title="更多内容"></span>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:100%;height:30px;"></div>
+            </div>
+        `);
+        $(`#tuwen-select-edit`).hide(); 
+        $(`#mask`).hide();
+    }
+    // 图片选择后展示效果的功能
+    function allPicChecked(){
+        $("#show-allPic").html(`
+            <div class="tupianbox-item" style="margin: 15px auto 15px 30px;" onclick="allPicSelect()">
+                <div class="tupianbox-item-mask" style="display:none;">
+                    <div class="tupianbox-item-checked"></div>
+                </div>
+                <p class="tupian-name">图片名称.jpg</p>
+                <div class="tupian-img" style="height: 155px;">
+                    <img src="" alt="">
+                </div>
+            </div>
+        `);
+        $(`#tupian-select-edit`).hide();
+        $(`#mask`).hide();
+    }
+</script>

@@ -1,0 +1,2033 @@
+<style>
+    .icon-close{
+        height: 12px;
+        width: 12px;
+        float: right;
+        position: relative;
+        top:20px;
+        right:25px;
+    }
+    #app {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .publicMenu-header {
+        width: 100%;
+        height: 150px;
+        background-color: #f4f5f9;
+    }
+
+    .publicMenu-content {
+        width: 100%;
+        min-height: 660px;
+        background-color: #ffffff;
+    }
+
+    .publicMenu-content-view,
+    .publicMenu-content-operation {
+        float: left;
+        height: 582px;
+    }
+
+    .publicMenu-content-view {
+        width: 428px;
+    }
+
+    .publicMenu-content-operation {
+        width: calc(100% - 428px);
+        position: relative;
+    }
+
+    #view {
+        width: 300px;
+        height: 582px;
+        border: solid 1px #e7e7eb;
+        margin: 34px 64px;
+        box-sizing: border-box;
+    }
+
+    #view-header {
+        width: 100%;
+        height: 61px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/view-phone-header.jpg");
+        background-size: 100% 100%;
+    }
+
+    #view-content {
+        width: 100%;
+        height: 468px;
+        position: relative;
+    }
+
+    .sub-menu-box {
+        position: absolute;
+        bottom: 16px;
+    }
+
+    #sub-menu0 {
+        left: 56px;
+        width: 124px;
+    }
+
+    #sub-menu1 {
+        left: 136px;
+        width: 80px;
+    }
+
+    #sub-menu2 {
+        left: 216px;
+        width: 82px;
+    }
+
+    .submenu-icon-btn {
+        width: 100%;
+        height: 52px;
+        line-height: 52px;
+        border: 1px solid #e7e7eb;
+        box-sizing: border-box;
+        text-align: center;
+        cursor: pointer;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .submenu-text {
+        font-size: 14px;
+        color: #7f8389;
+    }
+
+    .submenu-icondown {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        bottom: -13px;
+        left: calc(50% - 8px);
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-triangle.png");
+        background-size: 100% 100%;
+    }
+
+    #view-footer {
+        width: 100%;
+        height: 52px;
+    }
+
+    .view-footer-left,
+    .view-footer-right,
+    .addmenu-icon-btn {
+        float: left;
+        height: 52px;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .view-footer-left {
+        width: 55px;
+        background-color: #fafafa;
+        border-top: solid 1px #e7e7eb;
+        border-bottom: solid 1px #e7e7eb;
+    }
+
+    .view-footer-left-icon {
+        width: 26px;
+        height: 25px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-key.png");
+        background-size: 100% 100%;
+        position: absolute;
+        top: calc(50% - 12.5px);
+        left: calc(50% - 13px);
+    }
+
+    .view-footer-right {
+        width: 243px;
+        background-color: #ffffff;
+        border: solid 1px #e7e7eb;
+        cursor: pointer;
+        text-align: center;
+        line-height: 52px;
+    }
+
+    .addmenu-box {
+        height: 14px;
+        width: 80px;
+        position: absolute;
+        top: calc(50% - 7px);
+        left: calc(50% - 38px);
+    }
+
+    .addmenu-icon {
+        float: left;
+        width: 14px;
+        height: 14px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu.png");
+        background-size: 100% 100%;
+        margin-right: 2px;
+    }
+
+    .addmenu-text {
+        float: left;
+        margin-left: 2px;
+        line-height: 14px;
+        font-size: 14px;
+        color: #368bfe;
+    }
+
+    .addmenu-icon-btn {
+        width: 115px;
+        border: 1px solid #e7e7eb;
+        text-align: center;
+        line-height: 52px;
+        cursor: pointer;
+    }
+
+    .addmenu-icon-gray {
+        position: absolute;
+        bottom:  19px;
+        left: calc(50% - 7px);
+        width: 14px;
+        height: 14px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray.png");
+        background-size: 100% 100%;
+    }
+
+    .addmenu-icon-gray:hover {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png");
+    }
+
+    #operation-init {
+        position: absolute;
+        top: calc(50% - 7px);
+        left: calc(50% - 98px);
+        line-height: 14px;
+        font-size: 14px;
+        color: #666666;
+    }
+
+    #operation-content {
+        width: calc(100% - 72px);
+        height: 582px;
+        margin: 34px 72px 34px 0px;
+        background-color: #ffffff;
+    }
+
+    .operation-content-body {
+        width: 100%;
+        height: 582px;
+        position: relative;
+        background-color: #f4f5f9;
+        border: solid 1px #e7e7eb;
+    }
+
+    .publicMenu-footer {
+        width: 100%;
+        height: 88px;
+        background-color: #ffffff;
+        text-align: center;
+    }
+
+    .operation-save,
+    .operation-synchronous {
+        display: inline-block;
+        width: 113px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        color: #fbfbfc;
+        font-size: 14px;
+        background-color: #368bfe;
+        margin: 0 11px 25px 11px;
+        cursor: pointer;
+    }
+
+    .publicMenu-header-title {
+        padding-left: 22px;
+        height: 50px;
+    }
+
+    .publicMenu-header-icon {
+        float: left;
+        width: 20px;
+        height: 20px;
+        margin: 15px 13px 15px 0;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-prompt.png");
+        background-size: 100% 100%;
+    }
+
+    .publicMenu-header-text {
+        float: left;
+        line-height: 20px;
+        font-size: 16px;
+        margin: 15px 0;
+        color: #353535;
+    }
+
+    .publicMenu-header-contentext {
+        font-size: 14px;
+        color: #666;
+        margin: 6px 0;
+        padding: 0;
+    }
+
+    #operation-remove {
+        position: absolute;
+        top: 16px;
+        right: 24px;
+        line-height: 14px;
+        font-size: 14px;
+        color: #666666;
+        cursor: pointer;
+    }
+
+    .no-submenu-prompt {
+        height: 15px;
+        margin: 17px 0;
+        padding: 0 30px;
+        color: #e91836;
+        font-size: 14px;
+    }
+
+    .mainMenuName-change {
+        width: 550px;
+        height: 32px;
+        line-height: 32px;
+        margin: 23px 0 23px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #mainMenuName-change-input {
+        width: 268px;
+        height: 30px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        font-size: 14px;
+        padding-left: 13px;
+        outline: none;
+    }
+
+    .mainMenu-active {
+        border: 1px solid #529bfd !important;
+    }
+
+    .action-select {
+        width: 350px;
+        height: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 39px 0 19px 32px;
+    }
+
+    .action-select-icon {
+        float: left;
+        width: 14px;
+        height: 14px;
+        margin-right: 13px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-one-select.png");
+        background-size: 100% 100%;
+    }
+
+    .action-select-icon-checked {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-one-select-checked.png");
+    }
+
+    .send-msg-operation {
+        margin: 0 17px;
+        width: calc(100% - 34px);
+        height: 230px;
+        background-color: #ffffff;
+    }
+
+    .send-msg-operation-tab {
+        width: 100%;
+        height: 45px;
+        background-color: #f6f8f9;
+    }
+
+    .send-msg-operation-item {
+        float: left;
+        height: 45px;
+        line-height: 45px;
+        margin: 0 21px;
+        cursor: pointer;
+    }
+    .jump-page-operation{
+        margin: 0 17px;
+        width: calc(100% - 34px);
+        height: 230px;
+    }
+    .allText-icon,
+    .picText-icon,
+    .allPic-icon {
+        float: left;
+        width: 14px;
+        height: 14px;
+        margin: 15.5px 10px 15.5px 0;
+        background-size: 100% 100%;
+    }
+
+    .allText-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText-on.png");
+    }
+
+    .picText-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText.png");
+    }
+
+    .allPic-icon {
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic.png");
+    }
+
+    #show-allText,
+    #show-picText,
+    #show-allPic {
+        width: 100%;
+        height: 253px;
+        background-color: #ffffff;
+    }
+
+    #show-picText,
+    #show-allPic {
+        position: relative;
+    }
+
+    #textarea-allText {
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        border: none;
+        resize: none;
+        outline: none;
+        text-indent: 18px;
+        font-size: 14px;
+        color: #666666;
+        padding: 5px;
+    }
+
+    .add-picText,
+    .add-allPic {
+        width: 325px;
+        height: 186px;
+        border: 1px solid #e7e7eb;
+        cursor: pointer;
+        position: absolute;
+        top: calc(50% - 93px);
+        left: calc(50% - 167.5px);
+    }
+
+    .img-add {
+        width: 32px;
+        height: 32px;
+        margin: 0 auto;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-addmenu-gray-hover.png");
+        background-size: 100% 100%;
+    }
+
+    #mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 88;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+
+    #tuwen-select-edit,
+    #tupian-select-edit {
+        width: 980px;
+        height: 664px;
+        background-color: #ffffff;
+        /*position: fixed;*/
+        top: calc(50% - 332px);
+        left: calc(50% - 490px);
+        z-index: 99;
+    }
+    #MallLink-select-edit{
+        width: 600px;
+        height: 600px;
+        background-color: #ffffff;
+        /*position: fixed;*/
+        top: calc(50% - 370px);
+        left: calc(50% - 300px);
+        z-index: 99;
+    }
+    .tuwenselect-edit-hd,
+    .tupianselect-edit-hd,
+    .MallLinkselect-edit-hd {
+        width: 100%;
+        height: 50px;
+        background-color: #f9fafb;
+        color: #35323b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: move;
+    }
+
+    .tuwenselect-edit-bd,
+    .tupianselect-edit-bd {
+        width: 960px;
+        height: 590px;
+        margin: 20px 10px 0;
+    }
+    .MallLinkselect-edit-bd{
+        padding: 0 20px;
+    }
+   #Mall-page,
+   #Commodity-page,
+   #Promotion-page{
+       width: 100%;
+       height: 500px;
+       overflow-y: auto;
+       margin-top: 24px; 
+   }
+   #Mall-page::-webkit-scrollbar,
+   #Commodity-page::-webkit-scrollbar,
+   #Promotion-page::-webkit-scrollbar {
+       /*滚动条整体样式*/
+        width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+    }
+    #Mall-page::-webkit-scrollbar-thumb,
+    #Commodity-page::-webkit-scrollbar-thumb,
+    #Promotion-page::-webkit-scrollbar-thumb{
+        /*滚动条里面小方块*/
+        border-radius: 5px;
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #d3d3d3;
+    }
+    #Mall-page::-webkit-scrollbar-track,
+    #Commodity-page::-webkit-scrollbar-track,
+    #Promotion-page::-webkit-scrollbar-track{
+        /*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        border-radius: 5px;
+        background: #ededed;
+    }
+   
+    #tuwen-box-1,
+    #tuwen-box-2,
+    #tupian-box-1,
+    #tupian-box-2 {
+        width: 100%;
+        height: 224px;
+        margin: 19px 0;
+    }
+
+    .tuwenbox-item,.tupianbox-item {
+        float: left;
+        position: relative;
+        width: 300px;
+        height: 224px;
+        margin: 0 10px;
+        box-sizing: border-box;
+        border: 1px solid #d3d3d3;
+        background-color: #ffffff;
+        cursor: pointer;
+    }
+    .tuwenbox-item-mask,.tupianbox-item-mask{
+        position: absolute;
+        z-index: 111;
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+        opacity: 0.5;
+    }
+    .tuwenbox-item-checked,.tupianbox-item-checked{
+        position: absolute;
+        width: 54px;
+        height: 38px;
+        top: calc(50% - 19px);
+        left: calc(50% - 27px);
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-checked.png");
+        background-size: 100% 100%;
+    }
+    .tuwenselect-edit-ft,.tupianselect-edit-ft {
+        width: 100%;
+        height: 72px;
+        text-align: center;
+    }
+    /* 确认、取消 */
+    .btn-sure,
+    .btn-cancel {
+        display: inline-block;
+        width: 88px;
+        height: 32px;
+        line-height: 32px;
+        margin: 20px 10px;
+        cursor: pointer;
+    }
+
+    .btn-sure {
+        color: #ffffff;
+        background-color: #368bfe;
+    }
+
+    .btn-cancel {
+        box-sizing: border-box;
+        border: solid 1px #368bfe;
+        color: #368bfe;
+    }
+    /* 图文 */
+    .tuwen-title {
+        padding: 10px;
+        margin: 0;
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .tuwen-img,.tupian-img {
+        width: calc(100% - 20px);
+        background-color: rgb(241, 230, 215);
+        overflow: hidden;
+        margin: 0px 10px 5px;
+    }
+    .tuwen-lastupdata {
+        width: 148px;
+        margin-left: 10px;
+        font-size: 14px;
+        color: #929292;
+        background-color: white;
+    }
+    .tuwen-item{
+        padding: 5px 13px;
+        display: flex;
+        border-top: solid 1px #e7e7eb;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .tuwen-item-title{
+        width: calc(100% - 75px);
+        height: 50px;
+        margin: 0;
+        padding: 0 5px;
+        font-size: 16px; 
+        background-color: #d3d3d3;
+    }
+    .tuwen-item-img{
+        width: 50px;
+        height: 50px;
+        margin: 0px;
+        background-color: #368bfe;
+    }
+    .tuwen-item-more{
+        height: auto;
+        width: 100%;
+        position: absolute;
+        z-index: 77;
+        right: 0px;
+        background-color: #fff;
+        border-bottom: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+    .tuwen-item-more-box{
+        width: 100%;
+        height: auto;
+        border-bottom: solid 1px #e7e7eb;
+        box-sizing: border-box;
+    }
+   
+    .tuwen-tool {
+        width: 100%;
+        height: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .icon-btn-iseen{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin: 5px 5px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-down.png");
+        background-size: 100% 100%;
+        cursor: pointer;
+    }
+    .icon-btn-iseen:hover{
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-down-hover.png");
+    }
+    .tupian-name{
+        font-size: 16px;
+        color: #35323b;
+        padding: 0px 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .jump-page-select{
+        width: 270px;
+        height: 32px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        color: #666666;
+        font-size: 14px;
+        text-indent: 10px;
+        outline: none;
+        box-sizing: border-box;
+    }
+    .custom-link, .applets{
+        width: 495px;
+        height: 32px;
+        background-color: #ffffff;
+        border: solid 1px #d3d3d3;
+        outline: none;
+        text-indent: 10px;
+        box-sizing: border-box;
+    }
+    #mall-link{
+        font-size: 14px;
+        line-height: 28px;
+        color: #2c68bf;
+        margin-top:10px; 
+        margin-left: 70px;
+        cursor: pointer;
+    }
+    .link-box{
+        width: 100%;
+	    height: 95px;
+        margin: 24px 0;
+        box-sizing: border-box;
+        border-bottom: 1px solid #d3d3d3;
+    }
+    .link-box-text{
+        color: #35323b;
+        font-size: 16px;
+        line-height: 16px;
+        margin: 0 8px;
+    }
+    .link-box-left,.link-box-right{
+        float: left;
+        height: 32px;
+        line-height: 32px;
+        box-sizing: border-box;
+    }
+    .link-box-left{
+        width: 418px;
+        margin-right: 8px;
+        padding-left:13px; 
+        text-align: left;
+        color: #666666;
+        background-color: #f7f5f5;
+	    border: solid 1px #d3d3d3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .link-box-right{
+        width: 110px;
+        font-size: 14px;
+        color: #368bfe;
+        text-align: center;
+        border: solid 1px #368bfe;
+        cursor: pointer;
+    }
+    .Commodity-box{
+        width: 100%;
+	    height: 163px;
+        margin: 24px 0;
+        box-sizing: border-box;
+        border-bottom: 1px solid #d3d3d3;
+    }
+    .Commodity-box-img{
+        float: left;
+        width: 103px;
+        height: 83px;
+        margin-right: 20px;
+        overflow: hidden;
+        background-color: #b4c5df;
+    }
+    .Commodity-box-txt{
+        float: left;
+        width: 417px;
+        height: 83px;
+    }
+    .Commodity-box-title{
+        color: #35323b;
+        font-size: 16px;
+        line-height: 16px;
+        margin-bottom: 12px;
+    }
+    .Commodity-box-content{
+        width: 427px;
+	    line-height: 16px;
+        font-size: 16px;
+        color: #ada9aa;
+        margin-bottom: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .Commodity-box-price{
+        color: #e91835;
+        font-size: 16px;
+        line-height: 16px;
+    }
+    .link-focus,.link-share{
+        float: left;
+        margin-right: 13px;
+        height: 20px;
+    }
+    .link-focus{
+        width: 79px;
+    }
+    .link-share{
+        width: 50px;
+    }
+    .icon-focus,.icon-share{
+        float: left;
+        height: 20px;
+        margin-right:10px; 
+        background-size: 100% 100%; 
+    }
+    .icon-focus{
+        width: 30px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-focus.png");
+    }
+    .icon-share{
+        width: 20px;
+        background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-share.png");
+    }
+    .link-date{
+        float: right;
+        height: 20px;
+        color: #ada9aa;
+        font-size: 16px;
+    }
+    .num-focus,.num-share{
+        line-height: 20px;
+        color: #ada9aa;
+        font-size: 16px;
+    }
+    #NotSaved-edit,
+    #add-Submenu-edit,
+    #removeMenu-edit{
+        width: 552px;
+        height: 300px;
+        background-color: #ffffff;
+        position: fixed;
+        top: calc(50% - 150px);
+        left: calc(50% - 276px);
+        z-index: 99;
+    }
+</style>
+<!-- publicMenu -->
+<div id="app" style="position:relative;">
+    <!-- 头部说明 -->
+    <div class="publicMenu-header">
+        <div class="publicMenu-header-title">
+            <span class="publicMenu-header-icon"></span>
+            <span class="publicMenu-header-text">操作说明:</span>
+            <img class="icon-close" src="/Application/ESAdmin/Public/images/icon/icon-close.png" onclick="$('.publicMenu-header').hide();">
+        </div>
+        <div style="padding-left:55px;">
+            <p class="publicMenu-header-contentext">1、一级菜单最多创建3个,二级菜单最多创建5个。</p>
+            <p class="publicMenu-header-contentext">2、创建/编辑菜单或子菜单后,需点击保存,否则系统将不会保存您修改的内容。</p>
+            <p class="publicMenu-header-contentext">3、菜单全部设置完毕后，点击立即同步才会更新到公众号中，编辑过程不会被用户看到，请放心操作。</p>
+        </div>
+    </div>
+    <!-- 主体内容 -->
+    <div class="publicMenu-content">
+        <!-- 左侧菜单预览 -->
+        <div class="publicMenu-content-view">
+            <div id="view">
+                <div id="view-header"></div>
+                <div id="view-content">
+                    <!-- 子菜单容器一 -->
+                    <div id="sub-menu0" class="sub-menu-box" style="display:none;">
+                        <div class="submenu-box">
+                            <!-- <div class="submenu-icon-btn" style="border-bottom:none;"><span class="submenu-text">子菜单</span></div> -->
+                        </div>
+                        <div id="addBtn-subMenu0" class="submenu-icon-btn" onclick="addSubMenu(0)"><span
+                                class="addmenu-icon-gray"></span></div>
+                        <div class="submenu-icondown"></div>
+                    </div>
+                    <!-- 子菜单容器二 -->
+                    <div id="sub-menu1" class="sub-menu-box" style="display:none;">
+                        <div class="submenu-box">
+                            <!-- <div class="submenu-icon-btn" style="border-bottom:none;"><span class="submenu-text">子菜单</span></div> -->
+                        </div>
+                        <div id="addBtn-subMenu1" class="submenu-icon-btn" onclick="addSubMenu(1)"><span
+                                class="addmenu-icon-gray"></span></div>
+                        <div class="submenu-icondown"></div>
+                    </div>
+                    <!-- 子菜单容器三 -->
+                    <div id="sub-menu2" class="sub-menu-box" style="display:none;">
+                        <div class="submenu-box">
+                            <!-- <div class="submenu-icon-btn" style="border-bottom:none;"><span class="submenu-text">子菜单</span></div> -->
+                        </div>
+                        <div id="addBtn-subMenu2" class="submenu-icon-btn" onclick="addSubMenu(2)"><span
+                                class="addmenu-icon-gray"></span></div>
+                        <div class="submenu-icondown"></div>
+                    </div>
+                </div>
+                <!-- 底部 -->
+                <div id="view-footer">
+                    <!-- 键盘图标 -->
+                    <div class="view-footer-left">
+                        <div class="view-footer-left-icon"></div>
+                    </div>
+                    <!-- 主菜单栏 -->
+                    <div id="addmenu-0" class="view-footer-right mainMenu-active" onclick="addMenu0()">
+                        <div class="addmenu-box">
+                            <span class="addmenu-icon"></span>
+                            <span class="addmenu-text">添加菜单</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 右侧操作区域 -->
+        <div class="publicMenu-content-operation">
+            <!-- 文字提示 -->
+            <div id="operation-init">点击左侧添加菜单进行编辑操作</div>
+            <!-- 操作区域主体内容 -->
+            <div id="operation-content" style="display:none;">
+                <div class="operation-content-body">
+                    <!-- 删除按钮 -->
+                    <span id="operation-remove" >删除菜单</span>
+                    <p class="no-submenu-prompt">*当前菜单存在子菜单,只能进行修改菜单名称操作。</p>
+                    <hr
+                        style="margin:0 17px;width: calc(100% - 34px);height:1px;border:none;border-top:1px solid #e7e7eb;" />
+                    <!-- 修改菜单名称 -->
+                    <div class="mainMenuName-change">
+                        <span style="width: 56px;height: 32px;color: #666;">菜单名称</span>
+                        <input name="menu_name" id="mainMenuName-change-input" type="text" placeholder="菜单名称">
+                        <span id="validate_menu" style="width: 185px;height: 32px;color: #666;">字数不超过4个汉字或8个字母</span>
+                    </div>
+                    <!-- 选择动作 -->
+                    <div class="action-select">
+                        <span style="line-height: 14px;font-size: 14px;color: #666666;">选择动作</span>
+                        <div id="send-msg" data-id="send" style="width: 91px;cursor: pointer;">
+                            <span class="action-select-icon action-select-icon-checked"></span>
+                            <span style="line-height: 14px;font-size: 14px;color: #368bfe;">发送消息</span>
+                        </div>
+                        <div id="jump-page" data-id="jump" style="width: 91px;cursor: pointer;">
+                            <span class="action-select-icon"></span>
+                            <span style="line-height: 16px;font-size: 14px;color: #666666;">跳转页面</span>
+                        </div>
+                        <div id="applets" data-id="applets" style="width: 75px;cursor: pointer;">
+                            <span class="action-select-icon"></span>
+                            <span style="line-height: 16px;font-size: 14px;color: #666666;">小程序</span>
+                        </div>
+                    </div>
+                    <!-- 发送消息 -->
+                    <div class="send-msg-operation">
+                        <!-- tab切换 -->
+                        <div class="send-msg-operation-tab">
+                            <div id="send-msg-operation-tab-0" data-id="click" class="send-msg-operation-item" onclick="checkAllText()">
+                                <span class="allText-icon"></span>
+                                <span style="color: #368bfe;font-size:14px;">纯文本</span>
+                            </div>
+                            <div id="send-msg-operation-tab-1" data-id="view_limited" class="send-msg-operation-item" onclick="checkPicText()">
+                                <span class="picText-icon"></span>
+                                <span style="color: #8d8d8d;font-size:14px;">图文信息</span>
+                            </div>
+                            <div id="send-msg-operation-tab-2" data-id="media_id" class="send-msg-operation-item" onclick="checkAllPic()">
+                                <span class="allPic-icon"></span>
+                                <span style="color: #8d8d8d;font-size:14px;">图片</span>
+                            </div>
+                        </div>
+                        <!-- 内容区域 -->
+                        <!-- 纯文本 -->
+                        <div id="show-allText">
+                            <textarea name="value" id="textarea-allText" placeholder="请在此输入文字内容"></textarea>
+                        </div>
+                        <!-- 图文 -->
+                        <div id="show-picText" style="display:none;">
+                            <div class="add-picText" onclick="picTextSelect('show')">
+                                <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                                    从素材库中选择</div>
+                                <div class="img-add"></div>
+                            </div>
+                        </div>
+                        <!-- 图片 -->
+                        <div id="show-allPic" style="display:none;">
+                            <div class="add-allPic" onclick="allPicSelect('show')">
+                                <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                                    从素材库中选择</div>
+                                <div class="img-add"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="applets-operation" style="display:none;" id="show-applets">
+                        <div style="padding:17px 15px;">
+                            <span style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">小程序Appid</span>
+                            <input class="applets" placeholder="请输入小程序APPID" type="text" id="applets-appid" value="{$appletsAppid}">
+                        </div>
+                        <div style="padding:17px 15px;">
+                            <span  style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">链接&nbsp;&nbsp;地&nbsp;址&nbsp;&nbsp;</span>
+                            <input class="applets" placeholder="请输入自定义链接" type="text" id="applets-page" value="{$appletsUrl}">
+                        </div>
+                    </div>
+                    <!-- 跳转页面 -->
+                    <div class="jump-page-operation" style="display:none;">
+                        <div style="padding:17px 15px;">
+                            <span style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">跳转方式</span>
+                            <select class="jump-page-select" name="" id="">
+                                <option value="自定义链接" selected="selected">自定义链接</option>
+                                <option value="商城">商城</option>
+                            </select>
+                        </div>
+                        <div id="link-value-div" style="padding:17px 15px;">
+                            <span  style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">链接名称</span>
+                            <span id="link-value-text" style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;"></span>
+                        </div>
+                        <div style="padding:17px 15px;">
+                            <span id="link-text" style="font-size: 14px;line-height: 14px;color: #666666;margin-right: 10px;">链接地址</span>
+                            <input class="custom-link" placeholder="请输入自定义链接" type="text" onkeydown="validateUrl(this)" onchange="validateUrl(this)">
+                            <p id="validateUrl-errors" style="color: red; display: none;">自定义链接过长可能无法使用，请转为短连接!</p>
+                            <div id="mall-link" style="display:none;" onclick="SelectMallLink()">点击选择商城链接</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <input type="hidden" name="media_id" value="">
+            <input type="hidden" name="mold" value="">
+        </div>
+            
+    </div>
+    <!-- 底部保存、同步 -->
+    <div class="publicMenu-footer" style="display:none;">
+        <span class="operation-save" onclick="saveOperation()">保存</span>
+        <span class="operation-synchronous" onclick="action_syncMenu()">立即同步</span>
+    </div>
+    <!-- 遮罩层 -->
+    <div id="mask" style="display:none;"></div>
+    <!-- 未保存提示弹窗 -->
+    <div id="NotSaved-edit" style="display:none;">
+        <div class="tuwenselect-edit-hd">
+            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                  onclick="$(`#NotSaved-edit`).hide(); $(`#mask`).hide();">X</span>
+        </div>
+        <div style="width: 200px;height: 93px;margin: 45px auto;">
+            <div style="font-size:16px;color: #666666;line-height: 16px;margin-bottom:30px; ">当前内容未保存,确定离开?</div>
+            <div style="font-size:14px;color: #666666;line-height: 14px;">如需保存,请点击前往保存。</div>
+            <div style="font-size:14px;color: #666666;line-height: 14px;">如需要,请点击直接离开。</div>
+        </div>
+        <div style="width: 212px;margin: 0 17px 0 auto;">
+            <span class="btn-confirm" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #ffffff;background-color: #368bfe;margin: 0px 8px;cursor: pointer;"
+                  onclick="$(`#NotSaved-edit`).hide(); $(`#mask`).hide();">前往保存</span>
+            <span class="btn-cancel" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #368bfe;background-color: #f6f9fe;border: 1px solid #368bfe;box-sizing: border-box;margin: 0px 8px;
+            cursor: pointer;"
+                  onclick="changeCancel()">直接离开</span>
+        </div>
+    </div>
+    <!-- 添加子菜单提示弹窗 -->
+    <div id="add-Submenu-edit" style="display:none;">
+        <div class="tuwenselect-edit-hd">
+            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                  onclick="$(`#add-Submenu-edit`).hide(); $(`#mask`).hide();">X</span>
+        </div>
+        <div style="width: 410px;height: 40px;margin: 55px auto 90px;font-size: 14px;color: #666666;">
+            当前主菜单已设置动作，若继续添加子菜单则清除主菜单动作内容,是否继续?
+        </div>
+        <div style="width: 212px;margin: 0 17px 0 auto;">
+            <span class="btn-confirm" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #ffffff;background-color: #368bfe;margin: 0px 8px;cursor: pointer;" onclick="childrenTip();$(`#add-Submenu-edit`).hide(); $(`#mask`).hide();">确定</span>
+            <span class="btn-cancel" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #368bfe;background-color: #f6f9fe;border: 1px solid #368bfe;box-sizing: border-box;margin: 0px 8px;
+            cursor: pointer;" onclick="$(`#add-Submenu-edit`).hide(); $(`#mask`).hide();">取消</span>
+        </div>
+    </div>
+    <!-- 删除菜单提示弹窗 -->
+    <div id="removeMenu-edit" style="display:none;">
+        <div class="tuwenselect-edit-hd">
+            <span style="font: size 16px;line-height: 16px;color: #666666;margin: 0 23px;">温馨提示</span>
+            <span style="line-height: 16px;font: size 16px;cursor: pointer;margin: 0 16px;"
+                  onclick="$(`#removeMenu-edit`).hide(); $(`#mask`).hide();">X</span>
+        </div>
+        <div style="width: 327px;height: 40px;margin: 55px auto 90px;font-size: 14px;color: #666666;">
+            <span>点击确定，“</span><span id="menu_name">菜单名称</span><span>”菜单下的内容将一起被删除。</span>
+
+        </div>
+        <div style="width: 212px;margin: 0 17px 0 auto;">
+            <span class="btn-confirm" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #ffffff;background-color: #368bfe;margin: 0px 8px;cursor: pointer;" onclick="removeMenu()">确定</span>
+            <span class="btn-cancel" style="display: inline-block;width: 84px;height: 34px;line-height: 32px;text-align: center;
+            font-size: 14px;color: #368bfe;background-color: #f6f9fe;border: 1px solid #368bfe;box-sizing: border-box;margin: 0px 8px;
+            cursor: pointer;" onclick="$(`#removeMenu-edit`).hide(); $(`#mask`).hide();">取消</span>
+        </div>
+    </div>
+</div>
+<script>
+    function validateUrl(obj){
+        var val = $(obj).val();
+        if(val.length > 120){
+            console.log(11111111111111)
+            $("#validateUrl-errors").show();
+        }
+    }
+    var mainMenu = 0;
+    var subMenu = [0, 0, 0];
+    var menu = {$menu_json};
+    var menuData = menu;
+    //初始化菜单
+    function incMenu()
+    {
+        //如果已存在菜单时
+        if (menu.length > 0) {
+            var count = menu.length < 3 ? menu.length : 3;
+            for (let i = 0; i < 3 && i < count; i++){
+                let theIn = menu[i];
+                var f = eval('addMenu'+i);
+                f(theIn);
+                $('input[name=media_id]').data('image',menu[i].media_id);
+                $('input[name=media_id]').data('news',menu[i].media_id);
+                $('input[name=media_id]').data('miniprogram',menu[i].media_id);
+                if (menu[i].childrens && menu[i].childrens.length > 0){
+                    for (let a = 0; a < 5 && a < menu[i].childrens.length; a++){
+                        let theInChildren = menu[i].childrens[a];
+                        addSubMenu(i,theInChildren,true,false)
+                        $('input[name=media_id]').data('image',menu[i].childrens[a].media_id);
+                        $('input[name=media_id]').data('news',menu[i].childrens[a].media_id);
+                        $('input[name=media_id]').data('miniprogram',menu[i].childrens[a].media_id);
+                    }
+                }
+            }
+            // MenuDetailLoading(count - 1, -1);
+        }
+    }
+    incMenu();
+    //右侧菜单加载
+    function MenuDetailLoading(id, index)
+    {
+        //进行切换提示
+        $('input[name=mold]').data('id',id);
+        $('input[name=mold]').data('cid',index);
+        if (index === -1 && menu[id]) {
+            MenuShow(menu[id])
+        } else if (index !== -1 && menu[id] && menu[id].childrens && menu[id].childrens[index]){
+            MenuShow(menu[id].childrens[index])
+        } else {
+            MenuShow()
+        }
+    }
+    $('#operation-remove').click(function(){
+        var singlePage = getIndexMenu();
+        if (singlePage) {
+            $('#menu_name').text(singlePage.name);
+            $('#removeMenu-edit').show();
+            $(`#mask`).show();
+        } else {
+            var id = $('input[name=mold]').data('id');
+            var cid = $('input[name=mold]').data('cid');
+            mainMenu--;
+            if (cid > -1) {
+                iniMenu();
+                incMenu();
+                MenuShow('hide');
+                $(`#sub-menu${id}`).show();
+            } else {
+                //重定义菜单
+                iniMenu();
+                incMenu();
+                MenuShow('hide');
+                if (menu.length == 0){
+                    $('#addmenu-0').addClass('mainMenu-active');
+                     $('input[name=mold]').data('id',0);
+                     $('input[name=mold]').data('cid',-1);
+                } else if (menu.length == 1){
+                    mainMenu = 1;
+                } else if (menu.length == 2){
+                    mainMenu = 2;
+                     $('input[name=mold]').data('id',1);
+                     $('input[name=mold]').data('cid',-1);
+                }
+            }
+            return false;
+        }
+    })
+    function removeMenu()
+    {
+        var id = $('input[name=mold]').data('id');
+        var cid = $('input[name=mold]').data('cid');
+        var singlePage = getIndexMenu();
+        $.post('{$Think.const.CONTROLLER_NAME}/deleteMenu', {id : singlePage.id}, function (response) {
+            $.dialog.tips(response.message);
+            if(response.code == 0) {
+                if (cid > -1) {
+                    menu[id]['childrens'].splice(cid,1);
+                    iniMenu();
+                    incMenu();
+                    MenuShow('hide');
+                    $(`#sub-menu${id}`).show();
+                } else {
+                    menu.splice(id,1);
+                    //重定义菜单
+                    iniMenu();
+                    incMenu();
+                    MenuShow('hide');
+                    if (menu.length == 0){
+                        $('#addmenu-0').addClass('mainMenu-active');
+                    } else if (menu.length == 1){
+                        mainMenu = 1
+                    }
+                }
+            }
+            $('#removeMenu-edit').hide();
+            $(`#mask`).hide();
+        },'json')
+    }
+    function iniMenu()
+    {
+        var html = `<div class="addmenu-box">
+                            <span class="addmenu-icon"></span>
+                            <span class="addmenu-text">添加菜单</span>
+                        </div>`;
+        $('#addmenu-1,#addmenu-2').remove();
+        $('#sub-menu0 > .submenu-box,#sub-menu1 > .submenu-box,#sub-menu2 > .submenu-box').empty();
+        $('#sub-menu1,#sub-menu2,#sub-menu3').hide();
+        $('#addBtn-subMenu2,#addBtn-subMenu1,#addBtn-subMenu3').show();
+        $('#addmenu-0').css('width','').html(html);
+
+        mainMenu = 0;
+        subMenu = [0, 0, 0];
+    }
+    function MenuShow(menu = null){
+        toggleForMsgAndPage(true)
+        $('.custom-link').val('');
+        checkAllText();
+        $("textarea[name=value]").val('');
+        $('input[name=media_id]').data('image','');
+        $('input[name=media_id]').data('news','');
+        $('#show-picText').html(`<div class="add-picText" onclick="picTextSelect('show')">
+                                <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                                    从素材库中选择</div>
+                                <div class="img-add"></div>
+                            </div>`)
+        $('#show-allPic').html(`<div class="add-allPic" onclick="allPicSelect('show')">
+                                <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                                    从素材库中选择</div>
+                                <div class="img-add"></div>
+                            </div>`)
+        $('.action-select,.send-msg-operation').show();
+        $('#validate_menu').text('字数不超过4个汉字或8个字母');
+        //擦除跳转页面
+        $('.jump-page-operation div').show();
+        $('.jump-page-operation #link-value-div > #link-value-text').text('');
+        $('.jump-page-operation #link-value-div').hide();
+        $('.jump-page-operation div > #mall-link').hide();
+        $(".jump-page-select > option").attr('selected','');
+        $(".jump-page-select > option:first").attr('selected','selected');
+        $(".custom-link").removeAttr("readonly");
+        if (menu === null || menu === 'hide') {
+            //新增,初始化
+            $('#mainMenuName-change-input').val('菜单名称');
+            if (menu === 'hide'){
+                $('.mainMenu-active').removeClass('mainMenu-active');
+                $('#sub-menu1,#sub-menu2,#sub-menu0').hide();
+                $('#operation-content').hide();
+                $('input[name=mold]').data('id','');
+                $('input[name=mold]').data('cid','');
+                return false;
+            } else {
+                if ($('input[name=mold]').data('cid') != -1) {
+                    $('#validate_menu').text('字数不超过8个汉字或16个字母');
+                }
+            }
+        } else {
+            if ($('input[name=mold]').data('cid') != -1) {
+                $('#validate_menu').text('字数不超过8个汉字或16个字母');
+            }
+            $('#mainMenuName-change-input').val(menu.name);
+            $('#show-picText').html(`<div class="add-picText" onclick="picTextSelect('show')">
+                                <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                                    从素材库中选择</div>
+                                <div class="img-add"></div>
+                            </div>`)
+            $('#show-allPic').html(`<div class="add-allPic" onclick="allPicSelect('show')">
+                                <div style="width: 100%;font-size: 16px;line-height: 16px;text-align: center;color: #666666;margin: 55px 0 26px;">
+                                    从素材库中选择</div>
+                                <div class="img-add"></div>
+                            </div>`)
+            if (menu.type == 'view'){
+                toggleForMsgAndPage(false)
+                if (menu.view_title && menu.view_title != ''){
+                    $('.jump-page-operation #link-value-div > #link-value-text').text(menu.view_title);
+                    $('.jump-page-operation #link-value-div').show();
+                    $(".jump-page-select > option").attr('selected','');
+                    $(".jump-page-select > option:last").attr('selected','selected');
+                    $(".custom-link").attr("readonly","readonly");
+                    $('#mall-link').show();
+                }
+                $('.custom-link').val(menu.value);
+                $('input[name=media_id]').data('image','');
+                $('input[name=media_id]').data('news','');
+            } else if(menu.type == 'miniprogram'){
+                toggleForMsgAndPage(2);
+                initMiniprogram(menu.content, menu.value);
+            }else {
+                toggleForMsgAndPage(true)
+                $('.custom-link').val('');
+                $("textarea[name=value]").val('');
+                //如果是文字
+                if (menu.type == 'click'){
+                    checkAllText()
+                    $("textarea[name=value]").val(menu.value);
+                    $('input[name=media_id]').data('image','');
+                    $('input[name=media_id]').data('news','');
+                }
+                //如果是图文
+                if (menu.type == 'view_limited'){
+                    checkPicText()
+                    //获取已选择的图文信息
+                    getSingleMaterial('news',menu.media_id);
+                    $('input[name=media_id]').data('image','');
+                }
+                //如果是图片
+                if (menu.type == 'media_id'){
+                    checkAllPic()
+                    getSingleMaterial('image',menu.media_id);
+                    $('input[name=media_id]').data('news','');
+                }
+            }
+            if (menu && menu.parent_id == 0 && menu.childrens && menu.childrens.length > 0) {
+                $('.action-select,.send-msg-operation').hide();
+                $('.jump-page-operation div').hide();
+            }
+        }
+        $('#operation-content').show();
+    }
+    // 获取素材库单个信息
+    function getSingleMaterial(Material,mediaId) {
+        $.post('ComMaterialLibrary/materialSingleData', {material: Material, media_id: mediaId}, function (response) {
+            $('input[name=media_id]').data(Material,response.data.media_id);
+            if (Material === 'image') {
+                var html = `<div class="tupianbox-item" style="margin: 15px auto 15px 30px;" onclick="allPicSelect('show')">
+
+                                    <div class="tupianbox-item-mask" style="display:none;">
+                                        <div class="tupianbox-item-checked"></div>
+                                    </div>
+                                    <p class="tupian-name">${response.data.name}</p>
+                                    <div class="tupian-img" style="height: 155px;">
+                                        <img src="${response.data.local_thumb_url}" alt="">
+                                    </div>
+                                </div>`;
+                $("#show-allPic").html(html);
+            } else if (Material === 'news') {
+                if (response.data.childrens.length > 1) {
+                    var first_children = 0;
+                    for (let j = 0; j < response.data.childrens.length; j++) {
+                        if (j == 0) {
+                            first_children = response.data.id;
+                            var html = `<div class="tuwenbox-item" style="margin: 15px auto 15px 30px;"data-id="${response.data.id}" onclick="picTextSelect('show')">
+                                        <div class="tuwenbox-item-mask" style="display:none;">
+                                            <div class="tuwenbox-item-checked"></div>
+                                        </div>
+                                        <p class="tuwen-title" title=${response.data.childrens[0].title}>${response.data.childrens[0].title}</p>
+                                        <div class="tuwen-img" style="height: 85px;">
+                                            <img src="${response.data.childrens[0].local_thumb_url}" alt="">
+                                        </div>
+                                        <div class="tuwen-children">
+
+                                        </div>
+
+                                        <div class="tuwen-item-more">
+                                            <div class="tuwen-item-more-box"></div>
+                                            <div class="tuwen-tool">
+                                                <span class="tuwen-lastupdata">${response.data.updated_at}</span>
+                                                <div>
+                                                    <span id="btn-iseen-0" class="icon-btn-iseen" title="更多内容"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="width:100%;height:30px;"></div>
+                                    </div>`;
+                            $("#show-picText").html(html);
+                        } else {
+                            var style = '';
+                            if (j > 1) {
+                                style = "style=\"display:none\"";
+                            }
+                            var html_children = `<div class="tuwen-item" ${style}>
+                                                <div class="tuwen-item-title" title="${response.data.childrens[j].title}" style="background-color:#fff">${response.data.childrens[j].title}</div>
+                                                <div class="tuwen-item-img">
+                                                    <img style="width: 100%;height: 100%;" src="${response.data.childrens[j].local_thumb_url}" alt="">
+                                                </div>
+                                            </div>`;
+                            $('#show-picText .tuwenbox-item[data-id=' + first_children + '] > .tuwen-children').append(html_children)
+                        }
+                    }
+
+                } else {
+                    var html = `<div class="tuwenbox-item"  style="margin: 15px auto 15px 30px;"  data-id="${response.data.id}"  onclick="picTextSelect('show')">
+                                    <div class="tuwenbox-item-mask" style="display:none;">
+                                    <div class="tuwenbox-item-checked"></div>
+                                    </div>
+                                    <p class="tuwen-title" title=${response.data.childrens[0].title}>${response.data.childrens[0].title}</p>
+                                    <div class="tuwen-img" style="height: 145px;">
+                                    <img style="width: 100%;height: 100%;" src="${response.data.childrens[0].local_thumb_url}" alt="">
+                                    </div>
+                                    <div class="tuwen-tool">
+                                    <span class="tuwen-lastupdata">${response.data.updated_at}</span>
+                                    </div>
+                                    </div>`;
+                    $("#show-picText").html(html)
+                }
+            }
+        },'json');
+    }
+    // 创建主菜单一
+    function addMenu0(menu,change = true) {
+        var name = menu ?　menu.name : '菜单名称';
+        if ( ( mainMenu > 0 && toggleValidate() ) || mainMenu == 0 || !change) {
+            MenuDetailLoading(0, -1);
+        } else {
+            changeValue(0, -1);
+            return false;
+        }
+        if (mainMenu == 0) {
+            $("#addmenu-0").html(`<span style="font-size: 14px;color: #368bfe;">${name}</span>`);
+            $("#addmenu-0").width(126);
+            $("#view-footer").append(`<div id="addmenu-1" onclick="addMenu1()" class="addmenu-icon-btn"><span class="addmenu-icon-gray"></span></div>`);
+            $("#sub-menu0").show();
+            mainMenu = 1;
+        } else if ( mainMenu == 1){
+            $("#sub-menu0").show();
+            $("#addmenu-0").addClass("mainMenu-active");
+            $(`#sub-menu0`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        } else if (mainMenu == 2) {
+            $("#addmenu-0").addClass("mainMenu-active");
+            $("#addmenu-1").removeClass("mainMenu-active");
+            $("#addmenu-2").removeClass("mainMenu-active");
+            $("#sub-menu0").width(80);
+            $("#sub-menu0").show()
+            $("#sub-menu1").hide();
+            $("#sub-menu2").hide();
+            $(`#sub-menu0`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        } else if (mainMenu == 3) {
+            $("#addmenu-0").addClass("mainMenu-active");
+            $("#addmenu-1").removeClass("mainMenu-active");
+            $("#addmenu-2").removeClass("mainMenu-active");
+            $("#sub-menu0").width(80);
+            $("#sub-menu0").show();
+            $("#sub-menu1").hide();
+            $("#sub-menu2").hide();
+            $(`#sub-menu0`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        }
+        $("#operation-init").hide();
+        $("#operation-content").show();
+        $(".publicMenu-footer").show();
+    }
+    // 创建主菜单二
+    function addMenu1(menu,change = true) {
+        var name = menu ?　menu.name : '菜单名称';
+        if ( ( mainMenu > 1 && toggleValidate() ) || mainMenu == 1  || !change) {
+            MenuDetailLoading(1, -1);
+        } else {
+            changeValue(1, -1);
+            return false;
+        }
+        if (mainMenu == 1) {
+            $("#addmenu-0").width(78);
+            $("#addmenu-0").removeClass("mainMenu-active");
+            $("#addmenu-1").addClass("mainMenu-active");
+            $("#addmenu-1").width(79);
+            $("#addmenu-1").html(`<span style="font-size: 14px;color: #368bfe;">${name}</span>`);
+            $("#view-footer").append(`<div id="addmenu-2" onclick="addMenu2()" class="addmenu-icon-btn"><span class="addmenu-icon-gray"></span></div>`);
+            $("#addmenu-2").width(80);
+            $("#sub-menu0").hide();
+            $("#sub-menu1").show();
+            mainMenu = 2;
+        } else if (mainMenu == 2) {
+            $("#addmenu-0").removeClass("mainMenu-active");
+            $("#addmenu-1").addClass("mainMenu-active");
+            $("#addmenu-2").removeClass("mainMenu-active");
+            $("#sub-menu0").hide();
+            $("#sub-menu1").show();
+            $("#sub-menu2").hide();
+            $(`#sub-menu1`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        } else if (mainMenu == 3) {
+            $("#addmenu-0").removeClass("mainMenu-active");
+            $("#addmenu-1").addClass("mainMenu-active");
+            $("#addmenu-2").removeClass("mainMenu-active");
+            $("#sub-menu0").hide();
+            $("#sub-menu1").show();
+            $("#sub-menu2").hide();
+            $(`#sub-menu1`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        }
+    }
+    // 创建主菜单三
+    function addMenu2(menu,change = true) {
+        var name = menu ?　menu.name : '菜单名称';
+        if ( ( mainMenu > 2 && toggleValidate() ) || mainMenu == 2   || !change) {
+            MenuDetailLoading(2, -1);
+        } else {
+            changeValue(2, -1);
+            return false;
+        }
+        if (mainMenu == 2) {
+            $("#addmenu-0").removeClass("mainMenu-active");
+            $("#addmenu-1").removeClass("mainMenu-active");
+            $("#addmenu-2").html(`<span style="font-size: 14px;color: #368bfe;">${name}</span>`);
+            $("#addmenu-2").addClass("mainMenu-active");
+            $("#sub-menu0").hide();
+            $("#sub-menu1").hide();
+            $("#sub-menu2").show();
+            mainMenu = 3;
+        } else if (mainMenu == 3) {
+            $("#addmenu-0").removeClass("mainMenu-active");
+            $("#addmenu-1").removeClass("mainMenu-active");
+            $("#addmenu-2").addClass("mainMenu-active");
+            $("#sub-menu0").hide();
+            $("#sub-menu1").hide();
+            $("#sub-menu2").show();
+            $(`#sub-menu2`).find(".submenu-box").find(".submenu-icon-btn").removeClass("mainMenu-active");
+        }
+    }
+    function childrenTip() {
+        var menu_id = $("#add-Submenu-edit").data('id');
+        addSubMenu(menu_id,false,false,false);
+    }
+    // 增加子菜单
+    function addSubMenu(id, menu,ini = false,tip = true) {
+        if (toggleValidate()) {
+            var name = menu ? menu.name : '菜单名称';
+            if (tip && menuData[id] && subMenu[id] == 0){
+                $("#add-Submenu-edit").data('id',id);
+                $("#add-Submenu-edit").show();
+                $(`#mask`).show();
+                return false;
+            }
+
+            if (subMenu[id] < 4) {
+                if (!ini){
+                    $(`#sub-menu${id}`).find(".submenu-box").append(`<div class="submenu-icon-btn mainMenu-active" data-id="${subMenu[id]}" style="border-bottom:none;" onclick="onSubMenu(${id},${subMenu[id]})"><span class="submenu-text">${name}</span></div>`);
+                } else {
+                    $(`#sub-menu${id}`).find(".submenu-box").append(`<div class="submenu-icon-btn " data-id="${subMenu[id]}" style="border-bottom:none;" onclick="onSubMenu(${id},${subMenu[id]})"><span class="submenu-text">${name}</span></div>`);
+                }
+
+                onSubMenu(id, subMenu[id],true)
+                subMenu[id] = subMenu[id] + 1;
+                return false;
+            } else if (subMenu[id] == 4) {
+                if (!ini){
+                    $(`#sub-menu${id}`).find(".submenu-box").append(`<div class="submenu-icon-btn mainMenu-active" data-id="${subMenu[id]}" onclick="onSubMenu(${id},${subMenu[id]})"><span class="submenu-text">${name}</span></div>`);
+                } else {
+                    $(`#sub-menu${id}`).find(".submenu-box").append(`<div class="submenu-icon-btn " data-id="${subMenu[id]}" onclick="onSubMenu(${id},${subMenu[id]})"><span class="submenu-text">${name}</span></div>`);
+                }
+                $(`#sub-menu${id}`).find(`#addBtn-subMenu${id}`).hide();
+                onSubMenu(id, subMenu[id],true)
+                return false;
+            }
+        }
+        if (!ini){
+            onSubMenu(id, subMenu[id],true)
+        }
+    }
+    // 选中操作子菜单名称
+    function onSubMenu(id, index,change = true) {
+        if (!change || toggleValidate(1) ){
+            MenuDetailLoading(id, index);
+        } else {
+            changeValue(id, index);
+            return false;
+        }
+        $(`#sub-menu${id}`).find(".submenu-box").find(`.submenu-icon-btn`).removeClass("mainMenu-active");
+        $(`#sub-menu${id}`).find(".submenu-box").find(`.submenu-icon-btn[data-id=${index}]`).addClass("mainMenu-active");
+        $(`#addmenu-${id}`).removeClass("mainMenu-active");
+    }
+    function getIndexMenu(){
+        var id = $('input[name=mold]').data('id');
+        var cid = $('input[name=mold]').data('cid');
+        if (cid > -1 && menu[id]['childrens'] && menu[id]['childrens'][cid]) {
+            singlePage = menu[id]['childrens'][cid];
+        } else if (cid == -1 && menu[id]){
+            singlePage = menu[id];
+        } else {
+            singlePage = false;
+        }
+        return singlePage;
+    }
+    function toggleValidate(bool){
+        var id = $('input[name=mold]').data('id');
+        var cid = $('input[name=mold]').data('cid');
+        if (id == '' && cid == '') {
+            return true;
+        }
+
+        var name = $('input[name=menu_name]').val();
+        if(cid == -1  && menu[id] && menu[id].childrens && menu[id].childrens.length > 0){
+            if (name == menu[id].name){
+                return true;
+            } else {
+                return false;
+            }
+        }
+        var toggleAction = $('.action-select-icon-checked').parent('div').data('id');
+        var type = '';
+        var value = '';
+        var media_id = '';
+        var url = '';
+        var singlePage = {};
+        if (toggleAction == 'jump') {
+            url = $('.custom-link').val();
+            type = 'view';
+            if (cid > -1 && menu[id] && menu[id]['childrens']) {
+                singlePage = menu[id]['childrens'][cid];
+            } else if(menu[id]){
+                singlePage = menu[id];
+            }
+            if (singlePage){
+                if (name == singlePage.name && type == singlePage.type && singlePage.value == url ){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            if (cid > -1 && menu[id] && menu[id]['childrens']) {
+                singlePage = menu[id]['childrens'][cid];
+            } else  if(menu[id]){
+                singlePage = menu[id];
+                if (singlePage && menu.childrens && menu.childrens.length > 0){
+                    if (name == singlePage.name){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            if (!singlePage){
+                return false;
+            }
+            if ($("#show-allText").is(':visible')) {
+                type = 'click';
+                value = $("textarea[name=value]").val();
+                if (name == singlePage.name && type == singlePage.type && singlePage.value == value ){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                if ($("#show-picText").is(':visible')){
+                    type = 'view_limited';
+                    media_id = $('input[name=media_id]').data('news');
+                } else if ($("#show-allPic").is(':visible')){
+                    type = 'media_id';
+                    media_id = $('input[name=media_id]').data('image');
+                }else if($("#show-applets").is(':visible')){
+                    type = 'miniprogram';
+                    media_id = $('input[name=media_id]').data('miniprogram');
+                }
+
+                if (name == singlePage.name && type == singlePage.type && singlePage.media_id == media_id ){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+    // 保存操作
+    var str;
+    function saveOperation() {
+        var id = $('input[name=mold]').data('id');
+        var cid = $('input[name=mold]').data('cid');
+
+        // 获取输入内容
+        str = $("#mainMenuName-change-input").val().replace(/(^\s+)|(\s+$)/g, "");
+        if (str == "") {
+            $.dialog.alert("菜单名称不能为空!!");
+            return false;
+        }
+        if (!str.match(/^[\u4e00-\u9fa5a-zA-Z0-9]{0,4}$|^[\a-zA-Z0-9]{0,8}$/) && cid == -1) {
+            $.dialog.alert("只能输入0-4个汉字或者0-8个字母、数字");
+            return false;
+        }
+        if (!str.match(/^[\u4e00-\u9fa5a-zA-Z0-9]{0,8}$|^[\a-zA-Z0-9]{0,16}$/) && cid > -1) {
+            $.dialog.alert("只能输入0-8个汉字或者0-16个字母、数字");
+            return false;
+        }
+        var toggleAction = $('.action-select-icon-checked').parent('div').data('id');
+        console.log(toggleAction);
+        var type = '';
+        var value = '';
+        var media_id = '';
+        var url = '';
+        var view_title = '';
+        var singlePage = {};
+        var changeValue = {};
+        if (cid == -1 && menu[id] && menu[id].childrens.length > 0) {
+            changeValue = {
+                name : str,
+            }
+        } else {
+            if (toggleAction == 'jump') {
+                url = $('.custom-link').val();
+                if ($('#link-value-div').is(':visible')){
+                    view_title = $('#link-value-text').text();
+                } else {
+                    view_title = '';
+                }
+                type = 'view';
+                if (url == '') {
+                    $.dialog.alert("链接地址不能为空!");
+                    return false;
+                }
+                changeValue = {
+                    name : str,
+                    type : type,
+                    value_view : url,
+                    view_title : view_title
+                }
+            } else if(toggleAction == 'applets'){
+                var appid = $("#applets-appid").val();
+                var url  =$("#applets-page").val();
+                if(appid == '' || appid == undefined || appid.length == 0){
+                    $.dialog.alert("小程序Appid不能为空!");
+                    return false;
+                }
+
+                if(url == '' || url == undefined || url.length == 0){
+                    $.dialog.alert("小程序跳转地址不能为空!");
+                    return false;
+                }
+
+                changeValue = {
+                    type : 'miniprogram',
+                    name : str,
+                    value_miniprogram : url,
+                    content : appid
+                }
+            }else {
+                if ($("#show-allText").is(':visible')) {
+                    type = 'click';
+                    value = $("textarea[name=value]").val();
+                    if (value == '') {
+                        $.dialog.alert("纯文本不能为空");
+                        return false;
+                    }
+                    changeValue = {
+                        name : str,
+                        type : type,
+                        value_click : value
+                    }
+                } else {
+                    if ($("#show-picText").is(':visible')){
+                        type = 'view_limited';
+                        media_id = $('input[name=media_id]').data('news');
+                        changeValue = {
+                            name : str,
+                            type : type,
+                            value_view_limited : media_id
+                        }
+                    } else if ($("#show-allPic").is(':visible')){
+                        type = 'media_id';
+                        media_id = $('input[name=media_id]').data('image');
+                        changeValue = {
+                            name : str,
+                            type : type,
+                            value_media_id : media_id
+                        }
+                    }
+
+                }
+            }
+        }
+
+        if (cid > -1) {
+            singlePage = '';
+            if (!menu[id]['childrens'] || !menu[id]['childrens'][cid]){
+                changeValue.parent_id = menu[id]['id'];
+            } else {
+                singlePage = menu[id]['childrens'][cid];
+                changeValue.id = menu[id]['childrens'][cid]['id'];
+            }
+        } else {
+            singlePage = menu[id];
+            if (!singlePage){
+                changeValue.parent_id = 0;
+            } else {
+                if (singlePage && singlePage.childrens && singlePage.childrens.length > 0){
+                    changeValue = {
+                        name : str,
+                        id : singlePage['id']
+                    }
+                } else {
+                    changeValue.id = singlePage['id'];
+                }
+            }
+        }
+        if (singlePage) {
+            $.post('{$Think.const.CONTROLLER_NAME}/update',changeValue,function(response){
+                if (response.code == 0) {
+                    //添加至data
+                    if (cid > -1) {
+                        menu[id]['childrens'][cid] = response.message;
+                        $(`.mainMenu-active`).find("span").text(str);
+                    } else {
+                        var children = menu[id].childrens;
+                        menu[id] = response.message;
+                        menu[id]['childrens'] = children;
+                        $(`#addmenu-${id}`).find("span").text(str);
+                    }
+                    $.dialog.tips("保存成功!");
+                    return false;
+                } else {
+                    $.dialog.alert(response.message);
+                    return false;
+                }
+            },'json')
+        } else {
+            $.post('{$Think.const.CONTROLLER_NAME}/add',changeValue,function(response){
+                if (response.code == 0){
+                    if (cid > -1) {
+                        menu[id]['childrens'][cid] =response.message;
+                        $(`.mainMenu-active`).find("span").text(str);
+                    } else {
+                        menu[id] = response.message;
+                        menu[id]['childrens'] = [];
+                        $(`#addmenu-${id}`).find("span").text(str);
+                    }
+                    $.dialog.tips("保存成功!");
+                    return false;
+                } else {
+                    $.dialog.alert(response.message);
+                    return false;
+                }
+            },'json')
+        }
+
+    }
+    function action_syncMenu(){
+        $.post("./WxMenu/sync", {}, function(result){
+            if (result.code === 0){
+                $.dialog.alert("同步成功！");
+            }else{
+                $.dialog.tips(result.message);
+            }
+        }, "json")
+    }
+    //数据修改处理
+    function changeValue(id, index)
+    {
+        $('#NotSaved-edit').data({id:id,index:index});
+        $('#NotSaved-edit').show();
+        $(`#mask`).show();
+    }
+    function changeCancel() {
+        var id = $('#NotSaved-edit').data('id');
+        var index = $('#NotSaved-edit').data('index');
+        if (index > -1) {
+            if (menu[id] && !menu[id]['childrens']) {
+                $.dialog.tips('当前只有该子菜单,请先进行保存!')
+                return false;
+            } else {
+                iniMenu();
+                incMenu();
+                MenuShow('hide');
+                if (menu[id]) {
+                    $(`#sub-menu${id}`).show();
+                    onSubMenu(id, index,false)
+                }
+            }
+            $('#NotSaved-edit').hide();
+            $(`#mask`).hide();
+        } else  {
+            //判断是否只剩下一个
+            if (menu.length == 0){
+                $.dialog.tips('当前只有该主菜单,请先进行保存!')
+                return false;
+            } else {
+                mainMenu--;
+                iniMenu();
+                incMenu();
+                if (menu.length == 1){
+                    $('#addmenu-0').addClass('mainMenu-active');
+                    $('#sub-menu0 > .submenu-box > .submenu-icon-btn').removeClass('mainMenu-active');
+                    $('input[name=mold]').data('id',0);
+                    $('input[name=mold]').data('cid',-1);
+                } else if (menu.length == 2){
+                    $('input[name=mold]').data('id',1);
+                    $('input[name=mold]').data('cid',-1);
+                }
+                var f = eval('addMenu'+id);
+                f();
+                MenuDetailLoading(id, -1);
+                $('#NotSaved-edit').hide();
+                $(`#mask`).hide();
+            }
+        }
+    }
+    // 发送消息/跳转页面 切换功能
+    $("#send-msg").on("click", function () {
+        toggleForMsgAndPage(true)
+    })
+    $("#jump-page").on("click", function () {
+        toggleForMsgAndPage(false)
+    })
+    // 发送消息/跳转页面 切换功能
+    $("#applets").on("click", function () {
+        toggleForMsgAndPage(2)
+    });
+
+    // appid小程序 ， page小程序路径 bool true 有值就不渲染
+    function initMiniprogram(appid, page, bool){
+        if(bool == true){
+            if($("#applets-appid").val()){
+                return ;
+            }
+        }
+
+        $("#applets-appid").val(appid);
+        $("#applets-page").val(page);
+    }
+
+    function toggleForMsgAndPage(toggle) {
+        if(toggle == 2){
+            initMiniprogram("{$appletsAppid}", "{$appletsUrl}", true);
+            $("#applets").find(".action-select-icon").addClass("action-select-icon-checked");
+            $("#applets").find("span").eq(1).css("color","#368bfe");
+
+            $("#send-msg").find(".action-select-icon").removeClass("action-select-icon-checked");
+            $("#send-msg").find("span").eq(1).css("color","#666666");
+            $("#jump-page").find(".action-select-icon").removeClass("action-select-icon-checked");
+            $("#jump-page").find("span").eq(1).css("color","#666666");
+            $(".send-msg-operation").hide();
+            $(".jump-page-operation").hide();
+            $('.applets-operation').show();
+            return false;
+        }
+        if (!toggle){
+            // 按钮样式切换
+            $("#jump-page").find(".action-select-icon").addClass("action-select-icon-checked");
+            $("#jump-page").find("span").eq(1).css("color","#368bfe");
+            $("#send-msg").find(".action-select-icon").removeClass("action-select-icon-checked");
+            $("#send-msg").find("span").eq(1).css("color","#666666");
+            $("#applets").find(".action-select-icon").removeClass("action-select-icon-checked");
+            $("#applets").find("span").eq(1).css("color","#666666");
+            // 区域显隐
+            $(".jump-page-operation").show();
+            $(".send-msg-operation").hide();
+            $('.applets-operation').hide();
+        } else {
+            // 按钮样式切换
+            $("#send-msg").find(".action-select-icon").addClass("action-select-icon-checked");
+            $("#send-msg").find("span").eq(1).css("color","#368bfe");
+            $("#jump-page").find(".action-select-icon").removeClass("action-select-icon-checked");
+            $("#jump-page").find("span").eq(1).css("color","#666666");
+            $("#applets").find(".action-select-icon").removeClass("action-select-icon-checked");
+            $("#applets").find("span").eq(1).css("color","#666666");
+            // 区域显隐
+            $(".send-msg-operation").show();
+            $(".jump-page-operation").hide();
+            $('.applets-operation').hide();
+        }
+    }
+    // 纯文本、图文、图片tab切换功能
+    function checkAllText() {
+        $("#show-allText").show();
+        $("#show-picText").hide();
+        $("#show-allPic").hide();
+        $("#send-msg-operation-tab-0").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText-on.png')");
+        $("#send-msg-operation-tab-0").find("span").eq(1).css("color", "#368bfe");
+        $("#send-msg-operation-tab-1").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText.png')");
+        $("#send-msg-operation-tab-1").find("span").eq(1).css("color", "#8d8d8d");
+        $("#send-msg-operation-tab-2").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic.png')");
+        $("#send-msg-operation-tab-2").find("span").eq(1).css("color", "#8d8d8d");
+    }
+    function checkPicText() {
+        $("#show-allText").hide();
+        $("#show-picText").show();
+        $("#show-allPic").hide();
+        $("#send-msg-operation-tab-1").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText-on.png')");
+        $("#send-msg-operation-tab-1").find("span").eq(1).css("color", "#368bfe");
+        $("#send-msg-operation-tab-0").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText.png')");
+        $("#send-msg-operation-tab-0").find("span").eq(1).css("color", "#8d8d8d");
+        $("#send-msg-operation-tab-2").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic.png')");
+        $("#send-msg-operation-tab-2").find("span").eq(1).css("color", "#8d8d8d");
+    }
+    function checkAllPic() {
+        $("#show-allText").hide();
+        $("#show-picText").hide();
+        $("#show-allPic").show();
+        $("#send-msg-operation-tab-2").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allPic-on.png')");
+        $("#send-msg-operation-tab-2").find("span").eq(1).css("color", "#368bfe");
+        $("#send-msg-operation-tab-1").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-picText.png')");
+        $("#send-msg-operation-tab-1").find("span").eq(1).css("color", "#8d8d8d");
+        $("#send-msg-operation-tab-0").find("span").eq(0).css("background-image", "url('__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-allText.png')");
+        $("#send-msg-operation-tab-0").find("span").eq(1).css("color", "#8d8d8d");
+    }
+    // 图文素材选择功能
+    function picTextSelect(obj) {
+        // $("#mask").show();
+        // $("#tuwen-select-edit").show();
+        createDialog(`WxMenu/material/material/news/obj/${obj}`, '图文选择','material-news-dialog');
+    }
+
+
+    // 图片素材选择功能
+    function allPicSelect(obj) {
+        // $("#mask").show();
+        // $("#tupian-select-edit").show();
+        createDialog(`{$Think.const.CONTROLLER_NAME}/material/material/image/obj/${obj}`, '图片选择','material-image-dialog');
+    }
+    // 选择商城链接弹窗
+    function SelectMallLink(){
+        // $("#MallLink-select-edit").show();
+        // $("#mask").show();
+        createDialog('{$Think.const.CONTROLLER_NAME}/showLink', '选择服务','material-link-dialog');
+    }
+    // 搜索框悬停效果
+    function queryIcon_bule() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+    function queryIcon_gray() {
+        $(".search_ipt img").attr("src", "__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
+    // 链接选择对应输入框变化效果
+    $(".jump-page-select").on("change",function(){
+        if($(".jump-page-select").val() == "自定义链接"){
+            console.log(21)
+            $("#link-text").show();
+            $(".custom-link").show();
+            $("#mall-link").hide();
+            $("#link-value-div").hide();
+            $(".custom-link").css("background-color","#ffffff");
+            $(".custom-link").removeAttr("readonly");
+        }else if($(".jump-page-select").val() == "商城"){
+            $("#link-text").show();
+            $(".custom-link").show();
+            $("#link-value-div").show();
+            $("#mall-link").show();
+            $(".custom-link").css("background-color","#f7f5f5");
+            $(".custom-link").attr("readonly","readonly");
+        }
+    })
+    // 商城页面、商品、推广tab切换功能
+    function MallClick(e){
+        $(e.target).addClass("on").siblings().removeClass("on");
+        $(`#Mall-page`).show();
+        $(`#Commodity-page`).hide();
+        $(`#Promotion-page`).hide();
+    }
+    function CommodityClick(e){
+        $(e.target).addClass("on").siblings().removeClass("on");
+        $(`#Mall-page`).hide();
+        $(`#Commodity-page`).show();
+        $(`#Promotion-page`).hide();
+    }
+    function PromotionClick(e){
+        $(e.target).addClass("on").siblings().removeClass("on");
+        $(`#Mall-page`).hide();
+        $(`#Commodity-page`).hide();
+        $(`#Promotion-page`).show();
+    }
+
+    function getMaterial(data){
+        console.log(data)
+    }
+</script>

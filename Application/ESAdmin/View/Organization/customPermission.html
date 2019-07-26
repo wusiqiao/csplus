@@ -1,0 +1,339 @@
+<style>
+    .chosen-container .chosen-results{max-height: 180px;}
+    /* 蓝色功能按钮 */
+    .btn_bg_blue{
+        display: inline-block;
+        width: 84px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        background-color: #529bfd;
+        color: #fff;
+        padding: 0px 20px;
+        margin: 10px 10px;
+        cursor: pointer;
+    }
+    .btn_bg_blue:hover{
+        background-color: #6eacfe;
+    }
+     /* 保存(确认)按钮 */
+     .btn_save_blue{
+            display: inline-block;
+            width: 84px;
+            height:34px;
+            line-height: 34px;
+            text-align: center;
+            background-color: #529bfd;
+            color: #fff;
+            padding: 0px 10px;
+            margin: 5px 10px;
+            cursor: pointer;
+        }
+        .btn_save_blue:hover{
+            background-color: #6eacfe;
+        }
+        /* 关闭(取消)按钮 */
+        .btn_close_gray{
+            display: inline-block;
+            width: 84px;
+            height:34px;
+            line-height: 34px;
+            text-align: center;
+            padding: 0px 10px;
+            margin: 5px 10px;
+            color: #333;
+            border:1px solid #d3d3d3;
+            cursor: pointer;
+        }
+        .btn_close_gray:hover{
+            border:1px solid #6eacfe;
+        }
+</style>
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+<link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.MODULE_PATH}/Public/css/newset.css" />
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form action="__CONTROLLER__/customPermission" id="{$Think.const.CONTROLLER_NAME}-dataform" method="post" name="{$Think.const.CONTROLLER_NAME}-dataform">
+        <div class="tableForm" style="width:800px;">
+
+            <div id="tt" class="easyui-tabs" style="height:360px">
+                <!--<div title="用户" >
+                        <div style="height:260px;">
+                            <table class="search-table search-staff">
+                                <tr>
+                                    <th style="padding-left: 20px">昵称：</th>
+                                    <td>
+                                        <input name="ql-name" class="easyui-validatebox filter-field" value="" placeholder="请输入昵称" style="width: 160px;margin-left: 10px"/>
+                                    </td>
+                                    <th style="padding-left: 20px">绑定手机：</th>
+                                    <td>
+                                        <input name="ql-mobile" class="easyui-validatebox filter-field" value="" placeholder="请输入绑定手机" style="width: 160px;;margin-left: 10px"/>
+                                    </td>
+                                    &lt;!&ndash;<th>分组：</th>
+                                    <td>
+                                        <select name="q-group_id" class="chosen-select filter-field" data-options="empty_line:false,search_async:true,search_key_url:'SysTargetGroup/keyNameList/'">
+                                            <option value="" selected>请选择分组</option>
+                                        </select>
+                                    </td> &ndash;&gt;
+                                    <th style="padding-left: 20px">标签：</th>
+                                    <td>
+                                        <select name="q-tag_id" class="chosen-select filter-field" data-options="empty_line:false,search_async:true,search_key_url:'SysTargetTag/keyNameList/'" style="width: 160px;margin-left: 10px">
+                                            <option value="" selected>请选择标签</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table id="customer-datagrid" class="easyui-datagrid datagrid" data-options="url:'Organization/customerList'">
+                                <thead>
+                                    <tr>
+                                        <th data-options="field:'id',hidden:true"></th>
+                                        <th field="ck" checkbox="true"></th>
+                                        <th data-options="field:'head_pic',width:80,align:'center',formatter:format_head_pic">头像</th>
+                                        <th data-options="field:'name',width:150,align:'center'">昵称</th>
+                                        <th data-options="field:'mobile',width:120,align:'center'">手机</th>
+                                        <th data-options="field:'comments',width:150,align:'center'">备注</th>
+                                        &lt;!&ndash;<th data-options="field:'group_name',width:100,align:'left'">分组</th>&ndash;&gt;
+                                        <th data-options="field:'tags_value',width:200,align:'left'">标签</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <table align="center">
+                                <tr>
+                                    <td>
+                                        <a href="javascript:void(0)" class="btn_bg_blue" plain="true" onclick="checkedUser()">确认选择</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>-->
+                    <div title="公司">
+                        <div style="height:260px;">
+                        <table class="search-table search-branch">
+                            <tr>
+                                <th>公司名称：</th>
+                                <td>
+                                    <input name="ql-branch_name" class="easyui-validatebox filter-field" value="" placeholder="请输入公司名称" />
+                                </td>
+                            </tr>
+                        </table>
+                        <!--<table id="company-datagrid" class="easyui-datagrid datagrid" data-options="url:'Organization/companyList'">-->
+                        <table id="company-datagrid" class="easyui-datagrid datagrid">
+                            <thead>
+                                <tr>
+                                    <th data-options="field:'id',hidden:true"></th>
+                                    <th field="ck" checkbox="true"></th>
+                                    <th data-options="field:'name',width:300,align:'left'">公司名称</th>
+                                    <th data-options="field:'contact',width:250,align:'left'">手机</th>
+                                    <th data-options="field:'linkman',width:200,align:'left'">联系人</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        </div>
+                        <div align="center">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <a href="javascript:void(0)" class="btn_bg_blue" plain="true" onclick="checkedCompany()">确认选择</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="checkedWrap">
+                <!--<div>
+                    <p>用户：</p>
+                    <div id="checkedUser" class="pBox" style="height:80px;width:780px;word-break:break-all;overflow-y:auto">
+&lt;!&ndash;                  		<span class="supSpan" data-id="">
+                 			<span class="spanBox">
+                 				<span class="txtSpan">客户a</span>
+                 			</span>
+                 			<span class="subSpan" onclick="delSpan(this)">x</span>
+                 		</span> &ndash;&gt;
+                    </div>
+                </div>-->
+                <div>
+                    <p>公司：</p>
+                    <div  id="checkedCompany" class="pBox" style="height:80px;width:780px;word-break:break-all;overflow-y:auto">
+                    	<!--<span class="supSpan" data-id="">
+                 			<span class="spanBox">
+                 				<span class="txtSpan">客户a</span>
+                 			</span>
+                 			<span class="subSpan" onclick="delSpan(this)">x</span>
+                 		</span>-->
+                    </div>
+                </div>
+            </div>
+    </form>
+    <div class="form-actions" id='Organization-form-actions' style="height:auto;">
+        <div class='actions-sysdefault'>
+            <a href="javascript:void(0)" class="btn_save_blue" plain="true" onclick="actionSavePermission()">保存</a>
+            <a href="javascript:void(0)" class="btn_close_gray" plain="true" onclick="closeDialog()">关闭</a>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+<script type="text/javascript">
+$(function() {
+    var $custom_actions = $('#Organization-actions-custom');
+    if ($custom_actions.length > 0) {
+        $custom_actions.appendTo($('#Organization-form-actions')).show();
+    }
+})
+
+function checkedUser() {
+    var html = '';
+    var rows = $("#customer-datagrid").datagrid('getSelections');
+    if(rows.length == 0){
+        $.dialog.tips("请至少选择一条记录");
+    }
+    var str = "";
+    for (var i = 0; i < rows.length; i++) {
+        if ( $("#checkedUser").find("span[data-id='" + rows[i].id + "']").length == 0) {
+            if (rows[i].comments != "" && rows[i].comments != null) {
+                str = rows[i].comments;
+            } else {
+                str = rows[i].name;
+            }
+            html += '<span class="supSpan" data-id="' + rows[i].id + '">'+
+                '<span class="spanBox">'+
+                    '<span class="txtSpan">' + str + '</span>'+
+                '</span>'+
+                '<span class="subSpan" onclick="delSpan(this)">x</span>'+
+            '</span>';
+        }
+    }
+    $("#checkedUser").append(html);
+}
+
+function checkedCompany() {
+    var html = '';
+    var rows = $("#company-datagrid").datagrid('getSelections');
+    if(rows.length == 0){
+        $.dialog.tips("请至少选择一条记录");
+    }
+    for (var i = 0; i < rows.length; i++) {
+        if ( $("#checkedCompany").find("span[data-id='" + rows[i].id + "']").length == 0) {
+
+            html += '<span class="supSpan" data-id="' + rows[i].id + '">'+
+                            '<span class="spanBox">'+
+                                '<span class="txtSpan">' + rows[i].name + '</span>'+
+                            '</span>'+
+                            '<span class="subSpan" onclick="delSpan(this)">x</span>'+
+                        '</span>';
+        }
+    }
+    $("#checkedCompany").append(html);
+}
+function delSpan(e) {
+    $(e).parents("span").remove();
+}
+function actionSavePermission() {
+    var data = $.dialog.list["dlg-custom-permission"].data;
+
+    var target_id = data['data'][0].id;
+    var user_ids = [];
+    var company_ids = [];
+    $("#checkedUser").find(".supSpan").each(function(){
+        user_ids.push($(this).attr('data-id'));
+    });
+    $("#checkedCompany").find(".supSpan").each(function(){
+        company_ids.push($(this).attr('data-id'));
+    });
+    /*if (user_ids.length == 0 && company_ids.length == 0 ) {
+        alert('请勾选用户或公司');
+    }else{*/
+        showMaskLayer();
+        $.post('/Organization/customPermission', { target_id: target_id,user_ids: user_ids,company_ids: company_ids}, function(result) {
+            hideMaskLayer();
+            if (result.code == 0) {
+                var selected = $('.department-tree').tree('getSelected');
+                var action = "/Organization/treeList";
+                var $tree_target = getDepartmentTree('{$Think.const.CONTROLLER_NAME}');
+                $.getJSON(action, {}, function(result) {
+                    $tree_target.tree({
+                        data: result,
+                        onLoadSuccess: function(node, data) {
+                           
+                            if (data.length > 0) {
+                                var n = $('.department-tree').tree('find', selected.id);
+                                $('.department-tree').tree('select', n.target);
+                                getDataGrid('{$Think.const.CONTROLLER_NAME}').datagrid("reload");
+                                $('#deptment-datagrid').datagrid('reload');
+                            }
+                        }
+                    })
+                });            
+                closeDialog();
+            }
+            $.dialog.tips(result.message);
+        }, 'json')
+    //}
+}
+    var sto;
+
+    $(".search-staff").find("input").keyup(function(){
+        try{ clearTimeout(sto);}catch(e){};
+        sto=setTimeout(refreshCustomer,500);     
+    }).blur(function(){
+        try{ clearTimeout(sto); }catch(e) {};
+    });
+    $(".search-staff").find("select").change(function(){
+       refreshCustomer();
+    });
+
+    function refreshCustomer(){
+        $("#customer-datagrid").datagrid("load",{
+            name:$("input[name='ql-name']").val(),
+            mobile:$("input[name='ql-mobile']").val(),    
+            group_id:$("select[name='q-group_id']  option:selected").val(),    
+            tag_id:$("select[name='q-tag_id']  option:selected").val()
+        }); 
+    }
+
+    $(".search-branch").find("input").keyup(function(){
+        try{ clearTimeout(sto);}catch(e){};
+        sto=setTimeout(refreshCompany,1000);     
+    }).blur(function(){
+        try{ clearTimeout(sto); }catch(e) {};
+    });
+
+    function refreshCompany(){
+        $("#company-datagrid").datagrid("load",{
+            name:$("input[name='ql-branch_name']").val()
+        });
+    }
+
+    $(function(){
+        $.post("Organization/getCheckedCompany",{id:"{$id}"},function(result){
+            var html = "";
+            for (var i in result){
+                html += '<span class="supSpan" data-id="' + result[i].id + '">'+
+                    '<span class="spanBox">'+
+                    '<span class="txtSpan">' + result[i].name + '</span>'+
+                    '</span>'+
+                    '<span class="subSpan" onclick="delSpan(this)">x</span>'+
+                    '</span>';
+            }
+            $("#checkedCompany").append(html);
+        },'json')
+    });
+
+    /*$("#company-datagrid").datagrid({
+       onLoadSuccess:function(){
+           console.log(1);
+       }
+    });*/
+
+    $("#company-datagrid").datagrid({
+        url:'Organization/companyList/id/{$id}'
+    });
+// ql-name
+// ql-mobile
+</script>
