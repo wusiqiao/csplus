@@ -1,0 +1,1 @@
+"D:\phpStudy\PHPTutorial\php\php-7.0.12-nts\php.exe" -f "D:/www/csplus/admin.php" "ComChangeYhStatus/index"
