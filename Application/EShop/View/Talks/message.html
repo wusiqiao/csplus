@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet"/>
+    <link href="__ROOT__/Application/EShop/Public/css/attachment.css?v=2" rel="stylesheet"/>
+    <link href="/{$Think.APP_PATH}Public/vender/layer/skin/layer.css?v={$version}" rel="stylesheet"/>
+	<link rel="stylesheet" href="{$Think.const.CSS_URL}mui/mui.css">
+	<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <style>
+        body{
+            height: auto;
+        }
+        .input-header {
+            background-color: #eee;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        #txt-content {
+            min-height: 0.62rem;
+            border: 1px solid #d3d3d3;
+            background-color: #fff;
+            padding: 0.05rem;
+            border-radius: 3px;
+            margin: 0.08rem 0;
+            word-break: break-all;
+        }
+
+        .chat-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 0 0.2rem;
+        }
+    </style>
+</head>
+<if condition="$type neq 20">
+    <include file="Index:header"/>
+</if>
+<div class="attachment-container" v-cloak  style="margin-top:0.85rem;height: calc(100vh - 0.85rem);">
+    <div class="attachment-header-info">
+        <!-- 聊天对象名称 -->
+        <template v-if="chat">
+            <template v-if="chat.user_type == 2">
+                <div class="chat-name">
+                    {{chat.staff_name ? chat.staff_name + '（' + chat.name + '）' : chat.name}}
+                </div>
+            </template>
+            <template v-else>
+                <div class="chat-name">
+                    {{chat.comments ? chat.comments + '（' + chat.name + '）' : chat.name}}
+                </div>
+            </template>
+        </template>
+        <template v-else>
+            <div style="margin: 0 0.2rem;"></div>
+        </template>
+        <!-- 更多 -->
+        <if condition="$type neq 20">
+            <div onclick='isShowMore()' style="position: relative;">
+                <span style='font-weight:bold;margin: 0 0.2rem;'>· · ·</span>
+                <div id="btn-more" style="display: none;">
+                    <div onclick="toFilePage()" class="btn-more-item">查看附件</div>
+                    <if condition="$group['type'] eq 20">
+                     <div onclick="toGroupMember()" class="btn-more-item" style="border-top: 1px solid #d3d3d3">查看群成员</div>
+                    </if>
+                </div>
+            </div>
+        </if>
+    </div>
+    <div id="history" v-if="(historys != null) && (historys.length > 0)">
+        <ul class="records" onscroll="ToMoreData(this)">
+            <li v-for="(item, iid) in historys">
+                <time class="time">{{item.create_time | formatterCreateTime}}</time>
+                <!-- 文本消息 -->
+                <template v-if="item.type == 10">
+                    <!-- 右 -->
+                    <template v-if="item.send_id == {$userId}">
+                        <div class="item-contents" style="justify-content: flex-end;">
+                            <div class="contents-box">
+                                <div class="contents-direction-right">
+                                    <span class="right-arrow"></span>
+                                    <span>{{item.contents}}</span>
+                                </div>
+                            </div>
+                            <!-- 头像 -->
+                            <img :src="item.sendInfo.head_pic" alt=""/>
+                        </div>
+                    </template>
+                    <!-- 左 -->
+                    <template v-else>
+                        <div class="item-contents">
+                            <!-- 头像 -->
+                            <img :src="item.sendInfo.head_pic" alt=""/>
+                            <div class="contents-box">
+                                <div class="contents-direction-left">
+                                    <span class="left-arrow"></span>
+                                    <span>{{item.contents}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <!-- 附件消息 -->
+                <template v-else-if="item.type == 20">
+                    <!-- 右 -->
+                    <template v-if="item.send_id == {$userId}">
+                        <div class="item-contents" style="justify-content: flex-end;">
+                            <div class="contents-box">
+                                <div class="contents-direction-right">
+                                    <span class="right-arrow"></span>
+                                    <ul class="attachments">
+                                        <li v-for="(k,i) in JSON.parse(item.contents)">
+                                            <div v-if="k.type=='image' || k.type=='png' || k.type=='jpg' || k.type=='jpeg' || k.type=='gif'"
+                                                 class="img-wrap">
+                                                <img :src="k.url" alt=""/>
+                                            </div>
+                                            <div v-else
+                                                 :class="'img-wrap attachment-icon attachment-icon-'+ k.type"></div>
+                                            <div style="white-space: nowrap;margin-top: 0.1rem;">
+                                                <span v-if="k.type=='image' || k.type=='png' || k.type=='jpg' || k.type=='jpeg' || k.type=='gif'"
+                                                    style="margin-right:11px;color:#368BFE;cursor: pointer;"
+                                                    @click="ToPreviewImage(k.url)">预览</span>
+                                                <span v-else style="color:#368BFE;cursor: pointer;" @click="downloadFile(k.url,k.name)">下载</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- 头像 -->
+                            <img :src="item.sendInfo.head_pic" alt=""/>
+                        </div>
+                    </template>
+                    <!-- 左 -->
+                    <template v-else>
+                        <div class="item-contents">
+                            <!-- 头像 -->
+                            <img :src="item.sendInfo.head_pic" alt=""/>
+                            <div class="contents-box">
+                                <div class="contents-direction-left">
+                                    <span class="left-arrow"></span>
+                                    <ul class="attachments">
+                                        <li v-for="(k,i) in JSON.parse(item.contents)">
+                                            <div v-if="k.type=='image' || k.type=='png' || k.type=='jpg' || k.type=='jpeg' || k.type=='gif'"
+                                                 class="img-wrap">
+                                                <img :src="k.url" alt=""/>
+                                            </div>
+                                            <div v-else
+                                                 :class="'img-wrap attachment-icon attachment-icon-'+ k.type"></div>
+                                            <div style="white-space: nowrap;margin-top: 0.1rem;">
+                                                <span v-if="k.type=='image' || k.type=='png' || k.type=='jpg' || k.type=='jpeg' || k.type=='gif'"
+                                                    style="margin-right:11px;color:#368BFE;cursor: pointer;"
+                                                    @click="ToPreviewImage(k.url)">预览</span>
+                                                <span v-else style="color:#368BFE;cursor: pointer;" @click="downloadFile(k.url,k.name)">下载</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+            </li>
+        </ul>
+    </div>
+    <div v-else class="empty-proxy">
+        <span>记录为空</span>
+    </div>
+    <if condition="$type neq 20">
+        <div class="attachment-input">
+            <div class="input-header">
+                    
+                    
+                <div style="display: flex;align-items: center;justify-content: space-between;overflow: hidden;margin: 0.08rem 0;">
+                    <div class="btn-attachment-addImg">
+                        <input type="file" accept="image/*,application/msword,application/vnd.ms-powerpoint"
+                               id="img-upload-attach" multiple="multiple">
+                    </div>
+                    <div class="btn-attachment-addFile">
+                        <input type="file" accept="image/*,application/msword,application/vnd.ms-powerpoint"
+                               id="file-upload-attach" multiple="multiple">
+                    </div>
+                </div>
+                <div class="input-area">
+                    <div id="txt-content" contentEditable="true"></div>
+                </div>
+                <div style="display: flex;align-items: center;margin: 0.08rem 0.1rem;overflow: hidden;">
+                    <div class="common-button btn-ok" @click="postAttachmentData()" style="width: 1.2rem;">发送</div>
+                </div>
+            </div>
+        </div>
+    </if>
+</div>
+<script src="/{$Think.APP_PATH}Public/jquery/jquery.min.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+<script src="/{$Think.const.MODULE_PATH}/Public/js/Ws.js"></script>
+
+<script type="text/javascript">
+    var u = navigator.userAgent;
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    if (isiOS) {
+        $('input,textarea').blur(function () {
+            top.document.body.scrollTop = 0;
+        })
+    }
+
+    var attachmentVue = new Vue({
+        el: ".attachment-container",
+        data: {
+            chat: null,
+            historys: {$list},
+            history_page: 2
+        },
+        mounted() {
+
+        },
+        filters: {
+            formatterCreateTime(val) {
+                val = parseInt(val) * 1000;
+                var date = new Date(val);
+                var Y = date.getFullYear() + '-';
+                var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+                var D = date.getDate() < 10 ? '0' + date.getDate() + ' ' : date.getDate() + ' ';
+                var h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
+                var m = date.getMinutes() < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
+                var s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+                return Y + M + D + h + m + s;
+            }
+        },
+        methods: {
+            loadListFun(data) {
+                this.chat = data.item;
+                this.getAttachHistorys(this.chat.group_id, 1)
+            },
+            //增加 WS 通知
+            addMessage : function(data){
+                attachmentVue.historys.push(data);
+                Sockets.send('msg', data);
+            },
+
+            getAttachHistorys(groupId, page){
+                var data = {
+                    groupId: groupId,
+                    page: page,
+                    type: '{$type}'
+                }
+                $.get("/Talks/getMessage", data, function (res) {
+                    // console.log(res)
+                    if (res.code == 0) {
+                        if (page == 1) {
+                            attachmentVue.historys = res.data;
+                            attachmentVue.$nextTick(() => {
+                                var scrollHeight = $('.records').prop("scrollHeight");
+                            $('.records').scrollTop(scrollHeight);
+                        })
+                            ;
+                        } else {
+                            if (res.data.length == 0) {
+                                return false;
+                            }
+                            var ary = res.data.reverse();
+                            for (var k in ary) {
+                                attachmentVue.historys.unshift(ary[k])
+                            }
+                        }
+                    } else {
+
+                    }
+                })
+            },
+            postAttachmentData() {
+                if ($("#txt-content").text() == "") {
+                    return;
+                }
+                var formData = new FormData();
+                formData.append("contents", $("#txt-content").text());
+                formData.append("groupId",  {$groupId});
+                formData.append("acceptId", '{$acceptId}');
+                $.ajax({
+                    url: "/Talks/sendMeg",
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        layer.load(2, {shade: [0.1, '#fff']});
+                    },
+                    success: function (response) {
+                        layer.closeAll();
+                        if (response.code == 0) {
+                            attachmentVue.addMessage(response.data);
+                            layer.msg("发送完成");
+                            attachmentVue.$nextTick(function () {
+                                var scrollHeight = $('.records').prop("scrollHeight");
+                                $('.records').scrollTop(scrollHeight);
+                            });
+                            $("#txt-content").text("");
+                        } else {
+                            layer.msg(response.message);
+                        }
+                    },
+                    error: function () {
+                        layer.closeAll();
+                        layer.msg('发送失败');
+                    }
+                });
+            },
+            closeLayer() {
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+            },
+            ToPreviewImage(url) {
+                layer.open({
+                    type: 1,
+                    title: '图片预览',
+                    shade: 0.8,
+                    closeBtn: 1,
+                    area: ["100%", "100%"],
+                    content: `<div style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
+                        <img style="width: 100%;" src="${url}" alt="">
+                    </div>`
+                });
+            },
+            downloadFile : function(url, name){
+                window.location.href = '/Talks/downloadFile?url=' + url + '&name=' + name;
+            }
+        }
+    });
+    //长连接对象
+    const Sockets = new Socket('{$branchId}', '{$userId}', {
+        msg: function(data) {
+            if(data.msg_group_id == '{$groupId}'){
+                attachmentVue.historys.push(data);
+            }
+        }
+    });
+    // 查看附件、群成员入口下拉
+    function isShowMore() {
+        if ($("#btn-more").css("display") == "none") {
+            $("#btn-more").show();
+        } else {
+            $("#btn-more").hide();
+        }
+    }
+    // 查看附件页面入口
+    function toFilePage() {
+        layer.open({
+            type: 2,
+            title: '查看附件',
+            shade: 0.8,
+            closeBtn: 1,
+            area: ["100%", "100%"],
+            content: "/Talks/annex?group_id={$groupId}"
+        });
+    }
+    // 查看群成员页面入口
+    function toGroupMember() {
+        layer.open({
+            type: 2,
+            title: '查看群成员',
+            shade: 0.8,
+            closeBtn: 1,
+            area: ["100%", "100%"],
+            content: "/Talks/groupMember?group_id={$groupId}&type=20"
+        });
+    }
+    // 历史记录上滚加载
+    function ToMoreData(el) {
+        if (el.scrollTop == 0) {
+            attachmentVue.history_page += 1;
+            attachmentVue.getAttachHistorys({$groupId}, attachmentVue.history_page);
+        }
+    }
+    function upDataFile(formData) {
+        $.ajax({
+            url: "/Talks/upload",
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            beforeSend: function () {
+                layer.load(2, {shade: [0.1, '#fff']});
+            },
+            success: function (response) {
+                layer.closeAll();
+                if (response.code == 0) {
+                    attachmentVue.addMessage(response.data);
+                    layer.msg("发送完成");
+                    attachmentVue.$nextTick(function () {
+                        var scrollHeight = $('.records').prop("scrollHeight");
+                        $('.records').scrollTop(scrollHeight);
+                    });
+                } else {
+                    layer.msg(response.message);
+                }
+            },
+            error: function () {
+                layer.closeAll();
+                layer.msg('发送失败');
+            }
+        });
+    }
+    // 附件上传
+    $("#img-upload-attach").change(function () {
+        var oFiles = $(this).get(0).files;
+        $(oFiles).each(function () {
+            var _file = this;
+            //var rFilter = /^(image\/jpeg|image\/png)$/i;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(this);
+                reader.onload = function () {
+                    var file = { type: "image", src: reader.result, file: _file, file_name: _file.name }
+                    var formData = new FormData();
+                    
+                    formData.append("groupId",  {$groupId});
+                    formData.append("acceptId", '{$acceptId}');
+
+                    formData.append(file.type + "-file-" + file.file_name, file.file);
+                  
+                    upDataFile(formData)
+                }
+            } else {
+                return false;
+            }
+        });
+    });
+    $("#file-upload-attach").change(function () {
+        var oFiles = $(this).get(0).files;
+        $(oFiles).each(function () {
+            var _file = this;
+            //var rFilter = /^(image\/jpeg|image\/png)$/i;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                return false;
+            } else {
+                var type = "unknown";
+                if (/(\.xls|\.xlsx)$/i.test(this.name)) {
+                    type = "excel";
+                } else {
+                    if (/(\.doc|.\.docx)$/i.test(this.name)) {
+                        type = "word";
+                    } else {
+                        if (/(\.txt)$/i.test(this.name)) {
+                            type = "txt";
+                        }
+                    }
+                }
+                var reader = new FileReader();
+                reader.readAsDataURL(this);
+                reader.onload = function () {
+                    var file = { type: type, src: reader.result, file: _file, file_name: _file.name }
+                    var formData = new FormData();
+              
+                    formData.append("groupId",  {$groupId});
+                    formData.append("acceptId", '{$acceptId}');
+
+                    formData.append(file.type + "-file-" + file.file_name, file.file);
+                    console.log(file)
+                    upDataFile(formData)
+                }
+            }
+        });
+    })
+</script>
+
+</html>

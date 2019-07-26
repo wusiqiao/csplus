@@ -1,0 +1,176 @@
+<include file="UserSupervise:head"/>
+<style>
+    .modal input[type='text'] {
+        margin: 0 0;
+        padding: 0 .1rem;
+        border: 1px solid #e9e9e9;
+    }
+    .navigation-bar{
+        background-color: #fff;
+        margin-bottom: .1rem;
+        padding: .1rem;
+    }
+    .navigation-bar div{
+        display: -webkit-inline-flex;
+    }
+    .navigation-bar div span{
+
+    }
+    .navigation-bar div span.checked{
+        color: #2174FF;
+    }
+    .file-name{
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .close-button{
+        margin-right: .2rem;
+        height: .75rem;
+        color: #368bfe;
+        border: 1px solid #368bfe;
+    }
+    .file-operation{
+        height: 1rem;
+    }
+</style>
+<body>
+<!--<include file="Index:header" />-->
+<section class="common-wrap bg-none ">
+
+    <div id="app">
+        <div  style="margin-bottom: 1rem">
+            <div class="navigation-bar">
+                <div  v-for="(NavigationBar,index) in NavigationBars" >
+                    <span  style="margin: 0 .1rem"> › </span>
+                    <span  @click="leapOfFreedom(NavigationBar.parent,index)" v-if="NavigationBar.checked" class="checked">{{NavigationBar.text}}</span>
+                    <span  v-if="!NavigationBar.checked" >{{NavigationBar.text}}</span>
+                </div>
+            </div>
+            <div class="file-operation blue-checkbox" v-for="(document,index) in documents">
+                <!--<div class="template-wrap"  v-if="document.is_checked">-->
+                    <!--<input class="single-radio" name="radio" type="radio" :value="index"/>-->
+                <!--</div>-->
+                <div class="flex-start flex-1 file-name"  @click="intoSubsidiary(index)">
+
+                    <div class="ml15 ">
+                        <div class="flex-start gray-6 ">
+                            <span class="icon-file"></span>
+                            <span class="ml10">{{document.name}}</span>
+                        </div>
+                        <div class="gray-9">{{document.time}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="order-reorder ptb15 plr25">
+            <button class="close-button" @click="closeAction" style="width: 50%">取消</button>
+            <button class="reorder"  style="width: 50%;background-color: red;" @click="moveAction">移动</button>
+        </div>
+    </div>
+
+</section>
+<include file="WxBranchTemplate:foot_access_file"/>
+<script src="{$Think.const.JS_URL}ajaxfileupload.js" type="text/javascript"></script>
+<script>
+    var app = new Vue({
+        el:'#app',
+        data:{
+            documents:{$lists},
+            reveals:{$lists},
+            model:{$model},
+            parentId:[],
+            file_location:'首页',
+            target_branch:'{$target_branch}'
+        },
+        computed:{
+            NavigationBars(){
+                var bars = this.file_location.split('/');
+                var navigationBars = [];
+                navigationBars[0] = {'text':bars[0],'parent':0,'checked':true};
+                if (bars.length > 1) {
+                    for (var i = 0; i < this.parentId.length ; i++) {
+                        navigationBars[i+1] = {'text':bars[i+1],'parent':this.parentId[i],'checked':true};
+                    }
+                }
+                navigationBars[navigationBars.length - 1]['checked'] = false;
+                // navigationBars[0]['checked'] = true;
+                return navigationBars;
+            }
+        },
+        methods:{
+            intoSubsidiary(index){
+                if (this.parentId.length > 0) {
+                    var template = {};
+                    for (var i = 0; i < this.parentId.length ; i++) {
+                        template = i > 0 ? template[this.parentId[i]]['children'] : this.reveals[this.parentId[i]].children;
+                    }
+                    this.file_location = template[index].current;
+                    this.documents = template[index].children;
+                    this.parentId.push(index);
+                } else {
+                    this.file_location = this.reveals[index].current;
+                    console.log(this.reveals[index]);
+                    this.documents = this.reveals[index].children;
+                    this.parentId.push(index);
+                }
+            },
+            leapOfFreedom(parent,index){
+                if (index < 1) {
+                    this.documents = this.reveals;
+                    this.parentId = [];
+                } else {
+                    var template = {};
+                    var newParentId = [];
+                    var idLength = this.parentId.length - 1;
+                    for (var i = 0; i < idLength; i++) {
+                        newParentId.push(this.parentId[i]);
+                        if (i > 0) {
+                            template = (this.parentId[i] == parent) ? template[this.parentId[i]]: template[this.parentId[i]].children
+                        } else {
+                            template = (this.parentId[i] == parent)  ? this.reveals[this.parentId[i]] : this.reveals[this.parentId[i]].children;
+                        }
+                        if (this.parentId[i] == parent) {
+                            break;
+                        }
+                    }
+                    this.file_location = template.current;
+                    this.documents = template.children;
+                    this.parentId = newParentId;
+                }
+            },
+            moveAction(){
+                var checkedId;
+                if (this.parentId.length == 0) {
+                    checkedId = 0;
+                } else {
+                    checkedId = this.parentId[this.parentId.length - 1];
+                }
+                if (checkedId >= 0){
+                    $.post('/SysDocument/moveFile',{pid:checkedId,id:this.model['id'],target_branch:this.target_branch},function (response) {
+                        if (response['error'] == 0) {
+                            parent.layer.msg('文件移动成功');
+                            parent.$("#handle_status").val('1');
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        } else {
+                            layer.msg(response.message);
+                        }
+                    },'JSON')
+                } else {
+                    layer.msg('请选择要移动到那个文件夹');
+                    return false;
+                }
+
+            },
+            closeAction(){
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                parent.layer.close(index); //再执行关闭
+            }
+        },
+
+    })
+
+</script>
+
+</body>
+</html>

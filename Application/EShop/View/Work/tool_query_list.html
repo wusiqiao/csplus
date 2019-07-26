@@ -1,0 +1,217 @@
+<!-- 核名查询记录 -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	    <meta name="apple-mobile-web-app-capable" content="yes" />
+	    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+	    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />	    
+        <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}mui/mui.picker.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}mui/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/{$Think.APP_PATH}Public/js/load/dropload.css" />
+	    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+	    <title>{$title}</title>
+	</head>
+	<style>
+		.single-content{
+			/*overflow : hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			width: 92%;*/
+			word-wrap:break-word;
+		}
+        /*下拉加载提示框*/
+        .mui-pull-bottom-wrapper{
+            text-align: center;
+            padding: .2rem;
+        }
+        .mui-scroll-wrapper {
+		    top: .85rem;
+		}
+		.process-info .reply-btn {
+					 position: absolute;
+					 right: 1.1rem;
+					 bottom: .2rem;
+					 width: .8rem;
+					 height: .8rem;
+					 text-align: center;
+					 line-height: .8rem;
+					 border-radius: 50%;
+					 color: white;
+					 font-size: .26rem;
+					 /*background: linear-gradient(135deg, #f84e48 0%,#fb6e4c 100%); ;*/
+					 background: dodgerblue; ;
+		}
+        .active{
+            background: dodgerblue !important; 
+            border-radius: 0.1rem !important;
+        }
+        .add-tag-btn{
+            background: dodgerblue !important; 
+        }
+        .tel_new{
+            /* background-image: url("__ROOT__{$Think.const.CSS_URL}/Public/images/work/tel.png") !important; */
+        }
+	</style>
+	<body>
+		<include file="Index:header" />
+		<section class="veri-wrap" >
+			<ul class="tab-bar">
+				<li class="active" data-process="0">未处理</li>
+				<li data-process="1">已处理</li>
+			</ul>
+			<div class="mui-scroll-wrapper" id="pullrefresh" data-url="__MODULE__/Work/getToolQueryData" rows="10"  style="margin-top: .85rem">
+				<div class="mui-scroll">
+					<div class="process-info item-tpl" bind-id="{%id%}" style="display:none">
+						<div class="process-user">
+							<div>申请人：{%name%}</div>
+							<div class="tel" onclick="javascript:window.location.href='tel:{%mobile%}'"><span class="tel_new"></span>联系电话：{%mobile%}</div>
+						</div>
+						<div class="process-content single-content">{%message%}</div>
+						<div class="process-content single-content">{%view_time%}</div>
+						<div class="process-tag"><span>{%tag%}</span></div>
+						<eq name="type" value="2">
+							<div class="reply-btn" bind-id="{%id%}" onclick="toReply(this);">回复</div>
+						</eq>
+						{%handler_tag%}
+					</div>
+                    <ul class=" processing">
+                    </ul>
+				</div>
+			</div>
+            <div class="wrap-modal" style="display: none;">
+                <div class="modal-add-tag">
+                    <div class="modal-title">选择标签</div>
+                    <div class="modal-content">
+                        <input type="text" class="showspeedPicker" readonly="readonly" placeholder="点击选择标签"/>
+                        <input type="text" name="tag" id="customized" style="display: none;" placeholder="自定义标签，不超过5个字"/>
+                        <div class="deal-with">移至已处理</div>
+                    </div>
+                    <div class="modal-btn">
+                        <button id="popup-close">取消</button>
+                        <button class="blue" id="popup-complete">确定</button>
+                    </div>
+                </div>
+            </div>
+			<!--<include file="Work:modal_tag" />-->
+		</section>
+	</body>
+	<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	<script src="{$Think.const.JS_URL}load/dropload.js"></script>
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+	<script src="{$Think.const.JS_URL}common.js?v=2"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+	<script src="/{$Think.APP_PATH}Public/mui/js/mui.pullToRefresh.js"></script>
+	<script src="/{$Think.APP_PATH}Public/mui/js/mui.pullToRefresh.material.js"></script>
+	<script src="{$Think.const.JS_URL}mui/mui.picker.js" ></script>
+	<script src="{$Think.const.JS_URL}mui/mui.poppicker.js" ></script>
+	<script src="/{$Think.APP_PATH}Public/js/mobile.js"></script>
+	<script>
+        var pullRefreshApi;
+        mui.ready(function () {
+            var type = '{$type}';
+            var process = $('.tab-bar > .active').data('process');
+            var pullToRefreshObj = pullRefresh("#pullrefresh", {process:process,type:type});
+            pullRefreshApi = mui("#pullrefresh .mui-scroll").pullToRefresh(pullToRefreshObj);
+        });
+        function dropload_data(){
+            var type = '{$type}';
+            var process = $('.tab-bar > .active').data('process');
+            var pullToRefreshObj = pullRefresh("#pullrefresh", {process:process,type:type});
+            pullRefreshApi.refresh(true);
+            mui("#pullrefresh .mui-scroll").pullToRefresh(pullToRefreshObj);
+        }
+        // dropload_data();
+        // function dropload_data(){
+        //     var type = '{$type}';
+        //     var process = $('.tab-bar > .active').data('process');
+        //     dropload($(".hsui-sync-refresh"),{process:process,type:type});
+        // }
+        //处理标记
+        function handlerTagSearch(obj){
+            var id = $(obj).data('id');
+            $('.wrap-modal').data('id',id).show();
+		}
+		//去回复
+		function toReply(obj){
+            var id = obj.getAttribute('bind-id');
+			//window.location.href = "__MODULE__/Liuyan/TaReply/id/6846.html"
+			window.location.href = "__MODULE__/Liuyan/TaReply/tool_id/"+id;
+		}
+        //Tag显示
+        $('#popup-close').on('click',function(){
+            $('.wrap-modal').hide();
+        })
+		//Tag显示
+        $('#popup-complete').on('click',function(){
+            var id = $('.wrap-modal').data('id');
+            var tagValue = $("input[name=tag]").val();
+            if(tagValue.length > 5){
+                layer.msg('标签不能大于5个字!!');
+                return false;
+            }
+            $.post('__MODULE__/Work/updateToolTag',{id:id,tag:tagValue},function(data){
+                layer.msg(data.message);
+                if(data.error == 0){
+                    tagValue = tagValue ? tagValue : '暂无';
+                    $('div[bind-id='+id+']').find('.process-tag').html('<span>标签 : '+tagValue+'</span>');
+                }
+                $('.wrap-modal').hide();
+            },'JSON');
+        })
+        $('.deal-with').on('click',function(){
+            var btnArray = ['取消', '确定'];
+            mui.confirm('是否确认已处理?', '处理', btnArray, function(e) {
+                if (e.index == 1) {
+                    var id = $('.wrap-modal').data('id');
+                    $.post('__MODULE__/Work/complateOperation',{id:id},function(data){
+                        layer.msg(data.message);
+                        if(data.error == 0){
+                            $('div[bind-id='+id+']').find('.process-tag').html('<span>已处理</span>');
+                            $('div[bind-id='+id+']').find('.add-tag-btn').remove();
+                        }
+                        $('.wrap-modal').hide();
+                    },'JSON');
+                }
+            })
+        });
+        $('.tab-bar > li').on('click',function(){
+            if(!$(this).hasClass('active')){
+                $(this).addClass('active').siblings('li').removeClass('active');
+                var data_process = $(this).addClass('active').siblings('li').attr("data-process");
+                if(data_process == 0){
+                    $(".reply-btn").css('right',"0.2rem")
+				}else{
+                    $(".reply-btn").css('right',"1.1rem")
+				}
+                dropload_data();
+			}
+		})
+	</script>
+    <script>
+        var speedStr = '{$tag}';
+        var speedPicker = new mui.PopPicker({
+            layer: 1
+        });
+        var speedData = $.parseJSON(speedStr);
+        speedPicker.setData(speedData);
+        var showspeedPickerButton = $('.showspeedPicker');
+        showspeedPickerButton.on('tap', function () {
+            speedPicker.show(function (items) {
+                if(items[0].value > 0){
+                    $('#customized').hide();
+                    $(".showspeedPicker").val(items[0].text);
+                    $("input[name=tag]").val(items[0].text);
+                }else{
+                    $("input[name=tag]").val('');
+                    $(".showspeedPicker").val(items[0].text);
+                    $('#customized').show();
+                }
+            });
+        });
+    </script>
+</html>

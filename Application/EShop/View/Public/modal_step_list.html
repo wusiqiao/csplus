@@ -1,0 +1,16 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg2" data-toggle="modal" data-target=".bs-example-modal-sm" style="display: none;">
+</button>
+<!-- Modal -->
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+	<div class="mui-card" style="top:25%;border-radius: 5px;">
+		<!--页眉，放置标题-->
+		<ul class="mui-table-view mui-table-view-radio step-item" style="height: 168px;overflow-y: auto;">
+			<volist name="step.lists" id="vo">
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right" value="{$vo}" style="color:#232323">{$vo}</a>
+				</li>
+			</volist>
+		</ul>
+	</div>
+</div>

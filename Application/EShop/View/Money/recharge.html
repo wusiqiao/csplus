@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <style>
+        .mui-input-row label {width: 30%; padding: 0 0 0 0rem !important;height: .5rem;line-height: .5rem !important;margin-bottom: 0 !important;}
+        .label-message-font{color:#B0B0B0;font-size: .31rem;font-weight:100}
+        .money-input:after {
+            content: '元';
+            position: absolute;
+            top: .2rem;
+            right: 0;
+            width: .7rem;
+            height: .7rem;
+            line-height: .7rem;
+            text-align: center;
+            color: #e91835;
+            font-size: 0.4rem;
+        }
+        .user-wrap,.user-wrap .input-wrap{
+            padding: 0
+        }
+        .set-tips{
+            margin-right: .15rem;
+            padding: 0 .25rem;
+            line-height: .35rem;
+            text-align: justify;
+            color: #999999;
+            text-indent: .25rem;
+        }
+        .commit-user button{
+            width: 6.9rem;
+            height: .75rem;
+            margin: 0 auto;
+            border: none;
+            border-radius: .1rem;
+            color: #ffffff;
+            background-color: #0099ff;
+        }
+    </style>
+</head>
+<include file="Index:header" />
+<div class="custom-info-wrap common-wrap bg-none mt85" style="background-color: #EFEFF4;">
+    <div class="basic-info" style="background-color: #FFFFFF;">
+        <div class="title">账户信息</div>
+        <div class="info-line">
+            <div class="info-title">收款账户<i></i></div>
+            <input type="text" readonly value="{$account['account_name']}" placeholder="" />
+            <input name="account_type" type="hidden" value="{$account['account_type']}" id="play_account"/>
+        </div>
+        <div class="info-line">
+            <div class="info-title">账户余额<i></i></div>
+            <input type="text" readonly value="{:sprintf('%.2f',$account['money'])}元" placeholder="" />
+        </div>
+    </div>
+    <div style="height: .25rem"></div>
+    <div class="basic-info user-wrap">
+        <div class="title">充值信息</div>
+        <form style="background-color: #fff;" id="MoneyForm" onsubmit="return false;">
+            <div class="info-line" style="justify-content: space-between;align-items: center;">
+                <div class="info-title">充值金额<i></i></div>
+                <div style="flex: 1;display: flex;align-items: center;justify-content: flex-end;margin: 0 0.21rem;">
+                    <input type="text" name="money" style="flex: .5;" placeholder="请输入" oninput="this.value=this.value.replace(/[^0-9.]+/,'');" id="money"  value="{$account['recharge_money']}" readonly/>
+                    元
+                </div>
+            
+            </div>
+            <div class="info-line">
+                <div class="info-title">支付方式<i></i></div>
+                <input  type="text" readonly value="{$account['price_type_view']}">
+                <input  type="hidden" name="price_type"  value="{$account['price_type']}">
+            </div>
+            <input id='pic' name='pic' value='' type='hidden' >
+            <gt name="company_id" value="0">
+                <input name='company_id' value='{$company_id}' type='hidden' >
+            </gt>
+            <input type="hidden" name='attach_group'  >
+            <input type="hidden" id="user_money" value="{:sprintf('%.2f',$account['money'])}" />
+        </form>
+        <input type="file" data-tag="0" name='image' id='imgFile0' style="display:none;">
+
+    	<div class="mui-panel offline input-wrap">
+            <div class="info-line" style="justify-content: space-between;align-items: center;">
+                <div class="info-title">转账凭证<i></i></div>
+                <div class="template-wrap" style="padding: 0;margin: 0 0.21rem;">
+                    <div class="col-xs-9 m-b-10">
+                        <ul id="ul_pics" data-am-widget="gallery"  data-am-gallery="{ pureview: true }"></ul>
+                    </div>
+                    <div class="update_button" style="top: 0;">
+                        <div class="crossts" id="avatar_uplpad_btn">
+                            <span style="color: #4591fe">上传转账成功的电子凭证</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+	    </div>
+    </div>
+    <div style="height: .25rem"></div>
+    <div class="basic-info">
+        <div class="title">提示</div>
+        <div style="margin: .2rem 0">
+            <div class="dividing-line"></div>
+            <div class="set-tips"> 1. 通过微信支付方式支付保证金，提现需要支付1%的第三方渠道手续费，线下转账提现无需手续费。</div>
+            <div class="dividing-line"></div>
+            <div class="set-tips"> 2. 充值资金，微信支付一般5分钟内到账，线下转账需2个工作日内到账，如果超时没有到账，请及时与我们联系</div>
+            <div class="dividing-line-bottom"></div>
+        </div>
+    </div>
+    <div style="height: .25rem"></div>
+    <div class="commit-user">
+        <button type="button" onclick="formSubmit('MoneyForm', '/Money/recharge.html',this)" class="">确认转账</button>
+    </div>
+    <span style="display:none" data-temp="{$temp}" id="temp"></span>
+    <!--温馨提示-->
+</div>
+
+<!--底部 start-->
+<!--<include file="Public:footer" />-->
+<!--<script>select_menu('my');</script>-->
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script src="{$Think.const.JS_URL}ajaxfileupload.js" type="text/javascript"></script>
+<!--end 底部-->
+<script>
+init();
+	function del_img(id){
+		$('.del-img').on('click',function(){
+		    $.post('/Money/removeAttach',{id:id},function(){
+
+            },'json')
+            $('#ul_pics li').remove();
+            $('.update_button').show();
+            return false;
+		})
+	}
+    $(".deposit-help").on('click',function(){
+        $(".rprm").click();
+    })
+    function init(){
+        var temp = $("#temp").attr("data-temp");
+        if(temp == 1){
+            $(".rprm").trigger('click');
+            $("#myModal-read #refuse-message").css({'font-weight': 'bold','color':'#000'});
+            $("#myModal-read > .btn-prpm,.close").on('click',function(){
+                window.history.back();
+                return false;
+            })
+        }
+    }
+</script>
+<script>
+	//微信支付和线下转账切换
+	$("input:radio[name='price_type']").change(function () {
+            if ($(this).val() == 0) {
+                $(".weixin").show();
+                $(".offline").hide();
+            } else {
+                $(".offline").show();
+                $(".weixin").hide();
+            }
+    });
+    $(function(){
+    	$("#avatar_uplpad_btn").click(function(){
+    		return  $("#imgFile0").click();
+    	});
+    	var priceType = $('input[name=price_type]').val();
+    	if (priceType == 1) {
+            $(".offline").show();
+            $(".weixin").hide();
+        } else {
+            $(".weixin").show();
+            $(".offline").hide();
+        }
+    });
+    //上传图片
+    $('input[type=file]').change(function(){
+
+		var files		=	$(this).get(0).files[0];//获取图片信息
+		var maxfilesize =	1024*1024*5;//最大文件大小设置为2M
+		if(files.size > maxfilesize){
+			layer.msg("文件大小最多只能5M,请重新上传");				
+			return false;
+		}
+		if(files.type != 'image/jpeg' && files.type != 'image/jpg' && files.type != 'image/gif' && files.type != 'image/png'){
+			layer.msg("文件类型只能是jpeg/jpg/gif/png类型");				
+			return false;			
+		}
+        //默认加载
+        var index = layer.load(2, {
+        });
+        var tag = $(this).data('tag');
+        $.ajaxFileUpload({
+            url: '__MODULE__/Money/append.html',
+            secureuri: false,
+            fileElementId: 'imgFile' + tag, //上传控件ID
+            dataType: 'json',
+            type:'post',
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg(data.message);
+                    setTimeout(function () {
+                        layer.closeAll();
+                    }, 2000);
+                } else {
+                    layer.closeAll();
+                    $("#ul_pics").html($("#ul_pics").html() + "<li style='width:30%'><div class='am-gallery-item'><div><a href='javascript:(0)' onclick='del_img("+data.message.id+")' target='_blank' style='display:inline-block;height:100%;position:relative;'>" + "<span class='del-img'></span>" +  "<img style='width: 1.25rem;' src='" + data.message.url + "' /></a></div></div></li>");
+                    $("#pic").val(data.message.url);
+                    $("input[name=attach_group]").val(data.message.group);
+                    $('.update_button').hide();
+                }
+            }
+        });
+    });
+    function formSubmit(formid, form_url,obj) {
+        var disabled = $(obj).hasClass("disabled");
+        if(!disabled){
+            $(obj).addClass("disabled");
+            setTimeout(function(){
+                $(obj).removeClass("disabled");
+            },1000);
+        }else{
+            return false;
+        }
+        var money 		= $('#money').val();
+        var play_account = $('#play_account').val();
+        var play_price = $('input[name=price_type]').val();
+        var pic			= $("#pic").val();
+        if (money == "") {
+            layer.msg("请输入充值金额！");
+            return false;
+        }
+        if (money <= 0 ) {
+            layer.msg("请输入大于0的充值金额!");
+        };
+        if (play_price	==	1 && pic.length == 0){
+        	layer.msg("请上传转账图片");
+            return false;
+        }
+        var	data_str	=	$('#' + formid).serialize()+"&account_type="+play_account;
+        $.ajax({
+            url: form_url,
+            type: 'POST',
+            dataType: "json",
+            data: data_str,
+            success: function (data) {
+            	if(data.type == 0){
+                	window.location.href = "/WeChatPay/orderPay/id/recharge_" + data.orderid;
+            	}else{
+            		layer.msg("转账信息提交成功,等待后台审核!!");
+            		setTimeout(function(){
+            		    if (play_account == 1) {
+            		        var companyId = $('input[name=company_id]').val();
+                            window.location.href = "/Money/company/id/"+companyId+".html";
+                        } else {
+                            window.location.href = "/Money.html";
+                        }
+
+            		},2000);
+            		
+            	}
+
+            }
+        });
+    }
+</script>

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+		<link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}/css-new/style.css?v={$vesion}2" rel="stylesheet" />
+		<link rel="stylesheet" href="{$Think.const.CSS_URL}mui/imageviewer.css">
+		<link href="{$Think.const.CSS_URL}reset.css?v={$vesion}" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}common.css?v={$vesion}" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}style.css?v={$vesion}" rel="stylesheet" />
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+		<title>{$title}</title>
+		<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	</head>
+	<style>
+		.o-cash{
+			text-decoration: line-through;
+			color: #ccc;
+			margin-left: 0.2rem;
+		}
+
+		.tips{
+			padding: 0 0.05rem;
+			color: #fff;
+			/* color: #0099FF; */
+			border: 1px solid #0099FF !important;
+			background-color: #0099ff;
+			border-radius: 0.05rem;
+			margin-right: 0.1rem;
+			line-height: 0.5rem;
+			float: left;
+			height: 0.5rem;
+			margin-bottom: 0.05rem;
+			margin-top: 0.05rem;
+		}
+		.look-left{
+			left: 0.1rem !important;
+		}
+		.look-right{
+			right: 0.1rem !important;
+		}
+        .star-y{
+            background-image: url("{$Think.const.IMG_URL}/img/star-on.png");
+            display: inline-block;
+            width: .4rem;
+            height: .4rem;
+            color: transparent;
+            cursor: pointer;
+            background-repeat: no-repeat;
+        }
+        .star-n{
+            background-image: url("{$Think.const.IMG_URL}/img/star-off.png");
+            display: inline-block;
+            width: .4rem;
+            height: .4rem;
+            color: transparent;
+            cursor: pointer;
+            background-repeat: no-repeat;
+        }
+		.report-remark{
+			width: 70%;
+			overflow-wrap: normal;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			display: block;
+			white-space: nowrap;
+		}
+		.report-remark-left{
+			float: right;
+		}
+		.report-remark-right{
+			float: left;
+		}
+		.customer-name{
+			width: 74%;
+			float:  right;
+			text-overflow: ellipsis;
+			overflow:  hidden;
+			white-space: nowrap;
+
+		}
+		.progress-line::before {
+			height: calc(100% - 1.3rem);
+		}
+	</style>
+	<body>
+		<section class="secondary-wrap">
+			<include file="Index:header" />
+			
+			<switch name="order.order_state">
+				<case value="3"><section class="order-status-img status-daifukuan mb15"></section></case>
+				<case value="4"><section class="order-status-img status-fuwuzhong mb15"></section></case>
+				<case value="5"><section class="order-status-img status-daiyanshou mb15"></section></case>
+				<case value="6"><section class="order-status-img status-fuwuzhong mb15"></section></case>
+				<case value="7"><section class="order-status-img status-yiwancheng mb15"></section></case>
+				<case value="8"><section class="order-status-img status-yiguanbi mb15"></section></case>
+				<case value="9"><section class="order-status-img status-yiwancheng mb15"></section></case>
+			</switch>
+			
+			
+			<div class="copy-order ptb25 plr15 gray-9 bg-white mb15">
+				<div>订单编号：{$order.order_sn} <span class="copy-code" onclick="">复制</span></div>
+				<div>购买时间：{$order.order_on_time}</div>
+	            <gt name="order.order_state" value="6">
+	                <div class="">完成时间：{$order.finish_time}</div>
+	            </gt>
+			</div>
+			
+			<section class="con-wrap mb15">
+				<div class="con-img-title roller-blind <neq name='order.order_state' value='3'> active </neq>">
+					<img class="process" src="/Application/EShop/Public/images/img/icon-company.png" alt="" />
+					<div class="business-title blue-368bfe">服务详情</div>
+					<eq name="order.order_state" value="3">
+						<i class="pull-right mui-icon mui-icon-arrowup"></i>
+						<else/>
+						<i class="pull-right mui-icon mui-icon-arrowdown"></i>
+					</eq>
+				</div>
+				<div class="simple-data-wrap black-2c" <neq name="order.order_state" value="3">style="display:none"</neq>>
+					<div class="simple-line">
+						<div class="common-field gray-9">业务类型</div>
+						<div>{$order['product_category']}</div>
+					</div>
+					<div class="simple-line">
+						<div class="common-field gray-9">服务属性</div>
+						<div>
+							<volist name="atts.tips" id="vo">
+								<span class="tips">{$vo}</span>
+							</volist>
+						</div>
+					</div>
+                    <div class="simple-line">
+                        <div class="common-field gray-9">成交价格</div>
+                        <div>
+                            <if condition="$order.real_cash gt 0">
+                                <span class="r-cash" id="real">¥{$order.real_cash}元</span>
+                                <else/>
+                                <span class="r-cash" id="real">面议</span>
+                            </if>
+                        </div>
+                    </div>
+
+
+                
+
+                <if condition="($order.payment_money elt 0) and ($order.pay elt 0) and ($order.order_state eq 3) or($order.order_state eq 8)">
+                    <if condition="$order.real_cash gt 0">
+                        <gt name="ticket.count" value="0">
+                            <div class="simple-line">
+                                <div class="gray-9">优惠券</div>
+                                <div>
+                                    <span class="available">{$ticket.count}个可用</span>
+                                </div>
+                            </div>
+                        </gt>
+                        <lt name="ticket.count" value="1">
+                            <div class="simple-line">
+                                <div class="gray-9">优惠券</div>
+                                <div>
+                                    <span class="available">0个可用</span>
+                                </div>
+                            </div>
+                        </lt>
+                    </if>
+                    <else/>
+                    <div class="simple-line">
+                        <div class="gray-9">优惠券</div>
+                        <div>
+                            <span class="blue" id="real">-¥{$order.service_voucher_cash}{$order.voucher}元</span>
+
+                        </div>
+                    </div>
+                    <div class="simple-line">
+                        <div class="gray-9">实付金额</div>
+                        <div>
+                            <if condition="$order.price_type eq 0">
+                                <span class="r-cash" id="real">¥{$order.payment_money}{$order.pay}元</span>
+                                <else/>
+                                <span class="r-cash">¥{$order.payment_money}{$order.pay}元</span>
+                            </if>
+                        </div>
+                    </div>
+                </if>
+
+
+                
+
+                 <!--原来的-->
+					<!--<if condition="($order.surety_state eq 1) or ($order.pay gt 0)">
+                            <div class="simple-line">
+                                <div class="common-field gray-9">优惠券</div>
+                                <div class="">
+                                    <span class="blue">-¥{$order.service_voucher_cash}{$order.voucher}元</span>&nbsp;
+                                </div>
+                            </div>
+                        <div class="simple-line">
+                            <div class="common-field gray-9">实付金额</div>
+                            <div>
+                                <if condition="$order.price_type eq 0">
+                                    <span class="r-cash" >¥{$order.payment_money}{$order.pay}元</span>
+                                    <else/>
+                                    <span class="r-cash">¥{$order.payment_money}{$order.pay}元</span>
+                                </if>
+                            </div>
+                        </div>
+					</if>-->
+
+					<div class="simple-line">
+						<div class="common-field gray-9" >客&nbsp;&nbsp;户</div>
+						<div>
+							<span class="blue" >{$order.contacts}</span>
+						</div>
+					</div>
+				<div class="simple-line">
+					<div class="part-title gray-9">服务要求</div>
+					<div class="part-con">
+						<p>
+							<span class="blue" >{$order.order_desc}</span>
+						</p>
+						
+					</div>
+				</div>
+					
+				</div>
+
+				
+			</section>
+			
+			
+			
+			<!--<section class="con-wrap mb15">
+				<div class="con-title">
+					<div class="dib col-3 gray-9">联系人</div>
+					<div class="dib orange">{$order.contacts}</div>
+				</div>
+				
+				<div class="flex-center gray-9 con-title" style="text-align: right">
+					<a class="dib mr20 gray-9" href="tel:{$order.contacts_tel}" style="padding: .15rem;border: 1px solid #e4e4e4;">
+	                    <img src="{$Think.const.IMG_URL}voucher/telephone.png" class="m-r-5 contact-img" style="margin-top:-5px;">联系
+	                </a>
+	                <a class="dib ml20 gray-9" href="__MODULE__/Liuyan/Me/order_id/{$order.order_id}.html" style="padding: .15rem;border: 1px solid #e4e4e4;">
+	                    <img src="{$Think.const.IMG_URL}/voucher/message.png" class="m-r-5 message-img" style="margin-top:-5px;">留言
+	                </a>
+				</div>
+				
+				<div class="col-xs-3 gray-color">电子邮箱</div>
+				<div class="col-xs-9 ">{$order.email}</div>
+				
+			</section>-->
+	        <notempty name="refund">
+	                <div class="con-wrap mb15">
+	                    <div class="">
+	                        <div class="con-title" style="color:#ff8c1b;font-weight: bold">退款内容:</div>
+	                        <div class="con-title">
+	                        	<div class="dib col-3 gray-color">退款金额:</div>
+	                        	<div class="dib" style="color:#ff8c1b;width: 70%;">
+	                        		{$refund['user_cash']}元&nbsp;
+			                        <notempty name="refund.attach_1">
+			                            <button  class="btn btn-warning" data-preview-src="" data-preview-group="1" id ="show_attach" style="padding: 0 .25rem !important;float: right;">查看附件</button>
+			                            <volist name="refund.attach" id="vo" key="k">
+			                                <img src="{$vo}" id="img-{$k}" style="display:none" data-preview-src="" data-preview-group="1"/>
+			                            </volist>
+			                        </notempty>
+	                        	</div>
+	                        </div>
+	                        
+	                        <div class="con-title">
+	                        	<div class="dib col-3 gray-color">退款原因:</div>
+	                        	<div class="dib">{$refund['refund_comment']}&nbsp;</div>
+	                        </div>
+	                        
+	                        <notempty name="refund.refund_service_reply">
+	                            <div class="con-title" style="color:#ff8c1b;font-weight: bold">回复内容:</div>
+	                            <div class="con-title">
+	                            {$refund['refund_service_reply']}
+	                            </div>
+	                        </notempty>
+	                        <notempty name="refund.finally_service_desc">
+	                            <div class="con-title" style="color:#ff8c1b;font-weight: bold">处理结果:</div>
+	                            <div class="con-title">
+		                            {$refund['finally_service_desc']}
+		                            <gt name="refund.service_cash" value="0">
+		                                <a href="__MODULE__/Money.html" class="btn btn-warning" style="padding: 0 1rem !important;">查看退款</a>
+		                            </gt>
+	                            </div>
+	                        </notempty>
+	                        <eq name="order.refund_state" value="1">
+	                            <div class="col-xs-6 m-b-5 title-tip">
+	                                <button class="btn btn-warning btn-block" onclick="agreeRefund(this);" data-id="{$order.order_id}" style="width: 70%;">同意</button>
+	                            </div>
+	                            <div class="col-xs-6 m-b-5 title-tip">
+	                                <button onclick="refuseRefund(this);"  data-id="{$order.order_id}" style="width: 70%;height:3rem;border: 1px solid #ff840b;color:#ff840b">不同意</button>
+	                            </div>
+	                        </eq>
+	                    </div>
+	                    
+	                </div>
+	            </notempty>  
+			<if condition="$order.order_state eq 9">
+				<section>
+		            <form class="con-wrap baseform mb15" id="TaskForm" onsubmit="return false;">
+		                <div class="con-title gray-9">服务星级:</div>
+		                <div class="pl25 text-muted">
+	                        {$star}
+		                </div>
+		                <div class="con-title gray-9">服务评价:</div>
+		                <div class="pl25 pb15 pr25 text-muted" style="height: 100%;">
+		                   {$comment}
+		                </div>
+		            </form>
+		        </section>
+			</if>
+			<notempty name="report">
+				<section class="con-wrap mb15" >
+					<div class="con-img-title">
+						<img class="process" src="/Application/EShop/Public/images//img/icon-process.png" alt="">
+						<div>服务进度</div>
+					</div>
+					<div class="progress-line pd-t-40">
+						<volist name="report" id="vo" key="k">
+	                        <div class="process-list clearfix">
+	                            <div class="process-des
+	                            <eq name='vo.own' value='1' >left<else/>right</eq>
+	                            <eq name='k' value='1' >
+	                                <if condition='$is_over eq 1'>
+	                            	 over
+	                                <elseif condition='$vo.topic eq 0'/>
+	                               avtive system
+	                                <elseif condition='$vo.topic eq 1' />
+	                               avtive system
+	                                <elseif condition='$vo.topic eq 2' />
+	                               avtive step
+	                               <elseif condition='$vo.topic eq 3' />
+	                               avtive faker
+	                                <else/>
+	                               avtive flowed-resc
+	                                </if>
+	                            </eq>">
+	                                <span class="">{$vo.report_desc}</span>
+	                                <notempty name="vo.report_title">
+	                                    <span class="gray-color-sm report-remark <eq name='vo.own' value='1' >report-remark-left<else/>report-remark-right</eq>" style="width: 150px;">{$vo.report_title}</span>
+	                                </notempty>
+	                                <span class="gray-color-sm">{$vo.view_date}</span>
+									<eq name="vo.other" value="1">
+										<a class="check-it <eq name='vo.own' value='1' >look-left<else/>look-right</eq>" href="{$vo.line}" >查看</a>
+										<else/>
+										<notempty name="vo.pic0">
+											<a class="check-it <eq name='vo.own' value='1' >look-left<else/>look-right</eq>" href="__MODULE__/Order/reportInfo/id/{$vo['report_id']}.html" >查看</a>
+											<else/>
+											<notempty name="vo.enc0">
+												<a class="check-it <eq name='vo.own' value='1' >look-left<else/>look-right</eq>" href="__MODULE__/Order/reportInfo/id/{$vo['report_id']}.html" >查看</a>
+												<else/>
+												<notempty name="vo.report_remark">
+													<a class="check-it <eq name='vo.own' value='1' >look-left<else/>look-right</eq>" href="__MODULE__/Order/reportInfo/id/{$vo['report_id']}.html" >查看</a>
+												</notempty>
+											</notempty>
+										</notempty>
+									</eq>
+	                            </div>
+	                        </div>
+						</volist>
+					</div>
+		
+				</section>
+			</notempty>
+			
+			
+			<include file="Public:modal_img_show"/>
+					
+			<if condition="$order.order_state eq 3 and $order.surety_state eq 0">
+	            <eq name="is_unlink" value="1">
+	            	<div style="height: 1.35rem;"></div>
+	            	<div class="order-bottom-btn">
+	            		<button class="left-btn" data-id="{$order.order_id}" onclick="operationUnline(this,2);">取消收款</button>
+	                	<button class="bg-368bfe" data-id="{$order.order_id}" onclick="operationUnline(this,1);" >确认收款</button>
+	            	</div>
+	                
+	                <else/>
+	                <div style="height: 1.05rem;"></div>
+	                <div class="cancle-topay ptb15 plr25" style="overflow: hidden;">
+	                    <div class="total-price">合计：<span class="blue-368bfe">{$order.real_cash}&nbsp;元</span></div>
+	                    <button id="updateBtn" class="bg-368bfe flex-btn" onclick="update_price(this);" order_id="{$order.order_id}" order_price="{$order.real_cash}">
+	                        <gt name="order.real_cash" value="0">修改价格<else/>立即报价</gt>
+	                    </button>
+	                </div>
+	            </eq>
+	
+			<elseif condition="$order.order_state eq 3 and $order.surety_state eq 1"/>
+				<div style="height: 1.35rem;"></div>
+				<div class="order-bottom-btn">
+					<button class="bg-368bfe" onclick="start_service(this);" order_id="{$order.order_id}" >
+						开始服务
+					</button>
+				</div>
+				
+			<elseif condition="$order.order_state eq 4 && $order.refund_state eq 0"/>
+				<div style="height: 1.35rem;"></div>
+	            <div class="order-bottom-btn">
+	            	<button class="left-btn" id="over_step" data-id="{$order.order_id}" >完成服务</button>
+		            <button class="bg-368bfe" onclick="location='__MODULE__/Order/orderProgress/id/{$order.order_id}.html'" >报告业务进度</button>
+	            </div>
+	            
+				<!--<button class="button-style-1" onclick="location='__MODULE__/Order/orderProgress/id/{$order.order_id}.html'" >-->
+					<!--报告业务进度-->
+				<!--</button>-->
+			<elseif condition="$order.order_state eq 5"/>
+				<div style="height: 1.35rem;"></div>
+				<div class="order-bottom-btn">
+					<button class="bg-368bfe" onclick="location='__MODULE__/Order/sell/id/{$order.order_id}.html'">我的订单</button>
+				</div>
+			<elseif condition="$order.order_state eq 6"/>
+				<div style="height: 1.35rem;"></div>
+				<div class="order-bottom-btn">
+					<button class="left-btn" data-id="{$order.order_id}" onclick="closeHandler(this,'refuse');">拒绝结束</button>
+					<button class="bg-368bfe" data-id="{$order.order_id}" onclick="closeHandler(this,'agree');" >同意结束</button>
+				</div>
+	            <else/>
+	            <div style="height: 1.35rem;"></div>
+	            <div class="order-bottom-btn">
+	            	<button class="bg-368bfe" onclick="location='__MODULE__/Order/sell/id/{$order.order_id}.html'">我的订单</button>
+	            </div>
+	            
+			</if>
+			<include file="Public:contact" />
+			<div class="wrap-modal" style="display: none">
+		        <div class="modal-common-wrap modal-price">
+		            <div class="modal-contents">
+		                <div>
+		                	<div class="simple-line gray-9">
+		                		<div class="flex-1 tc">服务原价</div>
+		                		<div class="flex-1">{$order.real_cash}元</div>
+		                	</div>
+		                	<div class="simple-line">
+		                		<div class="flex-1 tc">修改价格</div>
+		                		<div class="flex-1 blue-368bfe">
+		                			<input class="default-input" type="number" />
+		                			<span>元</span>
+		                		</div>
+		                	</div>
+		                </div>
+		            </div>
+		            <div class="modal-btns">
+		                <button id="popup-close" class="popup-close">取消</button>
+		                <button class="blue" id="popup-complete">确定</button>
+		            </div>
+		        </div>
+		    </div>
+		</section>
+	</body>
+	<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+	<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script src="{$Think.const.JS_URL}clipboard/dist/clipboard.min.js"></script>
+	<if condition="$order.refund_state neq 0  ">
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.zoom.js"></script>
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.previewimage.js"></script>
+		<script type="text/javascript">
+		    // 初始化previewImage
+		    mui.previewImage({addTap:{control:'#show_attach',bind:document.getElementById('img-1')}});
+		</script>
+	</if>
+	<script>
+		function update_price(){
+//			var $this = $(obj);
+//			var	orderId		=	$this.attr("order_id");
+//			var orderPrice	=	$this.attr("order_price");
+			$('.wrap-modal').show();
+			$('#popup-complete').on('click',function(){
+				var updateBtn = $('#updateBtn');
+				var updateInput = $('.default-input');
+				var	orderId = updateBtn.attr("order_id");
+				var orderPrice = updateBtn.attr("order_price");
+				var updataPrice = updateInput.val();
+
+				if(Math.floor(updataPrice) === Math.floor(orderPrice)) {
+
+					layer.msg('价格未修改！');
+					return false;
+				} else if (updataPrice < 0.01){
+					orderPrice = orderPrice;
+					layer.msg('输入价格必须大于零!');
+					return false;
+				} else  {
+					orderPrice = updataPrice;
+				}
+				data = {
+					'order_id':	orderId,
+					'new_price':orderPrice
+				}
+				$.ajax({
+					url: '__MODULE__/Order/updatePrice.html',
+					type: 'POST',
+					dataType: "json",
+					data: data,
+					success: function(data) {
+						if(data.error == 0) {
+							$("#real").text('¥'+data.price+'元');
+							$('.total-price > span').text(data.price+'元');
+							$('#updateBtn').attr("order_price",data.price);
+							if(orderPrice == 0){
+                                $('#updateBtn').text('修改价格');
+                           }
+							$('.wrap-modal').hide();
+							layer.msg(data.msg);
+							$('#popup-complete').off();
+						} else {
+							$('.wrap-modal').hide();
+							layer.msg(data.msg);
+							$('#popup-complete').off();
+						}
+					}
+				});
+			});
+			
+//			mui.prompt('订单价格修改',orderPrice,"修改报价",btnArray,function(e){
+//				if(e.index	==	1){
+//					
+//				}else{
+//					layer.msg("已取消修改报价");
+//				}
+//			});
+		}
+		$('.popup-close').on('click',function(){
+			$(this).parents('.wrap-modal').hide();
+//			layer.msg("已取消修改报价");
+		})
+		$('.roller-blind').on('click',function(){
+            $(this).toggleClass('active').children('i').toggleClass('mui-icon-arrowup').toggleClass('mui-icon-arrowdown');
+            $('.simple-data-wrap').slideToggle();
+        })
+		
+		$("#show_pic_close").click(function(){
+			$('#myModal').modal('hide')
+		})
+        $(function () {
+            var clipboard = new ClipboardJS('.copy-code', {
+                text: function() {
+                    return '{$order["order_sn"]}';
+                }
+            });
+            clipboard.on('success', function(e) {
+                layer.msg('复制成功!');
+            });
+
+            clipboard.on('error', function(e) {
+                layer.msg('复制失败!');
+            });
+        })
+        //NEW Jan 11,2018 agreeRefund 
+	    function agreeRefund(obj){
+	        var orderId  = $(obj).attr('data-id');
+	        var theView = '<div style="padding:1rem;">是否确定同意该申请？<br>同意后该款项将退回客户账户。</div>';
+	        layer.open({
+	          type: 1,
+	          title:'提示',
+	          area: ['80%'], //宽高
+	          content: theView,
+	          btn:['确定','取消'],
+	          yes:function(){
+	                var index = layer.load(2, {shade: [0.1,'#fff'] });
+	                $.post('__MODULE__/Order/agreeRefund', {order_id:orderId},
+	                    function(data) {
+	                        if(data.error == 0){
+	                            layer.closeAll();
+	                            layer.msg(data.message);
+	                            setTimeout(function(){
+	                                window.location.reload(true); 
+	                            },2000)
+	                        }else{
+	                            layer.close(index);
+	                            layer.msg(data.message);
+	                            return false;
+	                        }
+	                },'JSON');
+	            }
+	        });
+	    }
+	    function closeHandler(obj,type){
+            var btnArray = ['取消', '确定'];
+            var title = type == 'refuse' ? '确认后将拒绝结束订单。':'确认后将同意结束订单。';
+            var msg = type == 'refuse' ? '拒绝结束。':'同意结束。';
+            mui.confirm(title, msg, btnArray, function(e) {
+                if (e.index == 1) {
+                    var orderId = $(obj).data('id');
+                    if(type == 'refuse'){
+                        setTimeout(function(){
+                            window.location.href= '__MODULE__/Order/enclosure/id/{$order.id}/type/3.html';
+                        },2000)
+					}else{
+                        $.post('__MODULE__/Order/closeHandler', {order_id:orderId,type:type},
+                            function(data) {
+                                if(data.error == 0){
+                                    layer.closeAll();
+                                    layer.msg(data.msg);
+                                    setTimeout(function(){
+                                        window.location.reload(true);
+                                    },2000)
+                                }else{
+                                    layer.close(index);
+                                    layer.msg(data.msg);
+                                    return false;
+                                }
+                            },'JSON');
+					}
+                }
+            })
+        }
+        //完成任务
+        $("#over_step").on('click',function(){
+            var orderId		=	$(this).data('id');
+            var btnArray 	=	['取消', '确定'];
+            mui.confirm('确认完成服务?',"完成服务",btnArray,function(e){
+                if(e.index	==	1){
+                    $.ajax({
+                        url: '__MODULE__/Order/overStep.html',
+                        type: "post",
+                        dataType: "json",
+                        data: {order_id:orderId},
+                        success: function (data) {
+                            if (data.error == 0) {
+                                layer.closeAll();
+                                layer.msg(data.msg);
+                                setTimeout(function () {
+                                    location ='__MODULE__/Order/sellDetail/id/'+orderId+'.html';
+                                }, 500);
+                            } else {
+                                layer.closeAll();
+                                layer.msg(data.msg);
+                            }
+
+                        },
+                        error: function () {
+                            layer.msg('系统错误！');
+                        },
+                        beforeSend: function () {
+                            layer.closeAll();
+                            layer.msg('正在提交....');
+                        }
+                    });
+                }
+            });
+        })
+        
+	    //完成收款
+        function operationUnline(obj,type){
+            var btnArray = ['取消', '确定'];
+            var title = type == 1 ? '确认后将完成收款。':'确认后将取消收款。';
+            var msg = type == 1 ? '完成收款。':'取消收款。';
+            mui.confirm(title, msg, btnArray, function(e) {
+                if (e.index == 1) {
+                    var orderId = $(obj).data('id');
+                    $.post('__MODULE__/Order/operationUnline', {order_id:orderId,type:type},
+                        function(data) {
+                            if(data.error == 0){
+                                layer.msg(data.message);
+                                setTimeout(function(){
+                                    window.location.reload(true);
+                                },2000)
+                            }else{
+                                layer.msg(data.message);
+                                return false;
+                            }
+                        },'JSON');
+                }
+            })
+        }
+	    //NEW Jan 11,2018 agreeRefund 
+	    function refuseRefund(obj){
+	        var orderId  = $(obj).attr('data-id');
+	        var theView = '';
+	        theView += '<div class="mui-input-row">';
+	        theView += '<label style="font-weight:initial;color:#999">原因</label>';
+	        theView += '<textarea class="refund-textarea" name="refund_reply" placeholder="请输入"></textarea>';
+	        theView += '</div>';
+	        theView += '<div class="mui-input-row" style="padding: 1rem;color: red;font-size: 1rem;""> ';
+	        theView += '请输入不同意该申请的具体原因，提交后将告知客户，平台将介入处理。';
+	        theView += '</div>';
+	        layer.open({
+	          type: 1,
+	          title:'提示',
+	          area: ['80%'], //宽高
+	          content: theView,
+	          btn:['确定','取消'],
+	          yes:function(){
+	                var replyComment = $('textarea[name=refund_reply]').val();
+	                if(replyComment.trim() == ''){
+	                    layer.msg('请填写拒绝退款原因!!');
+	                    return false;
+	                }
+	                var index = layer.load(2, {shade: [0.1,'#fff'] });
+	                $.post('__MODULE__/Order/refuseRefund', {order_id:orderId,refund_reply:replyComment.trim()},
+	                    function(data) {
+	                        if(data.error == 0){
+	                            layer.closeAll();
+	                            layer.msg(data.message);
+	                            setTimeout(function(){
+	                                window.location.reload(true); 
+	                            },2000)
+	                        }else{
+	                            layer.close(index);
+	                            layer.msg(data.message);
+	                            return false;
+	                        }
+	                },'JSON');
+	            }
+	        });
+	    }
+		function show_pic(obj){
+			var imgUrl	=	$(obj).attr("pic-url");
+			console.log(imgUrl);
+			$("#modal_show_pic").attr("src",imgUrl);
+			$(".btn-lg").click();
+		}
+		
+		function start_service(obj){
+			var	orderId		=	$(obj).attr("order_id");
+			var btnArray 	=	['取消', '确定'];
+			mui.confirm('是否开始服务?',"开始服务",btnArray,function(e){
+				if(e.index	==	1){
+					data	=	{
+						'order_id':	orderId,
+					}
+					$.ajax({
+						url: '__MODULE__/Order/startService.html',
+						type: 'POST',
+						dataType: "json",
+						data: data,
+						success: function(data) {
+							if(data.error == 0) {
+								layer.msg(data.msg);
+								setTimeout(function(){
+									window.location.href=data.url;
+								},1000);
+							} else{
+								layer.msg(data.msg);
+							}
+						}
+					});
+				}else{
+					layer.msg("已取消开始服务");
+				}
+			});
+		}
+
+		function cancel_complete(obj){
+			var	orderId		=	$(obj).attr("order_id");
+			var btnArray 	=	['取消', '确定'];
+			mui.confirm('是否取消完成任务?',"取消完成任务",btnArray,function(e){
+				if(e.index	==	1){
+					data	=	{
+						'order_id':	orderId,
+					}
+					$.ajax({
+						url: '__MODULE__/Order/cancelComplete.html',
+						type: 'POST',
+						dataType: "json",
+						data: data,
+						success: function(data) {
+							if(data.error == 0) {
+								layer.msg(data.msg);
+								setTimeout(function(){
+									window.location.href='__MODULE__/Order/sellDetail/id/'+orderId+'.html';
+								},1000);
+							} else{
+								layer.msg(data.msg);
+							}
+						}
+					});
+				}else{
+					layer.msg("已取消开始服务");
+				}
+			});
+		}
+	</script>
+</html>

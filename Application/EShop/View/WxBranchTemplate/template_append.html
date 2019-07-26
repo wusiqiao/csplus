@@ -1,0 +1,365 @@
+<include file="WxBranchTemplate:head"/>
+<link href="/{$Think.MODULE_PATH}Public/minicolors/jquery.minicolors.css?v={$vesion}" rel="stylesheet" />
+<style>
+    .add-color{
+        background: initial;
+    }
+</style>
+<body>
+	<include file="Index:header" />
+<section class="template-wrap mt85" id="app">
+	<div class="notify-to con-wrap mb15">
+        <div class="title">
+            收信人：<br>
+            <div class="append-users-del" v-if="users.length > 0" @click="deleteUser()"></div>
+        </div>
+		<div class="flex-1-wrap notify-to pb-12" style="padding: .1rem" v-bind:style="shrink">
+			<span class="add-receive" @click="addReceive()"></span>
+			<span v-for="(user,key) in users" @click="deleteSingleUser(key)">{{user.name}}</span>
+		</div>
+        <div style="flex: 0.1" class="append-users-shrink" v-bind:class="{on:shrinkOn}" @click="shrinkFunction()"></div>
+	</div>
+	<div v-for="(template, key) in templates">
+		<div class="simple-template-input" style="margin-bottom: .5rem">
+			<label class="title gray-9">{{template.view}}：</label>
+			<input type="text" v-model="template.value" v-bind:placeholder="template.placeholder" v-bind:style="{color:template.color}"/>
+            <input type="hidden" class="color" v-model="template.color">
+			<span class="add-color" data-color="" v-bind="{id : key}"></span>
+		</div>
+		<!--<div class="select-color" >-->
+			<!--<span class="bg-0c"  @click="colorSelected('#0c0c0c',key)"></span>-->
+			<!--<span class="bg-09f" @click="colorSelected('#0099ff',key)"></span>-->
+			<!--<span class="bg-e91835" @click="colorSelected('#e91835',key)"></span>-->
+			<!--<span class="bg-ffd231" @click="colorSelected('#ffd231',key)"></span>-->
+			<!--<span class="bg-ab" @click="colorSelected('#ababab',key)"></span>-->
+			<!--<span class="add-color" data-color="" v-bind="{id : key}"></span>-->
+		<!--</div>-->
+	</div>
+	<div class="simple-template-link mb15">
+		<div class="flex-1-wrap">
+			<div class="gray-9">点击跳转：</div>
+			<div class="link">
+				<span class="left-link " v-bind:class="[point? '' : 'active']" @click="linkSelected(1)">链接</span>
+				<span style="width: initial;padding: 0 .1rem;"  v-bind:class="[point? 'active' :'']" @click="linkSelected(0)">小程序</span>
+				<span class="right-link" style="width: initial;padding: 0 .1rem;"  @click="linkShow()">功能链接</span>
+			</div>
+		</div>
+		<div  v-bind:class="[point ? 'hide' : '']">
+			<input type="text" v-model="url" placeholder="https://"/>
+		</div>
+		<div v-bind:class="[point ? '' : 'hide']">
+			<!--<input type="" v-model="xcx_appid" placeholder="输入小程序Appid,小程序需先与当前公众号关联"/>-->
+			<!--<input type="" v-model="xcx_url" placeholder="输入小程序路径,例如:pages/index/index"/>-->
+			<input type="text" v-model="xcx_space_url" placeholder="输入备用链接,不支持小程序的旧版微信会跳转至此"/>
+		</div>
+	</div>
+    <div class="pr" style="background-color: #fff;padding: .2rem">
+        <div class="template-tip font24" style="position:initial;border-bottom: 1px solid #eeeeee;text-align: right" v-text="isPreview ? '取消预览': '查看预览'" @click="isPreviewSelected()"></div>
+        <div v-if="isPreview">
+			<div class="simple-template" v-if="examples.first">
+				<span  >{{examples.first.title}}</span>
+			</div>
+            <div class="simple-template" v-for="(example ,keys) in examples">
+                <span class="title gray-a1" v-if="example.key">{{ example.key }}：</span>
+				<span v-if="keys != 'first'" v-bind:style="{color:templates[keys]['color']}">{{templates[keys]['value']}}</span>
+            </div>
+        </div>
+    </div>
+	<div style="height: 1.25rem;"></div>
+    <div class="bottom-operation ptb15 plr25 bg-white blue-4591fe" v-if="id">
+		<eq name="is_open" value="1">
+			<div class="operation tc" @click="deletePreview()" style="background-color: red;color: #fff">删除</div>
+			<div class="operation tc" @click="preview()">保存草稿</div>
+			<button class="left-btn" @click="previewFor()">预览</button>
+			<button class="right-btn" @click="send()">立即发送</button>
+			<else/>
+			<div class="operation tc" @click="deletePreview()" style="background-color: red;color: #fff">删除</div>
+			<button class="right-btn" style="flex: 1;margin-left: 1rem;background-color: #b3b3b3" @click="errorTip()">立即发送</button>
+		</eq>
+    </div>
+    <div class="bottom-operation ptb15 plr25 bg-white blue-4591fe" v-else>
+        <div class="operation tc" @click="preview()">存为草稿</div>
+        <button class="left-btn" @click="previewFor()">预览</button>
+        <button class="right-btn" @click="send()">立即发送</button>
+    </div>
+    <input type="hidden" id="handle_status" >
+</section>
+<include file="WxBranchTemplate:foot_access_file"/>
+<script src="/{$Think.MODULE_PATH}Public/minicolors/jquery.minicolors.js"></script>
+<script>
+    var Vue = new Vue({
+                el: '#app',
+                data:{
+                    isPreview:false,
+                    users:{$users},
+                    templates:{$template},
+                    examples:{$example},
+                    point:{$point},
+                    template_id:{$template_id},
+                    url:'{$url}',
+                    xcx_space_url:'{$xcx_space_url}',
+                    id:{$id} || 0,
+                    shrink:{
+                        'max-height' : '1.5rem',
+                        'overflow':'hidden'
+                    },
+                    shrinkOn : 0
+                },
+                methods:{
+                    colorSelected(obj,key){
+                        this.templates[key]['color'] = obj;
+                    },
+                    linkSelected(value){
+                        this.point = !this.point ;
+                    },
+                    isPreviewSelected(){
+                        this.isPreview = !this.isPreview;
+                    },
+                    addReceive(){
+                        var users = this.users;
+                        layer.open({
+                            type: 2,
+                            title: "添加用户",
+                            shadeClose: true,
+                            shade: 0.8,
+                            area: ['100%', '100%'],
+                            content: '/WxBranchTemplate/sendUsersLists', //iframe的url
+                            success: function (layero, index) {
+                                //向iframe页的id=house的元素传值  // 参考 https://yq.aliyun.com/ziliao/133150
+                                $('body').css({'overflow-y':'hidden','height':'100%','position':'fixed'});
+                                document.body.addEventListener('touchmove', handler, {passive: false});
+                                var users_ids = [];
+                                if (users) {
+                                    for (var i=0;i<users.length;i++) {
+                                        if (users[i]) {
+                                            users_ids.push(users[i]['id']);
+                                        }
+                                    }
+                                }
+                                var body = layer.getChildFrame('body', index);
+                                body.contents().find("#user_select").val(users_ids);
+                            },
+                            end: function () {
+                                if($('#handle_status').val() == 1) {
+                                    Vue.users = $('#handle_status').data('id');
+                                    $('#handle_status').val('0').data('id','');
+                                    document.body.removeEventListener('touchmove',handler, {passive: false});
+                                    $('body').css({'overflow-y':'initial','height':'','position':''});
+                                    // $.post('/WxBranchTemplate/templatePreviewImplement',data,function(result){
+                                    //     layer.msg(result.message);
+                                    // },'json')
+                                }
+                            },
+                            cancel:function (layero, index) {
+                                document.body.removeEventListener('touchmove',handler, {passive: false});
+                                $('body').css({'overflow-y':'initial','height':'','position':''});
+                            }
+                        });
+                    },
+                    deleteSingleUser(inc){
+                        this.users.splice(inc,1);
+                    },
+                    deletePreview(){
+                        var data={
+                            id : this.id
+                        };
+                        mui.confirm('是否确定删除该草稿','草稿删除',['取消','确定'],function(e){
+                            if(e.index == 1) {
+                                $.post('/WxBranchTemplate/PreviewDeleteImplement',data,function(result){
+                                    layer.msg(result.message);
+                                    if (result.error == 0) {
+                                        setTimeout(function(){
+                                            window.location.href = '/WxBranchTemplate/template_draft'
+                                        },500)
+                                    }
+                                },'json')
+                            }
+                        })
+
+                    },
+                    send(){
+                        var data={
+                            content : this.templates,
+                            examples : this.examples,
+                            point : this.point ? 1 : 0,
+                            xcx_appid : this.xcx_appid,
+                            url : this.url,
+                            xcx_url : this.xcx_url,
+                            xcx_space_url : this.xcx_space_url,
+                            key : 'send',
+                            users : this.users,
+                            template_id : this.template_id
+                        };
+                        var id = this.id;
+                        if( id > 0 ) {
+                            data['id'] = id;
+                            $.post('/WxBranchTemplate/previewUpdateImplement',data,function(result){
+                                layer.msg(result.message)
+                                if (result.error == 0) {
+                                    setTimeout(function(){
+                                        window.location.href = '/WxBranchTemplate/template_history'
+                                    },500)
+                                }
+                            },'json')
+                        } else {
+                            $.post('/WxBranchTemplate/templateAppendImplement',data,function(result){
+                                layer.msg(result.message)
+                                if (result.error == 0) {
+                                    setTimeout(function(){
+                                        window.location.href = '/WxBranchTemplate/template_history'
+                                    },500)
+                                }
+                            },'json')
+                        }
+
+                    },
+                    previewFor(){
+                        var data={
+                            content : this.templates,
+                            examples : this.examples,
+                            point : this.point ? 1 : 0,
+                            xcx_appid : this.xcx_appid,
+                            url : this.url,
+                            xcx_url : this.xcx_url,
+                            xcx_space_url : this.xcx_space_url,
+                            key : 'preview',
+                            template_id : this.template_id
+                        };
+                        layer.open({
+                            type: 2,
+                            title: "预览",
+                            shadeClose: true,
+                            shade: 0.8,
+                            area: ['100%', '100%'],
+                            content: '/WxBranchTemplate/previewForUsers', //iframe的url
+                            success: function (layero, index) {
+                                //向iframe页的id=house的元素传值  // 参考 https://yq.aliyun.com/ziliao/133150
+                                $('body').css({'overflow-y': 'hidden', 'height': '100%', 'position': 'fixed'});
+                                document.body.addEventListener('touchmove', handler, {passive: false})
+                            },
+                            end: function () {
+                                if($('#handle_status').val() == 1) {
+                                    data['users'] = $('#handle_status').data('id');
+                                    var index = layer.msg('开始发送模板消息(预览)');
+                                    $('#handle_status').val('0').data('id','');
+                                    $.post('/WxBranchTemplate/templatePreviewImplement',data,function(result){
+										layer.msg(result.message);
+                                    },'json')
+                                }
+                            },
+                            cancel:function (layero, index) {
+                                document.body.removeEventListener('touchmove',handler, {passive: false});
+                                $('body').css({'overflow-y':'initial','height':'','position':''});
+                            }
+                        });
+                    },
+                    preview(){
+                        var id = this.id;
+                        var data={
+                            content : this.templates,
+                            examples : this.examples,
+                            point : this.point ? 1 : 0,
+                            xcx_appid : this.xcx_appid,
+                            url : this.url,
+                            xcx_url : this.xcx_url,
+                            xcx_space_url : this.xcx_space_url,
+                            key : 'draft',
+                            users : this.users,
+                            template_id : this.template_id
+                        };
+                        if( id > 0 ) {
+                            data['id'] = id;
+                            data['key'] = 'draft';
+                            $.post('/WxBranchTemplate/previewUpdateImplement',data,function(result){
+                                layer.msg(result.message)
+                                if (result.error == 0) {
+                                    setTimeout(function(){
+                                        window.location.href = '/WxBranchTemplate/template_draft'
+                                    },500)
+                                }
+                            },'json')
+                        } else {
+                            $.post('/WxBranchTemplate/templateAppendImplement',data,function(result){
+                                layer.msg(result.message)
+                                if (result.error == 0) {
+                                    setTimeout(function(){
+                                        window.location.href = '/WxBranchTemplate/template_draft';
+                                    },500)
+                                }
+                            },'json')
+                        }
+                    },
+                    shrinkFunction(){
+                        this.shrinkOn = !this.shrinkOn;
+                        this.shrink = this.shrinkOn == 1 ? {} : {'max-height' : '1.5rem','overflow':'hidden'};
+                    },
+                    deleteUser(){
+                        var obj = this;
+                        mui.confirm('是否确定清除所有用户','',['取消','确定'],function(e){
+                            if(e.index == 1) {
+                                obj.users = [];
+                            }
+                        })
+                    },
+                    linkShow(){
+                        var obj = this;
+                        layer.open({
+                            type: 2,
+                            title: "功能链接",
+                            shadeClose: true,
+                            shade: 0.8,
+                            area: ['100%', '100%'],
+                            content: '/WxBranchTemplate/linkShow', //iframe的url
+                            end: function () {
+                                if($('#handle_status').val() == 1) {
+                                    obj.url =  $('#handle_status').data('url');
+                                    obj.xcx_space_url = $('#handle_status').data('url');
+                                    layer.msg('已成功添加功能链接')
+                                }
+                            }
+                        });
+					},
+                    errorTip(){
+                        layer.msg('该历史记录所属的微信消息模板<br>不存在或已删除!');
+					}
+                }
+            })
+</script>
+<script>
+    function handler(event) {
+        event.preventDefault();
+    }
+    $(document).ready( function() {
+        $('.add-color').each( function() {
+            var obj  = $(this);
+            $(this).minicolors({
+
+                control: 'wheel',
+
+                defaultValue: '',
+
+                inline: false,
+
+                letterCase: 'lowercase',
+
+                opacity: false,
+
+                hideSpeed : 100,
+
+                position: 'bottom right',
+
+                change: function(hex, opacity) {
+                    try {
+                        obj.siblings('.minicolors-swatch').css('background','initial')
+                        var  id = obj.attr('id');
+                        Vue.templates[id]['color'] = hex;
+                    } catch(e) {}
+                },
+                theme: 'default'
+
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<include file="UserSupervise:head"/>
+<style>
+	.modal input[type='text'] {
+	    margin: 0 0;
+	    padding: 0 .1rem;
+	    border: 1px solid #e9e9e9;
+	}
+	
+</style>
+<body>
+<section class="common-wrap bg-none mt85">
+	<include file="Index:header" />
+	<div>
+		<div class="head-search pr">
+			<input type="text" placeholder="搜索"/>
+		</div>
+		<div>
+			<div class="file-list blue-checkbox mb15">
+				<input type="checkbox" />
+				<div class="ml15 wd90">
+					<div class="gray-6">厦门二天网络科技有限公司</div>
+					<div class="flex-between gray-9">
+						<span>兰蓝蓝</span><span>18950060022</span>
+					</div>
+				</div>
+			</div>
+			<div class="file-list blue-checkbox mb15">
+				<input class="" type="checkbox" />
+				<div class="ml15 wd90">
+					<div class="gray-6">厦门二天网络科技有限公司</div>
+					<div class="flex-between gray-9">
+						<span>兰蓝蓝</span><span>18950060022</span>
+					</div>
+				</div>
+			</div>
+			<div class="file-list blue-checkbox mb15">
+				<input type="checkbox" />
+				<div class="ml15 wd90">
+					<div class="gray-6">厦门二天网络科技有限公司</div>
+					<div class="flex-between gray-9">
+						<span>兰蓝蓝</span><span>18950060022</span>
+					</div>
+				</div>
+			</div>
+			<div class="check-operation blue-checkbox">
+				<input id="checkAll" type="checkbox" name="selectall"/>
+				<label class="gray-9" for="checkAll">全选</label>
+				<span class="blue-368bfe ml20">批量删除</span>
+			</div>
+		</div>
+	</div>
+	<div class="order-reorder ptb15 plr25">
+        <div class="menu-more">
+            <div onclick="showMore(this);">更多</div>
+            <div class="more-list" style="display: none">
+                <button class="menu-del" onclick="location='file'">导入导出</button>
+            </div>
+        </div>
+        <button class="myorder bg-e" onclick="location='###'">编辑公司</button>
+        <button class="reorder" type="button" onclick="location='###'" order_id="706">新增公司</button>
+    </div>
+	
+	<!--modal 确认删除-->
+    <div class="wrap-modal" id="add-good" style="display: none;">
+        <div class="modal-common-wrap modal">
+        	<div class="modal-title bg-e gray-9">档案删除</div>
+            <div class="modal-content-text black-3">
+            	<div class="tc">公司相关资料和工作任务会同步删除<br>是否确认删除</div>
+            </div>
+            <div class="modal-btn">
+                <button id="popup-close" class="popup-close">取消</button>
+                <button class="blue" id="popup-complete" class="popup-complete">确定</button>
+            </div>
+        </div>
+    </div>
+    <!--modal end-->
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script>
+	
+	function showMore(obj){
+		$(obj).next('.more-list').toggle();
+	}
+</script>
+<script type="text/javascript">
+	mui.init();
+    mui.ready(function() {
+    	function checkAll(arr){
+            for (var i = 0;i < arr.length; i++) {
+                arr[i].checked = true;
+            }
+        }
+        function uncheckAll(arr){
+            for (var i = 0;i < arr.length; i++) {
+                arr[i].checked = false;
+            }
+        }
+        mui('.check-operation').on('change', 'input', function() {
+            var isCheck = document.querySelectorAll('#checkAll:checked').length ? 1 : 0;
+            var arrCheckBox = document.querySelectorAll('.blue-checkbox input[type="checkbox"]');
+            if(isCheck){
+                checkAll(arrCheckBox);
+            } else {
+                uncheckAll(arrCheckBox);
+            }
+            
+        });
+	});
+
+	$('#edit').on('click',function(){
+        $('#edit-good').show();
+    })
+    $('.popup-close,.popup-complete').on('click',function(){
+        $(this).parents('.wrap-modal').hide();
+    })
+    $('#add').on('click',function(){
+        $('#add-good').show();
+    })
+</script>
+</body>
+</html>

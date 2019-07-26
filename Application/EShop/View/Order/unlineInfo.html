@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/style.css?v=22" rel="stylesheet" />
+    <link rel="stylesheet" href="{$Think.const.CSS_URL}mui/imageviewer.css">
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <title>{$title}</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body>
+	<style>
+	    .progress-line::before{
+	        display: none;
+	    }
+	</style>
+	<section class="secondary-wrap">
+		<include file="Index:header" />
+		
+		<switch name="order.order_state">
+			<case value="3"><section class="order-status-img status-daifukuan mb15"></section></case>
+			<case value="4"><section class="order-status-img status-fuwuzhong mb15"></section></case>
+			<case value="5"><section class="order-status-img status-daiyanshou mb15"></section></case>
+			<case value="6"><section class="order-status-img status-fuwuzhong mb15"></section></case>
+			<case value="7"><section class="order-status-img status-yiwancheng mb15"></section></case>
+			<case value="8"><section class="order-status-img status-yiguanbi mb15"></section></case>
+			<case value="9"><section class="order-status-img status-yiwancheng mb15"></section></case>
+		</switch>
+		
+		<div class="copy-order ptb25 plr15 gray-9 bg-white mb15">
+			<div class="">订单编号：{$unline.order_sn} <span class="copy-code" onclick="">复制</span></div>
+			<div class="">购买时间：{$unline.order_on_time}</div>
+		</div>
+		
+	    <div class="con-wrap mb15">
+	        <div class="con-img-title">
+	            <img class="company" src="/Application/EShop/Public/images//img/icon-company.png" alt="">
+	            <div class="blue-368bfe">{$unline.title}</div>
+	        </div>
+	        <div class="simple-data-wrap black-2c">
+	            <div class="simple-line">
+	                <div class="gray-9">转账金额</div>
+	                <div>
+	                    <span class="r-cash" >¥{$unline.account}元</span>
+	                </div>
+	            </div>
+	            <div class="simple-line">
+	                <div class="dib col-3 gray-9">转账状态</div>
+	                <div class="dib">
+	                    <span class="r-cash">{$unline.view_state}</span>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<section class="con-wrap mb15" >
+		    <div class="con-img-title">
+		    	<img class="chulizhong" src="/Application/EShop/Public/images/img/icon-chulizhong.png" alt="">
+		        <div>处理信息</div>
+		    </div>
+		    <div class="simple-detai-wrap gray-9">
+		        <if condition="$unline.is_remark eq 1">
+		            {$unline.remark}
+	            <else/>
+					无
+		        </if>
+		    </div>
+		
+		</section>
+		<section class="con-wrap mb15" >
+		    <div class="con-img-title">
+		    	<img class="beizhu" src="/Application/EShop/Public/images//img/icon-beizhu.png" alt="">
+		        <div>备注</div>
+		    </div>
+		    <div class="simple-detai-wrap gray-9">
+		        <if condition="$unline.is_message eq 1">
+		            {$unline.message}
+	            <else/>
+		            无
+		        </if>
+		    </div>
+		
+		</section>
+		<section class="con-wrap mb15 " >
+		    <div class="con-img-title">
+		    	<img class="pingzheng" src="/Application/EShop/Public/images//img/icon-pingzheng.png" alt="">
+		        <div>凭证</div>
+		    </div>
+		    <div class="simple-detai-wrap gray-9">
+		        <if condition="$unline.is_pic eq 1">
+		        	<img src="{$unline.pic}" alt="" style="max-width:100%;">
+	            <else/>
+		            无
+		        </if>
+		    </div>
+		</section>
+		<div style="height: 1.35rem;"></div>
+		<footer class="order-bottom-btn" >
+			<button class="bg-368bfe" onclick="location='{$unline.order_url}'">订单详情</button>
+		</footer>
+	</section>
+</body>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script src="{$Think.const.JS_URL}clipboard/dist/clipboard.min.js"></script>
+<script>
+    $(function () {
+        var clipboard = new ClipboardJS('.copy-code', {
+            text: function() {
+                return '{$unline["order_sn"]}';
+            }
+        });
+        clipboard.on('success', function(e) {
+            layer.msg('复制成功!');
+        });
+        clipboard.on('error', function(e) {
+            layer.msg('复制失败!');
+        });
+    })
+</script>
+</html>

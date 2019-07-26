@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+	<link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+	<title>{$title}</title>
+	<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<style>
+    .overflow-div{
+        overflow: hidden;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+    }
+    .voucher-dev{
+        width: 65%;
+    }
+    .scope-voucher{
+        line-height: .3rem !important;
+        margin-bottom: 0 !important;
+        height: .6rem;
+    }
+</style>
+<body>
+<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+    <h1 class="mui-title">{$title}</h1>
+    <button class="mui-btn mui-btn-link mui-btn-nav mui-pull-left" id="come-back" style="color: #444444 !important;padding: 0 !important;">
+		<span class="mui-icon mui-icon-arrowleft">
+		</span>返回
+    </button>
+    <button id="back-home" class="back-home"></button>
+</header>
+<script>
+    $('#come-back').on('click',function(){
+        window.location.href = document.referrer;
+    })
+    $('#back-home').on('click',function(){
+        window.location.href = '__MODULE__/Index/index.html';
+    })
+</script>
+<section class="voucher-wrap">
+	<div class="voucher-title vouchers " id="tit">
+		<div  load_id="1">可使用</div>
+		<div load_id="2">已使用</div>
+		<div load_id="3">已过期</div>
+        <div load_id="5">已失效</div>
+        <div load_id="4">领券中心</div>
+	</div>
+</section>
+<section class="voucher-wrap" style="padding: 0;">
+    <div class="voucher-con" id="con">
+        <ul>
+
+            <li class="show v-content" id="yxload-1">
+                <div class="hsui-sync-refresh-1" data-url="__MODULE__/User/myVoucher.html" page-size="20" >
+                    <div class="hsui-sync-refresh-content">
+                        <div class="clearfix item-wrap red-list" style="display:none">
+                            <div class="my-vouchers my-vouchers-{%show_type%}" >
+                                <span class="icon-each">券</span>
+                                <div class="voucher-style">
+                                    <div class="voucher-dev">
+                                        <div class="voucher-style-title">满{%least_cost%}元即可使用</div>
+                                        <div class="scope-voucher overflow-div">{%show_scope%}</div>
+                                        <div class="gray-voucher">{%ticket_end_date%}到期</div>
+                                    </div>
+                                    <div class="operate-btn">
+                                        <div class="get-price">￥{%reduce_cost%}</div>
+                                        <div class="gray-voucher">优惠券</div>
+                                        <div class="to-use" onclick="location.href='{%jump_url%}'">立即使用</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="voucher-used v-content" id="yxload-2">
+                <div class="hsui-sync-refresh-2" data-url="__MODULE__/User/myVoucher.html" page-size="20" >
+                    <div class="hsui-sync-refresh-content">
+                        <div class="clearfix item-wrap red-list" style="display:none">
+                            <div class="my-vouchers my-vouchers-{%show_type%}" >
+                                <span class="icon-each">券</span>
+                                <span class="used"></span>
+                                <div class="voucher-style">
+                                    <div class="voucher-dev">
+                                        <div class="voucher-style-title">满{%least_cost%}元即可使用</div>
+                                        <div class="scope-voucher overflow-div">{%show_scope%}</div>
+                                        <div class="gray-voucher">{%ticket_end_view%}</div>
+                                    </div>
+                                    <div class="operate-btn">
+                                        <div class="get-price">￥{%reduce_cost%}</div>
+                                        <div class="gray-voucher">优惠券</div>
+                                        <div class="to-use dis-use">立即使用</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="voucher-overdue v-content" id="yxload-3" >
+                <div class="hsui-sync-refresh-3" data-url="__MODULE__/User/myVoucher.html" page-size="20" >
+                    <div class="hsui-sync-refresh-content">
+                        <div class="clearfix item-wrap red-list" style="display:none">
+                            <div class="my-vouchers my-vouchers-{%show_type%}" >
+                                <span class="icon-each">券</span>
+                                <span class="unused"></span>
+                                <div class="voucher-style">
+                                    <div class="voucher-dev">
+                                        <div class="voucher-style-title">满{%least_cost%}元即可使用</div>
+                                        <div class="scope-voucher overflow-div">{%show_scope%}</div>
+                                        <div class="gray-voucher">{%ticket_end_date%}到期</div>
+                                    </div>
+                                    <div class="operate-btn">
+                                        <div class="get-price">￥{%reduce_cost%}</div>
+                                        <div class="gray-voucher">优惠券</div>
+                                        <div class="to-use dis-use">立即使用</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="voucher-overdue v-content" id="yxload-5" >
+                <div class="hsui-sync-refresh-5" data-url="__MODULE__/User/myVoucher.html" page-size="20" >
+                    <div class="hsui-sync-refresh-content">
+                        <div class="clearfix item-wrap red-list" style="display:none">
+                            <div class="my-vouchers my-vouchers-{%show_type%}" >
+                                <span class="icon-each">券</span>
+                                <span class="invalid"></span>
+                                <div class="voucher-style">
+                                    <div class="voucher-dev">
+                                        <div class="voucher-style-title">满{%least_cost%}元即可使用</div>
+                                        <div class="scope-voucher overflow-div">{%show_scope%}</div>
+                                        <div class="gray-voucher">{%ticket_end_date%}到期</div>
+                                    </div>
+                                    <div class="operate-btn">
+                                        <div class="get-price">￥{%reduce_cost%}</div>
+                                        <div class="gray-voucher">优惠券</div>
+                                        <div class="to-use dis-use">立即使用</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="voucher-overdue v-content" id="yxload-4">
+                <div class="hsui-sync-refresh-4" data-url="__MODULE__/User/voucherCenter.html" page-size="20" >
+                    <div class="hsui-sync-refresh-content">
+                        <div class="clearfix item-wrap red-list" style="display:none">
+                            <div class="my-vouchers my-vouchers-{%show_type%}" >
+                                <span class="icon-each">券</span>
+                                <div class="voucher-style">
+                                    <div class="voucher-dev">
+                                        <div class="voucher-style-title">满{%least_cost%}元即可使用</div>
+                                        <div class="scope-voucher overflow-div">{%show_scope%}</div>
+                                        <div class="gray-voucher">{%ticket_end_date%}到期</div>
+                                    </div>
+                                    <div class="operate-btn">
+                                        <div class="get-price">￥{%reduce_cost%}</div>
+                                        <div class="gray-voucher">优惠券</div>
+                                        <div class="to-use" data-id="{%activity_id%}" {%show_pilot%} >{%show_button%}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
+<span style="display: none" id="is_set_mobile" data-ismobile = "{$is_set_mobile}"></span>
+
+<include file="Public:contact" />
+<!--end 底部-->
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script src="{$Think.const.JS_URL}mui/mui.min.js"></script>
+<script src="{$Think.const.JS_URL}load/dropload.min.js"></script>
+<script src="{$Think.const.JS_URL}common.js"></script>
+<script>
+    // $('#tit div').click(function() {
+    //     var i = $(this).index();
+    //     $(this).addClass('select').siblings().removeClass('select');
+    //     $('#con li').eq(i).show().siblings().hide();
+    // });
+    $(function(){
+        var isMobile = $('#is_set_mobile').data('ismobile');
+        if(isMobile == 0){
+            var btnArray = ['取消', '前往'];
+            mui.confirm('您尚未设置手机号码', '前往设置手机号码', btnArray, function(e) {
+                if (e.index == 1) {
+                    window.location.href = '__MODULE__/User/index.html';
+                }else{
+                    window.history.back();
+                }
+            })
+        }
+        var location = {$location};
+        locationVoucher(location);
+        switch_on();
+        $(".vouchers div").click(function(){
+            num =$(".vouchers div").index(this);
+            locationVoucher(num);
+            switch_on();
+        })
+        $(".identity div").click(function(){
+            num =$(".identity div").index(this);
+            $(".identity div").removeClass('identity-active');
+            $(".red-packet div").removeClass('r-active').eq(0).addClass('r-active');
+            $(".vouchers div").removeClass('v-active').eq(0).addClass('v-active');
+            $(".r-content").hide();
+            $(".v-content").hide();
+            if(num === 0){
+                $(".v-content").hide();
+                $(".identity-con").hide();
+                $(".identity-con").eq(num).show();
+                $(".identity div").eq(num).addClass('identity-active');
+                $(".r-content").eq(num).show();
+            }else {
+                $(".r-content").hide();
+                $(".identity-con").hide();
+                $(".identity div").eq(num).addClass('identity-active');
+                $(".identity-con").eq(num).show();
+                $(".v-content").eq(0).show();
+            }
+            switch_on();
+        })
+
+    })
+    function locationVoucher(location){
+        $(".vouchers div").removeClass('select');
+        $(".v-content").removeClass('show').addClass('hide');
+        $(".vouchers div").eq(location).addClass('select');
+        $(".v-content").eq(location).removeClass('hide').addClass('show');
+    }
+    function redpacket(obj){
+        var id = $(obj).data('id');
+        $.post('/User/scopeTicketReceive.html',{activity_id:id},function(data){
+            var button = '';
+            console.log('error'+data.error);
+            console.log('result'+ (data.error == 0));
+            console.log(typeof data.error);
+            if(data.error == 0){
+                layer.msg('领取成功!!!');
+                button = '已领取';
+            }else{
+                button = data.data.error_msg;
+                layer.msg(data.msg);
+                if(data.error == 2){
+                    window.location.href = data.url;
+                }
+            }
+            //置灰
+            $(obj).removeAttr('onclick').css('background-color','#bfbfbf').text(button);
+        },'json');
+
+    }
+    function switch_on(){
+        var switch_view_id		=	$(".select").attr("load_id");
+        if(switch_view_id > 0){
+            voucher_ajax(switch_view_id);
+        }
+    }
+    function voucher_ajax(type){
+        dropload($(".hsui-sync-refresh-"+type), {type:type});
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta name="renderer" content="webkit">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+	<meta name="full-screen" content="yes">
+	<meta name="x5-fullscreen" content="true">
+    <link rel="stylesheet" href="{$Think.const.JS_URL}load/dropload.css" />
+    <link rel="stylesheet" href="{$Think.const.CSS_URL}mui/mui.css">
+	<link rel="stylesheet" href="{$Think.const.CSS_URL}liuyan/liuyan.css">
+	<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+	<script src="{$Think.const.JS_URL}mui/mui.js"></script>
+    <title>{$title}</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body>
+	<include file="Index:header" />
+	
+	<div class="liuyan-wrap pb70" id="yxload" style="margin-bottom: 66px;margin-top: 1rem;">    
+		<section class="msg-list yxcontent">
+							
+		</section>
+	</div>
+<!--底部 start-->
+    <div style="height: 1rem"></div>
+	<include file="Public:contact" />
+<include file="UserSupervise:foot_access_file" />
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script src="{$Think.const.JS_URL}load/dropload.min.js"></script>
+
+
+<script>
+$(function(){
+	var counter = 0;
+	var num = 5;
+	var pageStart = 0,pageEnd = 0;
+	// dropload
+	$('#yxload').dropload({
+		domUp : {
+			domClass   : 'dropload-up',
+			domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+			domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+			},
+		scrollArea : window,
+		loadDownFn: function(me){
+			$.ajax({
+				type: 'POST',
+				url: '__MODULE__/Liuyan/History/start/'+ pageStart + '/n/' + num + '.html',
+				dataType: 'json',
+				success: function(data){
+					if(data.count==0){
+						if(pageStart == 0) {
+									html = '<div class="text-center m-t-40" style="margin-top: 0.85rem !important;margin-bottom: 40px;text-align:center">';
+									html += '<img src="{$Think.const.IMG_URL}/voucher/emptyPic.png" />';
+									html += '<div class="text-muted m-t-15" style="padding: .2rem;">空空如也~亲,当前没有记录哦';
+									$(".dropload-down").html("");
+									$(".yxcontent").append(html);
+						}else {
+							$(".dropload-down").html("<center style='padding: .2rem;'>亲,已经没有更多的数据了哦!</center>");
+						}
+						return false;
+					}
+					console.info(data.lists);
+					var result = '';
+					counter ++;
+					pageStart = num * counter;
+					for(var i = 0; i < data.lists.length; i++){
+						if (data.lists[i].type=="shop") {
+							result +='<a onclick="getAttachGroup(this)" class="msg-content clearfix">';
+						}else if(data.lists[i].type=="customer"){
+							result +='<a onclick="getAttachGroup('+data.lists[i].origin_id+')" class="msg-content clearfix">';
+						}else {
+							result += '<a href="__MODULE__/Liuyan/';
+							if(data.lists[i].url_type	==	"me"){
+								result += 'Me';
+							}else{
+								result += 'TaReply';
+							}
+							result +='/id/'+data.lists[i].kid+'.html" onclick="read_ask(this);" class="msg-content clearfix">';
+						}
+						
+						result += '<div class="consult-img"><img src="'+data.lists[i].head_url+'" alt="">';
+						result += '<span';
+						if(data.lists[i].is_read	==	1){
+							result += ' class="msg-new"';
+						}
+						result += '></span>';
+						result +='</div>';
+						result += '</div>';
+						result += '<div class="consult-content">';
+						result += '<div class="consult-title over-flow" >' + data.lists[i].title + '</div>';
+						result += '<div class="time-set">';
+						result += '<div class="consult-msg">'+data.lists[i].content + '</div>';
+						result += '<div class="consult-time">'+data.lists[i].begtime+'</div>';
+						result += '</div></div>';
+						result += '</a>';
+					}
+					// 为了测试，延迟1秒加载
+					setTimeout(function(){
+						$('.yxcontent').append(result);
+						// 每次数据加载完，必须重置
+						me.resetload();
+					},1000);
+				},
+				error: function(xhr, type){
+//					console.log('错误');
+					// 即使加载出错，也得重置
+					me.resetload();
+				}
+			});	
+		}
+	});
+	if ('{$attach_group}'!='') {
+		openAttachmentForm("沟通记录", [{text:"沟通记录",attach_group:'{$attach_group}'}]);
+	}
+});
+function getAttachGroup(id){
+    $.post("/ComPotential/getAttachGroup/id/"+id,function(result){
+        var attach_group = result.attach_group;
+        // openAttachmentForm("附件", [{attach_group:"{$model.attach_group}"}]);
+        openAttachmentForm("沟通记录", [{text:"沟通记录",attach_group:attach_group}]);
+    },'json');
+}
+
+//点击去除小红点--已读
+function read_ask(obj){
+	$(obj).find("div > div").removeClass('unread');
+}
+</script>
+<!--end 底部-->
+</body>
+</html>

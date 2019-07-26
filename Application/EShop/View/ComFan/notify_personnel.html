@@ -1,0 +1,112 @@
+<include file="UserSupervise:head" />
+<style>
+    .mui-indexed-list-inner img {
+        width: .28rem;
+        height: .28rem;
+        margin-right: .2rem;
+    }
+    .mui-indexed-list-inner .company-select-item {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        height: .9rem;
+        line-height: .9rem;
+        padding: 0 .2rem;
+        box-shadow: 0 1px 0 #eeeeee inset;
+        background-color: #ffffff;
+    }
+    .mui-indexed-list-inner {
+        border-radius: .1rem;
+    }
+    .connect-member::-webkit-scrollbar{
+        display: none;
+    }
+</style>
+
+<body>
+    <section class="common-wrap fixed-page bg-none">
+        <div class="list-inner border-radius-10">
+            <div class="notify-connect">通知人员</div>
+            <div class="connect-member" style="overflow-y: scroll;">
+                <foreach name="model" item="v">
+                    <div class="member-1">
+                        <img class="notify-head mr25" src="{$v.head_pic}" alt="" />
+                        <div>
+                            <div class="gray-6 font28">{$v.name}</div>
+                            <input type="hidden" name="user_id" value="{$v.id}">
+                            <div class="gray-9 font26">备注：{$v.comments}</div>
+                        </div>
+                    </div>
+                </foreach>
+            </div>
+        </div>
+        <div class="bottom-btn">
+            <button onclick="closeBtn()" id="" class="left-btn">取消</button>
+            <button onclick="notifyBtn()" id="cancel">发送</button>
+        </div>
+        <div class="wrap-modal" id="groupModal" style="display: none;">
+            <div class="modal-common-wrap modal" style="width: 90%;">
+                <div class="modal-title bg-e gray-9">提示
+                    <!--<span class="close-popup">×</span>-->
+                </div>
+                <div class="modal-content-text tc">
+                    是否确认发送
+                </div>
+                    <div class="modal-btn">
+                        <button class="popup-close">取消</button>
+                        <button class="blue popup-complete">确认</button>
+                    </div>
+                </div>
+            </div>
+    </section>
+    <include file="UserSupervise:foot_access_file" />
+    <script>
+    $(function() {
+        function calculateH() {
+            var winH = $(document).height();
+            var searchH = $('.mui-search-area').height();
+            var btnH = $('.bottom-btn').height();
+            $('.connect-member').css('height', winH - searchH - btnH - 95);
+        }
+        calculateH();
+    })
+
+    function closeBtn() {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    }
+
+    function notifyBtn() {
+        var user_ids = [];
+        $("input[name='user_id']").each(function() {
+            user_ids.push($(this).attr("value"));
+        });
+        if (user_ids.length > 0) {
+            $('#groupModal').show();
+        }
+    }
+    $('.popup-complete').on('click', function() {
+        $(this).parents('.wrap-modal').hide();
+        var user_ids = [];
+        $("input[name='user_id']").each(function() {
+            user_ids.push($(this).attr("value"));
+        });
+        if (user_ids.length > 0) {
+            $.post("/ComFan/notifyUser", { user_ids: user_ids }, function(result) {
+                layer.msg(result.message);
+                if (result.code == 0) {
+                    setTimeout(function(result) {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                    }, 1500);
+                }
+            }, "json");
+        }
+    })
+    $('.popup-close').on('click', function() {
+        $(this).parents('.wrap-modal').hide();
+    })
+    </script>
+</body>
+
+</html>

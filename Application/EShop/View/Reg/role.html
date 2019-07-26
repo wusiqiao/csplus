@@ -1,0 +1,153 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head>
+        <title>{$title}</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="format-detection" content="telephone=no, address=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+        <script src="/Public/mui/js/mui.min.js"></script>
+        <link href="{$Think.const.JS_URL}/swiper/swiper-3.4.2.min.css?ts=1420775613" rel="stylesheet" />
+        <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+        <link rel="stylesheet" href="/Public/mui/css/mui.min.css">
+            <style>
+                body,div{padding: 0;margin: 0;font-size: 16px;background: #ffffff}
+                /*.swiper-container{height:90%;}*/
+                .swiper-slide{height:100%; width:100%;margin: auto 0px;}
+                .yellow-clr{color:#ff8c1b}
+                p{font-size: 18px;}
+                .mui-content-border{border-bottom: 10px solid #eeeeee}
+                .mui-content-padded-border{text-indent:32px;line-height: 32px;text-align: left;border-bottom: 1px solid #eeeeee;}
+            </style>
+    </head>
+    <body> 
+        <div class="content" style="text-align: center;max-width: 480px;margin: 0px auto">
+            <div class="swiper-container" style="border:1px solid #eeeeee">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide swiper-no-swiping">
+                        <div class="mui-content" style="height:240px;margin-top: 10px">
+                            <img src="/Public/images/upgrade.png" style="width:95%;"/>
+                        </div>
+                        <div class="mui-content" style="height:140px">                           
+                            <div style="text-align:center;">
+                                <p>您目前身份为“买家”用户，即只能</p>
+                                <p>发布需求，不能提供服务。 </p>
+                                <p>如果您是<span class="yellow-clr">专业财税服务人员或公司</span>，</p>
+                                <p>请升级为“服务商”，<span class="yellow-clr">马上接单赚钱</span>。</p>
+                            </div>
+                        </div>
+                        <div class="mui-content">
+                            <div class="mui-content-padded">
+                                <button type="button" class="mui-btn mui-btn-warning mui-btn-block" onclick="regFinish(0)">我来找服务，无需升级</button>
+                            </div>
+                            <div class="mui-content-padded">
+                                <button type="button" class="mui-btn mui-btn-block reg-upgrade" style="border:none;color:blue">我是服务商，升级赚钱</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide swiper-no-swiping">
+                        <div class="mui-content mui-content-border" style="height:40px;">
+                            <div class="mui-content-padded" style="text-align: left;position: relative" onclick="mySwiper.slidePrev()">
+                                <a><span style="font-size: 1.5em" class="mui-icon mui-icon-arrowleft"></span></a>
+                                <div style="font-size: 1.2em;display: inline-table;width:20%">返回</div>
+                                <div style="display: inline-table;width:50%;text-align: center;">
+                                    <div style="font-size: 1.2em;">注册服务商</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mui-content mui-content-border" style="height:auto;padding:0 10px">
+                            <div class="mui-content-padded" style="text-align:left;border-bottom: 1px solid #eeeeee;padding: 5px;font-size: 1.2em">
+                                请选择
+                            </div>
+                            <div  class="service-type-select">
+                                <div class="mui-content-padded" style="color:#ff8c1b;text-align: left;position: relative">
+                                    <div style="font-size: 1.2em">企业服务商</div>
+                                    <div>
+                                        <div class="mui-radio" style="position: absolute;right:0px;top:0px">
+                                            <input name="service_type" type="radio" value="1" checked>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mui-content-padded mui-content-padded-border">
+                                    <p>指以公司名义从业的企业。需提交营业执照、从业资格证、法人身份证，并经认证通过后方可接受业务。</p>
+                                </div>
+                            </div>
+                            <div class="service-type-select">
+                                <div class="mui-content-padded" style="color:#ff8c1b;text-align: left; position: relative">
+                                    <div style="font-size: 1.2em">个人服务商</div>
+                                    <div>
+                                        <div class="mui-radio" style="position: absolute;right:0px;top:0px">
+                                            <input name="service_type" type="radio" value="0">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mui-content-padded mui-content-padded-border">
+                                    <p>指以个人名义从业的个体。需提交从业资格证、个人身份证，并经认证通过后方可接受业务。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mui-content">
+                            <div class="mui-content-padded">
+                                <button type="button" class="mui-btn mui-btn-warning mui-btn-block" onclick="regFinish(1)">确认升级</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide swiper-no-swiping">
+                        <div class="mui-content" style="height:260px;margin-top: 10px">
+                            <img src="/Public/images/congratulations.png" style="width:95%;"/>
+                        </div>
+                        <div class="mui-content" style="height:180px">                           
+                            <div style="text-align:center;">
+                                <p>恭喜您成为服务商，勤奋的人运气永远</p>                        
+                                <p>不会太差，完善您的资料准备接单赚钱吧！</p>
+                            </div>
+                        </div>
+                        <div class="mui-content">
+                            <div class="mui-content-padded">
+                                <button type="button" class="mui-btn mui-btn-warning mui-btn-block" onclick="location.href='__MODULE__/Business/openAuth'">完善我的资料</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type='text/javascript' src='{$Think.const.JS_URL}/swiper/swiper-3.4.2.jquery.min.js' charset='utf-8'></script> 
+        <script type='text/javascript'>
+            var mySwiper;
+            $(document).ready(function () {
+                 mySwiper = new Swiper('.swiper-container', {
+                    pagination: '.swiper-pagination',
+                    paginationBulletRender: function (swiper, index, className) {
+                        return '<span class="' + className + '">' + (index + 1) + '</span>';
+                    }
+                });
+                $(".service-type-select").on("touchstart", function () {
+                    $("input[type=radio]").removeAttr("checked")
+                    $(this).find("input[name=service_type]").prop("checked", true);
+                });
+                $(".reg-upgrade").on("click", function () {
+                    mySwiper.slideNext();                    
+                });
+            });
+            function regFinish(user_role) {
+                var service_type = $("input[name=service_type]:checked").val();
+                $.post("__MODULE__/Reg/finish", {data: {service_type: service_type, user_role: user_role}}, function (result) {
+                    if (result.error == 0) {
+                        if (user_role == 0){ //用户，获取下一步链接
+                            window.location.href = result.url;
+                        }else{ //服务商，提示完善资料
+                            mySwiper.slideNext();  
+                        }
+                    } else {
+                        layer.tips("注册失败！");
+                    }
+                },"json");
+            }
+        </script>
+    </body>
+</html>

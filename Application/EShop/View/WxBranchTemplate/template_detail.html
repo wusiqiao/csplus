@@ -1,0 +1,108 @@
+<include file="UserSupervise:head"/>
+<body>
+	<include file="Index:header" />
+	<section class="template-wrap mt85" id="app">
+		<div>
+			<div class="simple-con mb15 font26">
+				<div class="simple-template">
+					<div class="title">收信人：</div>
+					<div class="flex-1 flex-end">
+						<div class="flex-1">
+							<span>发送成功：{{success}}人</span>
+							<a href="/WxBranchTemplate/send_list/id/{$notice_id}/state/1.html" class="blue-4591fe">查看》</a>
+						</div>
+						<div class="flex-1">
+							<span>发送失败：{{error}}人</span>
+							<a href="/WxBranchTemplate/send_list/id/{$notice_id}/state/2.html" class="blue-4591fe">查看》</a>
+						</div>						
+					</div>
+				</div>
+				<div class="simple-line">
+					<div>通知时间：</div>
+					<div>{{send_time}}</div>
+				</div>
+				<hr/>
+				<div>
+					<div class="simple-template" v-for="(template, keys) in templates">
+						<div v-if="template.key">
+							<span class="title gray-a1">{{template.key}}：</span>
+							<span class="flex-1" v-bind:style="{color:template['color']}">{{template.value}}</span>
+						</div>
+						<div v-else>
+							<span v-bind:style="{color:template['color']}">{{template.value}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div   v-if="point">
+				<!--<div class="simple-con flex-wrap simple-template">-->
+					<!--<span class="title gray-a1">appid</span>-->
+					<!--<a href="javascript:;" class="flex-1 tr blue-4591fe ov-h">{{xcx_appid}}</a>-->
+				<!--</div>-->
+				<!--<div class="simple-con flex-wrap simple-template">-->
+					<!--<span class="title gray-a1">小程序链接</span>-->
+					<!--<a class="flex-1 tr blue-4591fe ov-h">{{xcx_url}}</a>-->
+				<!--</div>-->
+				<div class="simple-con flex-wrap simple-template">
+					<span class="title gray-a1">备用链接</span>
+					<a v-bind:href="xcx_space_url" class="flex-1 tr blue-4591fe ov-h">{{xcx_space_url}}</a>
+				</div>
+			</div>
+			<div class="simple-con flex-wrap simple-template" v-else>
+				<span class="title gray-a1">跳转链接</span>
+				<a v-bind:href="url" class="flex-1 tr blue-4591fe ov-h">{{url}}</a>
+			</div>
+		</div>
+		<div class="bottom-btn">
+			<button class="left-btn" @click="deleteHistory()">删除</button>
+			<button @click="EditFromUrl();" v-if="is_open">编辑发送</button>
+			<button style="background-color: #b3b3b3" @click="errorTip();" v-if="!is_open">编辑发送</button>
+		</div>
+	</section>
+	<include file="UserSupervise:foot_access_file"/>
+	<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+	<script type="text/javascript">
+        var vue = new Vue({
+            el: '#app',
+            data:{
+                templates:{$template},
+                point:{$point},
+                url:'{$url}',
+                xcx_appid:'{$xcx_appid}',
+                xcx_url:'{$xcx_url}',
+                xcx_space_url:'{$xcx_space_url}',
+                success:'{$success}',
+				error:'{$error}',
+				send_time:'{$send_time}',
+                id:{$notice_id},
+				is_open:{$is_open}
+            },
+            methods:{
+                deleteHistory(){
+                    var data = {id:this.id};
+                    mui.confirm('是否确定删除该条历史','历史删除',['取消','确定'],function(e){
+                        if(e.index == 1) {
+                            $.post('/WxBranchTemplate/historyDeleteImplement',data,function(result){
+                                layer.msg(result.message);
+                                if (result.error == 0) {
+                                    setTimeout(function(){
+                                        window.location.href = '/WxBranchTemplate/template_history'
+                                    },2000)
+                                }
+                            },'json')
+                        }
+                    })
+                },
+                EditFromUrl(){
+                    window.location.href = '/WxBranchTemplate/edit_send/id/'+this.id;
+				},
+				errorTip(){
+                    layer.msg('该历史记录所属的微信消息模板<br>不存在或已删除!');
+				}
+            }
+        });
+
+	</script>
+</body>
+</html>

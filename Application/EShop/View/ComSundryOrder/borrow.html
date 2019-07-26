@@ -1,0 +1,112 @@
+<div class="modal-common-wrap modal" style="width: 90%;">
+    <div class="modal-title bg-e gray-9">借用批准<span class="close-popup">×</span></div>
+    <div class="modal-content">
+        <div class="mb15 pl20 gray-9">
+            <div>借用单号：{$model.no}</div>
+            <div>借用物品：{$model.record.sundry_names}</div>
+            <div>借用人：{$model.borrower}</div>
+        </div>
+        <div>
+        	<form id="process-from">
+            <div class="flex-start mb20">
+                <div class="wd30 tr">取件时间：</div>
+                <div class="wd50">
+                    <input type="date" name="pick_up_date" />
+                </div>
+            </div>
+            <div class="flex-wrap mb15">
+                <div class="wd30 tr" style="line-height: .55rem;">备注：</div>
+                <textarea style="width: 65%;border: 1px solid #e9e9e9;padding: .1rem;" name="remarks" rows="" cols=""></textarea>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-btn">
+        <button id="popup-close" class="popup-close">拒绝</button>
+        <button id="popup-complete" class="popup-complete blue">确定</button>
+        <!-- <button id="borrow" class="blue popup-complete">确定</button> -->
+    </div>
+</div>
+<script type="text/javascript">
+$('.close-popup').on('click', function() {
+    $(this).parents('.wrap-modal').hide();
+})
+
+$('.popup-close').on('click', function() {
+
+    formid = "process-from";
+    form_url = "__MODULE__/ComSundryOrder/refuse/record_id/{$model.record.id}";
+    var data = $('#' + formid).serialize();
+
+    $.ajax({
+        url: form_url,
+        type: "post",
+        dataType: "json",
+        data: data,
+
+        success: function(data) {
+            console.info(data);
+            if (data.error == 0) {
+                layer.closeAll();
+                layer.msg(data.msg);
+                setTimeout(function() {
+                    window.location.href = "__MODULE__/ComSundryOrder/index"
+                }, 500);
+            } else {
+                layer.closeAll();
+                layer.msg(data.msg);
+            }
+        },
+        error: function() {
+            layer.msg('系统故障！请重试！');
+            setTimeout(function() {
+                // window.location.href = "__MODULE__/ComSundry/edit/id/{$model.id}"
+            }, 500);
+        },
+        beforeSend: function() {
+            layer.closeAll();
+            layer.msg('正在提交....');
+        }
+    });
+    $(this).parents('.wrap-modal').hide();
+})
+
+$('.popup-complete').on('click', function() {
+
+    formid = "process-from";
+    form_url = "__MODULE__/ComSundryOrder/borrow/record_id/{$model.record.id}";
+    var data = $('#' + formid).serialize();
+
+    $.ajax({
+        url: form_url,
+        type: "post",
+        dataType: "json",
+        data: data,
+
+        success: function(data) {
+            console.info(data);
+            if (data.error == 0) {
+                layer.closeAll();
+                layer.msg(data.msg);
+                setTimeout(function() {
+                    window.location.href = "__MODULE__/ComSundryOrder/index"
+                }, 500);
+            } else {
+                layer.closeAll();
+                layer.msg(data.msg);
+            }
+        },
+        error: function() {
+            layer.msg('系统故障！请重试！');
+            setTimeout(function() {
+                // window.location.href = "__MODULE__/ComSundry/edit/id/{$model.id}"
+            }, 500);
+        },
+        beforeSend: function() {
+            layer.closeAll();
+            layer.msg('正在提交....');
+        }
+    });
+    $(this).parents('.wrap-modal').hide();
+})
+</script>

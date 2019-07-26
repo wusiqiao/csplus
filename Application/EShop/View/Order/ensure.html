@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>用户登录</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body>
+    <!--内容区 start-->
+    <section class="order-wrap">
+    	<include file="Index:header" />
+    	<div class="order-info">
+    		<div class="top">
+    			<span>公司注册——财穗快线</span>
+    			<span class="order-waitpay">待付款</span>
+    		</div>
+    		<div class="bottom">
+    			<div>
+    				<span>服务类型</span>
+    				<span class="info-cont">工商类-公司注册</span>
+    			</div>
+    			<div>
+    				<span>服务价格</span>
+    				<span class="info-cont">800.00元/次</span>
+    			</div>
+    		</div>
+    	</div>
+		<form action="">
+			<div class="pd1525">
+				<div class="input-wrap">
+		    		<div class="order-input">
+		    			<span class="order-telephone"></span>
+		    			<input type="number" placeholder="请输入联系电话（必填）"/>
+		    		</div>
+		    		<div class="order-input">
+		    			<span class="order-account"></span>
+		    			<input type="text" placeholder="请输入联系姓名（选填）"/>
+		    		</div>
+	    		</div>
+			</div>
+			
+    		<div class="commit-order">
+    			<button>确认</button>
+    		</div>
+    		
+		</form>
+    </section>
+    <include file="Public:modal_bind_telephone" />
+
+    <script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+
+</body>
+</html>

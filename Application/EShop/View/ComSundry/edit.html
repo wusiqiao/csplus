@@ -1,0 +1,66 @@
+<div>
+    <div class="flex-start mb15">
+        <div>物品名称：</div>
+        <div class="wd50">
+            <input name="name" type="text" value="{$model.name}" />
+            <input name="id" type="hidden" value="{$model.id}" />
+        </div>
+    </div>
+    <div class="flex-start mb15">
+        <div>物品编号：</div>
+        <div class="wd50">
+            <input name="no" type="text" value="{$model.no}" />
+        </div>
+    </div>
+    <div class="flex-start mb15">
+        <div>存放库号：</div>
+        <div class="wd50">
+            <input name="position" type="text" value="{$model.position}" />
+        </div>
+    </div>
+    <div class="flex-start mb15">
+        <div>物品状态：</div>
+        <div class="company-selected wd50">
+            <if condition="$model.show_status neq ''">
+            <div>{$model.show_status}</div>    
+            <div class="select-icon1"></div>
+            <input id="status" name="status" type="hidden" value="{$model.status}" />
+            <else/>
+            <div>未借用</div>
+            <div onclick="statusList(this)" class="select-icon1"></div>
+                <input id="status" name="status" type="hidden" value="2" />
+            </if>
+        </div>
+    </div>
+    <div id="lender" class="flex-start mb15" style="display: none">
+        <div>借用人：</div>
+        <div class="company-selected wd50">
+            <div></div>
+            <div onclick="customerList(this)" class="select-icon1"></div>
+            <input  name="lender" type="hidden" />
+        </div>
+    </div>
+    <div class="flex-start mb15">
+        <div>在手员工：</div>
+        <div class="company-selected wd50">
+            <div>{$model.user_name}</div>
+            <div onclick="userList(this)" class="select-icon1"></div>
+            <input  name="user_id" type="hidden" value="{$model.user_id}" />
+        </div>
+    </div>
+    <div class="flex-start mb15">
+        <div>最后借出时间：</div>
+        <div class="wd50">
+            <input name="last_borrow_date" type="date" readonly="true" value="{$model.last_borrow_date}" />
+        </div>
+    </div>
+    <div class="flex-start mb15">
+        <div>最后归还时间：</div>
+        <div class="wd50">
+            <input name="last_return_date" type="date" readonly="true" value="{$model.last_return_date}" />
+        </div>
+    </div>
+</div>
+    <script type="text/javascript">
+
+</script>

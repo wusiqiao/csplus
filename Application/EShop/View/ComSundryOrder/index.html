@@ -1,0 +1,402 @@
+<include file="UserSupervise:head" />
+
+<head>
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+    <title>{$title}</title>
+</head>
+
+<body>
+    <section class="common-wrap bg-none mt85">
+        <include file="Index:header" />
+        <if condition = "$is_customer eq 0">
+
+        <ul class="main-tab">
+            <li onclick="window.location.href = '__MODULE__/ComSundryTransfer/index'">内部借用</li>
+            <li class="active">客户借还</li>
+            <li onclick="window.location.href = '__MODULE__/ComSundry/index'">物品管理</li>
+        </ul>
+        </if>
+        <section>
+            <form id="head-form">
+                <if condition = "$is_customer eq 0">
+                <div class="chose-company mb20">
+                    <div class="company-selected flex-1">
+                        <div class="lender-company">选择公司</div>
+                        <div class="select-icon1" id="select-company"></div>
+                        <input id="lender-company" name="customer_company" type="hidden">
+                    </div>
+                    <button type="button" class="ml15 mui-disabled" id="borrow">借用申请</button>
+                </div>
+                </if>
+                <div>
+                    <div class="custom-item-titles mb20">
+                        <div>物品名称</div>
+                        <div>物品状态</div>
+                    </div>
+                    <ul id="ComSundry-item" class="">
+                        <foreach name="model.sundry" item="v">
+                            <li class="borrow-list blue-checkbox">
+                                <if condition="$v.status == 0">
+                                    <input name="sundry_ids[]" sundry_name="{$v.name}" type="checkbox" value="{$v.id}" disabled />
+                                    <else/>
+                                    <input name="sundry_ids[]" sundry_name="{$v.name}" type="checkbox" value="{$v.id}" />
+                                </if>
+                                <div class="con">
+                                    <div class="word-hidden">{$v.name}</div>
+                                    <div class="word-hidden">{$v.show_status}</div>
+                                </div>
+                            </li>
+                        </foreach>
+                    </ul>
+                </div>
+            </form>
+            <div class="company-selected flex-1 mb15">
+                <div>借用单：</div>
+                <div class="select-icon1" onclick="orderList(this)">
+                    <!-- <input name="transfer_id" type="hidden"> -->
+                </div>
+            </div>
+            <div class="progress-line pd-t-40 bg-white">
+            </div>
+        </section>
+        <div class="wrap-modal" id="borrowModal" style="display: none;">
+            <div class="modal-common-wrap modal" style="width: 90%;">
+                <form id="ComSundryOrder-from">
+                    <div class="modal-title bg-e gray-9">借用申请</div>
+                    <div class="modal-content">
+                        <div class="mb15 pl20 gray-9">
+                            <div>公司：<span class="lender-company"></span></div>
+<!--                             <div>借用单号：<span id="no"></span>
+                                <input name="no" type="hidden" >
+                            </div> -->
+                            <div>借用物品：<span id="sundry_names"></span>
+                                <input name="sundry_names" type="hidden">
+                            </div>
+                            <div>借用人：{$user.name}</div>
+                        </div>
+                        <div>
+                            <div class="flex-start mb20">
+                                <div class="wd30 tr">单据编号：</div>
+                                <div class="wd50">
+                                    <input name="no" type="text" value="{$model.no}">
+                                </div>
+                            </div>
+                            <div class="flex-start mb15">
+                                <div class="wd30 tr">出借人：</div>
+                                <div class="company-selected wd50">
+                                    <div></div>
+                                    <div class="select-icon1" onclick="customerList(this)"></div>
+                                    <input name="lender" type="hidden">
+                                </div>
+                            </div>
+                            <div class="flex-start mb15">
+                                <div class="wd30 tr">客户负责人：</div>
+                                <div class="company-selected wd50">
+                                    <div></div>
+                                    <div class="select-icon1" onclick="customerList(this)"></div>
+                                    <input name="customer_leader" type="hidden">
+                                </div>
+                            </div>
+                            <!-- <div id="customer_cc_recipient_others"> -->
+                                <div class="flex-start mb15">
+                                    <div class="wd30 tr">客户抄送人：</div>
+                                    <div id="customer_cc_recipient" class="company-selected wd50">
+                                        <div></div>
+                                        <div class="select-icon1" onclick="customerList(this)"></div>
+                                        <input name="customer_cc_recipient[]" type="hidden">
+                                    </div>
+                                    <div class="add-sent-name" onclick="addcustomerCcr()"></div>
+                                </div>
+                            <!-- </div> -->
+                            <!-- <div id="company_cc_recipient_others"> -->
+                                <div class="flex-start mb15">
+                                    <div class="wd30 tr">公司抄送人：</div>
+                                    <div id="company_cc_recipient" class="company-selected wd50">
+                                        <div></div>
+                                        <div class="select-icon1" onclick="userList(this)"></div>
+                                        <input name="company_cc_recipient[]" type="hidden">
+                                    </div>
+                                    <div class="add-sent-name" onclick="addcompanyCcr()"></div>
+                                </div>
+                            <!-- </div> -->
+                            <div class="flex-wrap mb15">
+                                <div class="wd30 tr" style="line-height: .55rem;">借用事由：</div>
+                                <textarea style="width: 65%;border: 1px solid #e9e9e9;padding: .1rem;" name="remarks" rows="" cols=""></textarea>
+                            </div>
+                            <div class="flex-start mb20">
+                                <div class="wd30 tr">借用时间：</div>
+                                <div class="borrow-time">
+                                    <input name="borrow_date" type="date">
+                                </div>
+                                <span class="time-to-time">-</span>
+                                <div class="borrow-time">
+                                    <input name="expected_return_date" type="date">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-btn">
+                    <button id="popup-close" class="popup-close">取消</button>
+                    <button class="blue" id="popup-complete" class="popup-complete">确定</button>
+                </div>
+            </div>
+        </div>
+        <!--modal 借用批准-->
+        <div class="wrap-modal" id="processModal" style="display: none;">
+        </div>
+        <!--modal end-->
+    </section>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script type="text/javascript">
+    mui.init();
+    mui.ready(function() {
+        $(document).on('change', 'input[type=checkbox]', function() {
+            var nCheckBox = $('input:checkbox:checked').length;
+            var borrowBtn = document.getElementById('borrow');
+            if (nCheckBox) {
+                if (borrowBtn.classList.contains("mui-disabled")) {
+                    borrowBtn.classList.remove("mui-disabled");
+                }
+            } else {
+                if (!borrowBtn.classList.contains("mui-disabled")) {
+                    borrowBtn.classList.add("mui-disabled");
+                }
+            }
+            var str = "";
+            $i = 0;
+            $("input[type='checkbox']").each(function() {
+                if ($(this).prop('checked')) {
+                    if ($i == 0) {
+                        str = $(this).attr("sundry_name");
+                    } else {
+                        str = str + "," + $(this).attr("sundry_name");
+                    }
+                    $i++;
+                }
+            });
+            $("#sundry_names").text(str);
+            $("input[name='sundry_names']").val(str);
+
+        });
+    });
+    // $(document).on("change", "input[type=radio]", function() {
+    //     var nCheckBox = $('input:radio:checked').length;
+    //     console.log(nCheckBox);
+    //     var manageBtn = document.getElementById('edit');
+    //     if (nCheckBox) {
+    //         if (manageBtn.classList.contains("mui-disabled")) {
+    //             manageBtn.classList.remove("mui-disabled");
+    //         }
+    //     } else {
+    //         if (!manageBtn.classList.contains("mui-disabled")) {
+    //             manageBtn.classList.add("mui-disabled");
+    //         }
+    //     }
+    // });
+
+
+    var userPick = new mui.PopPicker();
+    userPick.setData({$model.userList});
+    // console.info($.parseJSON('{$model.userList}'));
+    //下拉框实现
+    function userList(e) {
+        userPick.show(function(item) { //弹出列表并在里面写业务代码
+            var itemCallback = userPick.getSelectedItems();
+            $(e).prev("div").html(itemCallback[0].text);
+            $(e).next("input").val(itemCallback[0].value);
+        });
+    }
+
+    var orderPick = new mui.PopPicker();
+    // var str = '{$model.orderList}';
+    // str.replace(new RegExp('\\','gm'),'\\\\');
+    orderPick.setData({$model.orderList});
+    //下拉框实现
+    function orderList(e) {
+        orderPick.show(function(item) {
+            var itemCallback = orderPick.getSelectedItems();
+            $(e).prev("div").html("借用单：" + itemCallback[0].text);
+            $(e).next("input").val(itemCallback[0].value);
+            $(".progress-line").load("__MODULE__/ComSundryOrder/getRecord/id/" + itemCallback[0].value);
+        });
+    }
+
+    var customerPick = new mui.PopPicker({layer:2});
+        // var url = "__MODULE__/ComSundryOrder/select_lender/branch_id/21";
+        // $.ajax({
+        //     url: url,
+        //     success: function(data) {
+        //         // console.info($.parseJSON(data));
+        //         // console.log(data.result);
+        //         customerPick.setData(
+                    
+        //             $.parseJSON(data)
+        //         );
+        //     }
+        // });
+    //下拉框实现
+    function customerList(e) {
+        customerPick.show(function(item) { //弹出列表并在里面写业务代码
+            var itemCallback = customerPick.getSelectedItems();
+            $(e).prev("div").html(itemCallback[0].text);
+            $(e).next("input").val(itemCallback[0].value);
+        });
+    }
+
+    //添加用户
+    $('#select-company').on('click',function(){
+        var url = '__MODULE__/ComSundryOrder/select_company';
+        layer.open({
+            type: 2,
+            title: '选择公司',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['100%', '100%'],
+            content: url, //iframe的url
+            success: function (layero, index) {
+                // var body = layer.getChildFrame('body', index);
+                // body.contents().find("#name").val('"'+name+'"'+type);
+            },
+            end: function () {
+
+                // if($('#handle_status').val() == 1) {
+                //     location.reload();
+                // }
+            }
+        });
+    })
+
+    $('#borrow').on('click', function() {
+        var borrowBtn = document.getElementById('borrow');
+        if (!borrowBtn.classList.contains("mui-disabled")) {
+            // console.log($("input[name = 'lender']").val());
+            if ($("#lender-company").val() == "") {
+                alert('请选择公司');
+            } else {
+                // $("#lender-company-2").text($("#lender-company-1").text());
+                // var no = _getRandomString(24);
+                // $("#no").text(no);
+                // $("input[name='no']").val(no);
+                $('#borrowModal').show();
+            }
+        }
+    })
+    $('.popup-close').on('click', function() {
+        $(this).parents('.wrap-modal').hide();
+    })
+
+
+    $('#popup-complete').on('click', function() {
+        formid = "ComSundryOrder-from";
+        form_url = "__MODULE__/ComSundryOrder/add";
+        var body = $('#' + formid).serializeArray();
+        var head = $("#head-form").serializeArray();
+        var data = head.concat(body);
+
+        $.ajax({
+            url: form_url,
+            type: "post",
+            dataType: "json",
+            data: data,
+
+            success: function(data) {
+                console.info(data);
+                if (data.error == 0) {
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                    setTimeout(function() {
+                        window.location.href = "__MODULE__/ComSundryOrder/index"
+                    }, 500);
+                } else {
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                }
+            },
+            error: function() {
+                layer.msg('系统故障！请重试！');
+                setTimeout(function() {
+                    // window.location.href = "__MODULE__/ComSundry/edit/id/{$model.id}"
+                }, 500);
+            },
+            beforeSend: function() {
+                layer.closeAll();
+                layer.msg('正在提交....');
+            }
+        });
+        $(this).parents('.wrap-modal').hide();
+    })
+
+    function addcompanyCcr() {
+        var html = $("#company_cc_recipient").html();
+        $("#company_cc_recipient_others").append('<div class="flex-start mb15"><div>公司抄送人：</div><div class="company-selected wd50">' + html + '</div><div onclick="removecompanyCcr(this)" class="minus-sent-name"></div></div>');
+    }
+
+
+    function addcustomerCcr() {
+        var html = $("#customer_cc_recipient").html();
+        $("#customer_cc_recipient_others").append('<div class="flex-start mb15"><div>客户抄送人：</div><div class="company-selected wd50">' + html + '</div><div onclick="removecompanyCcr(this)" class="minus-sent-name"></div></div>');
+    }
+
+    function removecompanyCcr(e) {
+        div = $(e).parents('div.flex-start');
+        div.remove();
+    }
+
+    function getCompany(value,text) {
+        $(".lender-company").text(text);
+        // $("input[name='lender-company']").val()
+        $("#lender-company").val(value);
+
+        var url = "__MODULE__/ComSundryOrder/select_lender/branch_id/"+value;
+        $.ajax({
+            url: url,
+            success: function(data) {
+                // console.info(data);
+                // console.log(data.result);
+                customerPick.setData(
+                    $.parseJSON(data)
+                );
+            }
+        });
+
+        url = "__MODULE__/ComSundryOrder/index";
+        $.ajax({
+            url: url,
+            type: "post",
+            data: { "customer_company": value },
+            success: function(data) {
+                data = $.parseJSON(data);
+                // console.info(data);
+                var html = '';
+                var str = '';
+                $.each(data, function(k, v) {
+                    if (v.status==0) {
+                        str = '<input name="sundry_ids[]" sundry_name="'+v.name+'" type="checkbox" value="'+v.id+'" disabled />';
+                    } else {
+                        str = '<input name="sundry_ids[]" sundry_name="'+v.name+'" type="checkbox" value="'+v.id+'" />';
+                    }
+                    html += '<li class="borrow-list blue-checkbox">'+
+                                str +
+                                '<div class="con">'+
+                                    '<div class="word-hidden">'+v.name+'</div>'+
+                                    '<div class="word-hidden">'+v.show_status+'</div>'+
+                                '</div>'+
+                            '</li>';
+                });
+                $("#ComSundry-item").html(html);
+            }
+        });
+        var borrowBtn = document.getElementById('borrow');
+        borrowBtn.classList.add("mui-disabled");
+        // console.log("!!!");
+        // var manageBtn = document.getElementById('edit');
+        // manageBtn.classList.add("mui-disabled");
+    }
+    </script>
+</body>
+
+</html>

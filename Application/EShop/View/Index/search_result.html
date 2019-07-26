@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+        <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}search.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}index_search.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}screen.css" rel="stylesheet" type="text/css" />
+        <link href="{$Think.const.CSS_URL}/css-new/style.css?v=23" rel="stylesheet" />
+        <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    	<link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+		<title>{$title}</title>
+		<style>
+			html {height: 100%;}
+			body {
+				height: 100%;
+				font-size: .28rem;
+			}
+			div.screen_list >ul >li >botton.mui-btn{
+	        	padding: 0.5rem 12px !important;
+		    }
+		    .mui-poppicker-header .mui-btn{
+		        padding: 5px 10px !important;
+		    }
+			/*.results-nav {
+				 margin-top: 0rem !important; 
+			}*/
+			.item-wrap {
+				line-height: initial !important;
+			}
+			.mui-bar .mui-btn .mui-icon {
+				font-size: .65rem !important;
+			}
+			#header{
+				position: fixed !important
+			}
+            /*下拉加载提示框*/
+            .mui-pull-bottom-wrapper{
+                text-align: center;
+                padding: .2rem;
+            }
+            .processing, .processed{
+                padding: initial;
+            }
+            .process-info{
+                padding : initial;
+            }
+		</style>
+		<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+		<link rel="stylesheet" href="/{$Think.APP_PATH}Public/css/index.css">
+
+	</head>
+	<body>
+	<include file="Index:header" />
+		  	<div class="mui-input-row  clearfix search-div" style="border-top: 1px solid #d3d3d3;border-bottom: 1px solid #d3d3d3;position: fixed;z-index:901;width: 100%;left: 0;top: 0.80rem;">
+				<div class="mui-search">
+                    <php>
+                        $keyword = I('get.keyword');
+                        $state = strpos($keyword,"COPE");
+
+                    </php>
+                    <if condition="$state gt 0">
+                        <input id="search-company" type="search" name="keyword"  class="mui-input-clear"  placeholder="请输入关键字查找" data-input-clear="15" data-input-search="15">
+					<else/>
+                        <input id="search-company" type="search" name="keyword"  class="mui-input-clear" value="{$data.keyword}"  placeholder="请输入关键字查找" data-input-clear="15" data-input-search="15">
+                    </if>
+                    <span class="mui-icon mui-icon-search" style=""></span>
+					<button id="search-btn" >查找</button>
+					<input type="hidden" name="keyword_get" value="{$data.keyword}" >
+				</div>
+				<ul class="mui-table-view" id="show_search_list" style="display:none">
+					    
+				</ul>
+				<li class="mui-table-view-cell" id="li-list" style="display:none">{%content%}</li>
+        	</div>
+	        <div class="result-content" style="display: block;">
+	            <!--<div id="" class="results-nav screen_div" style="position: fixed;margin-bottom: 0;"> -->
+	                <!--<ul class="clearfix">-->
+	                	<!--<li><span class="screen_span product-sort" screen_type="order_count" state="desc">成交数</span><img style=" margin-left: 4%;" src="{$Think.const.IMG_URL}voucher/select1.png"></li>-->
+						<!--<li><span class="screen_span product-sort" screen_type="real_cash" state="dont">服务价格</span><img style="margin-left: 4%;" src="{$Think.const.IMG_URL}voucher/select2.png"></li>-->
+						<!--<li id="screen" data-toggle="modal" data-backdrop="888" data-target="#myModal"><span>筛选</span><span><img src="{$Think.const.IMG_URL}/img/screen.png" style="width:15%;max-width: 30px;" ><span></li>-->
+	                <!--</ul>-->
+	            <!--</div>-->
+	            
+	            <div id="view_comments">
+		            <div class="already_pitch_on " style="margin-bottom: 0.65rem;">
+		                <div class="already_view">
+		                    <div>
+		                        <ul>
+                                    <li></li>
+		                        </ul>
+		                    </div>
+		                </div>
+		                <div class="search-clear-all already_remove " href="javascript:(0)"></div>
+		             <!--   <div class="already_remove">清除</div>-->
+		            </div>
+		            <div class="mui-scroll-wrapper search-result-list" id="pullrefresh" style="padding-top: 1.85rem;" data-url="__MODULE__/Index/get_search_lists" rows="10">
+				        <div class="mui-scroll">
+				            <div style="display:none" class="process-info item-tpl media-list" >
+								<a href="__MODULE__/Product/productDetail/product_id/{%product_id%}.html">
+									<div id="" class="media-pic" >
+										<img src="{%product_pic%}" alt="">
+									</div>
+									<div class="title1 media-content">
+										<h3 style="">{%product_title%}</h3>
+										<p style="">{%product_desc%}</p>
+										<span>{%view_price%}</span>
+									</div>
+
+								</a>
+				            </div>
+                            <ul class=" processing">
+                            </ul>
+						</div>    
+				    </div>
+				    
+			    </div>
+			    <input type="hidden" name="cate_id" value="{$data.cate_id}"/>
+			    <input type="hidden" name="region_id" value="{$data.region_id}"/>
+        	</div>
+        	<!-- Modal -->
+	        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="position: fixed;z-index:900;">
+	            <div class="modal-dialog" role="document" style="width:100% !important;top:initial">
+	                <div class="mui-content">
+	                    <div class="screen_list not_bottom">
+	                        <ul>
+								<foreach name="hot_region" item="vo" key="key">
+		                            <li>
+		                            	<if condition="$key eq $data['region_id']">
+		                                	<botton class="mui-btn pitch_on" screen_type="region" value="{$key}">{$vo}</botton>
+		                                <else/>
+		                                	<botton class="mui-btn" screen_type="region" value="{$key}">{$vo}</botton>
+		                                </if>
+		                            </li>
+	                           </foreach>
+	                        </ul>
+	                    </div>
+	                    <div class="screen_type"><span>服务类型</span>
+	                    	<if condition="$view_category[id] gt 0"> 
+	                       		<botton type="button" id='showCatePicker' screen_type="cate" class="mui-btn cate_botton pitch_on" value="{$view_category.id}">{$view_category.name}</botton>
+	                    	<else/>
+	                    		<botton type="button" id='showCatePicker' screen_type="cate" class="mui-btn cate_botton " value="{$view_category.id}">{$view_category.name}</botton>
+	                    	</if>
+	                    </div>
+	                    <div class="screen_list">
+	                        <ul>
+	                        	<foreach name="hot_category" item="vo" key="key">
+		                            <li>
+		                            	<if condition="$key eq $data['cate_id']">
+		                                	<botton class="mui-btn pitch_on" screen_type="cate" value="{$key}">{$vo}</botton>
+		                                <else/>
+		                                	<botton class="mui-btn" screen_type="cate" value="{$key}">{$vo}</botton>
+		                                </if>
+		                                
+		                            </li>
+	                           </foreach>
+	                        </ul>
+	                    </div>
+	                    <div class="mui-footer screen_button">
+	                        <button type="button" class="mui-btn pitch_empty">清空</button>
+	                        <button type="button" class="mui-btn mui-btn-danger screen_count">查看服务</button>
+	                    </div>
+	                </div>
+	                <div style="display:none">
+	                    <ul>
+	                        <li>
+	                            <botton class="mui-btn">公司注册</botton>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </div>
+	        </div>
+        <!--wrap-->
+        	
+        </div>
+		<include file="Public:contact" />
+	<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+	<script src="{$Think.const.JS_URL}custom/search-chosen.js"></script>
+	<script src="{$Think.const.JS_URL}load/dropload.js"></script>
+	<script src="{$Think.const.JS_URL}mui/mui.min.js"></script>
+	<script src="{$Think.const.JS_URL}common.js?v=2"></script>
+	<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.pullToRefresh.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.pullToRefresh.material.js"></script>
+	<script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/js/mobile.js"></script>
+	<script>
+		//2017 11 03 新增
+		 $('#SEP').on('click',function(){
+		 	cateId = $(".pitch_on[screen_type=cate]").attr("value");
+		 	if(cateId > 0){
+		 		window.location.href = '__MODULE__/Microstore/product_release/cid/'+cateId+'.html';
+		 	}
+		 })
+ 		//  $(function () {
+        //     var basesearch_Top = $(".basesearch").height();
+        //     var header_Top = 3.5;
+        //     var screenTop = $(".screen_div").offset().top;
+        //     var screenHeight = $(".screen_div").height();
+        //     var htmlDefaultTop = $("html").css("font-size").replace('px','');
+        //     $("#header").css('margin-top',(basesearch_Top/htmlDefaultTop)+'rem');
+			// $(".screen_div").css('margin-top',(basesearch_Top/htmlDefaultTop+header_Top)+'rem');
+			// $(".basesearch").css('margin-top',0);
+			// $(".modal-dialog").css('cssText','top:'+((basesearch_Top+screenHeight)/htmlDefaultTop+header_Top)+'rem !important;width: 100% !important; ');
+        //     $("#view_comments").css('margin-top',((basesearch_Top+screenHeight+10)/htmlDefaultTop)+header_Top+'rem');
+        //     $(".already_pitch_on").css('margin-top', ((basesearch_Top+screenHeight+10)/htmlDefaultTop+header_Top)+'rem' );
+        //     $(".search-div").css('top',(basesearch_Top/htmlDefaultTop)+'rem');
+        //     $("#screen").on('click', function () {
+        //         view_pitch_on_botton();
+        //         $("html").css("overflow", "hidden");
+        //         /*去掉手机滑动默认行为*/
+        //         $('html').on('touchmove', function (event) {
+        //             event.preventDefault();
+        //         });
+        //     })
+        //     //滑动 start
+        //     $('#myModal').on('hidden.bs.modal', function (e) {
+        //         $("html").css("overflow", "");
+        //         $("html").unbind('touchmove');
+        //     })
+        // })
+		 $("#float-search-form").submit(function(){
+		 	dropload_data();
+		 	return false;
+		 })
+        $(".screen_span").on('click', function () {
+            if ($(this).hasClass('pitch_on')) {
+                $(this).removeClass('pitch_on');
+            } else {
+                $(this).addClass('pitch_on');
+            }
+            $(this).parents('div').prev('div').children('botton').removeClass('pitch_on');
+            $(this).parent('li').siblings().each(function () {
+                $(this).children('span').removeClass('pitch_on');
+            });
+            $('#myModal').modal('hide');
+            $('.input-search').attr('value', '');
+//          dropload_data();
+        })
+        $("li .mui-btn").on('click', function () {
+            if ($(this).hasClass('pitch_on')) {
+                $(this).removeClass('pitch_on');
+            } else {
+                $(this).addClass('pitch_on');
+            }
+            $(this).parents('div').prev('div').children('botton').removeClass('pitch_on');
+            $(this).parent('li').siblings().each(function () {
+                $(this).children('botton').removeClass('pitch_on');
+            });
+        })
+        $(".screen_count").click(function () {
+            $('.input-search').attr('value', '');
+            //更新地区与类型
+            $("input[name=cate_id]").attr('value',$())
+            //生成已筛选的方块
+            // add_already_block();
+            SEPToggle();
+            //进行数据切换
+            dropload_data();
+            //筛选数字统计
+            screen_number();
+            $('#myModal').modal('hide');
+        })
+        $(".pitch_empty").click(function () {
+            $(".screen_type > botton").removeClass('pitch_on');
+            $(".screen_list > ul >li > botton").removeClass('pitch_on');
+            dropload_data('count');
+        })
+        $(".already_remove").click(function () {
+            $(this).prev().find('div > ul >li').remove();
+            $('botton.pitch_on').removeClass('pitch_on');
+            screen_number();
+            dropload_data();
+        })
+        $("#search-btn").on('click',function(){
+        	dropload_data();
+        })
+        //已筛选的方块的删除按钮
+        function al_detele(obj) {
+            var screen_type = $(obj).prev().attr('screen_type');
+            var value = $(obj).prev().attr('value');
+            $('botton.pitch_on[screen_type=' + screen_type + '][value=' + value + ']').removeClass('pitch_on');
+            $(obj).parent('li').remove();
+            screen_number();
+            dropload_data();
+            SEPToggle();
+        }
+
+        function screen_number() {
+            if ($('botton.pitch_on').size() == 0) {
+                $('#screen').removeClass('pitch_on').next('span').removeClass('pitch_count').html('<img src="\{$Think.const.IMG_URL}/img/screen.png">');
+                $(".already_pitch_on").removeClass('display_on');
+            } else {
+                $('#screen').addClass('pitch_on').next('span').addClass('pitch_count').html($('botton.pitch_on').size());
+            }
+        }
+        function SEPToggle(){
+        	var cateId = $(".pitch_on[screen_type=cate]").attr("value");
+        	if(cateId > 0){
+        		$("#SEP").show();
+        	}else{
+        		$("#SEP").hide();
+        	}
+        }
+        function add_already_block() {
+            //生成已筛选的方块
+            $(".already_pitch_on > .already_view > div > ul > li").remove();
+            if ($('botton.pitch_on').size() == 0) {
+                $(".already_pitch_on").removeClass('display_on');
+            } else {
+                $('botton.pitch_on').each(function () {
+                    var view_li = '<li style="height:2.1rem;"><botton screen_type="' + $(this).attr('screen_type') + '" value="' + $(this).attr('value') + '">' + $(this).text() + '</botton><span class="mui-icon mui-icon-closeempty" id="al_delete" onclick="javascript:al_detele(this);"></span></li>';
+                    $(".already_pitch_on > .already_view > div > ul").append(view_li);
+                })
+                $(".already_pitch_on").addClass('display_on');
+            }
+        }
+        function view_pitch_on_botton() {
+            $('.already_pitch_on > .already_view > div > ul >li > botton').each(function () {
+                var screen_type = $(this).attr('screen_type');
+                var value = $(this).attr('value');
+                $('#myModal  botton[screen_type=' + screen_type + '][value=' + value + ']').addClass('pitch_on');
+            });
+        }
+        
+	</script>
+	<script type="text/javascript">
+		mui.init();
+		var pullRefreshApi;
+        mui.ready(function () {
+            var cateId		=	$(".pitch_on[screen_type=cate]").attr("value");
+            var keyword 	=	$("input[name=keyword]").val();
+            var screenType  = $(".product-sort[state!=dont]").attr("screen_type") + '-' + $(".product-sort[state!=dont]").attr("state");
+            var regionId 	= $(".pitch_on[screen_type=region]").attr("value");
+            var keywordGet  = $("input[name=keyword_get]").val();
+            if ($.trim(keyword) == '' && $.trim(keywordGet) != ''){
+                keyword = keywordGet;
+            }
+            data			=	{
+                cate_id:cateId,
+                keyword:keyword,
+                screen_type:screenType,
+                region_id:regionId
+            };
+            var pullToRefreshObj = pullRefresh("#pullrefresh", data);
+            pullRefreshApi = mui("#pullrefresh .mui-scroll").pullToRefresh(pullToRefreshObj);
+        })
+		// add_already_block();
+		$(".product-sort").click(function() {
+			var descImg = '{$Think.const.IMG_URL}voucher/select1.png';
+			var dontImg = '{$Think.const.IMG_URL}voucher/select2.png';
+			var ascImg  = '{$Think.const.IMG_URL}voucher/select3.png';
+			var screen_type = $(this).attr("screen_type"); //获取点击的类型
+			var state 	= $(this).attr("state"); //获取点击的排序类型
+			$(this).parent('li').siblings('li').children('.product-sort').attr("state", 'dont').next('img').attr("src", dontImg); //取消其他排序
+			if(state == 'desc') {
+				$(this).attr("state", "asc").next('img').attr("src", ascImg);
+			} else if(state == 'asc'){
+				$(this).attr("state", "desc").next('img').attr("src",descImg);
+			}else{
+				$(this).attr("state", "asc").next('img').attr("src",ascImg);
+			}
+			dropload_data();
+		})
+		function dropload_data(){
+			var cateId		=	$(".pitch_on[screen_type=cate]").attr("value");
+			var keyword 	=	$("input[name=keyword]").val();
+			var screenType  = $(".product-sort[state!=dont]").attr("screen_type") + '-' + $(".product-sort[state!=dont]").attr("state");
+			var regionId 	= $(".pitch_on[screen_type=region]").attr("value");
+			var keywordGet  = $("input[name=keyword_get]").val();
+ 			if ($.trim(keyword) == '' && $.trim(keywordGet) != ''){
+                keyword = keywordGet;
+			}
+			data			=	{
+									cate_id:cateId,
+									keyword:keyword,
+									screen_type:screenType,
+									region_id:regionId
+								};
+            var pullToRefreshObj = pullRefresh("#pullrefresh", data);
+            pullRefreshApi.refresh(true);
+            mui("#pullrefresh .mui-scroll").pullToRefresh(pullToRefreshObj);
+			// dropload($(".hsui-sync-refresh"), data);
+		}
+		// $("#search-company").custormChosen({serachUrl:'__CONTROLLER__/get_search_title_lists',searchDropload:dropload_data});
+
+	</script>
+	 <!--选择器  mui-->
+    <script>
+        (function (mui, document) {
+            mui.init();
+            mui.ready(function () {
+                //类型二级
+                var catePicker2 = new mui.PopPicker({
+                    layer: 2
+                });
+                var cateData2 = $.parseJSON('{$category}');
+                catePicker2.setData(cateData2);
+                var showCatePickerButton = document.getElementById('showCatePicker');
+                var cateResult2 = document.getElementById('showCatePicker');
+                showCatePickerButton.addEventListener('tap', function (event) {
+                    catePicker2.show(function (items) {
+                        if (items[0].value == items[1].value) {
+                            cateResult2.innerText = (items[0] || {}).text;
+                            $('#showCatePicker').attr('value', items[0].value);
+                        } else {
+                            cateResult2.innerText = (items[0] || {}).text + " " + (items[1] || {}).text;
+                            $('#showCatePicker').attr('value', items[1].value);
+                        }
+                        $('#showCatePicker').addClass('pitch_on');
+                        $('#showCatePicker').parent('div').next('div').find('ul li botton').removeClass('pitch_on');
+                    });
+                }, false);
+
+            });
+            $('.mui-indexed-list-item').click(function () {
+                selectCategory($(this));
+            });
+            $('#hot-cate li').click(function () {
+                selectCategory($(this));
+            });
+            $("input:radio[name='price_type'][value='{$task.price_type}']").attr("checked", 'checked');
+            $("input:radio[name='trade_type'][value='{$task.trade_type}']").attr("checked", 'checked');
+            $("select[name='unit']").val('{$task.unit}');
+
+        })(mui, document);
+    </script>
+	</body>
+</html>

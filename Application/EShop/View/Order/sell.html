@@ -1,0 +1,192 @@
+<!-- 订单管理 -->
+<!--头部 start-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+		<title>{$title}</title>
+		<link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="{$Think.const.CSS_URL}css-new/core.css" rel="stylesheet" type="text/css" />
+		<link href="{$Think.const.CSS_URL}css-new/icons.css" rel="stylesheet" type="text/css" />
+		<link href="{$Think.const.CSS_URL}css-new/components.css" rel="stylesheet" type="text/css" />
+		<link href="{$Think.const.CSS_URL}css-new/pages.css" rel="stylesheet" type="text/css" />
+		<link href="{$Think.const.CSS_URL}css-new/menu.css" rel="stylesheet" type="text/css" />
+		<link href="{$Think.const.CSS_URL}css-new/responsive.css" rel="stylesheet" type="text/css" />
+		<link href="{$Think.const.CSS_URL}screen.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="{$Think.const.SITE_URL}Public/js/load/dropload.css" />
+		<link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+		<link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+		<link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+		<link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+		<link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}reset.css?v={$vesion}" rel="stylesheet" />
+    	<link href="{$Think.const.CSS_URL}common.css?v={$vesion}" rel="stylesheet" />
+    	<link href="{$Think.const.CSS_URL}style.css?v={$vesion}" rel="stylesheet" />
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+		<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+		<!--end 头部-->
+		<style type="text/css">
+			body {
+				padding: 0 !important;
+			}
+			#myModal{
+				padding: 0 !important;
+			}
+            #header{
+                z-index: 901;
+            }
+			/*下拉加载提示框*/
+			.mui-pull-bottom-wrapper{
+				text-align: center;
+				padding: .2rem;
+			}
+            .mui-scroll{
+                position: initial;
+            }
+			.search-fixed{
+				position: fixed;
+				height: .85rem;
+				top: 1.83rem;
+				padding: .1rem 0;
+				width: 100%;
+				background-color: #eee;
+				z-index: 99;
+			}
+			.order-status-view{
+				top: .85rem !important;
+			}
+		</style>
+	</head>
+	<body>
+		<section class="order-manage-wrap">
+			<include file="Index:header" />
+			
+			<!-- <div class="mui-input-row  clearfix search-wrap" style="top:.85rem;">
+		        <div class="mui-search">
+		            <input id="search-company" type="search" name="keyword"  class="mui-input-clear" placeholder="请输入关键字查找" data-input-clear="15" data-input-search="15">
+		            <span class="mui-icon mui-icon-search" style=""></span>
+		            <button id="search-btn" >查找</button>
+		        </div>
+		    </div> -->
+			<ul class="order-status-view">
+				<li class="active" data-state="1">付款中</li>
+				<li data-state="2">服务中</li>
+				<li data-state="3">待验收</li>
+				<li data-state="4">已完成</li>
+				<li data-state="5">已关闭</li>
+			</ul>
+
+			<div class="search-fixed">
+				<div class="mui-search-area" style="width: 90%;margin: 0 5%;">
+					<input class="mui-search-area-input mui-input-clear" type="text" id="search1" placeholder="请输入公司名称搜索">
+					<button id="search"></button>
+				</div>
+			</div>
+
+			<div class="mui-scroll-wrapper order-lists" id="pullrefresh" style="padding-top: 2.7rem;" data-url="__MODULE__/Order/sell" rows="10">
+				<div class="mui-scroll " id="more_list_div">
+					<div style="display:none" class="item-tpl " >
+						<div class="order-list" onclick="jump(this);" jump_url="__MODULE__/Order/sellDetail/id/{%order_id%}.html">
+							<a >
+								<div class="link-head">
+									<div class="title">
+										<span class="{%state_color%}">{%order_stateing%}</span>
+										<div class="order-title" >{%order_title%}</div>
+									</div>
+									<i class="mui-icon mui-icon-arrowright"></i>
+								</div>
+								<div class="order-data-detail">
+									<div class="order-line">
+										<div class="gray-9">订单编号</div>
+										<div class="">{%order_sn%}</div>
+									</div>
+									<div class="order-line">
+										<div class="gray-9">{%cash_type%}</div>
+										<div class="red-e91835">
+											{%cashdiv%}
+										</div>
+									</div>
+                                    <div class="order-line">
+                                        <div class="gray-9">服务价格</div>
+                                        <div class="red-e91835">
+                                                {%picediv%}
+                                        </div>
+                                    </div>
+									<div class="order-line">
+										<div class="gray-9">购买客户</div>
+										<div class="">{%contacts%}</div>
+									</div>
+									<div class="order-line">
+										<div class="gray-9">购买时间</div>
+										<div class="">{%on_time%}
+									   <!--<div id="total" type="text">{%total_count%}{$count}</div>-->
+										</div>
+									</div>
+								</div>
+							</a>
+                        </div>
+					</div>
+					<ul class="order-datas">
+					</ul>
+                </div>
+                <!--<div class="order-list">我们是有底线的，共有{%total_count%}条数据</div>-->
+                <!--{$count}-{$report.total_count}-->
+            </div>
+			<!--底部 start-->
+			<include file="Public:contact" />
+			<!--end 底部-->
+		</section>
+		<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+		<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+		<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.pullToRefresh.js"></script>
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.pullToRefresh.material.js"></script>
+		<script src="/{$Think.APP_PATH}Public/js/mobile.js?v={$vesion}"></script>
+
+		<script>
+            $(function() {
+                mui.init();
+                var pullRefreshApi;
+                mui.ready(function () {
+                    var keyword = $("input[name=keyword]").val();
+                    var order = $('.order-status-view > .active').data('state');
+                    var data = {
+                        title:$.trim(keyword),
+                        order : order
+                    };
+                    var pullToRefreshObj = pullRefresh("#pullrefresh", data);
+                    pullRefreshApi = mui("#pullrefresh .mui-scroll").pullToRefresh(pullToRefreshObj);
+                })
+                $('.order-status-view li').on('click',function(){
+                    $(this).addClass('active').siblings('li').removeClass('active');
+                    screen_ajax();
+                });
+                $('#search-btn').on('click',function(){
+                    screen_ajax();
+                })
+                function screen_ajax() {
+                    var keyword = $("#search-company").val();
+                    var order = $('.order-status-view > .active').data('state');
+                    data = {
+                        title:$.trim(keyword),
+                        order : order
+                    };
+                    var pullToRefreshObj = pullRefresh("#pullrefresh", data);
+                    pullRefreshApi.refresh(true);
+                    mui("#pullrefresh .mui-scroll").pullToRefresh(pullToRefreshObj);
+                }
+            });
+            function jump(obj){
+                var url = $(obj).attr("jump_url");
+                console.log(url);
+                window.location.href = url;
+            }
+		</script>
+	</body>
+</html>

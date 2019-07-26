@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body>
+    <!--内容区 start-->
+    <section class="user-wrap">
+    	<include file="Index:header" />
+		<form action="" id="UserForm" onsubmit="return false;">
+			<div class="input-wrap">
+	    		<div class="user-input popup" bind="{$mobile_type}">
+	    			<span class="user-telephone"></span>
+                    <input type="number" readonly="readonly" onfocus="blur();" <eq name='mobile_type' value='set_mobile'> placeholder="点击绑定手机号码"<else/>value="{$user.mobile}"</eq>/>
+					<eq name='mobile_type' value='edit_mobile'><span style="color:#0379F3">更换手机号</span></eq>
+					<span class="mui-icon mui-icon-arrowright"></span>
+	    		</div>
+	    		<div class="user-input">
+	    			<span class="user-account"></span>
+	    			<input type="text" name="name" value="{$user.name}" placeholder="请输入用户名"/>
+	    		</div>
+	    		<div class="user-input popup" bind="password">
+	    			<span class="user-password"></span>
+	    			<input type="text" readonly="readonly" onfocus="blur();" placeholder="点击修改密码"/>
+	    			<span class="mui-icon mui-icon-arrowright"></span>
+	    		</div>
+    		</div>
+    		<div class="commit-user">
+    			<button onclick="formSubmit('UserForm','__MODULE__/User/userEdit.html')">保存</button>
+				<button type="button" onclick="location.href='/Login/logout.html'" style="margin-top: 10px">退出</button>
+                <!--<button type="button" onclick="openAttachment()" style="margin-top: 10px">附件</button>-->
+    		</div>
+		</form>
+    </section>
+	<include file="Public:modal_bind_telephone"/>
+    <script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+	<script src="/{$Think.MODULE_PATH}Public/js/common.js"></script>
+	<script>
+        $('.input-wrap > .popup').on('click',function(){
+            var bindValue = $(this).attr('bind');
+            var mobile = '{$mobile_type}';
+            if(bindValue == 'password' && mobile == 'set_mobile')
+            {
+                layer.msg('请先绑定手机号码!!');
+                return false;
+            }
+            $('.wrap-modal > .modal-bind-tel > .modal-content > div[v-bind='+bindValue+']').show().siblings('.popup-model').hide();
+            $('.wrap-modal').show();
+            $('.wrap-modal > .modal-bind-tel > .modal-content').data('type',bindValue);
+        })
+        function formSubmit(formid, form_url) {
+            var userName = $('input[name=name]').val();
+            if (userName.length > 11){
+                layer.msg('名称最长不能超过11个字段');
+                return false;
+			}
+            $.ajax({
+                url: form_url,
+                type: "post",
+                dataType: "json",
+                data: $('#' + formid).serialize(),
+                success: function(data) {
+                    console.info(data);
+                    if(data.error == 0) {
+                        layer.closeAll();
+                        layer.msg(data.msg);
+                        setTimeout(function() {
+                            window.location.href = "__MODULE__/Index/user.html"
+                        }, 500);
+                    } else {
+                        layer.closeAll();
+                        layer.msg(data.msg);
+                    }
+                },
+                error: function() {
+                    layer.msg('系统故障！请重试！');
+                    setTimeout(function() {
+                        window.location.href = "__MODULE__/User/index.html"
+                    }, 500);
+                },
+                beforeSend: function() {
+                    layer.closeAll();
+                    layer.msg('正在提交....');
+                }
+            });
+        }
+        function openAttachment(){
+            openAttachmentForm("aaa", [{attach_group:'12121'}]);
+        }
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!--头部 start-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}/css-new/bootstrap.min.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/core.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/icons.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/components.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/pages.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/menu.css" rel="stylesheet" />
+    <!--<link href="{$Think.const.CSS_URL}/css-new/responsive.css" rel="stylesheet" />-->
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}/jquery.min.js"></script>
+    <script src="{$Think.const.JS_URL}/bootstrap.min.js"></script>
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <style>
+        th,td {
+            text-align: center;
+            border:1px solid #e4e4e4;
+        }
+        .content-overflow{
+            overflow: hidden;
+            white-space: nowrap;
+            width: 74%;
+            float:right;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<body>
+<!--end 头部-->
+	<section class="secondary-wrap">
+		<include file="Index:header" />
+		
+		<switch name="order.order_state">
+			<case value="3"><section class="order-status-img status-daifukuan mb15"></section></case>
+			<case value="4"><section class="order-status-img status-fuwuzhong mb15"></section></case>
+			<case value="5"><section class="order-status-img status-daiyanshou mb15"></section></case>
+			<case value="6"><section class="order-status-img status-fuwuzhong mb15"></section></case>
+			<case value="7"><section class="order-status-img status-yiwancheng mb15"></section></case>
+			<case value="8"><section class="order-status-img status-yiguanbi mb15"></section></case>
+			<case value="9"><section class="order-status-img status-yiwancheng mb15"></section></case>
+		</switch>
+		
+	    <div class="con-wrap mb15">
+	        <div class="con-img-title">
+	        	<img class="company" src="/Application/EShop/Public/images/img/icon-company.png" alt="">
+	            <div>{$report.title}</div>
+	        </div>
+	        <div class="simple-data-wrap black-2c">
+	            <div class="simple-line">
+	                <div class="common-field gray-9">报告标识</div>
+	                <div>{$report.report_desc}</div>
+	            </div>
+	            <!--<div class="simple-line">-->
+	                <!--<div class="common-field gray-9" >报告标题</div>-->
+	                <!--<div>{$report.report_title}</div>-->
+	            <!--</div>-->
+	            <div class="simple-line">
+	                <div class="common-field gray-9" >报告人</div>
+	                <div>
+	                    {$report.author}
+	                </div>
+	            </div>
+	            <div class="simple-line">
+	                <div class="common-field gray-9">报告时间</div>
+	                <div>
+	                    {$report.view_time}
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    
+
+		<section class="con-wrap mb15 " >
+		    <div class="con-img-title">
+		    	<img class="report" src="/Application/EShop/Public/images/img/icon-report.png" alt="">
+		        <div>{$report.tip_desc}</div>
+		    </div>
+            <notempty name="report.report_remark">
+                <div class="simple-detai-wrap gray-9">
+                    {$report.report_remark}
+                </div>
+                <else/>
+                <div class="simple-detai-wrap gray-9">
+                    无
+                </div>
+            </notempty>
+		</section>
+
+		<section class="con-wrap mb15 " >
+		    <div class="con-img-title">
+		    	<img class="file" src="/Application/EShop/Public/images/img/icon-file.png" alt="">
+		        <div>附件</div>
+		    </div>
+		    <div class="simple-detai-wrap gray-9">
+		        <volist name="report.encs" id="vo">
+		            <a href="{$vo.url}"><img src="{$vo.pic}" style="max-width: 18%;border: 1px solid #fff;" alt="" /></a>
+		        </volist>
+		
+		    </div>
+		</section>
+		<section class="con-wrap mb15">
+		    <div class="con-img-title">
+		    	<img class="img" src="/Application/EShop/Public/images//img/icon-img.png" alt="">
+		        <div>图片</div>
+		    </div>
+		    <div class="simple-detai-wrap gray-9">
+		        <for start="0" end="10" comparison="lt" step="1" name="n" >
+		            <if condition="$report[implode('',array('pic',$n))]" >
+		                <a href="{$report[implode('',array('pic',$n))]}"><img src="{$report[implode('',array('pic',$n))]}" style="max-width: 100%" alt="" /></a>
+		            </if>
+		        </for>
+		    </div>
+		</section>
+		<!--底部 start-->
+		<div style="height: 1.35rem;"></div>
+		<footer class="order-bottom-btn" >
+			<button class="bg-368bfe" onclick="location='{$report.order_url}'">订单详情</button>
+		</footer>
+		<include file="Public:contact" />
+	</section>
+<!--end 底部-->
+<link rel="stylesheet" href="{$Think.const.CSS_URL}/photoswipe/photoswipe.css" />
+<script src="{$Think.const.JS_URL}/photoswipe/klass.min.js"></script>
+<script src="{$Think.const.JS_URL}/photoswipe/code.photoswipe-3.0.5.min.js"></script>
+<script type="text/javascript">
+    (function (window, PhotoSwipe) {
+        document.addEventListener('DOMContentLoaded', function () {
+            var options = {}, instance = PhotoSwipe.attach(window.document.querySelectorAll('#photoshow a'), options);
+        }, false);
+    }(window, window.Code.PhotoSwipe));
+</script>

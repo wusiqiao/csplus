@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="format-detection" content="email=no">
+        <meta name="renderer" content="webkit">
+        <meta name="screen-orientation" content="portrait">
+        <meta name="x5-orientation" content="portrait">
+        <link rel="stylesheet" href="/{$Think.MODULE_PATH}Public/new_ui/css/reset.css">
+        <link rel="stylesheet" href="/{$Think.MODULE_PATH}Public/new_ui/css/phoenix.css">
+        <!--<link href="{$Think.const.CSS_URL}/css-new/style.css?v=22" rel="stylesheet" />-->
+        <link href="{$Think.const.CSS_URL}mui/mui.css?v={$vesion}" rel="stylesheet" />
+    	<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+        <link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.css" rel="stylesheet"/>
+        <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+        <link rel="stylesheet" href="/{$Think.APP_PATH}Public/css/comm.css">
+        <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+        <script src="/{$Think.APP_PATH}Public/js/common.js"></script>
+        <title>{$title}</title>
+        <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+		<style type="text/css">
+			.mui-table-view:before,
+			.mui-table-view-cell:after,
+			.mui-popup-inner:after,
+			.mui-table-view:after {
+				height: 0;
+			}
+            .btn-cash:active{
+                background-color: initial;
+            }
+            /**/
+            .fund-box{ height: 2.2rem;background-color: rgb(69,145,254);}
+            .fund-top{padding:0.43rem;overflow: hidden;}
+            .fund-top h2{font-size: .4rem; color:#fff;text-align: center;}
+            .fund-top p{text-align: left;font-size: 0.21rem;color:#fff;}
+            .fund-top p button{display: inline-block; vertical-align: middle; background-color:transparent; border: 1px solid #fff; color: #fff; font-size: 1.25rem; border-radius:6px; height: 18px; line-height: 18px; padding: 0 5px; margin-right:5px;  }
+            .fund-top p img {display: inline-block; vertical-align: middle; width: 25px;}
+            .account-money{padding:0.23rem 0; overflow:hidden; text-align: center;   }
+            .account-money a{width:50%; float: left; padding-left: 15px; }
+            .account-money h3{color:#bbbbbd; font-size:.5rem; font-weight:600; width:100%; overflow: hidden; white-space:nowrap; text-overflow:ellipsis;   }
+            .account-money p{ font-size: .31rem;color:#929297 }
+            .fund-btn-box{display: flex; padding: 0.23rem 0;  text-align: center;background-color:  rgb(69,145,254);justify-content: center;align-items: center;}
+            .fund-btn-box a{display:flex; text-align: center; width: 30%; border-radius:0px;  height: .52rem; font-size: .31rem;color: #fff}
+            .btn-cash-center{border-left: 1px solid #fff;border-right: 1px solid #fff;}
+            .item-wrap{float:left; overflow: auto;}
+            .item-wrap::-webkit-scrollbar{
+                display: none;
+            }
+            .item-container{float: left; margin: 0px auto; width:100%}
+            .item-container li{float:left;overflow: hidden; width:100%;}
+            .item-container li .item{float:left; height:auto;position: relative;width:100%; padding: 5px;margin-bottom: 5px;background: #fff}
+            .detailed-block{
+                flex: 1;
+                text-align: center;
+                height: 1rem;
+                color: #999999;
+            }
+            .detailed-state{
+                line-height: 1rem;
+                color: rgb(233,24,53);
+            }
+            .detailed-money{
+                color:rgb(41,39,40)
+            }
+            .search-div{
+                position: relative;
+                z-index: 88;
+                background-color: #eff8fd;
+            }
+            .search-div  div {
+                text-align: center;
+                color:#999999
+            }
+            .search-div  div.checked {
+                color: #4591fe;
+            }
+            .hide{
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+    	<!--<include file="Index:header" />-->
+        <div class="fund-box">
+            <div class="fund-top">
+                <p>资金账户：</p>
+                <h2>{$model["account_name"]}</h2>
+            </div>
+        </div>
+        <div class="basic-info user-wrap common-wrap" style="background-color: initial">
+        <div class="title">
+            <div>明细</div>
+            <div>
+                <div id="search-button">
+                    <span id="search-text">筛选</span>&nbsp<img src="{$Think.const.IMG_URL}/tool/search-icon.png" style="width: .25rem;">
+                </div>
+                <!--<div class="search-div hide">-->
+                    <!--<div class="checked" data-type="0">全部</div>-->
+                    <!--<div data-type="1">收入</div>-->
+                    <!--<div data-type="2">支出</div>-->
+                <!--</div>-->
+            </div>
+        </div>
+            <div class="panel kx_list" style="box-shadow: 0 -1px 0 #f5f5f5;">
+                <div class="mui-indexed-list-inner" id="main-content"  v-cloak>
+                    <div class="item-wrap" style="width: 100%;">
+                        <ul class="item-container">
+                            <li v-for="(item,index) in item_list" @tap="onItemTap(item)" :id="item.item_id">
+                                <div class="info-line" v-if="yearShow(index)">
+                                    <div class="info-title">{{item.year}}<i></i></div>
+                                </div>
+                                <div class="item info-line">
+                                    <div class="detailed-block">
+                                        <div>{{item.day}}</div>
+                                        <div>{{item.time}}</div>
+                                    </div>
+                                    <div  class="detailed-block" style="line-height: 1rem;">
+                                        <img v-bind:src="item.icon" alt="" style="width: .65rem">
+                                    </div>
+                                    <div  class="detailed-block" style="flex: 1.5">
+                                        <div class="detailed-money">{{item.polarity}} {{item.amount}}</div>
+                                        <div>{{item.tip}}</div>
+                                    </div>
+                                    <div  class="detailed-block detailed-state">
+                                        {{item.state}}
+                                    </div>
+                                    <div  class="detailed-block" >
+                                        <div class="detailed-money" v-text="getRemainder(index)"  v-if="hasRemainder()"></div>
+                                        <div v-if="hasRemainder()">余额</div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ul id="dlg-detail" class="mui-table-view" style="display:none">        
+            <li class="mui-table-view-cell"><a><span class="mui-pull-left">明细名称</span><span class="mui-pull-right">{%title%}</span></a></li>
+            <li class="mui-table-view-cell"><a><span class="mui-pull-left">对象</span><span class="mui-pull-right">{%contacts%}</span></a></li>
+            <li class="mui-table-view-cell"><a><span class="mui-pull-left">交易金额</span><span class="mui-pull-right orange">{%real_cash%}<span style="color: #444444;">&nbsp;元</span></span></a></li>
+            <li class="mui-table-view-cell"><a><span class="mui-pull-left">时间</span><span class="mui-pull-right">{%on_time%}</span></a></li>
+        </ul>
+        <ul id="withdrawals-detail" class="mui-table-view" style="display:none">        
+            <li class="mui-table-view-cell"><a><span class="mui-pull-left">提现金额</span><span class="mui-pull-right">{%amount%}&nbsp;元</span></a></li>
+            <li class="mui-table-view-cell"><a><span class="mui-pull-left">手续费</span><span class="mui-pull-right">{%platform_fee%}&nbsp;元</span></a></li>
+            <li class="mui-table-view-cell"><a><span class="mui-pull-left">实际金额</span><span class="mui-pull-right orange">{%actual_fee%}<span style="color: #444444;">&nbsp;元</span></span></a></li>
+            <li class="mui-table-view-cell"><a><span class="mui-pull-left">状态</span><span class="mui-pull-right">{%state%}</span></a></li>
+            <li class="mui-table-view-cell"><a><span class="mui-pull-left">时间</span><span class="mui-pull-right">{%pay_time%}</span></a></li>
+        </ul>
+        <!--<script src="{$Think.const.CSS_URL}css-new/bootstrap.min.css"></script>-->
+        <!--底部 start-->
+    <include file="Public:contact" />
+    <script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+    <script src="/{$Think.MODULE_PATH}Public/js/common.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <!--end 底部-->
+    <script>
+        var vue = new Vue({
+            el: "#main-content",
+            data: {
+                item_list: [],
+                targetId:'{$model["id"]}',
+                targetType:'{$model["capital"]}',
+                money:'{$model["balance_money"]}',
+                type:0
+            },
+            computed:{
+
+            },
+            methods: {
+                onItemTap:function(item){
+                },
+                yearShow(index){
+                    if (index == 0) {
+                        return true;
+                    } else if(this.item_list[index].year < this.item_list[index - 1].year) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                getRemainder(index){
+                    if (index == 0) {
+                        this.item_list[index]['remainder'] = this.money ;
+                        return this.item_list[index]['remainder'];
+                    } else {
+                        var remaindered = this.item_list[index - 1]['remainder'];
+                        if (this.item_list[index - 1]['polarity'] == '+' && this.item_list[index - 1]['state'] != '充值中' && this.item_list[index - 1]['state'] != '充值失败' && this.item_list[index - 1]['state'] != '审核中'){
+                            this.item_list[index]['remainder'] = (parseFloat(remaindered) - parseFloat(this.item_list[index - 1]['amount'])).toFixed(2);
+                        } else if(this.item_list[index - 1]['polarity'] == '-' && this.item_list[index - 1]['state'] != '提现失败' && this.item_list[index - 1]['state'] != '审核中') {
+                            this.item_list[index]['remainder'] = (parseFloat(remaindered) + parseFloat(this.item_list[index - 1]['amount'])).toFixed(2);
+                        } else {
+                            this.item_list[index]['remainder'] = parseFloat(remaindered).toFixed(2);
+                        }
+                        return this.item_list[index]['remainder'];
+                    }
+                },
+                hasRemainder(){
+                    return this.type == 0 ? true : false;
+                }
+            }
+        });
+        queryData()
+        var listHeight = 300;
+        function queryData() {
+            $('.item-wrap').data("last_scroll_top",0);
+            $('.item-wrap').data("current_page",1);
+            var nWinHeight = $(window).height();
+            var fundBtnHeight = $(".fund-box").height();
+            var fundBtnBoxHeight = $(".fund-btn-box").height();
+            listHeight = nWinHeight - fundBtnHeight - fundBtnBoxHeight - 80;
+            var type = vue.type;
+            vue.item_list = [];
+            pullRefresh(".item-wrap", ".item-container", function($target, current_page) {
+                $.post("/ComBranchCapital/capitalDetails", {
+                    page: current_page,
+                    targetType:vue.targetType,
+                    targetId:vue.targetId,
+                    search:type
+                }, function (result) {
+                    vue.item_list = vue.item_list.concat(result);
+                    // $target.scrollTop(0);
+                    $target.data("loading", false);
+                }, "json");
+            },listHeight)
+        }
+        function showTaskInfo(sender, order_no) {
+            if ($(sender).find(".btn-detail").attr('templete') == 'dlg-detail'){
+                $.getJSON("__CONTROLLER__/getOrderDetail", {order_no: order_no}, function($data){
+                    mui.alert(parseTemplate("#dlg-detail", $data),"业务明细");
+                });                
+            }else if($(sender).find(".btn-detail").attr('templete') == 'withdrawals-detail'){
+                $.getJSON("__CONTROLLER__/getWithdrawalsDetail", {order_no: order_no}, function($data){
+                    console.log($data);
+                    mui.alert(parseTemplate("#withdrawals-detail", $data),"提现明细");
+                }); 
+            }
+        }
+        $('#money').addClass('active');
+        $('#money img').attr('src', '{$Think.const.IMG_URL}/footer_nav/order-active.png');
+        $(function () {
+            var $tik = $(".account");
+            $tik.on("click", function () {
+                if ($(this).siblings('dl').is(":hidden")) {
+                    $(this).css("background-image", "url('/Public/new_ui/images/arrow-down.png')").siblings('dl').removeClass("dn")
+                } else {
+                    $(this).css("background-image", "url('/Public/new_ui/images/arrow-right.png')").siblings('dl').addClass("dn")
+                }
+            })
+        });
+        // 列表滚动
+        $("body").css({"height": "100%"});
+        var $bodyH = $(window).height();
+        var $topH = $(".fund-box").height();
+        var $bottomH = $(".footer-navbar").height();
+        var $bh = $bodyH - $topH - $bottomH;
+        //mui 弹出窗
+        var picker = new mui.PopPicker();
+        picker.setData([{
+            value: "0",
+            text: "全部"
+        }, {
+            value: "1",
+            text: "收入"
+        }, {
+            value: "2",
+            text: "支出"
+        }]);
+        document.getElementById('search-button').addEventListener('tap', function (event) {
+            picker.show(function(SelectedItem) {
+                vue.type = SelectedItem[0].value;
+                $("#search-text").text(SelectedItem[0].text);
+                queryData()
+            })
+        })
+    </script>
+</body>
+</html>

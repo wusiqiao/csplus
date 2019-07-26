@@ -1,0 +1,332 @@
+<style>
+    .popup-model{
+        margin-bottom: .2rem;
+    }
+    .modal-bind-tel .modal-content{
+        padding : .2rem .5rem;
+    }
+    .modal-bind-tel{
+        height: auto;
+        max-height: 6.5rem;
+    }
+    .mobile-tips{
+        display: block;
+        color:red;
+        margin: .2rem;
+        text-align: left;
+        padding-left: 1.3rem;
+    }
+    .mobile-tips::before{
+        /*content: '123';*/
+    }
+</style>
+<div class="wrap-modal" style="display: none">
+	<div class="modal-bind-tel">
+		<div class="modal-title">
+			验证手机号码
+		</div>
+		<div class="modal-content">
+            <!--<div v-bind="password" class="popup-model">
+                <div class="modal-tip" data-mobile="{$user.mobile}">点击发送验证码，将发送验证码至<br>手机号码<span>{$user.mobile}</span></div>
+                <div class="modal-input input-indent" >
+                    <span class="icon-pwd"></span>
+                    <input type="password" name="password" placeholder="请输入修改密码"/>
+                </div>
+            </div>-->
+			<div v-bind="set_mobile" class="popup-model">
+                <div class="modal-tip" ><!--输入需要设置的手机号码--></div>
+                <div class="modal-input input-indent">
+                    <span style="margin-right: .1rem">手机号码：</span>
+                    <span class="icon-telephone" style="left: 1.65rem;"></span>
+                    <input type="text" name="mobile" id="set_mobile" placeholder="请输入手机号码"/>
+                </div>
+                <div class="mobile-tips"></div>
+            </div>
+            <div v-bind="edit_mobile" class="popup-model" style="margin-bottom: .2rem">
+                <!--<div class="modal-tip" data-mobile="{$user.mobile}">点击发送验证码，将发送验证码至<br>手机号码<span>{$user.mobile}</span></div>-->
+                <!--<div class="modal-input input-indent">-->
+                    <!--<span class="icon-telephone"></span>-->
+                    <!--<input type="text" name="mobile" placeholder="请输入手机号码"/>-->
+                <!--</div>-->
+                <div class="modal-input input-indent">
+                    <span style="margin-right: .1rem">手机号码：</span>
+                    <span class="icon-telephone" style="left: 1.65rem;"></span>
+                    <input type="text" name="mobile" id="edit_mobile" placeholder="请输入手机号码"/>
+                </div>
+                <div class="mobile-tips"></div>
+            </div>
+            <input type="hidden" name="codes" id="codes" />
+			<div class="modal-input">
+                <span style="margin-right: .1rem;margin-left: .28rem">验证码：</span>
+				<input type="text" name="code" id="code" placeholder="请输入验证码"/>
+				<button onclick="getSMS(this);" id="popup_sms">发送验证码</button>
+			</div>
+            <div style="color: red;margin: .2rem;padding-left: .5rem">*验证码将发送至新手机号码</div>
+            <div v-bind="password" class="popup-model">
+                <div class="modal-input">
+                    <span style="margin-right: .1rem;">账号密码：</span>
+                    <input type="password" name="password" id="password" placeholder="请输入密码"/>
+                </div>
+                <div class="modal-input" >
+                    <span style="margin-right: .1rem;">确认密码：</span>
+                    <input type="password" name="re_password" placeholder="请再次输入密码"/>
+                </div>
+            </div>
+		</div>
+		<div class="modal-btn">
+			<button id="popup-close">取消</button>
+			<button class="blue" id="popup-complete">确定</button>
+		</div>
+	</div>
+</div>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+<script>
+    $('#popup-close').on('click',function(){
+        $("#codes").val("");
+        $('.wrap-modal').hide();
+    });
+    $('#popup-completee').on('click',function(){
+        var popupType = $('.wrap-modal > .modal-bind-tel > .modal-content').data('type');
+        if ($.inArray(popupType,['mobile','password'])){
+            layer.msg('操作失败!!');
+            $('.wrap-modal').hide();
+            return false;
+        }
+    })
+    $('#popup-complete').on('click',function(){
+        var popupType = $('.wrap-modal > .modal-bind-tel > .modal-content').data('type');
+        var code = $('#code').val();
+        var codes =  $('#codes').val();
+        var data = {};
+        if($.trim(code) == ''){
+            layer.msg('请输入验证码！',{time:1200});
+            return false;
+        }
+        if($.trim(codes) == ''){
+            layer.msg('请先发送短信验证码！');
+            return false;
+        }
+        if ($.trim(code) != $.trim(codes)){
+            layer.msg('验证码错误，请重新输入！');
+            return false;
+        }
+        switch (popupType){
+            case 'password':
+                var password = $('input[name=password]').val();
+                var re_password = $('input[name=re_password]').val();
+                if(!(/^[a-zA-Z0-9]{4,}$/.test(password))) {
+                    layer.msg('请输入不少于4位数字或字母！');
+                    return false;
+                }
+                if(password != re_password){
+                    layer.msg('两次输入的密码不一致！');
+                    return false;
+                }
+                data.code = code;
+                data.password = password;
+                data.re_password = re_password;
+                $.ajax({
+                    url: '__MODULE__/User/password.html',
+                    type: 'POST',
+                    dataType: "json",
+                    data: data,
+                    success: function(data) {
+                        if(data.error == 0) {
+                            layer.msg('密码修改成功！');
+                            setTimeout(function() {
+                                //window.location.href = "__MODULE__/User/index.html";
+                                window.location.reload();
+                            }, 2000);
+                        } else if(data.error == 1) {
+                            layer.msg(data.msg);
+                        }
+                    }
+                });
+                break;
+            case 'edit_mobile':
+                /*$('#codes').val('');
+                $('.wrap-modal > .modal-bind-tel > .modal-content').data('type','set_mobile');
+                $('.wrap-modal > .modal-bind-tel > .modal-content > div[v-bind='+popupType+']').hide();
+                $('.wrap-modal > .modal-bind-tel > .modal-content > div[v-bind=set_mobile]').show();
+                initialValue();
+                return false;*/
+                var mobile = $('#edit_mobile').val();
+                if(!(/^1(3|4|5|6|7|8|9)\d{9}$/.test($.trim(mobile)))) {
+                    layer.msg('请输入正确的手机号码！');
+                    return false;
+                }
+                /*var password =  $("#password").val();
+                if ($.trim(password) == ""){
+                    layer.msg('请输入密码！');
+                    return false;
+                }*/
+                data.code = code;
+                data.mobile = mobile;
+                //data.password = password;
+                $.ajax({
+                    url: "__MODULE__/User/mobileChange.html",
+                    type: 'POST',
+                    dataType: "json",
+                    data: data,
+                    beforeSend: function () {
+                        var index = layer.load(0, {
+                            shade: [0.1, '#fff'] //0.1透明度的白色背景
+                        });
+                    },
+                    success: function (data) {
+                        if (data.error == 0) {
+                            layer.closeAll();
+                            layer.msg('操作成功！');
+                            setTimeout(function () {
+                                //window.location.href = "__MODULE__/User/index";
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                            setTimeout(function () {
+                            }, 2000);
+                        }
+                    }
+                });
+                break;
+            case 'set_mobile':
+                var mobile = $('#set_mobile').val();
+                if(!(/^1(3|4|5|6|7|8|9)\d{9}$/.test($.trim(mobile)))) {
+                    layer.msg('请输入正确的手机号码！');
+                    return false;
+                }
+                /*var password =  $("#password").val();
+                if ($.trim(password) == ""){
+                    layer.msg('请输入密码！');
+                    return false;
+                }*/
+                data.code = code;
+                data.mobile = mobile;
+                //data.password = password;
+                $.ajax({
+                    url: "__MODULE__/User/mobileChange.html",
+                    type: 'POST',
+                    dataType: "json",
+                    data: data,
+                    beforeSend: function () {
+                        var index = layer.load(0, {
+                            shade: [0.1, '#fff'] //0.1透明度的白色背景
+                        });
+                    },
+                    success: function (data) {
+                        if (data.error == 0) {
+                            layer.closeAll();
+                            layer.msg('操作成功！');
+                            setTimeout(function () {
+                                //window.location.href = "__MODULE__/User/index";
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                            setTimeout(function () {
+                            }, 2000);
+                        }
+                    }
+                });
+                break;
+            default:
+                return false;
+                break;
+        }
+        //$('#code').val('');
+    })
+</script>
+<script>
+    function getSMS(obj) {
+        var popupType = $('.wrap-modal > .modal-bind-tel > .modal-content').data('type');
+        var mobile = "";
+        var action = '';
+        if (popupType == 'set_mobile'){
+            mobile = $("#set_mobile").val();
+            action = 'setphone';
+        }else if(popupType == 'edit_mobile'){
+            action = 'chagephone' ;
+            //mobile = $('.modal-content > div[v-bind='+popupType+'] > .modal-tip').attr('data-mobile');
+            mobile = $("#edit_mobile").val();
+        }else{
+            action =  'passwordphone';
+            mobile = "{$user.mobile}";
+        }
+        if(!(/^1(3|4|5|6|7|8|9)\d{9}$/.test($.trim(mobile))) && action != 'passwordphone') {
+            layer.msg('请输入正确的手机号码！');
+            return false;
+        }
+        $.ajax({
+            url: "__MODULE__/Check.html",
+            type: "post",
+            dataType: "json",
+            data: {
+                "phone": mobile,
+                "action": action
+            },
+            success: function(json) {
+                if(json.result == '0') {
+                    layer.msg(json.msg);
+                    settime(obj);
+                    $("#codes").val(json.codes);
+                } else {
+                    layer.msg(json.msg);
+                    $(".mobile-tips").text(json.msg);
+                    $(obj).attr("disabled", false);
+                    return false
+                }
+
+            },
+            beforeSend: function() {
+                $(obj).attr("disabled", true);
+            },
+            errors: function() {
+                $(obj).attr("disabled", false);
+            }
+        });
+    }
+    var countdown = 60;
+    function settime(setbtn) {
+        if(countdown == 0) {
+            $(setbtn).attr("disabled", false);
+            $(setbtn).text("获取验证码");
+            $(setbtn).removeClass("check");
+            countdown = 60;
+            return;
+        } else {
+            $(setbtn).attr("disabled", true);
+            $(setbtn).text("重新发送(" + countdown + ")");
+            countdown--;
+        }
+        setTimeout(function() {
+            settime(setbtn);
+        }, 1000);
+    }
+    function initialValue(){
+        if(countdown > 0){
+            countdown = 0;
+        }
+        $('#popup_sms').attr("disabled", false);
+        $('#popup_sms').text("获取验证码");
+        $('#popup_sms').removeClass("check");
+    }
+
+    $("input[name='mobile']").on("input",function(){
+        var mobile = $.trim($(this).val());
+        console.log(/^1(3|4|5|6|7|8|9)\d{9}$/.test($.trim(mobile)));
+        if(/^1(3|4|5|6|7|8|9)\d{9}$/.test($.trim(mobile))){
+            $.post("/User/getMobileUsable",{mobile:mobile},function(result){
+                $(".mobile-tips").html(result.message);
+                if(result.error == 0){
+                    $(".mobile-tips").html(result.message).css("color","green");
+                }else{
+                    $(".mobile-tips").html(result.message).css("color","red");
+                }
+            },'json')
+        }else{
+            $(".mobile-tips").html("").css("color","red");
+        }
+    })
+</script>

@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+   <!-- <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />-->
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+
+    .basic-info .info-title {
+        color: #333333;
+        white-space: nowrap;
+    }
+    .customer_head_pic{
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        margin-top: .18rem;
+        margin-right: .18rem;
+    }
+    .customer_name{
+        width: auto;
+        max-width: 4rem;
+        min-width: .1rem;
+        margin-top: .35rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        float: right!important;
+    }
+    .modal-btn{
+        display: block!important;
+        height: auto!important;
+    }
+
+</style>
+
+<body>
+    <include file="Index:header" />
+    <div class="info-line template-1" style="display:none">
+        <div class="info-title">{%title%}<i></i></div>
+        <input type="text" data-title="{%title%}" value="" placeholder="请输入自定义类型{%title%}的值" data-id="" />
+        <div class="delete-div">
+            <span>删除</span>
+        </div>
+    </div>
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <form id="customerForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title">档案详情</div>
+                <div class="info-line important-input">
+                    <div class="info-title"><span style="color: #e91835;">*</span>客户类型<i></i></div>
+                    <select name="tag_type" id="tag_type_select" style="direction: rtl">
+                        <volist name="tag.type" id="vo">
+                            <option value="{$vo.id}">{$vo.value}</option>
+                        </volist>
+                    </select>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title"><span style="color: #e91835;">*</span>客户来源<i></i></div>
+                    <select name="tag_origin" id="tag_origin_select" style="direction: rtl">
+                        <volist name="tag.origin" id="vo">
+                            <option value="{$vo.id}">{$vo.value}</option>
+                        </volist>
+                    </select>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info">
+                <!--<div class="info-line">
+                    <div class="info-title">公司资料<i></i></div>
+                </div>-->
+                <div class="title">公司信息</div>
+                <div class="info-line important-input">
+                    <div class="info-title"><span style="color: #e91835;">*</span>公司名称<i></i></div>
+                    <input type="text" name="name" value="{$company.name}" placeholder="请输入公司名称" />
+                    <input type="hidden" name="id" value="{$company.id}" />
+                    <input type="hidden" name="parent_id" value="{$company.parent_id}" />
+                </div>
+
+                <div class="info-line" id="toSelectUser" style="display: none">
+                    <div class="info-title">客户微信<i></i></div>
+                    <div style="color: #368bfe;line-height:1rem;;margin: 0 .2rem 0 auto" onclick="bindWeiXin()">绑定微信用户</div>
+                </div>
+                <div class="info-line" id="SelectedUser" style="display:none">
+                    <div class="info-title">客户微信<i></i></div>
+                    <input type="hidden" name="customer_leader_id" value="{$company.customer_leader_id}">
+                    <div style="margin:0 .2rem 0 auto">
+                        <img class="customer_head_pic" src="{$company.customer_head_pic}" onerror="this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                        <span class="customer_name" style="">{$company.customer_leader_name}</span>
+                    </div>
+                    <!--<input type="text" name="customer_leader_name" value="{$company.customer_leader_name}" readonly>-->
+                    <!--<div style="color: #368bfe;line-height:1rem;margin-left: 0.1rem;" onclick="bindWeiXin()">更换微信</div>-->
+                </div>
+
+                <div class="info-line important-input">
+                    <div class="info-title"><span style="color: #e91835;">*</span>联系人<i></i></div>
+                    <input type="text" value="{$company.linkman}" name="linkman" placeholder="请输入联系人" />
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title"><span style="color: #e91835;">*</span>手机号码<i></i></div>
+                    <input type="number" name="contact" value="{$company.contact}" placeholder="请输入手机号码" />
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info" id="invoice_info">
+                <div class="title">开票信息
+                    <span style="float: right" class="share-icon">分享</span>
+                </div>
+                <div class="info-line" >
+                    <div class="info-title">发票抬头名称<i></i></div>
+                    <input type="text" value="{$company.invoice_title}" name="invoice_title" placeholder="请输入发票抬头名称" />
+                </div>
+                <div class="info-line">
+                    <div class="info-title">纳税人识别号<i></i></div>
+                    <input type="text" value="{$company.taxpayer_identification}" name="taxpayer_identification" placeholder="请输入纳税人识别号" />
+                </div>
+                <div class="info-line">
+                    <div class="info-title">注册地址<i></i></div>
+                    <input type="text" value="{$company.reg_address}" name="reg_address" placeholder="请输入注册地址" />
+                </div>
+                <!--<div class="info-line" style="position: relative;">
+                    <div class="info-title">注册地址<i></i></div>
+                    <div class="area-chose" id='showCityPicker'>
+                        <div class="province-city" id="showCity" style="color:#999999;margin: .3rem .3rem .3rem .1rem;">
+                            {$company.reg_region}
+                        </div>
+                        <input type="hidden" value="{$company.reg_province}" name="reg[province]" id="province" />
+                        <input type="hidden" value="{$company.reg_city}" name="reg[city]" id="city" />
+                        <input type="hidden" value="{$company.reg_district}" name="reg[district]" id="district" />
+                        <span class="mui-icon mui-icon-arrowright"
+                            style="position: absolute; right:4%;top:35%;color: #cccccc;"></span>
+                    </div>
+                </div>-->
+                <div class="info-line">
+                    <div class="info-title">注册电话<i></i></div>
+                    <input type="text" value="{$company.telephone}" name="telephone" placeholder="请输入公司注册电话" />
+                </div>
+                <div class="info-line">
+                    <div class="info-title">开户银行<i></i></div>
+                    <input type="text" name="bank" value="{$company.bank}" placeholder="请输入开户银行" />
+                </div>
+                <div class="info-line">
+                    <div class="info-title">开户账号<i></i></div>
+                    <input type="text" name="bank_account" value="{$company.bank_account}" placeholder="请输入银行卡号" />
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info" style="margin-bottom: .8rem">
+                <div class="title">其它信息</div>
+                <div class="info-line">
+                    <div class="info-title">法人姓名<i></i></div>
+                    <input type="text" name="corporation" value="{$company.corporation}" placeholder="请输入法人姓名" />
+                </div>
+                <div class="info-line">
+                    <div class="info-title">法人身份证<i></i></div>
+                    <input type="number" name="corporate_idcard" value="{$company.corporate_idcard}"
+                        placeholder="请输入法人身份证号" />
+                </div>
+                <div id="informations">
+                    <volist name="company.information" id="vo">
+                        <div class="info-line">
+                            <div class="info-title">{$vo.title}<i></i></div>
+                            <input type="text" id="{$vo.id}" style="width: 80%" data-id="{$vo.id}"
+                                data-title="{$vo.title}" value="{$vo.value}" placeholder="请输入自定义字段{$vo.title}的值"/>
+                            <div class="delete-div" onclick="delInfo()">
+                                <span>删除</span>
+                            </div>
+                        </div>
+                    </volist>
+                </div>
+                <input type="hidden" name="delInfo" id="delInfo" value="">
+                <div class="info-line">
+                    <div class="customize blue-4591fe">+新增自定义类型</div>
+                </div>
+                <!-- <div class="info-line">
+                    <div class="info-title">机构代码<i></i></div>
+                    <input type="text" name="org_code" value="{$company.org_code}" placeholder="请输入机构代码" />
+                </div> -->
+                <!-- <div class="info-line">
+                    <div class="info-title">备注<i></i></div>
+                    <input type="text" value="{$company.comments}" name="comments" placeholder="请输入备注" />
+                </div> -->
+                <!-- <div class="info-line">
+                    <div class="info-title"><span class="fr">E-mail</span><i></i></div>
+                    <input type="email" value="{$company.email}" name="email" placeholder="请输入E-mail" />
+                </div> -->
+                <!-- <div class="info-line">
+                    <div class="info-title">传真<i></i></div>
+                    <input type="number" value="{$company.tax_no}" name="tax_no" placeholder="请输入传真号码" />
+                </div> -->
+                <!-- <div class="info-line">
+                    <div class="info-title"><span class="fr">QQ</span><i></i></div>
+                    <input type="text" value="{$company.qq}" name="qq" placeholder="请输入QQ号码" />
+                </div> -->
+               
+                <!-- <div class="info-line">
+                    <div class="info-title"><i></i></div>
+                    <textarea name="address" rows="" cols="" placeholder="请输入详细地址">{$company.address}</textarea>
+                </div> -->
+            </div>
+            <button class="save-edited mt30 bg-368bfe save" style="position: fixed;bottom: .1rem;width: 46.5%;" id="save">保存</button>
+            <button class="save-edited mt30 bg-368bfe back" style="position: fixed;bottom: .1rem;width: 46.5%;right: .2rem">返回</button>
+        </form>
+    </section>
+
+    <div class="wrap-modal" id="divider-Modal" style="display: none;" onclick="$('#divider-Modal').hide()">
+        <div class="modal-common-wrap modal" style="width: 60%;">
+            <div class="modal-title bg-e gray-9">选择类型<span class="close-popup" onclick="$('#divider-Modal').hide()">×</span></div>
+            <div class="modal-btn share-show">转发给其他人</div>
+            <div class="modal-btn share-copy">复制文字版</div>
+            <div class="modal-btn share-save" style="display: none!important;">
+                <a id="invoice_image" href="" download="开票信息.jpeg">保存为图片</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="{$Think.const.JS_URL}clipboard/dist/clipboard.min.js"></script>
+    <!--<script src="{$Think.const.JS_URL}html2canvas.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script src="https://cdn.bootcss.com/html2canvas/0.4.1/html2canvas.js"></script>
+
+    <script>
+        $('.save').on('click', function () {
+            var company_name = $('input[name*=company_name]').val();
+            var email = $('input[name*=email]').val();
+            var name = $('input[name*=name]').val();
+            var contact = $('input[name*=contact]').val();
+            var fax = $('input[name*=fax_number]').val();
+            var linkman = $('input[name*=linkman]').val();
+            var telephone = $('input[name*=telephone]').val();
+            if (($.trim(name) == '')) {
+                layer.msg('请输入正确的公司名称!');
+                return false;
+            }
+            if (($.trim(linkman) == '')) {
+                layer.msg('请输入联系人!');
+                return false;
+            }
+            var reg_mobile = /^[1][3,4,5,7,8][0-9]{9}$/; //正则表达式
+            var reg_telephone = /^0\d{2,3}-?\d{7,8}$/; //正则表达式
+            if (!reg_mobile.test($.trim(contact)) && !reg_telephone.test($.trim(contact)) || $.trim(contact) == '') {
+                layer.msg('请输入正确的手机号码!');
+                return false;
+            }
+            if (($.trim(name)).length > 20) {
+                layer.msg('公司名称不能大于20个字');
+                return false;
+            } else if (($.trim(name)).length == 0) {
+                layer.msg('请输入公司名称！');
+                return false;
+            }
+            if (($.trim(email) != '')) {
+                var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+                if (!reg.test($.trim(email))) {
+                    layer.msg('请输入正确的邮箱地址!');
+                    return false;
+                }
+            }
+            if (($.trim(fax) != '')) {
+                var reg = new RegExp("/^(\\d{3,4}-)?\\d{7,8}$/"); //正则表达式
+                if (!reg.test($.trim(email))) {
+                    layer.msg('请输入正确的传真号码!');
+                    return false;
+                }
+            }
+
+            var formValue = $('#customerForm').serializeArray();
+            //获取informations
+            var informations = $('#informations').find('.info-line > input');
+            if (informations.length > 0) {
+                informations.map(function () {
+                    if ($(this).data('id') > 0) {
+                        formValue.push({ 'name': 'information[old][]', 'value': $(this).data('id') + '||' + $(this).data('title') + '||' + $(this).val() });
+                    } else {
+                        formValue.push({ 'name': 'information[new][]', 'value': $(this).data('title') + '||' + $(this).val() });
+                    }
+                });
+            }
+            $.ajax({
+                url: '/ComCompany/save',
+                type: 'post',
+                //data:$('#customerForm').serialize(),
+                data: formValue,
+                dataType: "json",
+                success: function (data) {
+                    layer.msg(data.message);
+                    if(data.error == 0){
+                        setTimeout(function () { window.location.reload(); }, 1000);
+                    }
+                    // if (data.error == 1) return;
+                    // setTimeout(function () { window.location.href = "index.html"; }, 1000);
+                    //$('.save-edited').setAttribute("disabled",true);
+                },
+                error: function (data) {
+                    layer.msg("保存错误！");
+                    return false;
+                }
+            })
+        });
+
+        $(function(){
+            if("{$company.tag_origin}" != ""){
+                $("#tag_origin_select").val("{$company.tag_origin}");
+            }else{
+                $("#tag_origin_select option").eq(0).prop("checked",true);
+            }
+            if("{$company.tag_type}" != ""){
+                $("#tag_type_select").val("{$company.tag_type}");
+            }else{
+                $("#tag_type_select option").eq(0).prop("checked",true);
+            }
+            if("{$company.customer_leader_id}" == '' || "{$company.customer_leader_id}" == 0 || "{$company.id}" == ''){
+                $("#toSelectUser").show();
+                $("#SelectedUser").hide();
+            }else{
+                $("#toSelectUser").hide();
+                $("#SelectedUser").show();
+            }
+        });
+        $("input[name='name']").on("change",function(){
+            if($("input[name='invoice_title']").val() == ""){
+                $("input[name='invoice_title']").val($("input[name='name']").val());
+            }
+        });
+
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); // 构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  // 匹配目标参数
+            if (r != null) return unescape(r[2]); return null; // 返回参数值
+        }
+
+        //添加自定义类型
+        $('.customize').on('click', function () {
+            var btnArray = ['取消', '确定'];
+            mui.prompt('新增自定义类型', '自定义类型标题', "自定义类型", btnArray, function (e) {
+                if (e.index == 1) {
+                    if ($.trim(e.value) == '') {
+                        layer.msg('自定义类型名称不能为空');
+                        return false;
+                    }
+                    if ($.trim(e.value).length > 4) {
+                        layer.msg('自定义类型名称不能大于四个字');
+                        return false;
+                    }
+                    //判断是否有重复title
+                    var informations = $('#informations').find('.info-line > input');
+                    if (informations.length > 0) {
+                        var isAppend = true;
+                        var titles = informations.map(function () {
+                            return $(this).data('title');
+                        }).get();
+                        for (var i = 0; i < titles.length; i++) {
+                            if ($.trim(titles[i]) == $.trim(e.value)) {
+                                layer.msg('已存在相同的自定义类型!!');
+                                isAppend = false;
+                                return false;
+                            }
+                        }
+                        if (!isAppend) {
+                            return false;
+                        }
+                    }
+                    $.ajax({
+                        url: '__MODULE__/UserSupervise/hasInformationTitle.html',
+                        type: 'POST',
+                        dataType: "json",
+                        data: { title: $.trim(e.value) },
+                        success: function (data) {
+                            if (data.error == 0) {
+                                var single = {
+                                    'title': $.trim(e.value)
+                                };
+                                var html = parseTemplate('.template-1', single);
+                                $('#informations').append(html);
+                            } else {
+                                layer.msg(data.message);
+                            }
+                        }
+                    });
+                } else {
+                    layer.msg("已取消添加自定义类型");
+                }
+            });
+        });
+
+        $('#informations').on('click', '.info-line > .delete-div > span', function () {
+            //删除该项
+            var obj = $(this);
+            var title = $(this).parent('.delete-div').prev('input').data('title');
+            var btnArray = ['取消', '删除'];
+            var message = '确认删除该自定义类型"' + title + '"吗?';
+
+            mui.confirm(message, '删除自定义类型', btnArray, function (e) {
+                if (e.index == 1) {
+                    obj.parent('.delete-div').parent('.info-line').remove();
+                    var delId = obj.parent('.delete-div').parent('.info-line').children(":text").data("id");
+                    var ids = $("#delInfo").val();
+                    if (delId != "") {
+                        if (ids != "") {
+                            $("#delInfo").val(ids + ";" + delId);
+                        } else {
+                            $("#delInfo").val(delId);
+                        }
+                    }
+                }
+            })
+        });
+
+        function bindWeiXin(){
+            layer.open({
+                type: 2,
+                //title: '关联公司-选择公司',
+                title: '选择客户',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['100%', '100%'],
+                content: '__MODULE__/ComCompany/bindWeiXin.html', //iframe的url
+                closeBtn: 1,
+                success: function(layero, index) {},
+                end: function() {
+                    //parent.$(".layui-layer-title").html("关联公司");
+                }
+            });
+        }
+
+        //绑定客户微信选中
+        function setBindWx(user){
+            if(user.id == undefined){
+                $("#toSelectUser").show();
+                $("#SelectedUser").hide();
+                user.head_pic = '';
+                user.name = '';
+                user.id = '';
+            }else{
+                $("#toSelectUser").hide();
+                $("#SelectedUser").show();
+            }
+            $(".customer_head_pic").attr("src",user.head_pic);
+            $("input[name='customer_leader_id']").val(user.id);
+            $("input[name='customer_leader_name']").val(user.name);
+            $(".customer_name").text(user.name);
+            //判断是否替换
+            if(user['replace']){
+                $("input[name='linkman']").val(user.name);
+                $("input[name='contact']").val(user.mobile);
+            }
+        }
+
+        $(".share-icon").click(function () {
+            //$("#invoice_info input").prop("placeholder","");
+            html2canvas($("#invoice_info"), {
+                useCORS: true, // 【重要】开启跨域配置
+                onrendered: function (canvas) {
+                    $('#invoice_image').attr("href",canvas.toDataURL());
+                }
+            });
+            $("#divider-Modal").show()
+
+        });
+
+
+        $(function(){
+            var clipboard = new ClipboardJS(".share-copy", {
+                text: function() {
+                    return `发票抬头名称：${$("input[name='invoice_title']").val()}
+纳税人识别号：${$("input[name='taxpayer_identification']").val()}
+注册地址：${$("input[name='reg_address']").val()}
+注册电话：${$("input[name='telephone']").val()}
+开户银行：${$("input[name='bank']").val()}
+开户账号：${$("input[name='bank_account']").val()}`;
+                }
+            });
+            clipboard.on('success', function(e) {
+                $('#divider-Modal').hide();
+                layer.msg('复制成功!');
+            });
+            clipboard.on('error', function(e) {
+                layer.msg('复制失败!');
+            });
+        })
+
+        $(".share-show").on("click",function(){
+            var img= "<div style='width: calc(100vw - 40px)'>" +
+                "<img src='" + $("#invoice_image").attr("href") + "' style='width: 100%'/></div>";
+            layer.open({
+                type: 1,
+                closeBtn: 1,
+                shade: true,
+                title: false,
+                shadeClose: true,
+                area:["7rem","7rem"],
+                content: img
+            });
+            layer.msg("长按可发送给朋友或保存",{time:1500});
+        })
+
+        $(".back").on("click",function(){
+            window.history.back();
+        })
+    </script>
+
+    <!--<script type="text/javascript">
+        (function (mui, document) {
+            mui.init();
+            mui.ready(function () {
+                //              var templatePicker = new mui.PopPicker({
+                //                  layer: 1
+                //              });
+                //              var templateData = $.parseJSON('{$groups_lists}');
+                //              var id = $('input[name*=group_id]').val();
+                //              if(templateData){
+                //                  templatePicker.setData(templateData);
+                //                  if (id > 0) {
+                //                      templatePicker.pickers[0].setSelectedValue(id);
+                //                  }
+                //                  var showTemplatePickerButton = document.getElementById('showGroupPicker');
+                //                  var templateResult = document.getElementById('showGroupValuePicker');
+                //                  templateResult.innerText = templatePicker.pickers[0].getSelectedText();
+                //                  showTemplatePickerButton.addEventListener('tap', function (event) {
+                //                      templatePicker.show(function (items) {
+                //                          templateResult.innerText = (items[0] || {}).text;
+                //                          $('input[name*=group_id]').val(items[0].value);
+                //                      });
+                //                  }, false);
+                //              }
+                var cityPicker3 = new mui.PopPicker({
+                    layer: 3
+                });
+                var cityData3 = $.parseJSON('{$region}');
+                if (cityData3) {
+                    cityPicker3.setData(cityData3);
+                    var distrust = $('#distrust').val();
+                    var city = $('#city').val();
+                    var province = $('#province').val();
+                    cityPicker3.pickers[0].setSelectedValue(province);
+                    setTimeout(function () {
+                        cityPicker3.pickers[1].setSelectedValue(city);
+                        setTimeout(function () {
+                            cityPicker3.pickers[2].setSelectedValue(distrust);
+                        }, 200)
+                    }, 200)
+                    var showCityPickerButton = document.getElementById('showCityPicker');
+                    var cityResult3 = document.getElementById('showCity');
+                    showCityPickerButton.addEventListener('tap', function (event) {
+                        cityPicker3.show(function (items) {
+                            if (items[0].value == items[1].value) {
+                                cityResult3.innerText = (items[0] || {}).text;
+                                $('#showCityPicker').attr('value', items[0].value);
+                            } else if (items[1].value == items[2].value || typeof (items[2].value) == 'undefined') {
+                                cityResult3.innerText = (items[0] || {}).text + " " + (items[1] || {}).text;
+                                $('#showCityPicker').attr('value', items[1].value);
+                            } else {
+                                cityResult3.innerText = (items[0] || {}).text + " " + (items[1] || {}).text + " " + (items[2] || {}).text;
+                                $('#showCityPicker').attr('value', items[2].value);
+                            }
+                            $("#province").val(items[0].value);
+                            $("#city").val(items[1].value);
+                            $("#district").val(items[2].value);
+                        });
+                    }, false);
+                }
+
+                var cityPicker4 = new mui.PopPicker({
+                    layer: 3
+                });
+                var cityData4 = $.parseJSON('{$region}');
+                if (cityData4) {
+                    cityPicker4.setData(cityData4);
+                    var distrust1 = $('#distrust1').val();
+                    var city1 = $('#city1').val();
+                    var province1 = $('#province1').val();
+                    cityPicker4.pickers[0].setSelectedValue(province1);
+                    setTimeout(function () {
+                        cityPicker4.pickers[1].setSelectedValue(city1);
+                        setTimeout(function () {
+                            cityPicker4.pickers[2].setSelectedValue(distrust1);
+                        }, 200)
+                    }, 200)
+                    var showCityPickerButton1 = document.getElementById('showCityPicker1');
+                    var cityResult4 = document.getElementById('showCity1');
+                    showCityPickerButton1.addEventListener('tap', function (event) {
+                        cityPicker4.show(function (items) {
+                            if (items[0].value == items[1].value) {
+                                cityResult4.innerText = (items[0] || {}).text;
+                                $('#showCityPicker1').attr('value', items[0].value);
+                            } else if (items[1].value == items[2].value || typeof (items[2].value) == 'undefined') {
+                                cityResult4.innerText = (items[0] || {}).text + " " + (items[1] || {}).text;
+                                $('#showCityPicker1').attr('value', items[1].value);
+                            } else {
+                                cityResult4.innerText = (items[0] || {}).text + " " + (items[1] || {}).text + " " + (items[2] || {}).text;
+                                $('#showCityPicker1').attr('value', items[2].value);
+                            }
+                            $("#province1").val(items[0].value);
+                            $("#city1").val(items[1].value);
+                            $("#district1").val(items[2].value);
+                        });
+                    }, false);
+                }
+            });
+        })(mui, document);
+    </script>-->
+</body>
+
+</html>

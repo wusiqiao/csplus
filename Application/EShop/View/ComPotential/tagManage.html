@@ -1,0 +1,179 @@
+<include file="UserSupervise:head"/>
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<style>
+	.mui-indexed-list-inner img {
+	    width: .28rem;
+	    height: .28rem;
+	    margin-right: .2rem;
+	}
+	.mui-indexed-list-inner .company-select-item {
+	    display: flex;
+	    justify-content: flex-start;
+	    align-items: center;
+		height: .9rem;
+		line-height: .9rem;
+	    padding: 0 .2rem;
+	    box-shadow: 0 1px 0 #eeeeee inset;
+	    background-color: #ffffff;
+	}
+	.mui-indexed-list-inner {
+		border-radius: .1rem;
+	}
+</style>
+<body>
+<section class="common-wrap fixed-page bg-none">
+    <div class="basic-info mb20" id="new-tag-content">
+        <div class="title">创建新标签</div>
+            <div  >
+                <div style="line-height:1rem;width:8rem">
+                    <div style="float:left;width:55%;margin-right:15px">
+                        <input type="text" id="new_tag_name" style="margin-left:15px;" onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" placeholder="请输入标签名称">                        
+                    </div>
+                    <div style="float:left;">
+                        <span style="color:#4591fe;padding:5px" onclick="addTagAction()">+添加新标签</span>
+                        
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="basic-info mb20" id="tag-manage">
+        <div class="title">标签列表</div>
+        <div id="main-tag-content" style="overflow-y:auto;height:95%;width:105%">
+            <div class="info-line" v-for="(item,index) in tag_list">
+                <div style="line-height:1rem;width:8rem">
+                    <div style="float:left;width:55%">
+                    <i class="fa fa-tags" aria-hidden="true" style="color:#4591fe;padding:10px;;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"></i>
+                        <span >{{item.value}}({{item.user_count}})</span>
+                    </div>
+                    <template v-if="item.id != 'all' && item.id != 'other'">
+                    <span style="color:#4591fe;padding:5px" @click="updateTag(item.id,item.value)">重命名</span>
+                    <span style="color:#4591fe;padding:5px" @click="delTag(item.id,item.user_count)" :data-id="item.id" :data-count="item.user_count">删除该标签</span>
+                        
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrap-modal" id="tag-rename" style="display: none;">
+        <div class="modal-common-wrap modal" style="width: 90%;">
+            <div class="modal-title bg-e gray-9">重命名标签</div>
+            <div class="modal-content-text">
+                <div style="padding-left:15px">
+                    <input type="hidden" id="tag_id">
+                    <span style="padding-right:15px">标签名称:</span><input onkeydown="if(event.keyCode==13){event.keyCode=0;event.returnValue=false;}" onkeyup="this.value=this.value.replace(/\s+/g,'')" type="text" id="tag_name" placeholder="请输入标签名称" style="width:60%">
+                </div>
+            </div>
+            <div class="modal-btn">
+                <button onclick="closeAction()" class="popup-close">取消</button>
+                <button onclick="updateTagAction()" class="blue">确认</button>
+            </div>
+        </div>
+    </div>
+	<div class="bottom-btn">
+        <button id="" class="left-btn" style="width:50%" onclick="closeBtn()">返回用户列表</button>
+    </div>
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+    var tagManage = new Vue({
+        el: "#tag-manage",
+        data: {
+            tag_list:[]
+        },
+        methods:{
+            updateTag:function(id,value){
+                $("#tag_id").val(id);
+                $("#tag_name").val(value);
+                $("#tag-rename").show();
+            },
+            delTag:function(id,count){
+                // var id = $(this).attr("data-id");
+                // var count = $(this).attr("data-count");
+                var btnArray = ['取消', '确定'];
+                var message = '是否确认删除该标签？';
+                console.log(count);
+                if (count > 0) {
+                    message = '该标签已有用户存在，是否确认删除？';
+                }
+                mui.confirm(message, '', btnArray, function(e) {
+                    if (e.index == 1) {
+                        $.post("/ComPotential/deleteTag/id/"+id, function(result) {
+                            if (result.code == 0) {
+                                layer.msg('删除标签成功');
+                                queryAllTag();
+                            } else {
+                                layer.msg('删除标签失败');
+                            }
+                        }, "json");
+                    }
+                })
+
+            }
+        }
+    });
+    function addTagAction(){
+        var value = $("#new_tag_name").val();
+        $.post("/ComPotential/addTag",{value:value},function(result) {
+            layer.msg(result.message);
+            if (result.code == 0) {
+                $("#new_tag_name").val("");
+                queryAllTag();
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.tag.tag_list = result.tags;
+                parent.setTag.tag_list = result.origin_tags;
+            }
+        }, "json");
+        // $.post("/ComPotential/createTag",{value:value},function(result) {
+        //     layer.msg(result.message);
+        //     if (result.code == 0) {
+        //         queryAllTag();
+        //     }
+        // }, "json");
+    }
+    function updateTagAction(){
+        var id = $("#tag_id").val();
+        var value = $("#tag_name").val();
+        $.post("/ComPotential/updateTag/id/"+id,{value:value},function(result) {
+            if (result.code == 0) {
+                layer.msg('重命名标签成功');
+                $("#tag-rename").hide();
+                queryAllTag();
+            } else {
+                layer.msg(result.message);
+            }
+        }, "json");
+    }
+    function closeAction(){
+        $("#tag-rename").hide();
+    }
+    function queryAllTag() {
+        $.post("/ComPotential/tagManage", function(result) {
+            tagManage.tag_list = result.tag_list;
+        }, "json");
+    }
+    queryAllTag();
+    $(function () {
+        function calculateH(){
+            var winH = $(document).height();
+            var titleH = $(".title").height();
+            var addH = $("#new-tag-content").height();
+            var bottomH = $(".bottom-btn").height();
+            console.log(winH);
+            $('#tag-manage').css('height',winH - titleH - addH - bottomH - 70);
+        }
+        calculateH();
+    })
+
+function closeBtn() {
+    var index = parent.layer.getFrameIndex(window.name);
+    parent.layer.close(index);
+}
+
+
+
+</script>
+
+</body>
+</html>

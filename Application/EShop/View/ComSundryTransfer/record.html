@@ -1,0 +1,61 @@
+<foreach name="model.records" item="v">
+    <div class="process-list clearfix">
+        <if condition="$v.type eq 7">
+            <div class="process-des right {$v.active} font24">
+                <span class="word-keep">转交申请</span>
+                <span class="word-keep">转交物品:{$v.sundry_names}</span>
+                <!-- <span class="word-keep">申请时间：{$v.date}</span> -->
+                <span class="font16 word-keep">{$v.user_name}&nbsp;{$v.created_at}</span>
+                <if condition="$model.status eq 3">
+                <button type="button" class="operation-sign" onclick="transferSign({$v.id})">签收物品</button>
+                </if>
+            </div>
+            <elseif condition="$v.type eq 8" />
+            <div class="process-des left {$v.active} font24">
+                <span class="word-keep">签收物品</span>
+                <span class="word-keep">签收物品:{$v.sundry_names}</span>
+                <!-- <span class="word-keep">签收时间：{$v.date}</span> -->
+                <span class="font16 word-keep">{$v.user_name}&nbsp;{$v.created_at}</span>
+            </div>
+            <else/>
+        </if>
+    </div>
+</foreach>
+<script type="text/javascript">
+function transferSign(record_id) {
+    // formid = "process-from";
+    form_url = "__MODULE__/ComSundryTransfer/transferSign/record_id/"+record_id;
+    // var data = $('#' + formid).serialize();
+
+    $.ajax({
+        url: form_url,
+        type: "post",
+        dataType: "json",
+        // data: data,
+
+        success: function(data) {
+            console.info(data);
+            if (data.error == 0) {
+                layer.closeAll();
+                layer.msg(data.msg);
+                setTimeout(function() {
+                    window.location.href = "__MODULE__/ComSundryTransfer/index"
+                }, 500);
+            } else {
+                layer.closeAll();
+                layer.msg(data.msg);
+            }
+        },
+        error: function() {
+            layer.msg('系统故障！请重试！');
+            setTimeout(function() {
+                // window.location.href = "__MODULE__/ComSundry/edit/id/{$model.id}"
+            }, 500);
+        },
+        beforeSend: function() {
+            layer.closeAll();
+            layer.msg('正在提交....');
+        }
+    });
+}
+</script>

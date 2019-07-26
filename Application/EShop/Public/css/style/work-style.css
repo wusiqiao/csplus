@@ -1,0 +1,170 @@
+@charset "utf-8";
+header{position:fixed; width:100%; top:0; left:0; z-index:10; height:46px; line-height:46px; background-color:#fff; border-bottom:1px solid #e4e4e4;}
+header > h1{text-align:center; font-size:1.6rem; width:calc(100% - 60px); margin:0 auto; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.goback{background:url("../../images/work/arrow_left.png") no-repeat left center; background-size:24px; padding-left:24px; line-height:24px; position:absolute; left:10px; top:11px; font-size:1.6rem; }
+footer{position:fixed; width:100%; left:0; bottom:0; z-index:10; background-color:#fff;}
+.bottom-bar{padding:5px 0; overflow:hidden; border-top:1px solid #e4e4e4;}
+.bottom-bar li{width:50%; text-align:center; float:left;}
+.bottom-bar li img{width:2rem; height:2rem;}
+.text-blue{color:#0793ff!important;}
+.bottom-bar li p{color:#777;font-size: 1rem; }
+.arrow_right{background:url("../../images/work/arrow_right.png") no-repeat right center; background-size: 0.83rem 1.33rem;}
+
+/*内容居中*/
+html, body {margin-left: auto;margin-right: auto;}
+
+/*我的工作*/
+.manage-box{margin:0.83rem 0;}
+.global-ul{padding-left:1rem; background-color:#fff;}
+.global-ul li{padding:1rem 1rem 1rem 0;}
+.global-ul li:not(:last-child){border-bottom:1px solid #e4e4e4;}
+.manage-icon{position:relative; display:inline-block; vertical-align:middle; width:3.33rem; height:3.33rem; margin-right:0.83rem;}
+.manage-icon img{width:3.33rem; height:3.33rem;}
+.manage-icon span{position:absolute; right:0.25rem; top:0.25rem; width:0.5rem; height:0.5rem; background-color:#ff0d0d; border-radius:50%;box-shadow: 1px 0 1px #ffffff, 0 1px 1px #ffffff,-1px 0 1px #ffffff, 0 -1px 1px #ffffff; }
+.manage-mes{display:inline-block; vertical-align:middle; width:80%;}
+.manage-mes dt{font-size:1.25rem;}
+.manage-mes dt time{color:#aaa; float:right; font-size:1rem;}
+.manage-mes dd{font-size:1rem; color:#aaa; width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+/*操作日志*/
+.operate-title{font-size:1.25rem; font-weight:normal;}
+.operate-title img{width:2rem; height:2rem; margin-right:0.83rem; margin-top:-0.25rem;}
+.operate-title time{color:#aaa; float:right; font-size:1.25rem;}
+.operate-content{color:#aaa; margin-top:0.42rem;font-size: 1rem;}
+.operate-content b{font-weight: normal;color: #0077f4;}
+.operate-title span{color: #ff0000;}
+
+/*草稿箱*/
+.search-box{padding:0.42rem 1rem; background-color:#fff; overflow:hidden;font-size: 1.25rem;}
+.search-box .draft-box {float: left;width: 25%;line-height: 3rem; text-align: center;color: #999999;}
+.search-input{float:left; width:75%; background-color:#e6e6e6; height:3rem; /*line-height:36px;*/ padding:0.83rem; border-radius:3px!important;vertical-align: middle;}
+.filter{background:url("../../images/work/arrow_down.png") no-repeat right center; background-size:2rem;background-color:transparent; padding-right:2rem !important; }
+.draft-title{display:block; width:100%; height:2rem; line-height:2rem;  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:0.42rem;}
+.draft-title > span{float: left; padding:0 0.42rem; height:2rem; line-height:2rem; border-radius:0.25rem; color:#fff; margin-right:0.83rem; font-size:1rem; }
+.draft-time{font-size:1rem; color:#999;}
+.today-tilte{font-weight:normal; overflow:hidden;}
+.today-tilte b{width:82%; float:left; font-size:1.25rem; font-weight:normal; height:2rem; line-height:2rem;  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.today-tilte span{float:right; height:2rem; line-height:2rem; padding:0 0.42rem; border-radius:3px; font-size:1.25rem;}
+
+/*工作详情*/
+.detail-title-box{padding:1rem; background-color:#fff; overflow:hidden;}
+.detail-title{width:80%; float:left; font-size:1.5rem; font-weight:normal;}
+.detail-title b{max-width: 74%; font-weight:normal; display:inline-block; vertical-align:middle; margin-right:2%;  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;font-size: 1.25rem;}
+.detail-title span{display:inline-block; vertical-align:middle; height:2rem; line-height:2rem;  border-radius:3px; font-size:1.25rem; text-align:center;}
+.golog{height:2rem; line-height:2rem; background-color:#ff840b; border-radius:3px; color:#fff; text-align:center; float:right; width:20%; font-size:1.25rem;}
+.work-item{}
+.work-item dt{padding:1rem; color:#999;}
+.work-item dd{padding:1rem; background-color:#fff;}
+.work-item dd:not(:last-child){border-bottom:1px solid #e4e4e4;}
+.work-item dd a{display:block;}
+.work-item dd span{width:20%; margin-right:5%; display:inline-block; vertical-align:middle;}
+.work-item dd .time-item span {width: 26%;}
+.work-item dd p,.work-item dd textarea{width:70%; display:inline-block; vertical-align:middle;font-size: 1.25rem;}
+.progress{width:72%; display:inline-block; vertical-align:middle;}
+.progress-bar{display:inline-block; vertical-align:middle; width:calc(100% - 45px); height:8px; border-radius:12px; overflow:hidden; background-color:#eee;}
+.progress-rate{background-color:#ff840b;  height:8px;}
+.bar-num{display:inline-block; vertical-align:middle; font-size:1.2rem; color:#ff840b; font-weight:normal; width:40px; text-align:right;}
+.attachment{width:72%; display:inline-block; vertical-align:middle; }
+.attachment li{position:relative; width: 5rem;height: 5rem; float:left; margin-right:0.83rem; margin-bottom:0.83rem;}
+.attachment li img{width: 5rem;height: 5rem;}
+.attachment li input{position:absolute; width: 5rem;height: 5rem; left:0; top:0; opacity:0;}
+.btn-del{position: absolute;width: 1.33rem;height: 1.33rem;background: url(../../images/work//icon_del.png) no-repeat center;background-size: 1.33rem;top: -0.5rem;right: -0.5rem;}
+.close-work{display:block; width:100%; height:3.67rem; line-height:3.67rem; text-align:center; color:#ff840b; background-color:#fff; font-size:1.5rem; letter-spacing:4px;}
+.operate-btn{display:-webkit-flex; display:flex; align-items:center; justify-content:space-around;}
+.operate-btn button{width:45%;  height:3rem; line-height:3rem; text-align:center; font-size:1.25rem; border-radius:4px;}
+.operate-btn button img{width:1.5rem; margin-right:0.5rem;vertical-align: middle;margin-top: -0.25rem;}
+.btn-approve{background-color:#ff840b; color:#fff;}
+.btn-return{background-color:#fff; color:#353535;}
+.work-item .audit-opinion {padding:1rem;background-color: #ffffff;}
+.work-item .audit-opinion span {width: 20%;margin-right: 5%;display: inline-block;vertical-align: middle;}
+.work-item .audit-opinion textarea {width: 70%;display: inline-block;vertical-align: middle;font-size: 1.25rem;color: #0077f4;}
+
+/*添加工作*/
+.work-item dd input[type='text'],.work-time{width: 70%; display:inline-block; vertical-align:middle;margin-bottom: 0;border: 0;height: auto;padding: 0;line-height: normal;}
+.add-obj{display:block; color:#0793ff; width:calc(100% - 85px); margin-left:26%; text-align:left; border-top:1px solid #e4e4e4; padding-top:12px; margin-top:12px;}
+.work-time li{display:inline-block; vertical-align:middle;}
+.work-time input[type='radio']{width: 1.67rem;height: 1.67rem; position:relative; visibility:hidden; display:inline-block; vertical-align:middle;}
+.work-time input:before{content:''; position:absolute; left:0; top:0; width: 1.67rem;height: 1.67rem; border:1px solid #e4e4e4; border-radius:50%; visibility:visible;}
+.work-time input:checked:before{content:''; position:absolute; left:0; top:0; width: 1.67rem;height: 1.67rem; background:url("../../images/work/orange-tick.png") no-repeat center; background-size:100%; border-radius:50%; visibility:visible; border-color:transparent;}
+.work-time i{display:inline-block; vertical-align:middle; font-style:normal;}
+.time-type{display:block; color:#999; width:calc(100% - 85px); margin-left:26%; text-align:left; border-top:1px solid #e4e4e4; margin-top:12px;}
+.time-type li{border-bottom:1px solid #e4e4e4; padding:1rem 0;}
+.time-type input{display:inline-block; vertical-align:middle; width:65%; background-color:transparent;margin-bottom: 0;border: 0;height: auto;padding: 0;line-height: 1;}
+.week{display:inline-block; width:55%; background:url("../../images/work/arrow_down.png") no-repeat right center; background-size:2rem;}
+
+/*弹窗*/
+.mask{display:-webkit-flex; display:flex; align-items:center; justify-content:center; background-color:rgba(0,0,0,.6); position:fixed; width:100%; height:100%; z-index:99; left:0; top:0;}
+.pop-box{width:80%; background-color:#fff; border-radius:1rem; position:relative; overflow:hidden;}
+.pop-tit{background-color:#eee; height:3.33rem; line-height:3.33rem; text-align:center; color:#666; font-size:1.25rem; font-weight:normal;}
+.pop-body{padding:0.83rem; max-height:300px; overflow-y:scroll;}
+.pop-footer{overflow:hidden; border-top:1px solid #e4e4e4;}
+.pop-footer button{float:left; width:50%; height:3.33rem; line-height:3.33rem; text-align:center; font-size:1.25rem; color:#666; letter-spacing:4px;}
+.pop-footer button:first-child{border-right:1px solid #e4e4e4;}
+.exist-type{display:block; width:100%; padding-bottom:1rem; border-bottom:1px solid #e4e4e4; background:url("../../images/work/arrow_down.png") no-repeat right top; background-size:2rem;}
+.add-new-type{display:block; width:100%; text-align:center; color:#0793ff;}
+.add-type-list li{padding:1rem 0; overflow:hidden;position: relative;}
+.add-type-list li:not(:last-child){border-bottom:1px solid #e4e4e4;}
+.del-type{ height:1.33rem; width:1.33rem; background:url("../../images/work/icon_del.png") no-repeat center; background-size:1.33rem;position: absolute;top: 50%;right: 0;transform: translateY(-50%);}
+.add-type-list li input{width:90%;border: 0;height: auto;line-height: normal;padding: 0; float:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;margin-bottom: 0;}
+.tip-list li{padding:1rem 0; display:-webkit-flex; display:flex; align-items:center; justify-content:space-between; flex-flow:nowrap; color:#999;}
+.tip-list li:not(:last-child){border-bottom:1px solid #e4e4e4;}
+.tip-list li span,.tip-list li select{display:inline-block; vertical-align:middle; width:32%; }
+.tip-list li select{background:url("../../images/work/arrow_down.png") no-repeat right center; background-size:2rem; padding-right:2rem;}
+
+/*全部*/
+.calander-box{background:url("../../images/work/calander.png") no-repeat left top; background-size:cover; padding:1.67rem 1rem;}
+.calander-box h2{text-align:center; color:#fff; font-size:1rem; font-weight:normal;}
+.calender-list{overflow:hidden; margin-top:1.67rem;}
+.calender-list li{width:14%; text-align:center; float:left; color:#fff;}
+.calender-list li h4{font-weight:normal;font-size: 1rem;}
+.calender-list li p{ width:2rem; line-height:2rem; margin:1.25rem auto 0.42rem auto;}
+.calender-list li p.on{background-color:#fff; border-radius:50%; color:#0793ff;}
+.main-content{background-color:#fff;}
+.main-menu{padding:0 0.83rem; overflow-x:scroll; white-space:nowrap; border-bottom:1px solid #e4e4e4;}
+.main-menu::-webkit-scrollbar{height: 0;}
+.main-menu li{ padding:1rem 0.83rem; display:inline-block;  vertical-align:middle; border-bottom:2px solid transparent;font-size: 1.25rem;  }
+.main-menu li.ck{color:#ff840b; border-color:#ff840b;}
+.sub-menu{padding:0 0.83rem; overflow-x:scroll; white-space:nowrap; border-bottom:1px solid #e4e4e4;}
+.sub-menu::-webkit-scrollbar{height: 0;}
+.sub-menu li{ padding:1rem 0.4rem; display:inline-block; color:#999; vertical-align:middle;font-size: 1.25rem; }
+.sub-menu li.at{color:#353535}
+.by-admin{padding-right:1.5rem; display:block;}
+.by-admin img{ width:2.5rem; line-height:2.5rem; margin-right:0.83rem;}
+.by-admin b{line-height:2.5rem; font-weight:normal;font-size:1.25rem;}
+.by-admin span{font-size:1.25rem; color:#999; float:right; line-height:2.5rem;}
+.addwork{position:fixed; bottom:5.38rem; right:1.67rem; width:6.67rem; height:6.67rem; background:url("../../images/work/add_work.png") no-repeat center; background-size:6.67rem; opacity:.5; z-index:88;}
+.text-orange,.text-yellow {font-size: 1rem;}
+
+/*客户窗口*/
+.customer-info {padding: 1rem;background-color: #ffffff;}
+.customer-info dl {width: 64%; display: inline-block;vertical-align: middle;font-size: 1.25rem;} 
+.customer-info dd {font-size: 1rem;color: #999999;}
+.img-wrap {display: inline-block; margin-right: 0.83rem;;line-height: 3rem;}
+.img-wrap:last-child {margin-right: 0;}
+.img-wrap img {width: 2rem;height: 2rem;}
+
+/*管理员窗口*/
+.admin-info {padding: 1rem;background-color: #ffffff;}
+.admin-info dl { display: inline-block;vertical-align: middle;font-size: 1.25rem;}
+.admin-info dd {font-size: 1rem;color: #999999;}
+.visitor-volume dt {color: #ff0000;font-weight: 700;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

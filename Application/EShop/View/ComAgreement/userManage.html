@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .basic-info{
+        margin-bottom: 1rem;
+    }
+    .basic-info .info-title {
+        width: 1.3rem;
+        text-align: right;
+        padding: 0 0 0 .25rem;
+        color: #999999;
+    }
+    .basic-info input {
+        color: #808080;
+        text-align: left!important;
+    }
+
+    .head_pic{
+        line-height: 1rem;
+        vertical-align: middle;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+    }
+
+    .user_type_span{
+        width: 1rem;
+        line-height: 1rem;
+        margin-right: .2rem;
+    }
+
+
+</style>
+
+<body style="height: 93%">
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <div class="basic-info">
+            <div class="title">员工</div>
+            <div class="info-line important-input" v-for="item in staff" v-if="staff.length > 0" @click="toDetail(item)">
+                <div class="info-title blue-checkbox" style="align-items: center;justify-content: space-between;">
+                    <input type="checkbox" name="staff" v-if="item.id != item.customer_leader_id" :disabled="!isLeader" :value="item.id" onclick="event.stopPropagation();">
+                    <img class="head_pic" :src="item.head_pic" onerror="this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                </div>
+                <input type="text" :value="item.staff_name" readonly/>
+                <span v-if="item.id == item.customer_leader_id" style="color: red" class="user_type_span">管理员</span>
+                <span v-if="item.id != item.customer_leader_id" style="color: #cccccc;text-align: left" class="user_type_span">员工</span>
+            </div>
+            <div class="info-line important-input" v-if="staff.length == 0">
+                <div class="info-title"><i></i></div>
+                <input type="text" name="" value="暂无员工" placeholder="" readonly/>
+            </div>
+        </div>
+
+        <div class="order-reorder ptb15 plr25 footer" v-if="isLeader" style="background-color:#fff;">
+            <button class="reorder" type="button" style="margin: auto" onclick="location='/ComAgreement/addUser'">新增人员</button>
+            <button class="myorder bg-e" style="width: 21%;margin: auto" onclick="toggleCheckAll(this)" data-checked="0">全选</button>
+            <button class="myorder bg-e" style="width: 21%;color: red;border-color: red;margin: auto" onclick="userManageFunctions.deleteStaff()">删除</button>
+        </div>
+    </section>
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+        var userManageVue = new Vue({
+            el:"#body-section",
+            data:{
+                staff : [],
+                isLeader:0
+            },
+            methods:{
+                toDetail:function(item){
+                    window.location.href="/ComAgreement/comStaffDetail/id/"+item.id;
+                }
+            }
+        });
+
+        $(function(){
+            userManageFunctions.getStaffList();
+        });
+
+        var userManageFunctions = {
+            deleteStaff:function(){
+                var length = $("input[name='staff']:checked").length;
+                if(length == 0){
+                    layer.msg("请选择删除项！");
+                    return false;
+                }
+                mui.confirm("删除后将不可找回，需重新添加","确认删除所选员工？",["确定","取消"],function(e){
+                    if(e.index == 0){
+                        var id = "";
+                        $("input[name='staff']:checked").each(function(){
+                            if(id == ""){
+                                id = $(this).val();
+                            }else{
+                                id += ","+ $(this).val();
+                            }
+                        });
+                        $.post("/ComAgreement/deleteComStaff",{id:id},function(result){
+                            layer.msg(result.message);
+                            if(result.error == 0){
+                                userManageFunctions.getStaffList();
+                            }
+                        },'json');
+                    }
+                });
+            },
+            getStaffList:function(){
+                $.post("/ComAgreement/getStaffList",function(result){
+                    var users = result.result;
+                    userManageVue.staff = [];
+                    for(var i in users){
+                        if(users[i].staff_name == ""){
+                            users[i].staff_name = users[i].name;
+                        }
+                        if(users[i].id == users[i].customer_leader_id){
+                            userManageVue.staff.unshift(users[i]);
+                        }else{
+                            userManageVue.staff.push(users[i]);
+                        }
+                        //判断当前用户是否为管理员
+                        if(users[i].customer_leader_id == "{$user_id}"){
+                            userManageVue.isLeader = 1;
+                        }else{
+                            userManageVue.isLeader = 0;
+                        }
+                    }
+                },'json')
+            }
+        };
+
+        function toggleCheckAll(obj){
+            var checkedAll = $(obj).data("checked");
+            if(!checkedAll){
+                $("input[type=checkbox]").prop("checked",true);
+                $(obj).data("checked",1);
+            }else{
+                $("input[type=checkbox]").prop("checked",false);
+                $(obj).data("checked",0);
+            }
+        }
+    </script>
+</body>
+
+</html>

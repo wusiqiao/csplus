@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .basic-info{
+        margin-bottom: 0.2rem;
+    }
+    .basic-info .info-title {
+        width: 2.25rem;
+        color: #333333;
+        text-align: left;
+        padding: 0;
+        padding-left: .25rem;
+        color: #999999;
+    }
+
+    /* tags */
+    #tag{
+        flex: 1;
+        min-height: .8rem;
+        margin: .1rem 0rem;
+        padding: .1rem 0rem;
+        overflow: hidden;
+    }
+    .tag-item{
+        float:left;
+        border: 1px solid #4591fe;
+        color: #4591fe;
+        margin: 0.09rem 0.08rem;
+        padding: 0 0.2rem;
+    }
+
+    /* phone */
+    .icon-phone{
+        float: right;
+        width: 0.35rem;
+        height: 0.35rem;
+        margin: .35rem 0rem;
+        background-size: 100% 100%;
+        background-image: url("/{$Think.MODULE_PATH}Public/images/work/tel_new.png");
+    }
+</style>
+
+<body>
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <form id="customerForm" onsubmit="return false;">
+
+            <div class="basic-info">
+
+                <div class="title">合同状态</div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同来源<i></i></div>
+                    <if condition="$model.origin eq 0">
+                        <input type="text" name="" value="商城订单" readonly/>
+                    <else/>
+                        <input type="text" name="" value="线下导入" readonly/>
+                    </if>
+                </div>
+
+                <if condition="$model.origin eq 0">
+                    <div class="info-line important-input">
+                        <div class="info-title">商城订单号<i></i></div>
+                        <input type="text" name="" value="{$model.order_sn}" readonly/>
+                    </div>
+                </if>
+
+                <div class="info-line important-input">
+                    <div class="info-title">合同状态<i></i></div>
+                    <if condition="$model.state_value eq '已结束'">
+                        <input type="text" name="" value="已结束" style="color: red" readonly/>
+                        <else/>
+                        <input type="text" name="" value="{$model.state_value}" style="color: #368bfe;" readonly/>
+                    </if>
+                </div>
+
+                <div class="info-line important-input">
+                    <div class="info-title">合同开票状态<i></i></div>
+                    <if condition="$model.wip_creater_id neq ''">
+                        <if condition="$model.wip_state_value eq '已结束'">
+                            <input type="text" name="" value="已结束" style="color: red" readonly/>
+                            <else/>
+                            <input type="text" name="" value="{$model.wip_state_value}" style="color: #368bfe;" readonly/>
+                        </if>
+                        <span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="WrkAgreementDetailFunctions.toWipDetail(this)">
+                            查看详情
+                            <span class="mui-icon mui-icon-arrowright"></span>
+                        </span>
+                        <else/>
+                        <input type="text" name="" value="无" readonly/>
+                    </if>
+                </div>
+
+                <div class="info-line important-input">
+                    <div class="info-title">合同付款状态<i></i></div>
+                    <if condition="$model.wr_id neq ''">
+                        <if condition="$model.wr_state_value eq '已结束'">
+                            <input type="text" name="" value="已结束" style="color: red" readonly/>
+                            <else/>
+                            <input type="text" name="" value="{$model.wr_state_value}" style="color: #368bfe;" readonly/>
+                        </if>
+                        <span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="WrkAgreementDetailFunctions.toWrDetail(this)">
+                            查看详情
+                            <span class="mui-icon mui-icon-arrowright"></span>
+                        </span>
+                        <else/>
+                        <input type="text" name="" value="无" readonly/>
+                    </if>
+                </div>
+                <input type="hidden" name="wip_permit" value="1">
+                <input type="hidden" name="wr_permit" value="1">
+            </div>
+            <!-- <div style="margin: 10px"></div> -->
+            <div class="basic-info">
+                <!--<div class="info-line">
+                    <div class="info-title">公司资料<i></i></div>
+                </div>-->
+                <div class="title">合同详情</div>
+                <div class="info-line important-input">
+                    <div class="info-title">公司名称<i></i></div>
+                    <input type="text" name="" value="{$model.company_name}" placeholder="" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">合同名称<i></i></div>
+                    <input type="text" name="" value="{$model.name}" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同编号<i></i></div>
+                    <input type="text" name="" value="{$model.agreement_sn}" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同金额<i></i></div>
+                    <input type="text" name="" value="{$model.agreement_money}" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同发票<i></i></div>
+                    <if condition="$model.invoice_type eq 0">
+                        <input type="text" name="" value="不开票" placeholder="" readonly/>
+                        <else/>
+                        <input type="text" name="" value="开票" placeholder="" readonly/>
+                    </if>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同开始日期<i></i></div>
+                    <input type="text" name="" value="{$model.start_time_fmt}" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同结束日期<i></i></div>
+                    <input type="text" name="" value="{$model.finish_time_fmt}" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同服务明细<i></i></div>
+                    <div id="tag">
+                        <div v-for="(item,index) in tag_list" v-if="tag_list[index]" class="tag-item">{{item}}</div>
+                    </div>
+                </div>
+            </div>
+           
+            <!-- <div style="margin: 10px"></div> -->
+            <div class="basic-info">
+                <!--<div class="info-line">
+                    <div class="info-title">联系信息<i></i></div>
+                </div>-->
+                <div class="title">合同备注</div>
+                <div class="info-line">
+                    <textarea style="padding: 5px 10px;margin: 5px 10px;border: none;" readonly>{$model.comments}</textarea>
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="WrkAgreementDetailFunctions.openAttachment();">点击查看附件</button>
+                </div>
+            </div>
+            <!-- <div style="margin: 10px"></div> -->
+            <if condition="(($model.leader_id neq '') and ($model.leader_id neq 0)) or (($model.wip_leader_id neq '') and ($model.wip_leader_id neq 0)) or (($model.wr_leader_id neq '') and ($model.wr_leader_id neq 0)) or (($model.wp_leader_id neq '') and ($model.wp_leader_id neq 0))">
+                <div class="basic-info">
+                    <div class="title">工作负责人员</div>
+                    <if condition="($model.leader_id neq '') and ($model.leader_id neq 0)">
+                        <div class="info-line" onclick="WrkAgreementDetailFunctions.toTelephone(this)">
+                            <div class="info-title">合同负责人<i></i></div>
+                            <input type="text" name="" value="{$model.leader_name}" placeholder="" readonly/>
+                            <div class="icon-phone"></div>
+                            <input type="text" name="phoneNum" value="{$model.leader_mobile}" data-mobile="{$model.leader_mobile}" placeholder="" readonly/>
+                        </div>
+                    </if>
+                    <if condition="($model.wip_leader_id neq '') and ($model.wip_leader_id neq 0)">
+                        <div class="info-line" onclick="WrkAgreementDetailFunctions.toTelephone(this)">
+                            <div class="info-title">开票负责人<i></i></div>
+                            <input type="text" name="" value="{$model.wip_leader_name}" placeholder="" readonly/>
+                            <div class="icon-phone"></div>
+                            <input type="text" name="phoneNum" value="{$model.wip_leader_mobile}" data-mobile="{$model.wip_leader_mobile}" placeholder="" readonly/>
+                        </div>
+                    </if>
+                    <if condition="($model.wr_leader_id neq '') and ($model.wr_leader_id neq 0)">
+                        <div class="info-line" onclick="WrkAgreementDetailFunctions.toTelephone(this)">
+                            <div class="info-title">收款负责人<i></i></div>
+                            <input type="text" name="" value="{$model.wr_leader_name}" placeholder="" readonly/>
+                            <div class="icon-phone"></div>
+                            <input type="text" name="phoneNum" value="{$model.wr_leader_mobile}" data-mobile="{$model.wr_leader_mobile}" placeholder="" readonly/>
+                        </div>
+                    </if>
+                    <if condition="($model.wp_leader_id neq '') and ($model.wp_leader_id neq 0)">
+                        <div class="info-line" onclick="WrkAgreementDetailFunctions.toTelephone(this)">
+                            <div class="info-title">催款负责人<i></i></div>
+                            <input type="text" name="" value="{$model.wp_leader_name}" placeholder="" readonly/>
+                            <div class="icon-phone"></div>
+                            <input type="text" name="phoneNum" value="{$model.wp_leader_mobile}" data-mobile="{$model.wp_leader_mobile}" placeholder="" readonly/>
+                        </div>
+                    </if>
+                </div>
+            </if>
+        </form>
+    </section>
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+        var WrkAgreementDetailFunctions = {
+            toTelephone : function (obj){
+                var mobile = $(obj).find("input[name=phoneNum]").data("mobile");
+                // var mobile = $(obj).data('mobile');
+                if (!(/^1[3|4|5|7|8][0-9]\d{4,8}$/.test(mobile))){
+                    layer.msg('号码错误!')
+                } else {
+                    window.location.href = 'tel:'+ mobile;
+                }
+            },
+            toWipDetail:function(obj){
+                if(!$(obj).hasClass("disabled")){
+                    $(obj).addClass("disabled");
+                }else{
+                    return false;
+                }
+                if($("input[name='wip_permit']").val() == 1){
+                    $.post("/WrkAgreement/getModulePermit",{id:"{$model.wip_id}",module:"WrkInvoicePlan"},function(result){
+                        if(result.error == 0){
+                            /*layer.open({
+                                type:2,
+                                title:'开票详情',
+                                shade:0.8,
+                                closeBtn:1,
+                                area:["100%","100%"],
+                                content:"/WrkInvoicePlan/detail/plan_id/{$model.wip_id}/view_header/0"
+                            });*/
+                            window.location.href="/WrkInvoicePlan/detail/plan_id/{$model.wip_id}";
+                        }else{
+                            $("input[name='wip_permit']").val(0);
+                            mui.alert("您没有查看的权限！","",["确定"],function(){})
+                        }
+                        $(obj).removeClass("disabled");
+                    },'json')
+                }else{
+                    $(obj).removeClass("disabled");
+                    mui.alert("您没有查看的权限！","",["确定"],function(){})
+                }
+                //window.location.href="/WrkInvoicePlan/invoiceRecord/plan_id/{$model.wip_id}";
+            },
+            toWrDetail:function(obj){
+                if(!$(obj).hasClass("disabled")){
+                    $(obj).addClass("disabled");
+                }else{
+                    return false;
+                }
+                if($("input[name='wr_permit']").val() == 1){
+                    $.post("/WrkAgreement/getModulePermit",{id:"{$model.wr_id}",module:"WrkReceivables"},function(result){
+                        if(result.error == 0){
+                            /*layer.open({
+                                type:2,
+                                title:'收款详情',
+                                shade:0.8,
+                                closeBtn:1,
+                                area:["100%","100%"],
+                                content:"/WrkReceivables/detail/id/{$model.wr_id}"
+                            });*/
+                            window.location.href="/WrkReceivables/detail/id/{$model.wr_id}";
+                        }else{
+                            $("input[name='wr_permit']").val(0);
+                            mui.alert("您没有查看的权限！","",["确定"],function(){})
+                        }
+                        $(obj).removeClass("disabled");
+                    },'json')
+                }else{
+                    $(obj).removeClass("disabled");
+                    mui.alert("您没有查看的权限！","",["确定"],function(){})
+                }
+            },
+            openAttachment : function (){
+                openWrkAttachmentForm("附件", [{attach_group:"{$model.attach_group}"}]);
+            }
+        };
+        var tag = new Vue({
+            el: "#tag",
+            data: {
+                tag_list: 
+                ['{$model.product_options.type1}',
+                '{$model.product_options.type2}',
+                '{$model.product_options.attributes1}',
+                '{$model.product_options.attributes2}',
+                '{$model.product_options.attributes3}']
+            }
+        })
+    </script>
+</body>
+
+</html>

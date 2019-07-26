@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    html,body{
+        height: auto;
+    }
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+   
+    #current-billing-plan .info-title{
+        width: 2.35rem;
+    }
+    .icon-down{
+        position: absolute;
+        top:0px;
+        right: 0px;
+        width: 0.35rem;
+        height: 0.35rem;
+        margin: 0.1rem;
+        background-image: url("/{$Think.MODULE_PATH}Public/images/work/icon-hide.png");
+        background-size: 100% 100%;
+    }
+</style>
+
+<body>
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <form id="customerForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title" style="position:relative;">合同信息
+                    <div class="icon-down" onclick="toggleShow(this)" data-flag="1"></div>
+                </div>
+                <div class="ipt-info">
+                    <div class="info-line important-input">
+                        <div class="info-title">公司名称<i></i></div>
+                        <input type="text" name="" v-model="model.wrkAgreement.company_name" readonly/>
+                        <input type="hidden" name="id" value="{$id}" readonly/>
+                        <input type="hidden" name="notice_id" value="{$notice_id}" readonly/>
+                    </div>
+                    <div class="info-line important-input">
+                        <div class="info-title">合同名称<i></i></div>
+                        <input type="text" name="" v-model="model.wrkAgreement.name" readonly/>
+                    </div>
+                    <div class="info-line important-input">
+                        <div class="info-title">合同金额<i></i></div>
+                        <input type="text" class="money_input" name="" v-model="'￥'+model.wrkAgreement.agreement_money" readonly/>
+                    </div>
+                    <div class="info-line important-input">
+                        <div class="info-title">未收款金额<i></i></div>
+                        <input type="text" name="" v-model="'￥'+model.wrkReceivables.unpaid_amount" readonly/>
+                    </div>
+                    <div class="info-line important-input">
+                        <div class="info-title">催款计划期数<i></i></div>
+                        <input type="text" name="" v-model="model.wrkReceivables.detail_count" readonly/>
+                    </div>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div id="current-billing-plan" class="basic-info">
+                <div class="title">本期催款计划</div>
+                <div class="info-line important-input">
+                    <div class="info-title">当前计划期数<i></i></div>
+                    <input style="color: #e91835;" type="text" name="" v-model="model.item.period_number" placeholder="" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">本期催款状态<i></i></div>
+                    <input type="text" name="" v-model="model.item.show_status" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input" v-for="(date,index) in model.item.dates" >
+                    <div class="info-title">计划催款时间<i></i></div>
+                    <input type="text" name="" :value="date.prompt_date" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">应收金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+model.item.receivables_amount" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">未付金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+model.item.unpaid_amount" placeholder="" readonly/>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info">
+                <div class="info-line">
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="sendMessage()">催款通知</button>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+
+        var promptDetailVue = new Vue({
+            el:"#customerForm",
+            data:{
+                model:[]
+            }
+        });
+
+        $(function(){
+            getDetail();
+        });
+
+        function getDetail(){
+            $.post("/WrkPrompt/detail/id/{$id}/item_id/{$item_id}",function(result){
+                promptDetailVue.model = result;
+            },'json')
+        }
+
+        //发送缴费通知
+        function sendMessage(){
+            var receivables_amount = promptDetailVue.model.item.receivables_amount;
+            var unpaid_amount = promptDetailVue.model.item.unpaid_amount;
+            var sendMessage = layer.open({
+                type:2,
+                title:"缴费通知",
+                shadeClose:true,
+                shade:0.8,
+                area:['100%','100%'],
+                content:"__MODULE__/WrkPrompt/sendMessage/id/{$id}/prompt_item_id/{$item_id}/receivables_amount/"+receivables_amount+"/unpaid_amount/"+unpaid_amount,
+                closeBtn:1,
+                success: function(layero, index) {},
+                end: function() {}
+            })
+        }
+        // 收起、展示
+        function toggleShow(e){
+            if($(e).attr("data-flag")==1){
+                $(e).css("background-image",'url("/{$Think.MODULE_PATH}Public/images/work/icon-show.png")');
+                $(e).parent(".title").siblings(".ipt-info").hide();
+                $(e).attr("data-flag","0");
+            }else{
+                $(e).css("background-image",'url("/{$Think.MODULE_PATH}Public/images/work/icon-hide.png")');
+                $(e).parent(".title").siblings(".ipt-info").show();
+                $(e).attr("data-flag","1");
+            }
+        }  
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .basic-info{
+        margin-bottom: 0.2rem;
+    }
+    .basic-info .info-title {
+        width: 2.1rem;
+        text-align: left;
+        padding: 0 0 0 .25rem;
+        color: #999999;
+    }
+    .basic-info input {
+        color: #808080;
+        text-align: right;
+    }
+    .modal-btn{
+        display: block!important;
+        height: auto!important;
+    }
+</style>
+
+<body style="height: 93%">
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <div class="basic-info user_head" style="height: auto">
+            <div style=";color: red;margin: 10px 15px">
+                提示：修改的开票信息将同步给商户，请保证信息填写正确。
+            </div>
+        </div>
+        <form id="invoice_info" onsubmit="return false;">
+            <div class="basic-info" id="invoice_info_div">
+                <div class="title">开票信息<span style="float: right" class="share-icon">分享</span></div>
+                <div class="info-line important-input">
+                    <div class="info-title">发票抬头名称<i></i></div>
+                    <input type="text" name="invoice_title" value="{$model.invoice_title}" readonly/>
+                </div>
+                <div class="info-line important-input" >
+                    <div class="info-title">纳税人识别号<i></i></div>
+                    <input type="text" value="{$model.taxpayer_identification}" name="taxpayer_identification" readonly/>
+                </div>
+                <div class="info-line important-input" >
+                    <div class="info-title">注册地址<i></i></div>
+                    <input type="text" value="{$model.reg_address}" name="reg_address" readonly/>
+                </div>
+                <div class="info-line important-input" >
+                    <div class="info-title">注册电话<i></i></div>
+                    <input type="text" value="{$model.telephone}" name="telephone" readonly/>
+                </div>
+                <div class="info-line important-input" >
+                    <div class="info-title">开户银行<i></i></div>
+                    <input type="text" value="{$model.bank}" name="bank" readonly/>
+                </div>
+                <div class="info-line important-input" >
+                    <div class="info-title">开户账号<i></i></div>
+                    <input type="text" value="{$model.bank_account}" name="bank_account" readonly/>
+                </div>
+            </div>
+            <if condition="$isLeader">
+                <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="saveInvoiceInfo()">保存</button>
+            </if>
+        </form>
+    </section>
+    <div class="wrap-modal" id="divider-Modal" style="display: none;" onclick="$('#divider-Modal').hide()">
+        <div class="modal-common-wrap modal" style="width: 60%;">
+            <div class="modal-title bg-e gray-9">选择类型<span class="close-popup" onclick="$('#divider-Modal').hide()">×</span></div>
+            <div class="modal-btn share-show">转发给其他人</div>
+            <div class="modal-btn share-copy">复制文字版</div>
+            <div class="modal-btn share-save" style="display: none!important;">
+                <a id="invoice_image" href="" download="开票信息.jpeg">保存为图片</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script src="https://cdn.bootcss.com/html2canvas/0.4.1/html2canvas.js"></script>
+    <script src="{$Think.const.JS_URL}clipboard/dist/clipboard.min.js"></script>
+    <script type="text/javascript">
+        function saveInvoiceInfo(){
+            var data = $("#invoice_info").serializeArray();
+            $.post("/ComAgreement/invoiceInfo",{data:data},function(result){
+                layer.msg(result.message);
+            },'json')
+        }
+
+        $(function(){
+            if("{$isLeader}" == 1){
+                $("#invoice_info input").removeAttr("readonly");
+            }
+        })
+
+        $(".share-icon").click(function () {
+            //$("#invoice_info input").prop("placeholder","");
+            html2canvas($("#invoice_info_div"), {
+                useCORS: true, // 【重要】开启跨域配置
+                onrendered: function (canvas) {
+                    $('#invoice_image').attr("href",canvas.toDataURL());
+                }
+            });
+            $("#divider-Modal").show()
+
+        });
+
+
+        $(function(){
+            var clipboard = new ClipboardJS(".share-copy", {
+                text: function() {
+                    return `发票抬头名称：${$("input[name='invoice_title']").val()}
+纳税人识别号：${$("input[name='taxpayer_identification']").val()}
+注册地址：${$("input[name='reg_address']").val()}
+注册电话：${$("input[name='telephone']").val()}
+开户银行：${$("input[name='bank']").val()}
+开户账号：${$("input[name='bank_account']").val()}`;
+                }
+            });
+            clipboard.on('success', function(e) {
+                $('#divider-Modal').hide();
+                layer.msg('复制成功!');
+            });
+            clipboard.on('error', function(e) {
+                layer.msg('复制失败!');
+            });
+        })
+
+        $(".share-show").on("click",function(){
+            var img= "<div style='width: calc(100vw - 40px)'>" +
+                "<img src='" + $("#invoice_image").attr("href") + "' style='width: 100%'/></div>";
+            layer.open({
+                type: 1,
+                closeBtn: 1,
+                shade: true,
+                title: false,
+                shadeClose: true,
+                area:["7rem","7rem"],
+                content: img
+            });
+            layer.msg("长按可发送给朋友或保存",{time:1500});
+        })
+    </script>
+</body>
+
+</html>

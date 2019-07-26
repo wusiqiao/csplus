@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+        <title>财穗快线</title>
+        <link href="{$Think.const.CSS_URL}style/style.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="{$Think.const.CSS_URL}mui/mui.css">
+        <link href="/{$Think.MODULE_PATH}Public/popup/popup.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}/css-new/style.css?v=22" rel="stylesheet" />
+        
+        
+        <!--<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />-->
+	    
+	    
+        <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+        <script src="/{$Think.MODULE_PATH}Public/popup/popup.js"></script>
+        <script src="{$Think.const.JS_URL}mui/mui.min.js"></script>
+        <style>
+            body{line-height: initial}
+            .row{margin-right: initial;margin-left: initial;}
+            .dropload-load{text-align: center;}
+            .level_on{border-bottom: 0.2rem solid #F4806D;}
+            .sum-member .in-row {
+                float: left;
+                width: 30%;
+                padding-left: 5%;
+            }
+            .empty-voucher {
+                text-align: center;
+                padding: 4rem 0;
+            }
+            .empty-voucher img {
+                margin: 0 auto;
+            }
+            .empty-voucher {
+                margin: 0 -1rem;
+            }
+/*            body,html{
+                height: 100%;
+            }*/
+           	header {border-bottom: 1px solid #e4e4e4;}
+       </style>
+    </head>
+    <body>
+    <include file="Index:header" />
+    <section class="content">
+        <div class="income">
+            <div class="sum-total" style="height:10rem">
+                <!--<span id="share-rule" class="bluecolor" data-toggle="modal" data-target="#myModal-read">分享规则</span>-->
+                <div class="amount">{$model.total}</div>
+                <div class="graycolor">总收益（元）</div>
+            </div>
+            <div class="sum-cash clearfix">
+                <div class="in-resize">
+                    <div class="basecolor">{$model.can_withdraw}</div>
+                    <div class="graycolor">可提现收益（元）</div>
+                </div>
+                <div class="in-row">
+                    <div class="btn">
+                        <!--<button class="bluecolor" onclick="location.href = '/index.php/Money/withdrawals/type/profit'">立即提现</button>-->
+                        <!-- <if condition="$model.show_withdraw eq 'true'">
+                                
+                        <else/>
+                                <button class="graycolor" onclick="mui.alert('可提现收益超过100元时,才可以提现');">立即提现</button>
+                        </if> -->
+                    </div>
+                </div>
+                <!--<div class="row-end" id="withdrawal_lists">提现记录<span class="my-icon my-icon-arrowright graycolor"></span></div>-->
+            </div>
+            <div class="sum-member clearfix" style="padding: initial;" >
+                <div class="in-start switch-level include-all level_on" data-type="on" data-level="all" style="text-align: center;padding: 1rem 0;">
+                    <div class="num" >{$model.level_total}</div>
+                    <div class="graycolor">会员总数（人）</div>
+                </div>
+                <div class="in-row switch-level"  data-type="off" data-level="0" style="text-align: center;padding: 1rem 0;">
+                    <div class="num" >{$model.level_1}</div>
+                    <div class="graycolor">一级会员</div>
+                </div>
+                <div class="in-row switch-level" data-type="off" data-level="1" style="text-align: center;padding: 1rem 0;">
+                    <div class="num" >{$model.level_2}</div>
+                    <div class="graycolor">二级会员</div>
+                </div>
+            </div>
+        </div>
+        <div class="profit-detail" style="display:block;margin-bottom: 8rem">
+            <div class="profit-title graycolor">收益明细</div>
+            <div class="hsui-sync-refresh" data-url="__MODULE__/Distribution/incomeLeveList" page-size="20">
+                <div class="profit-list hsui-sync-refresh-content">
+                    <div class="row clearfix single-require item-wrap" data-user="{%id%}"  data-check="{%is_check%}" style="display:none">
+                        <div class="user-info">
+                            <div>{%name%}<span class="lv-{%level%}">{%view_level%}</span></div>
+                            <div class="graycolor">{%view_time%}</div>
+                        </div>
+                        <div class="user-income">
+                            <div>{%total%}</div>
+                            <div class="graycolor">贡献收益</div>
+                        </div>
+                        {%icon%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <a href="#profit-detail" id="profit-detail-a" style="display: none"></a>
+    <div id="profit-detail" class="mui-modal">
+        <h1 class="mui-title" style="font-size: 1.33rem">收益详情</h1>
+        <div id="close-detail" class="close-modal" style="height: 3.67rem;" >
+            <span class="my-icon my-icon-arrowleft" style="top: 0.3rem;float: left"></span><span style="float: float;line-height: 3.67rem;">返回</span>
+        </div>
+        <div class="mui-content" id="profit-detail-content" style="border-top: 1px solid #e4e4e4;"></div>
+    </div>
+    <a href="#withdrawal-detail" id="withdrawal-detail-a" style="display: none"></a>
+    <div id="withdrawal-detail" class="mui-modal">
+        <h1 class="mui-title" style="font-size: 1.33rem">提现详情</h1>
+        <div id="close-detail2" class="close-modal" style="height: 3.67rem;" >
+            <span class="my-icon my-icon-arrowleft" style="top: 0.3rem;float: left"></span><span style="float: float;line-height: 3.67rem;">返回</span>
+        </div>
+        <div class="mui-content" id="withdrawal-detail-content" style="border-top: 1px solid #e4e4e4;"></div>
+    </div>
+    <include file="Distribution:popup" />
+    <script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="{$Think.const.SITE_URL}Public/js/load/dropload.min.js"></script>
+    <script src="{$Think.const.JS_URL}common.js"></script>
+    <include file="Public:contact" />
+    <script>
+        data_road('all');
+        $(".switch-level").on('click', function () {
+            var checkLevel = $(this).attr('data-level');
+            var checkLevelType = $(this).attr('data-type');
+            if (checkLevelType == 'off') {
+                data_road(checkLevel);
+                $(this).attr('data-type', 'on').addClass('level_on').siblings().attr('data-type', 'off').removeClass('level_on');
+            }
+        })
+        function data_road(level) {
+            // $(window).off('scroll');
+            dropload($(".hsui-sync-refresh"), {level: level});
+        }
+        $("#close-detail").on('click', function () {
+            $("#profit-detail,#withdrawal-detail").removeClass('mui-active');
+            $("#profit-detail-content").html('');
+        })
+        $("#close-detail2").on('click', function () {
+            $("#withdrawal-detail-content").html('');
+            $("#withdrawal-detail").removeClass('mui-active');
+        })
+
+        $(".profit-list").on('click', '.item-wrap', function () {
+            var isCheck = $(this).attr('data-check');
+            var user_id = $(this).attr('data-user');
+            if (isCheck == 'on') {
+
+                mui.toast('加载中...', {duration: 'short', verticalAlign: 'center'});
+                $.post("__CONTROLLER__/profitDetail", {user_id: user_id}, function (result) {
+                    $("#profit-detail-content").append(result);
+                });
+                $("#profit-detail").addClass('mui-active');
+            }
+        })
+        $("#withdrawal_lists").on('click', function () {
+
+            mui.toast('加载中...', {duration: 'short', verticalAlign: 'center'});
+            $.post("__CONTROLLER__/withdrawDetail", function (result) {
+                $("#withdrawal-detail-content").append(result);
+            });
+            $("#withdrawal-detail").addClass('mui-active');
+        })
+    </script>
+
+</body>
+
+</html>

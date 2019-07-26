@@ -1,0 +1,40 @@
+<!--搜索框弹出wrap-->
+<div class="float-search J-float-search" style="display: none; transform-origin: 0px 0px 0px; opacity: 1; transform: scale(1, 1);">
+    <div class="float-search-title" style="z-index: 1;height:0.85rem;">
+            <div class="mui-search" style="width: 100%">
+            	<div class="search-back J-float-search-back" style="width: 8%;float: left;">
+                    <span class="mui-icon mui-icon-arrowleft" style="color: #444444;"></span>
+                </div>
+				<input id="search-company" style="width: 75%" type="search" name="keyword"  class="mui-input-clear" value="{$data.keyword}" placeholder="请输入关键字查找" data-input-clear="15" data-input-search="15">
+				<span class="mui-icon mui-icon-search" style="left: 8%;"></span>
+				<button id="search-btn" >查找</button>
+				<ul  id="show_search_list" style="height: initial !important;background-color: #FFFFFF;"></ul>
+				<li class="mui-table-view-cell" id="li-list" style="display:none">{%content%}</li>
+			</div>
+			
+    </div>
+    <div class="float-search-content" style="display: block;">
+        <div class="last-search J-last-search" style="display: block;">
+            <div class="last-title">
+                <h2 class="word-strong">最近搜索</h2>
+                <a class="clear-all J-clear" href="javascript:(0)"></a>
+            </div>
+            <div class="J-history-list clearfix">
+                <a href="__MODULE__/index/search_result/keyword/公司注册.html" class="search-record J-one-record">公司注册</a>
+            </div>
+        </div>
+        <div class="hot-search J-hot-word">
+            <div class="hot-title">
+                <h2 class="word-strong">热门搜索</h2>
+            </div>
+
+            <div class="clearfix">
+                <a href="__MODULE__/index/search_result/keyword/公司注册.html" class="hot-label J-hot-label">公司注册</a>
+                <a href="__MODULE__/index/search_result/keyword/公司变更.html" class="hot-label J-hot-label">公司变更</a>
+                <a href="__MODULE__/index/search_result/keyword/个人所得税申报.html" class="hot-label J-hot-label">个人所得税申报</a>
+                <a href="__MODULE__/index/search_result/keyword/海报设计.html" class="hot-label J-hot-label">海报设计</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--搜索框弹出wrap-end-->

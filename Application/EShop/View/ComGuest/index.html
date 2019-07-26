@@ -1,0 +1,114 @@
+<include file="UserSupervise:head" />
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/css/comm.css">
+    <style>
+    .item-wrap {
+        float: left;
+        height: 100%;
+        overflow: auto;
+    }
+	.item-wrap::-webkit-scrollbar {
+        display: none;
+    }
+    .item-container {
+        float: left;
+        margin: 0px auto;
+        width: 100%
+    }
+
+    .item-container li {
+        float: left;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .item-container li .item {
+        float: left;
+        height: auto;
+        position: relative;
+        width: 100%;
+        padding: 5px;
+        background: #fff
+    }
+    </style>
+    <title></title>
+</head>
+
+<body>
+    <include file="Index:header" />
+    <!-- <li data-value="{%pinyin%}" id="template-1" style="display:none" data-tags="{%pinyin%}" data-url="/UserSupervise/customer_detail/id/{%id%}">
+    <div class="check-div">
+        <img src="{%head_pic%}" alt="">
+        <span class="nickname">{%name%}</span>
+    </div>
+    <div class="check-div blue-4591fe">
+        <span>{%group_name%}</span>
+        <span class="mui-icon mui-icon-arrowright"></span>
+    </div>
+</li> -->
+    <section class="custom-wrap mt85" style="overflow: hidden;">
+        <ul class="con-tab pr">
+            <li id="list" class="cons">
+                <ul class="mui-main-tab">
+                    <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['ComPotential']['menu_actions']['list'] eq 1 and $menuList['ComPotential']['allow'] eq 1)">
+                        <li onclick="window.location.href = '/ComPotential/index.html'">会员</li>
+                        <else/>
+                        <li onclick="mui.alert('无此功能操作权限')">会员</li>
+                    </if>
+                    <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['ComFans']['menu_actions']['list'] eq 1 and $menuList['ComPotential']['allow'] eq 1)">
+                        <li onclick="window.location.href = '/ComFan/index.html'">粉丝</li>
+                        <else/>
+                        <li onclick="mui.alert('无此功能操作权限')">粉丝</li>
+                    </if>
+                    <li class="active">游客</li>
+                </ul>
+                <div id="main-content"  v-cloak>
+                    <div class="item-wrap">
+                        <ul class="visitor-list item-container">
+                            <li v-for="(item,index) in item_list" @tap="onItemTap(item)" :id="item.item_id" >
+                                <img class="header-img-88 mr30" :src="item.head_pic"  alt="" />
+                                <div class="item">
+                                    <div class="black-1 font26">{{item.name}}</div>
+                                    <div class="gray-9c font24">最新访问时间：{{item.last_time}}</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </section>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.APP_PATH}Public/js/jquery.min.js"></script>
+    <script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <script src="/{$Think.MODULE_PATH}Public/js/common.js"></script>
+    <script src="{$Think.const.JS_URL}/mui/mui.indexedlist.js"></script>
+    <script type="text/javascript">    
+    var vue = new Vue({
+        el: "#main-content",
+        data: {
+            item_list: []
+        },
+        methods: {
+            onItemTap: function(item) {}
+        }
+    });
+
+    function queryData($target, current_page) {
+        $.getJSON("/ComGuest/search", { page: current_page }, function(result) {
+            vue.item_list = vue.item_list.concat(result);
+            $target.data("loading", false);
+        }, "json");
+    }
+    pullRefresh(".item-wrap", ".item-container", function($target, page) {
+        queryData($target, page);
+    })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,244 @@
+<include file="UserSupervise:head" />
+
+<body>
+    <!--<include file="Index:header" />-->
+    <section class="secondary-wrap match-view-wrap" style="padding-top: 5px">
+        <if condition="$is_single eq 1">
+            <!--绑定公司1人对多公司-->
+            <div class="basic-info mb30">
+                <div class="title">关联用户</div>
+                <div class="flex-direction-center pt20" style="height: 2.6rem;border-bottom: 1px dashed #eeeeee;">
+                    <img class="header-img-134 mb20" src="{$model.head_pic}" alt="" />
+                    <span class="mb20 gray-6">昵称：{$model.name}</span>
+                    <input type="hidden" name="user_id" value="{$model.id}">
+                </div>
+                <div class="pd1525">
+                    <notempty name="model.mobile">
+                        <div class="red-f17485 font24">绑定手机：{$model.mobile}</div>
+                        <div class="gray-c9 font24">绑定时间：{$model.binded_at}</div>
+                        <else />
+                        <div class="gray-c9 font24">关注时间：{$model.followed_at}</div>
+                    </notempty>
+                    <div class="gray-c9 font24">备注：{$model.comments}</div>
+                </div>
+            </div>
+            <else />
+            <!--绑定公司几人对多公司-->
+            <div class="basic-info mb20">
+                <div class="title">
+                    <span>关联用户</span>
+                </div>
+                <div class="flex-wrap topic pt20" style="">
+                    <foreach name="model" item="v">
+                        <div class="flex-direction-center wd33">
+                            <img class="header-img-134 mb20" src="{$v.head_pic}" alt="" />
+                            <span class="mb20 gray-6">{$v.name}</span>
+                            <input type="hidden" name="user_id" value="{$v.id}">
+                        </div>
+                    </foreach>
+                </div>
+            </div>
+        </if>
+        <div class="basic-info mb20">
+            <div class="title">选择公司
+                <div class="flex-between">
+                    <span id="group-tip" class="question-mark" data-modal="groupModal"></span>
+                </div>
+            </div>
+            <div class="ptb3015">
+                <div class="flex-start mb15">
+                    <div class="wd30 tr black-3">公司名称：</div>
+                    <div class="company-selected wd60">
+                        <div class="black-3">请选择公司</div>
+                        <div class="select-icon1" onclick="selectCompany()"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wrap-modal" id="groupModal" style="display: none;">
+            <div class="modal-common-wrap modal" style="width: 90%;">
+                <div class="modal-title bg-e gray-9">关联公司说明
+                    <!--<span class="close-popup">×</span>--></div>
+                <div class="modal-content-text tc">
+                    1.人员和公司都可以进行多选<br>
+                    2.如选择多家公司和多个人员，<br>
+                    则视为将所选的每个人员与所选<br>
+                    的每个公司都进行一次绑定操作</div>
+                <div class="modal-btn">
+                    <button class="popup-close">取消</button>
+                    <button class="blue popup-complete">确认</button>
+                </div>
+            </div>
+        </div>
+        <div id="basic-info">
+            <!-- <div class="basic-info pr">
+                <div class="del-selected" onclick="removeself(this)"></div>
+                <div class="title">公司信息</div>
+                <div class="ptb3015">
+                    <div class="flex-start mb15">
+                        <div class="wd30 tr black-3">公司名称：</div>
+                        <div class="company-selected wd60">
+                            <div class="black-3">厦门可及网络科技有限公司</div>
+                        </div>
+                    </div>
+                    <div class="flex-start mb15">
+                        <div class="wd30 tr black-3">联系人：</div>
+                        <div class="company-selected wd60">
+                            <div class="black-3">王天一</div>
+                        </div>
+                    </div>
+                    <div class="flex-start mb15">
+                        <div class="wd30 tr black-3">手机：</div>
+                        <div class="company-selected wd60">
+                            <div class="black-3">18020602060</div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div style="height: 1.45rem;"></div>
+        <div class="bottom-btn">
+            <button id="" class="left-btn " onclick="closeBtn()">取消</button>
+            <button id="cancel" onclick="bindBtn()">保存</button>
+        </div>
+    </section>
+    <include file="UserSupervise:foot_access_file" />
+</body>
+
+</html>
+<script type="text/javascript">
+function removeself(e, i) {
+    $(e).parent().remove();
+    remove_item(branch_ids_arr, i);
+    remove_item(branch_name_arr, i);
+    remove_item(linkman_arr, i);
+    remove_item(contact_arr, i);
+}
+//移除数组的元素
+function remove_item(arr, i) {
+    var index = arr.indexOf(arr[i]);
+    if (index > -1) {
+        arr.splice(index, 1);
+    }
+}
+
+function closeBtn() {
+    var index = parent.layer.getFrameIndex(window.name);
+    parent.layer.close(index);
+}
+
+function bindBtn() {
+    var branch_ids = [];
+    $("input[name='branch_id']").each(function() {
+        branch_ids.push($(this).prop("value"));
+    });
+    var user_ids = [];
+    $("input[name='user_id']").each(function() {
+        user_ids.push($(this).attr("value"));
+    });
+    if (user_ids.length > 0) {
+        $.post("/ComFan/bindCompany", { branch_ids: branch_ids, user_ids: user_ids }, function(result) {
+            if (result.code == 0) {
+                layer.msg('保存成功');
+                parent.queryData();
+                setTimeout(function() {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                }, 1500);
+            } else {
+                layer.msg('保存失败');
+            }
+        }, "json");
+    } else {
+        alert("请至少勾选一位用户");
+    }
+}
+
+
+function selectCompany(e) {
+    var url = '__MODULE__/ComFan/selectCompany/type/1';
+    parent.$(".layui-layer-title").html("关联公司-选择公司");
+   /* parent.$(".layui-layer-title").hide();
+    parent.$(".layui-layer-setwin").hide();*/
+    layer.open({
+        type: 2,
+        //title: '关联公司-选择公司',
+        title: '',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['100%', '100%'],
+        content: url, //iframe的url
+        closeBtn:0,
+        success: function(layero, index) {
+        },
+        end: function() {
+            parent.$(".layui-layer-title").html("关联公司");
+            /*parent.$(".layui-layer-title").show();
+            parent.$(".layui-layer-setwin").show();*/
+        }
+    });
+}
+
+var branch_ids_arr = [];
+var branch_name_arr = [];
+var linkman_arr = [];
+var contact_arr = [];
+
+function getCompany(branch_ids, branch_name, linkman, contact) {
+    var html = "";
+    branch_ids_arr = branch_ids_arr.concat(branch_ids);
+    branch_name_arr = branch_name_arr.concat(branch_name);
+    linkman_arr = linkman_arr.concat(linkman);
+    contact_arr = contact_arr.concat(contact);
+    branch_ids_arr = unique2(branch_ids_arr);
+    branch_name_arr = unique2(branch_name_arr);
+    linkman_arr = unique2(linkman_arr);
+    contact_arr = unique2(contact_arr);
+    var i;
+    for (i in branch_ids_arr) {
+        html += '<div class="basic-info pr">' +
+            '<div class="del-selected" onclick="removeself(this,' + i + ')"></div>' +
+            '<div class="title">公司信息</div>' +
+            '<div class="ptb3015">' +
+            '<div class="flex-start mb15">' +
+            '<div class="wd30 tr black-3">公司名称：</div>' +
+            '<div class="company-selected wd60">' +
+            '<div class="black-3">' + branch_name_arr[i] + '</div><input type="hidden" name="branch_id" value="' + branch_ids_arr[i] + '" >' +
+            '</div>' +
+            '</div>' +
+            '<div class="flex-start mb15">' +
+            '<div class="wd30 tr black-3">联系人：</div>' +
+            '<div class="company-selected wd60">' +
+            '<div class="black-3">' + linkman_arr[i] + '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="flex-start mb15">' +
+            '<div class="wd30 tr black-3">手机：</div>' +
+            '<div class="company-selected wd60">' +
+            '<div class="black-3">' + contact_arr[i] + '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+    }
+    $("#basic-info").html(html);
+}
+
+function unique2(arr) {
+    var n = {},
+        r = []; //n为hash表，r为临时数组
+    for (var i = 0; i < arr.length; i++) {
+        if (!n[arr[i]]) {
+            n[arr[i]] = true; //存入hash表
+            r.push(arr[i]); //把当前数组的当前项push到临时数组里面
+        }
+    }
+    return r;
+}
+$('#group-tip').on('click', function() {
+    $('#groupModal').show();
+})
+$('.popup-close,.popup-complete').on('click', function() {
+    $(this).parents('.wrap-modal').hide();
+})
+</script>

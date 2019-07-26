@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <title>免费咨询</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <style type="text/css">
+		html,body {
+    		width: 100% !important;
+    	}
+		.consult-wrap .consult-top {
+			height: 3.8rem;
+			margin: 0;
+			padding: 0;
+		}
+		.nuclear-input span,
+		.verification-input span {
+			width: .9rem;
+			height: 1rem;
+			background-repeat: no-repeat;
+			background-size: 40%;
+			background-position: center;
+		}
+		.nuclear-form button, .s-mark-form button, .s-mark-form button, .verification-wrap .verification-btn{
+			width: 100%;
+			height: .75rem;
+			color: #fefeff;
+			border: none;
+			background-color: #3296FA;
+		}
+    </style>
+</head>
+<body>
+<include file="Index:header" />
+	<section class="consult-wrap" style="margin-top: .85rem">
+		<div class="consult-top">
+			<!--<div>累计核名<span>{$count}</span>次</div>-->
+		</div>
+		<form  onsubmit="return false;" id="nuclear" style="background-color: white;">
+			<div class="nuclear-form">
+				<div class="nuclear-input-wrap" style="margin-bottom: 0px;">
+					<div class="nuclear-input" >
+						<span class="consult-name"></span>
+						<input name="nickname" type="text" placeholder="请输入您的联系姓名"/>
+					</div>
+					<div class="nuclear-input" >
+						<span class="consult-tel"></span>
+						<input name="mobile" type="text" placeholder="请输入您的联系手机"/>
+					</div>
+					<div class="nuclear-input">
+						<span class="consult-edit"></span>
+						<input  name="consultant" type="text" placeholder="请输入您的需求"/>
+					</div>
+				</div>
+				<div class="bg-white">
+					<div class="nuclear-good">
+						<p>*今日已有{$total_count.today}人免费咨询，总咨询人数已达{$total_count.total}人</p>
+					</div>
+					<div style="text-align: center;margin: 20px;color: grey">
+						<span>输入联系方式专人与您对接</span><br>
+						<span>24小时内和您联系</span>
+					</div>
+				</div>
+				<button type="submit" id="submit_button" class="">提交</button>
+			</div>
+		</form>
+	</section>
+	<include file="Tool:modal_select_city" />
+	<include file="Tool:modal_select_comtype" />
+	<include file="Tool:modal_select_industry" />
+	<include file="Tool:modal_feedback" />
+</body>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script>
+    $("#submit_button").on('click',function(){
+        var consultant = $("input[name=consultant]").val();//需求
+        var nickname = $("input[name=nickname]").val();//姓名
+        var mobile = $("input[name=mobile]").val();//电话
+		var ckMobile = /^1[3|5|8|7]\d{9}$/ , ckPhone = /^0\d{2,3}-?\d{7,8}$/;
+        if($.trim(consultant ) == ''){
+            layer.msg("请输入您的需求!!");
+            return false;
+        }
+        if($.trim(nickname) == ''){
+            layer.msg("请输入您的联系姓名!!");
+            return false;
+        }
+        if(!ckMobile.test($.trim(mobile))){
+            layer.msg("请输入正确的手机号码!!");
+            return false;
+        }
+		var data = JSON.stringify({"consultant":consultant});
+        var index = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+        $(this).attr("disabled","true");
+        $.post("/Tool/saveConsultant",{value:data,nickname:nickname,mobile:mobile,consultant:consultant},function(result){
+            layer.close(index);
+            layer.msg(result.msg);
+            if(result.err == 0){
+                $("input[name=consultant]").val("");
+                $("input[name=nickname]").val("");
+                $("input[name=mobile]").val("");
+                window.location.href = "__MODULE__/Index"
+			}else{
+                $(this).removeAttr("disabled");
+			}
+		},'json')
+    })
+
+</script>
+</html>

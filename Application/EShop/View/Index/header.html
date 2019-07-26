@@ -1,0 +1,51 @@
+<style>
+	h1.mui-title {
+		width: 60vw !important;
+		margin: 0 auto !important; 
+		overflow-x: auto;
+		overflow-y: hidden;
+		text-overflow: unset;
+	}
+
+	h1.mui-title::-webkit-scrollbar {
+		/*隐藏滚轮*/
+		display: none;
+	}
+</style>
+<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+	<h1 class="mui-title" onmousemove="stopScrollMove()" onmouseout="goonScrollMove()">
+		<div style="white-space: nowrap;margin: 0 0.3rem;">{$title}</div>
+	</h1>
+	<button class="mui-btn mui-btn-link mui-btn-nav mui-pull-left" id="come-back"
+		style="color: #444444 !important;padding: 0 !important;">
+		<span class="mui-icon mui-icon-arrowleft"></span>返回
+	</button>
+	<button id="back-home" class="back-home"></button>
+</header>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+<script>
+	$('#come-back').on('click', function () {
+		window.history.back();
+	})
+	$('#back-home').on('click', function () {
+		window.location.href = '__MODULE__/Index/index.html';
+	})
+	var timer = setInterval(scrollMove,100);
+	function scrollMove(){
+		var scrollLeft = $("h1.mui-title").scrollLeft();
+		if(scrollLeft >= $("h1.mui-title").width()){
+			scrollLeft = 0;
+			$("h1.mui-title").scrollLeft(scrollLeft);
+			return;
+		}
+		$("h1.mui-title").scrollLeft(scrollLeft + 1);
+	}
+	
+	function stopScrollMove(){
+		clearInterval(timer);
+	}
+	function goonScrollMove(){
+		clearInterval(timer);
+		timer = setInterval(scrollMove,100);
+	}
+</script>

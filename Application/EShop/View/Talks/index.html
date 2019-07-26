@@ -1,0 +1,233 @@
+<include file="UserSupervise:head"/>
+<style>
+    .item-wrap {
+        overflow: auto;
+        width: 100% !important;
+    }
+
+    .item-container {
+        float: left;
+        margin: 0 auto;
+        width: 100%;
+        overflow: auto;
+    }
+
+    .item-container li {
+        float: left;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .item-wrap::-webkit-scrollbar {
+        /*隐藏滚轮*/
+        display: none;
+    }
+
+    .item-container-item {
+        width: 100%;
+        height: 0.95rem;
+        background-color: #ffffff;
+        border-radius: .1rem;
+        overflow: hidden;
+        margin-bottom: 0.1rem;
+    }
+
+    .list-entrance {
+        padding: 0 0.28rem;
+        height: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /*  */
+    .entrance-icon {
+        width: 0.55rem;
+        height: 0.55rem;
+        float: left;
+        background-size: 100% 100%;
+        margin: 0.2rem 0;
+        margin-right: 0.18rem;
+    }
+
+    .entrance-icon-system {
+        background-image: url("/{$Think.MODULE_PATH}Public/images/icon/attach-system.png");
+    }
+
+    .entrance-icon-staff {
+        background-image: url("/{$Think.MODULE_PATH}Public/images/icon/attach-staff.png");
+    }
+
+    .entrance-icon-member {
+        background-image: url("/{$Think.MODULE_PATH}Public/images/icon/attach-member.png");
+    }
+
+    .entrance-icon-group {
+        background-image: url("/{$Think.MODULE_PATH}Public/images/icon/attach-group.png");
+    }
+
+    .dot {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 8;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: red;
+    }
+</style>
+
+<body>
+<include file="Index:header"/>
+<section class="common-wrap bg-none">
+    <div style="margin-top: .85rem;margin-bottom: 10%">
+        <div class="mui-content" id="main-content">
+            <div class="item-wrap">
+                <div class="item-container-item">
+                    <div class="list-entrance" onclick="AttachmentFunctions.system()">
+                        <div style="display: flex;align-items: center;">
+                            <div style="overflow: hidden;position: relative;">
+                                <i class="entrance-icon entrance-icon-system"></i>
+                                <div class="dot" id="sys" hidden></div>
+                            </div>
+                            <span style="color: #212121;line-height: 0.95rem;">系统通知</span>
+                        </div>
+                        <div style="color:#b4b1b4">
+                            <span style="margin-right: 0.2rem;"></span>
+                            <i class="mui-icon mui-icon-arrowright"></i>
+                        </div>
+                    </div>
+                </div>
+                <if condition="$isStaff OR $currBranchId">
+                    <div class="item-container-item">
+                        <div class="list-entrance" onclick="AttachmentFunctions.staff()">
+                            <div style="display: flex;align-items: center;">
+                                <div style="overflow: hidden;position: relative;">
+                                    <i class="entrance-icon entrance-icon-staff"></i>
+                                    <div class="dot" id="staff" hidden></div>
+                                </div>
+                                <span style="color: #212121;line-height: 0.95rem;">员工沟通</span>
+                            </div>
+                            <div style="color:#b4b1b4">
+                                <span style="margin-right: 0.2rem;"></span>
+                                <i class="mui-icon mui-icon-arrowright"></i>
+                            </div>
+                        </div>
+                    </div>
+                </if>
+
+                <div class="item-container-item">
+                    <div class="list-entrance" onclick="AttachmentFunctions.member()">
+                        <div style="display: flex;align-items: center;">
+                            <div style="overflow: hidden;position: relative;">
+                                <i class="entrance-icon entrance-icon-member"></i>
+
+                                <div class="dot" id="member" hidden></div>
+                            </div>
+                                <span style="color: #212121;line-height: 0.95rem;">
+                                     <if condition="$isStaff">
+                                         客户沟通
+                                         <else/>
+                                         服务商
+                                     </if>
+                                </span>
+                        </div>
+                        <div style="color:#b4b1b4">
+                            <span style="margin-right: 0.2rem;"></span>
+                            <i class="mui-icon mui-icon-arrowright"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-container-item">
+                    <div class="list-entrance" onclick="AttachmentFunctions.group()">
+                        <div style="display: flex;align-items: center;">
+                            <div style="overflow: hidden;position: relative;">
+                                <i class="entrance-icon entrance-icon-group"></i>
+
+                                <div class="dot" id="group" hidden></div>
+                            </div>
+                            <span style="color: #212121;line-height: 0.95rem;">群聊</span>
+                        </div>
+                        <div style="color:#b4b1b4">
+                            <span style="margin-right: 0.2rem;"></span>
+                            <i class="mui-icon mui-icon-arrowright"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script type="text/javascript">
+    AttachmentFunctions = {
+        system: function () {
+            window.location.href = "__MODULE__/Talks/system";
+        },
+        staff: function () {
+            window.location.href = "__MODULE__/Talks/staff";
+        },
+        member: function () {
+            window.location.href = "__MODULE__/Talks/member";
+        },
+        group: function () {
+            window.location.href = "__MODULE__/Talks/group";
+        }
+    }
+</script>
+</body>
+
+</html>
+<script src="/{$Think.const.MODULE_PATH}/Public/js/Ws.js"></script>
+<script>
+    var isStaff = '{$isStaff}';
+    new Socket({$branchId}, {$userId}, {
+        msg: function (data) {
+            //私聊
+            if (data.groupType == 10) {
+                if (isStaff) {
+                    if (data.sendInfo.user_type < 4) {
+                        staffCount++
+                    } else {
+                        memberCount++
+                    }
+                } else {
+                    if (data.sendInfo.user_type < 4) {
+                        memberCount++
+                    } else {
+                        staffCount++
+                    }
+                }
+            } else {
+                //群聊
+                groupCount++;
+            }
+
+            showRed(sysCount, staffCount, memberCount, groupCount);
+        }
+    })
+    var sysCount = '{$statistics["sys_notice"] + $statistics["sys_iteration"]}';
+    var staffCount = '{$statistics["staff"]}';
+    var memberCount = '{$statistics["member"]}';
+    var groupCount = '{$statistics["group"]}';
+    showRed(sysCount, staffCount, memberCount, groupCount);
+    function showRed(sys, staff, member, group) {
+        if (sys > 0) {
+            showDoc('#sys')
+        }
+        if (staff > 0) {
+            showDoc('#staff')
+        }
+        if (member > 0) {
+            showDoc('#member')
+        }
+        if (group > 0) {
+            showDoc('#group')
+        }
+    }
+
+    function showDoc(el) {
+        $(el).show();
+    }
+</script>

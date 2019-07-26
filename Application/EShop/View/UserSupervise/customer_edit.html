@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+    .delete-div span{
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+</style>
+<body>
+	<include file="Index:header" />
+    <div class="info-line template-1" style="display:none">
+        <div class="info-title">{%title%}<i></i></div>
+        <input type="text"  data-title="{%title%}" value=""/>
+        <div class="delete-div">
+            <span>删除</span>
+        </div>
+    </div>
+    <section class="custom-info-wrap common-wrap bg-none mt85" >
+    	<form onsubmit="return false;" id="customerForm">
+	    	<div class="basic-info">
+	    		<div class="title">编辑资料</div>
+	    		<div class="info-line important-input pr">
+	    			<div class="info-title">联系人<i></i></div>
+	    			<input type="text" readonly value="{$customer.name}"/>
+                    <input type="hidden" name="id" readonly value="{$customer.id}" placeholder="请输入用户姓名"/>
+	    		</div>
+                <div class="info-line important-input pr">
+                    <div class="info-title">备注<i></i></div>
+                    <input type="text"  value="{$customer.comments}" placeholder="请输入备注昵称"/>
+                </div>
+                <div class="info-line important-input pr">
+	    			<div class="info-title">手机<i></i></div>
+	    			<input type="tel" name="users[telephone]" value="{$customer.telephone}" placeholder="请输入联系号码"/>
+	    		</div>
+                <div class="info-line important-input pr">
+	    			<div class="info-title">公司名称<i></i></div>
+	    			<input type="text" name="users[company_name]" value="{$customer.company_name}" placeholder="请输入公司名称"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">机构代码<i></i></div>
+	    			<input type="text" name="" value="" placeholder="请输入机构代码"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">法人代表<i></i></div>
+	    			<input type="text" name="" value="" placeholder="请输入法人姓名"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">身份证<i></i></div>
+	    			<input type="text" name="" value="" placeholder="请输入法人身份证号码"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">开户银行<i></i></div>
+	    			<input type="text" name="users[bank_address]" value="{$customer.bank_address}"  placeholder="请输入开户银行名称"/>
+	    		</div>
+				<div class="info-line">
+					<div class="info-title">银行账号<i></i></div>
+					<input type="text" name="users[bank_account]" value="{$customer.bank_account}" placeholder="请输入银行卡号"/>
+				</div>
+	    		<!--<div class="info-line">
+	    			<div class="info-title">所在分组<i></i></div>
+                    <div id="showGroupPicker" style="flex: 1;line-height: 1rem;padding-left: .1rem;position: relative">
+                        <div id="showGroupValuePicker">分组名称</div>
+                        <input type="hidden" name="users[group_id]" value="{$customer['group_id']}">
+                        <div class="select-icon"></div>
+                    </div>
+					<div id="new-group-btn" class="new-group-btn blue-4591fe">移至新分组</div>
+	    		</div>-->
+	    		<!--<div class="info-line">
+	    			<div class="info-title">职务<i></i></div>
+	    			<input type="text" name="users[duty]" value="{$customer.duty}"/>
+	    		</div>-->
+	    		
+	    		<!--<div class="info-line">
+	    			<div class="info-title">用户标签<i></i></div>
+	    			<div class="info-con icon tags-view">
+                        <volist name="customer.tags" id="vo">
+                            <span>{$vo.value}  <b bind-id="{$vo.id}" bind-text="{$vo.value}">✘</b> </span>
+                        </volist>
+	    				<span class="tag-btn" id="add-tag">+</span>
+	    			</div>
+                    <div class="tags-div" style="display: none">
+                        <volist name="customer.tags" id="vo">
+                            <input name="tags[]" value="{$vo.id}"/>
+                        </volist>
+                    </div>
+	    		</div>-->
+	    		<!--<div class="info-line">
+	    			<div class="info-title">注册时间<i></i></div>
+	    			<input type="text" value="{$customer.reg_time}" readonly />
+	    		</div>-->
+	    		<div class="info-line" style="position: relative;box-shadow: none;">
+	    			<div class="info-title">注册地址<i></i></div>
+	    			<div class="area-chose" id='showCityPicker'>
+	    				<div class="province-city" id="showCity" style="color:#999999;margin: .3rem .3rem .3rem .1rem;">
+                            {$customer.region}
+	    				</div>
+                        <input type="hidden" value="{$customer.province}"  name="users[province]" id="province"   />
+                        <input type="hidden" value="{$customer.city}"  name="users[city]" id="city"  />
+                        <input type="hidden" value="{$customer.district}"  name="users[district]" id="district"  />
+                        <span class="mui-icon mui-icon-arrowright" style="position: absolute; right:4%;top:35%;color: #cccccc;"></span>
+	    			</div>
+	    		</div>
+                <div class="info-line">
+                    <div class="info-title"><i></i></div>
+                    <textarea name="" rows="" cols="" name="users[address]" placeholder="请输入详细地址"></textarea>
+                </div>
+	    		<div class="info-line">
+	    			<div class="info-title">电话<i></i></div>
+	    			<input type="number" value="{$customer.mobile}" placeholder="请输入联系电话"/>
+	    		</div>
+	    		
+	    		<!--<div class="info-line">
+	    			<div class="info-title">税号<i></i></div>
+	    			<input type="number" name="users[tax_number]" value="{$customer.tax_number}"/>
+	    		</div>-->
+	    		
+	    		
+	    		<div class="info-line">
+	    			<div class="info-title">传真<i></i></div>
+	    			<input type="tel" name="users[fax_number]" value="{$customer.fax_number}" placeholder="请输入传真号码"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title"><span class="fr">QQ</span><i></i></div>
+	    			<input type="number" name="" value="" placeholder="请输入QQ号"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title"><span class="fr">E-mail</span><i></i></div>
+	    			<input type="email" name="users[email]" value="{$customer.email}" placeholder="请输入邮箱号"/>
+	    		</div>
+	    		<div class="info-line" style="position: relative;box-shadow: none;">
+	    			<div class="info-title">办公地址<i></i></div>
+	    			<div class="area-chose" id='showCityPicker1'>
+	    				<div class="province-city" id="showCity1" style="color:#999999;margin: .3rem .3rem .3rem .1rem;">
+                            {$customer.region}
+	    				</div>
+                        <input type="hidden" value="{$customer.province}"  name="users[province]" id="province1"   />
+                        <input type="hidden" value="{$customer.city}"  name="users[city]" id="city1"  />
+                        <input type="hidden" value="{$customer.district}"  name="users[district]" id="district1"  />
+                        <span class="mui-icon mui-icon-arrowright" style="position: absolute; right:4%;top:35%;color: #cccccc;"></span>
+	    			</div>
+	    		</div>
+                <div class="info-line">
+                    <div class="info-title"><i></i></div>
+                    <textarea name="" rows="" cols="" name="users[address]" placeholder="请输入详细地址"></textarea>
+                </div>
+	    		<!--<div class="info-line">
+	    			<div class="info-title">备注<i></i></div>
+	    			<input type="text" name="users[comments]" value="{$customer.comments}"/>
+	    		</div>-->
+                <div id="informations">
+                    <volist name="customer.information" id="vo">
+                        <div class="info-line">
+                            <div class="info-title">{$vo.title}<i></i></div>
+                            <input type="text"  style="width: 80%" data-id="{$vo.id}" data-title="{$vo.title}" value="{$vo.value}"/>
+                            <div class="delete-div">
+                                <span>删除</span>
+                            </div>
+                        </div>
+                    </volist>
+                </div>
+	    		<div class="info-line">
+	    			<div class="customize blue-4591fe">+新增自定义类型</div>
+	    		</div>
+	    	</div>
+	    	<button class="save-edited mt30 bg-368bfe">保存</button>
+    	</form>
+    </section>
+    <div class="wrap-modal" style="display: none">
+        <div class="modal-tag-select modal">
+            <div class="modal-content">
+                <div class="title">选择已有标签</div>
+                <div class="simple-line pr">
+                    <select id="tags_list">
+                        <option value=""></option>
+                    </select>
+                    <div id="select-tag" class="select-icon" style="top: .1rem;"></div>
+                </div>
+                <div class="title">新增标签</div>
+                <div class="simple-line">
+                    <input type="text" id="tags_value" placeholder="不超过5个字" />
+                </div>
+            </div>
+            <div class="modal-btn">
+                <button id="popup-close" class="popup-close">取消</button>
+                <button class="blue" id="popup-complete">确定</button>
+            </div>
+        </div>
+    </div>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+      <include file="UserSupervise:foot_access_file"/>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script type="text/javascript">
+        //点击删除
+        $('.tags-view').on('click','span > b',function(){
+            var obj = $(this);
+            var text = obj.attr('bind-text');
+            var btnArray = ['取消','确定'];
+            var message = '确认移除该标签"'+text+'"?';
+            mui.confirm(message, '', btnArray,function(e){
+                if ( e.index == 1 ) {
+                    var bindId = obj.attr('bind-id');
+                    $('.tags-div > input[value='+bindId+']').remove();
+                    obj.parent('span').remove();
+                }
+            })
+        })
+        //点击确认
+        $('#popup-complete').on('click',function(){
+            var tags = getLocalStorage('tags');
+            var isInterrupt = 0;
+            var checkedTag = $('#tags_list > option:selected').val();
+            var addTag = $('#tags_value').val();
+            var html = '';
+            var inputs ='';
+            if($.trim(addTag).length > 5) {
+                layer.msg('标签名称不能大于5个字');
+                return false;
+            }
+            if(checkedTag == '' && $.trim(addTag) == ''){
+                layer.msg('请选择或添加新的标签');
+                return false;
+            }
+            //添加标签操作
+            if($.trim(addTag) != '') {
+                $.ajax({
+                    url: '__MODULE__/UserSupervise/createCustomerTag.html',
+                    type: 'POST',
+                    dataType: "json",
+                    data: {value:$.trim(addTag)},
+                    success: function(data) {
+                        if(data.error == 0) {
+                            var single = {
+                                'id' : data.id,
+                                'value' : $.trim($.trim(addTag)),
+                                'user_count' : 0
+                            }
+                            tags.push(single);
+                            setLocalStorage(tags,'tags');
+                            html += '<span>'+ $.trim(addTag)+'<b bind-id="'+data.id+'" bind-text="'+$.trim(addTag)+'">✘</b> </span>';
+                            inputs += '<input name="tags[]" value="'+data.id+'"/>';
+                        } else{
+                            layer.msg(data.message);
+                            isInterrupt = 1;
+                        }
+                    }
+                });
+            }
+            setTimeout(function(){
+                if(isInterrupt == 0) {
+                    if(checkedTag > 0) {
+                        var newValue = $('#tags_list > option:selected').text();
+                        html += '<span>'+newValue+'<b bind-id="'+checkedTag+' " bind-text="'+newValue+'">✘</b> </span>';
+                        inputs += '<input name="tags[]" value="'+checkedTag+'"/>';
+                    }
+                    $('.tags-view').prepend(html);
+                    $('.tags-div').prepend(inputs);
+                    $('.wrap-modal').hide();
+                }
+                console.log(html)
+            },400)
+        })
+        $('#add-tag').on('click',function(){
+            var tags = getLocalStorage('tags');
+            var tagsLists = [];
+            var tagsCheckLists = $('.tags-div').find('input[name*=tags]');
+            var tagsCheckIds = [];
+            var html = '<option value="">选择标签</option>';
+            if(tags) {
+                if (tagsCheckLists.length > 0) {
+                    tagsCheckIds = tagsCheckLists.map(function(){
+                        return $(this).val();
+                    }).get();
+                }
+                if(tagsCheckIds) {
+                    for (var i = 0 ; i < tags.length ; i++) {
+                        if($.inArray(tags[i]['id'],tagsCheckIds) <0){
+                            tagsLists.push(tags[i]);
+                        }
+                    }
+                } else {
+                    tagsLists = tags;
+                }
+                for (var a = 0 ; a < tagsLists.length ; a ++ ){
+                    if(tagsLists[a]['id'] > 0) {
+                        html += '<option value="'+tagsLists[a]["id"]+'">'+tagsLists[a]["value"]+'</option>';
+                    }
+                }
+                $('#tags_list').html(html);
+            }
+
+            $('.wrap-modal').show();
+        })
+        $('.popup-close').on('click',function(){
+            $(this).parents('.wrap-modal').hide();
+        })
+        $(function(){
+            var tags = '{$tags_lists}' || '';
+            if($.trim(tags) != '') {
+                setLocalStorage($.trim(tags),'tags');
+            }
+        })
+        //设置localStorage
+        function setLocalStorage(data,itemValue){
+            data = ($.isArray(data) || $.type(data) == 'object') ? JSON.stringify(data):data ;
+            localStorage.setItem(itemValue,data);
+        }
+        function getLocalStorage(itemValue){
+            var value     = localStorage.getItem(itemValue);
+            return $.parseJSON(value);
+        }
+    </script>
+    <script>
+        $('#informations').on('click','.info-line > .delete-div > span',function(){
+            //删除该项
+            var obj = $(this);
+            var title = $(this).parent('.delete-div').prev('input').data('title');
+            var btnArray = ['取消','删除'];
+            var message = '确认删除该自定义类型"'+title+'"吗?';
+            mui.confirm(message, '删除自定义类型', btnArray,function(e){
+                if ( e.index == 1 ) {
+                    obj.parent('.delete-div').parent('.info-line').remove();
+                }
+            })
+
+        })
+        $('.save-edited').on('click',function(){
+            var  company_name = $('input[name*=company_name]').val();
+            var email = $('input[name*=email]').val();
+            var fax = $('input[name*=fax_number]').val();
+            var telephone = $('input[name*=telephone]').val();
+            if (($.trim(company_name)).length > 15){
+                layer.msg('公司名称不能大于15个字')
+                return false;
+            }
+            if (($.trim(email) != '')) {
+                var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+                if (!reg.test($.trim(email))) {
+                    layer.msg('请输入正确的邮箱地址!')
+                    return false;
+                }
+            }
+            if (($.trim(fax) != '')) {
+                var reg = new RegExp("/^(\\d{3,4}-)?\\d{7,8}$/"); //正则表达式
+                if (!reg.test($.trim(email))) {
+                    layer.msg('请输入正确的传真号码!')
+                    return false;
+                }
+            }
+            if (($.trim(telephone) != '')) {
+                var reg_mobile = /^[1][3,4,5,7,8][0-9]{9}$/; //正则表达式
+                var reg_telephone = /^0\d{2,3}-?\d{7,8}$/; //正则表达式
+                if (!reg_mobile.test($.trim(telephone)) && !reg_telephone.test($.trim(telephone))) {
+                    layer.msg('请输入正确的电话!')
+                    return false;
+                }
+            }
+            var formValue = $('#customerForm').serializeArray();
+            //获取informations
+            var informations = $('#informations').find('.info-line > input');
+            if (informations.length > 0) {
+                informations.map(function(){
+                    if( $(this).data('id') > 0) {
+                        formValue.push({'name':'information[old][]','value':$(this).data('id')+'||'+$(this).data('title')+'||'+$(this).val()});
+                    } else {
+                        formValue.push({'name':'information[new][]','value':$(this).data('title')+'||'+$(this).val()});
+                    }
+                });
+            }
+            $.post('__MODULE__/UserSupervise/customer_edit',formValue,function(data){
+                layer.msg(data.message);
+                var id = $('input[name=id]').val();
+                setTimeout(function(){
+                    window.location.href = '/UserSupervise/customer_detail/id/'+id+'.html';
+                },1000)
+            },'JSON')
+        })
+		//添加新分组
+		$('.new-group-btn').on('click',function(){
+            var btnArray = ['取消','确定'];
+            mui.prompt('增加新的分组','分组名称',"新分组",btnArray,function(e){
+                if(e.index	==	1){
+                    if($.trim(e.value) == '') {
+                        layer.msg('增加新的分组名称不能为空');
+                        return false;
+                    }
+                    if($.trim(e.value).length > 5) {
+                        layer.msg('分组名称不能大于5个字');
+                        return false;
+                    }
+                    var groups = $('select[name*=group_id]').find('option');
+                    if(groups.length > 0) {
+                        var isAppend = true;
+                        var titles = groups.map(function(){
+                            return $.trim($(this).text());
+                        }).get();
+                        for (var i = 0 ; i < titles.length ; i++){
+                            if($.trim(titles[i]) == $.trim(e.value)){
+                                layer.msg('已存在相同的分组名称!!');
+                                isAppend = false;
+                                return false;
+                            }
+                        }
+                        if (!isAppend) {
+                            return false;
+                        }
+                    }
+                    $.ajax({
+                        url: '__MODULE__/UserSupervise/createCustomerGroup.html',
+                        type: 'POST',
+                        dataType: "json",
+                        data: {value:$.trim(e.value)},
+                        success: function(data) {
+                            if(data.error == 0) {
+                                var html = '<option value="'+data.id+'" selected>'+$.trim(e.value)+'</option>';
+                                $('select[name*=group_id]').append(html);
+                                layer.msg(data.message);
+                            } else{
+                                layer.msg(data.message);
+                            }
+                        }
+                    });
+                }else{
+                    layer.msg("已取消增加分组");
+                }
+            });
+		})
+        //添加自定义类型
+        $('.customize').on('click',function(){
+            var btnArray = ['取消','确定'];
+            mui.prompt('新增自定义类型','自定义类型标题',"自定义类型",btnArray,function(e){
+                if(e.index	==	1){
+                    if($.trim(e.value) == '') {
+                        layer.msg('自定义类型名称不能为空');
+                        return false;
+                    }
+                    if($.trim(e.value).length > 4) {
+                        layer.msg('自定义类型名称不能大于四个字段');
+                        return false;
+                    }
+                    //判断是否有重复title
+                    var informations =  $('#informations').find('.info-line > input');
+                    if(informations.length > 0){
+                        var isAppend = true;
+                        var titles = informations.map(function(){
+                            return $(this).data('title');
+                        }).get();
+                        for (var i = 0 ; i < titles.length ; i++){
+                            if($.trim(titles[i]) == $.trim(e.value)){
+                                layer.msg('已存在相同的自定义类型!!');
+                                isAppend = false;
+                                return false;
+                            }
+                        }
+                        if (!isAppend) {
+                            return false;
+                        }
+                    }
+                    $.ajax({
+                        url: '__MODULE__/UserSupervise/hasInformationTitle.html',
+                        type: 'POST',
+                        dataType: "json",
+                        data: {title:$.trim(e.value)},
+                        success: function(data) {
+                            if(data.error == 0) {
+                                var single = {
+                                    'title' : $.trim(e.value),
+                                }
+                                var html = parseTemplate('.template-1', single);
+                                $('#informations').append(html);
+                            } else{
+                                layer.msg(data.message);
+                            }
+                        }
+                    });
+                }else{
+                    layer.msg("已取消添加自定义类型");
+                }
+            });
+        })
+    </script>
+    <script type="text/javascript">
+
+        (function (mui, document) {
+            mui.init();
+            mui.ready(function () {
+//              var templatePicker = new mui.PopPicker({
+//                  layer: 1
+//              });
+//              var templateData = $.parseJSON('{$groups_lists}');
+//              var id = $('input[name*=group_id]').val();
+//              if(templateData){
+//                  templatePicker.setData(templateData);
+//                  if (id > 0) {
+//                      templatePicker.pickers[0].setSelectedValue(id);
+//                  }
+//                  var showTemplatePickerButton = document.getElementById('showGroupPicker');
+//                  var templateResult = document.getElementById('showGroupValuePicker');
+//                  templateResult.innerText = templatePicker.pickers[0].getSelectedText();
+//                  showTemplatePickerButton.addEventListener('tap', function (event) {
+//                      templatePicker.show(function (items) {
+//                          templateResult.innerText = (items[0] || {}).text;
+//                          $('input[name*=group_id]').val(items[0].value);
+//                      });
+//                  }, false);
+//              }
+                
+                var cityPicker3 = new mui.PopPicker({
+                    layer: 3
+                });
+                var cityData3 = $.parseJSON('{$region}');
+                if(cityData3){
+                    cityPicker3.setData(cityData3);
+                    var distrust = $('#distrust').val();
+                    var city = $('#city').val();
+                    var province = $('#province').val();
+                    cityPicker3.pickers[0].setSelectedValue(province);
+                    setTimeout(function(){
+                        cityPicker3.pickers[1].setSelectedValue(city);
+                        setTimeout(function(){
+                            cityPicker3.pickers[2].setSelectedValue(distrust);
+                        },200)
+                    },200)
+                    var showCityPickerButton = document.getElementById('showCityPicker');
+                    var cityResult3 = document.getElementById('showCity');
+                    showCityPickerButton.addEventListener('tap', function (event) {
+                        cityPicker3.show(function (items) {
+                            if(items[0].value == items[1].value) {
+                                cityResult3.innerText = (items[0] || {}).text;
+                                $('#showCityPicker').attr('value', items[0].value);
+                            } else if(items[1].value == items[2].value || typeof(items[2].value) == 'undefined') {
+                                cityResult3.innerText = (items[0] || {}).text + " " + (items[1] || {}).text;
+                                $('#showCityPicker').attr('value', items[1].value);
+                            } else {
+                                cityResult3.innerText = (items[0] || {}).text + " " + (items[1] || {}).text + " " + (items[2] || {}).text;
+                                $('#showCityPicker').attr('value', items[2].value);
+                            }
+                            $("#province").val(items[0].value);
+                            $("#city").val(items[1].value);
+                            $("#district").val(items[2].value);
+                        });
+                    }, false);
+                }
+                
+                var cityPicker4 = new mui.PopPicker({
+                    layer: 3
+                });
+                var cityData4 = $.parseJSON('{$region}');
+                if(cityData4){
+                    cityPicker4.setData(cityData4);
+                    var distrust1 = $('#distrust1').val();
+                    var city1 = $('#city1').val();
+                    var province1 = $('#province1').val();
+                    cityPicker4.pickers[0].setSelectedValue(province1);
+                    setTimeout(function(){
+                        cityPicker4.pickers[1].setSelectedValue(city1);
+                        setTimeout(function(){
+                            cityPicker4.pickers[2].setSelectedValue(distrust1);
+                        },200)
+                    },200)
+                    var showCityPickerButton1 = document.getElementById('showCityPicker1');
+                    var cityResult4 = document.getElementById('showCity1');
+                    showCityPickerButton1.addEventListener('tap', function (event) {
+                        cityPicker4.show(function (items) {
+                            if(items[0].value == items[1].value) {
+                                cityResult4.innerText = (items[0] || {}).text;
+                                $('#showCityPicker1').attr('value', items[0].value);
+                            } else if(items[1].value == items[2].value || typeof(items[2].value) == 'undefined') {
+                                cityResult4.innerText = (items[0] || {}).text + " " + (items[1] || {}).text;
+                                $('#showCityPicker1').attr('value', items[1].value);
+                            } else {
+                                cityResult4.innerText = (items[0] || {}).text + " " + (items[1] || {}).text + " " + (items[2] || {}).text;
+                                $('#showCityPicker1').attr('value', items[2].value);
+                            }
+                            $("#province1").val(items[0].value);
+                            $("#city1").val(items[1].value);
+                            $("#district1").val(items[2].value);
+                        });
+                    }, false);
+                }
+            });
+        })(mui, document);
+    </script>
+	
+</body>
+</html>

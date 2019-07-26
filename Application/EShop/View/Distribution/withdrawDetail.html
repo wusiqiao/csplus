@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>财穗快线</title>
+	<link href="{$Think.const.CSS_URL}style/style.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+	<link href="/{$Think.MODULE_PATH}Public/popup/popup.css" rel="stylesheet" />
+	<style>
+		html,body {
+			height: 100%;
+			overflow: scroll;
+		}
+		.row{margin-right: initial;margin-left: initial;}
+	</style>
+	<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	<script src="/{$Think.MODULE_PATH}Public/popup/popup.js"></script>
+	<script>
+	    $(window).resize(infinite);
+	    function infinite() {
+            var htmlWidth = $('html').width();
+            if (htmlWidth >= 960) {
+                  $("html").css({
+                        "font-size" : "42px"
+                  });
+            } else {
+                  $("html").css({
+                        "font-size" :  36 / 1080 * htmlWidth + "px"
+                  });
+            }
+	    }infinite();
+	</script>
+</head>
+<body>
+
+	<section class="content">
+		<div class="record graycolor">当前您已累计提现&nbsp;<span class="basecolor">{$withdrawals.already_cash}&nbsp;元</span></div>
+		<div class="table-list">
+			<div class="title graycolor clearfix">
+				<div class="item">提现日期</div>
+				<div class="item">提现金额</div>
+				<div class="item">手续费</div>
+				<div class="item">结算状态</div>
+			</div>
+			<notempty name="withdrawals.lists">
+				<volist name="withdrawals.lists" id="vo">
+					<div class="list-row clearfix">
+						<div class="date">{$vo.view_time}</div>
+						<div class="amount">{$vo.money}</div>
+						<div class="poundage">{$vo.fee}</div>
+						<if condition="$vo.status eq '0'">
+							<div class="status basecolor" style="float: right;">{$vo.view_status}</div>
+						<else/>
+							<div class="status graycolor" style="float: right;">{$vo.view_status}</div>
+						</if>
+					</div>
+				</volist>
+				<else/>
+				<div class="empty-voucher"><img src="{$Think.const.IMG_URL}/voucher/emptyPic.png" alt="" width="31%"><div style="text-align: center;color:#cccccc;line-height: 2.67rem;">列表是空的哦</div></div>
+			</notempty>
+		</div>
+	</section>
+	<include file="Distribution:popup" />
+	<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+	<script src="{$Think.const.SITE_URL}Public/js/load/dropload.min.js"></script>
+</body>
+</html>

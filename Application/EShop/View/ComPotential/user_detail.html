@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body style="margin-top: .85rem;">
+	<include file="Index:header" />
+	<div class="my-wrap-top my-wrap-top-img user-edit-top">
+        <!--<a href="__MODULE__/User/user_header.html">-->
+        <a>
+        	<img src="{$result.head_pic}?v={$versions}" alt="" />
+        </a>
+        <div class="line50 font30 white">{$result.name}</div>
+    </div>
+    <section class="custom-info-wrap common-wrap bg-none">
+    	<div class="my-wrap-center">
+            <div class="nav-default">
+                <if condition="$permissions['_IS_Manager_'] eq 1">
+                    <a href="/ComPotential/user_edit/type/{$type}/id/{$result.id}.html">
+                        <img class="edit-info" src="/Application/EShop/Public/images/my/edit-info.png">
+                        <span>编辑客户资料</span>
+                    </a>
+                    <elseif condition="($menuList['ComFans']['menu_actions']['update'] eq 1 and $menuList['ComFans']['allow'] eq 1) and $type eq 'fans'"/>
+                    <a href="/ComPotential/user_edit/type/{$type}/id/{$result.id}.html">
+                        <img class="edit-info" src="/Application/EShop/Public/images/my/edit-info.png">
+                        <span>编辑客户资料</span>
+                    </a>
+                    <elseif condition="($menuList['ComPotential']['menu_actions']['update'] eq 1 and $menuList['ComPotential']['allow'] eq 1) and $type eq 'potential'"/>
+                        <a href="/ComPotential/user_edit/type/{$type}/id/{$result.id}.html" >
+                            <img class="edit-info" src="/Application/EShop/Public/images/my/edit-info.png">
+                            <span>编辑客户资料</span>
+                        </a>
+                    <else/>
+                        <a onclick="mui.alert('无此功能操作权限')">
+                            <img class="edit-info" src="/Application/EShop/Public/images/my/edit-info.png">
+                            <span>编辑客户资料</span>
+                        </a>
+                </if>
+                <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['WxBranchTemplate']['menu_actions']['detail'] eq 1 and $menuList['WxBranchTemplate']['allow'] eq 1)">
+                    <a href="/WxBranchTemplate/index/user/{$result.id}.html">
+                        <img class="msg-template" src="/Application/EShop/Public/images/my/msg-template.png" alt="">
+                        <span>发送模板通知</span>
+                    </a>
+                    <else/>
+                    <a href="javascript:;" onclick="mui.alert('无此功能操作权限')">
+                        <img class="msg-template" src="/Application/EShop/Public/images/my/msg-template.png" alt="">
+                        <span>发送模板通知</span>
+                    </a>
+                </if>
+                <a href="javascript:;" data-mobile="{$result.mobile}" onclick="toTelephone(this);">
+                    <img class="user-tel" src="/Application/EShop/Public/images/my/user-tel.png" alt="">
+                    <span>拨打电话</span>
+                </a>
+            </div>
+        </div>
+    	<div class="basic-info mg-b-20">
+    		<div class="title">基本资料</div>
+    		<div class="info-line">
+    			<div class="info-title">昵称<i></i></div>
+    			<div class="info-con">{$result.name}</div>
+    		</div>
+            <neq name="result.mobile" value="">
+                <div class="info-line">
+                    <div class="info-title">绑定手机<i></i></div>
+                    <div class="info-con">
+                        <eq name="result.mobile" value="">
+                            未绑定
+                            <else/>
+                            {$result.mobile}
+                        </eq>
+                    </div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">绑定时间<i></i></div>
+                    <div class="info-con">
+                        <eq name="result.binded_at" value="">
+                            未绑定
+                            <else/>
+                            {$result.binded_at}
+                        </eq>
+                    </div>
+                </div>
+            </neq>
+            <eq name="result.mobile" value="">
+                <div class="info-line">
+                    <div class="info-title">关注时间<i></i></div>
+                    <div class="info-con">
+                        <eq name="result.followed_at" value="">
+                            未关注
+                            <else/>
+                            {$result.followed_at}
+                        </eq>
+                    </div>
+                </div>
+            </eq>
+    		<div class="info-line">
+    			<div class="info-title">备注<i></i></div>
+    			<div class="info-con">{$result.comments}</div>
+    		</div>
+		</div>
+    	<div class="basic-info mg-b-20">
+    		<div class="title">用户设置</div>	
+    		
+    		<div class="info-line">
+    			<div class="info-title">用户类型<i></i></div>
+    			<div class="info-con">
+                    <if condition="$result.user_type eq $Think.const.USER_TYPE_COMPANY_MANAGER ">员工</if>
+                    <if condition="$result.user_type eq $Think.const.USER_TYPE_CUSTOMER ">成交客户</if>
+                    <if condition="$result.user_type eq $Think.const.USER_TYPE_PROSPECTIVE ">意向客户</if>
+                </div>
+    		</div>
+		</div>
+		<div class="basic-info mg-b-20">
+    		<div class="title">分组标签</div>	
+    		<div class="info-line">
+    			
+    			<div class="info-title">所在分组<i></i></div>
+    			<div class="info-con">{$result.group.value}</div>
+    		</div>
+            <div class="info-line">
+                <div class="info-title">客户标签<i></i></div>
+                <div class="info-con icon tags-view">
+                    <volist name="result.tag" id="vo">
+                        <span>{$vo.value}  <b bind-id="{$vo.id}" bind-text="{$vo.value}"></b> </span>
+                    </volist>
+                </div>
+            </div>
+		</div>
+		<div class="basic-info mg-b-20">
+    		<div class="title">用户联系信息</div>
+			<div class="info-line">
+    			<div class="info-title">联系人<i></i></div>
+    			<div class="info-con">{$result.contacts}</div>
+    		</div>
+    		<div class="info-line">
+    			<div class="info-title">手机<i></i></div>
+    			<div class="info-con">{$result.telephone}</div>
+    		</div>
+    		<div class="info-line">
+                <div class="info-title"><span class="fr">E-mail</span><i></i></div>
+                <div class="info-con">{$result.email}</div>
+            </div>
+            <div class="info-line">
+                <div class="info-title">传真<i></i></div>
+                <div class="info-con">{$result.fax_number}</div>
+            </div>
+    		<div class="info-line">
+                <div class="info-title"><span class="fr">QQ</span><i></i></div>
+                <div class="info-con">{$result.qq}</div>
+            </div>
+            
+            <div class="info-line">
+    			<div class="info-title">联系地址<i></i></div>
+    			<div class="info-con">{$result.region} {$result.address}</div>
+    		</div>
+            <volist name="information" id="vo">
+                <div class="info-line">
+                    <div class="info-title">{$vo.title}<i></i></div>
+                    <div class="info-con">{$vo.value}</div>
+                </div>
+            </volist>
+    	</div>
+
+        <volist name="com_info" id="vo">
+            <div class="basic-info mg-b-20">
+                <div class="title">公司信息{$key+1}</div>
+                <div class="info-line">
+                    <div class="info-title">公司名称<i></i></div>
+                    <div class="info-con">{$vo.name}</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">联系人<i></i></div>
+                    <div class="info-con">{$vo.linkman}</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">手机<i></i></div>
+                    <div class="info-con">{$vo.contact}</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">法人代表<i></i></div>
+                    <div class="info-con">{$vo.corporation}</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">身份证<i></i></div>
+                    <div class="info-con">{$vo.corporate_idcard}</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">开户银行<i></i></div>
+                    <div class="info-con">{$vo.bank}</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">银行账号<i></i></div>
+                    <div class="info-con">{$vo.bank_account}</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">注册地址<i></i></div>
+                    <div class="info-con">{$vo.reg_region} {$vo.reg_address}</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">机构代码<i></i></div>
+                    <div class="info-con">{$vo.org_code}</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">邮箱<i></i></div>
+                    <div class="info-con">{$vo.email}</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">联系地址<i></i></div>
+                    <div class="info-con">{$vo.region} {$vo.address}</div>
+                </div>
+                <volist name="vo.information" id="vo1">
+                    <div class="info-line">
+                        <div class="info-title">{$vo1.title}<i></i></div>
+                        <div class="info-con">{$vo1.value}</div>
+                    </div>
+                </volist>
+            </div>
+        </volist>
+        <!--<button type="button" class="mui-btn mui-btn-primary mui-btn-outlined" style="width: 49%" onclick="javascript:window.history.back(-1);">返回</button>
+        <button type="button" class="mui-btn mui-btn-primary" style="width: 49%" onclick="window.open('/ComPotential/user_edit/id/{$result.id}.html','_self')">修改</button>-->
+    </section>
+<include file="UserSupervise:foot_access_file"/>
+    <script type="text/javascript">
+    	function toTelephone(obj){
+    	    var mobile = $(obj).data('mobile');
+    	    if (!(/^1[3|4|5|7|8][0-9]\d{4,8}$/.test(mobile))){
+				layer.msg('该客户没有绑定手机号码!')
+			} else {
+    	        window.location.href = 'tel:'+mobile;
+			}
+		}
+    </script>
+
+</body>
+</html>

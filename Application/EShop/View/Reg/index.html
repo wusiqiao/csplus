@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+        <title>用户注册</title>
+        <link href="{$Think.const.CSS_URL}/css-new/bootstrap.min.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}/css-new/core.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}/css-new/icons.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}/css-new/components.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}/css-new/pages.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}/css-new/menu.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}/css-new/responsive.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}/css-new/style.css?v=1.1" rel="stylesheet" />
+        <style>
+            html,body {
+                max-width: 768px;
+                margin: 0 auto;
+                font-size: 1.25rem;
+            }
+            .container {
+                padding: 0;
+            }
+            input::-webkit-input-placeholder {
+                font-size: 1.25rem;
+            }
+        </style>
+        <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+        <script>
+            $(window).resize(infinite);
+            function infinite() {
+                var htmlWidth = $('html').width();
+                if (htmlWidth >= 960) {
+                    $("html").css({
+                        "font-size": "42px"
+                    });
+                } else {
+                    $("html").css({
+                        "font-size": 36 / 1080 * htmlWidth + "px"
+                    });
+                }
+            }
+            infinite();
+        </script>
+    </head>
+    <body>
+        <input name="codes" id="codes" type="hidden">
+            <div class="container"  style="padding: 0 !important;">
+                <div>
+                    <div class="login">
+                        <div class="page-header" style="margin: 0 0 0.83rem;padding-bottom: 0;">
+                            <img src="{$login_pic}" class="thumb-img"  style="border-radius:0px" />
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="input-group clearfix code-group bottom-bor">
+                                <span class="input-group-addons"></span>
+                                <label class="sr-labels" for="account" style="font-family: '微软雅黑';">手机号：</label>
+                                <input type="tel" class="form-control" id="account" name="account" autofocus onkeyup="this.value = this.value.replace(/[^0-9]/g, '')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')"/>
+                            </div>
+                            <div class="input-group clearfix code-group bottom-bor">
+                                <span class="input-group-addons"></span>
+                                <label class="sr-labels" for="code">验证码：</label>
+                                <div class="col-xs-6 input-group" style="float: left;">
+                                    <input type="tel" class="form-control" id="phonecode" name="phonecode" placeholder="" onkeyup="this.value = this.value.replace(/[^0-9]/g, '')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')"/>
+                                </div>
+                                <!--<a class="send" title="点击切换验证码" href="javascript:;">-->
+                                    <!--<img id="imgVerify" style="cursor:pointer;"   src="__MODULE__/Login/yxcode.html" onclick="fleshVerify();"/>-->
+
+                                <!--</a>-->
+                                <div class="col-xs-5 code-img" style="height: 2.5rem;">
+                                    <!--<a href="javascript:;" onclick="getSMS(this)" class="pull-right text-warning">点击获取</a>-->
+                                    <input class="pull-right text-muted btn-default" style="color: #0793ff; width:85%; border: 1px solid #e4e4e4 !important;position: absolute;top: 50%;transform: translateY(-50%);padding: 0.5rem;" id="getCode" onclick="getSMS(this)" type="button" value="获取验证码"/>
+                                </div>
+                            </div>
+                            <input type="hidden" name="logins" id="Hidden1" value='0'/>
+                            <div class="input-group clearfix code-group bottom-bor">
+                                <span class="input-group-addons"></span>
+                                <label class="sr-labels" for="exampleInputPassword1">密&nbsp;&nbsp;&nbsp;码：</label>
+                                <input type="password" class="form-control"  name="password" id="password" placeholder="不输入默认手机号码后六位"/>
+                            </div>
+
+                        </div>
+                        <div class="form-group text-center" style="padding: 0 5% 0;">
+                            <button type="button" class="btn btn-warning btn-block disabled" disabled="disabled">注册</button>
+                        </div>
+
+                        <div style="padding: 0 5%;" class="clearfix">
+                            <div class="pull-right" style="line-height: 2.5rem;">
+                                <a href="__MODULE__/Login.html" style="color: #0077f4;">已注册，马上登录</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+            <script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+            <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+            <!--end 底部-->
+
+    </body>
+</html>
+<script type="text/javascript">
+    // function fleshVerify(){
+    //     //重载验证码
+    //     $('#imgVerify').attr('src','__MODULE__/Login/yxcode.html');
+    // }
+    function getSMS(obj) {
+        if (!(/^\d{8,15}$/.test($('#account').val()))) {
+            alert('请输入正确的11位手机号');
+        } else {
+            $.ajax({
+                url: "__MODULE__/Check.html",
+                type: "post",
+                dataType: "json",
+                data: {
+                    "phone": $('#account').val(),
+                    "action": "checkphone",
+                },
+                success: function (json) {
+                    if (json.result == '0') {
+                        layer.msg(json.msg);
+                        settime(obj);
+                        $("#codes").val(json.codes)
+                    } else {
+                        layer.msg(json.msg);
+                        $(obj).attr("disabled", false);
+                        return false
+                    }
+
+                },
+                beforeSend: function () {
+                    $(obj).attr("disabled", true);
+                },
+                errors: function () {
+                    $(obj).attr("disabled", false);
+                }
+            });
+        }
+    }
+    var countdown = 60;
+    function settime(setbtn) {
+        if (countdown == 0) {
+            $(setbtn).attr("disabled", false);
+            $(setbtn).css("color", "#0793ff");
+            $(setbtn).val("获取验证码");
+            $(setbtn).removeClass("check");
+            countdown = 60;
+            return;
+        } else {
+            $(setbtn).attr("disabled", true);
+            $(setbtn).css("color", "#e4e4e4");
+            $(setbtn).val("重新发送(" + countdown + ")");
+            countdown--;
+        }
+        setTimeout(function () {
+            settime(setbtn);
+        }, 1000);
+    }
+
+    $(function () {
+        $("#phonecode").bind("input propertychange", function () {
+            var value = $(this).val();
+            if (!value) {
+                $("#getCode").addClass('disabled');
+            } else {
+                $("#getCode").removeClass('disabled');
+            }
+        });
+        $("#account,#phonecode").bind("input propertychange", function () {
+            var value1 = $("#account").val();
+            var value2 = $("#password").val();
+            var value3 = $("#phonecode").val();
+            if (!value1 || !value3) {
+                console.log($("#agree:checked").val());
+                $(".btn-block").addClass('disabled').attr('disabled', 'disabled');
+            } else if (value1 && value3) {
+                $(".btn-block").removeClass('disabled').removeAttr('disabled');
+            }
+
+        });
+        $(".btn-warning").click(function () {
+
+            if ($("#phonecode").val() != $("#codes").val()) {
+                layer.msg('您输入的验证码不正确！');
+                return false;
+            }
+
+            if ($("#account").val() == "") {
+                layer.msg('手机号不能为空');
+                return false;
+            }
+			// if (!(/^1[34578]\d{9}$/.test($('#account').val()))) {
+			//     layer.msg('请输入正确的11位手机号');
+			//     return false;
+			// }
+            if (!(/^\d{8,15}$/.test($('#account').val()))) {
+                layer.msg('请输入正确的手机号');
+                return false;
+            }
+            if ($("#phonecode").val() == "") {
+                layer.msg('验证码不能为空！');
+                return false;
+            }
+
+            if ($('#password').val().length > 0) {
+                if (!(/^[a-zA-Z0-9]{6,}$/.test($('#password').val()))) {
+                    layer.msg('请输入6位意思数字或字母');
+                    return false;
+                }
+            }
+            if ($("#password").val() == "") {
+                var tel = $("#account").val();
+                $("#password").val(tel.slice(-6));
+            }
+
+            var data = {
+                "account": $("#account").val(),
+                "password": $("#password").val(),
+                "phonecode": $('#phonecode').val(),
+                "action": 'reg'
+            };
+            $.ajax({
+                url: "__MODULE__/Reg.html",
+                type: 'POST',
+                dataType: "json",
+                data: data,
+                beforeSend: function () {
+                    var index = layer.load(0, {
+                        shade: [0.1, '#fff'] //0.1透明度的白色背景
+                    });
+                },
+                success: function (data) {
+                    if (data.error == 0) {
+                        layer.closeAll();
+                        layer.msg('注册成功');
+                        setTimeout(function () {
+                            if (data.url) {
+                                window.location.href = data.url;
+                            } else {
+                                window.location.href = "__MODULE__/Business/new_task";
+                            }
+                        }, 1000);
+                    } else {
+
+                        layer.closeAll();
+                        layer.msg(data.msg);
+                        setTimeout(function () {
+                        }, 2000);
+                    }
+                },
+            });
+        });
+    });
+</script>

@@ -1,0 +1,29 @@
+<section class="feedback-wrap" style="display: none">
+	<div class="modal-wrap-position">
+		<div class="feedback-modal-wrap">
+			<div class="modal-top">咨询/核名/查询/领取成功！<br>马上有人专人联系您告知查询结果<br>您也可以尝试其他工具</div>
+			<div class="tool-wrap">
+				<a href="__MODULE__/Tool/nuclear_name.html">
+					<img class="check-tool" src="/Application/EShop/Public/images/Index_img/icon-check.png" alt="">
+					<span>免费核名</span>
+				</a>
+				<a href="__MODULE__/Tool/search_trademarks.html">
+					<img class="search-tool" src="/Application/EShop/Public/images/Index_img/icon-search.png" alt="">
+					<span>免费查询商标</span>
+				</a>
+				<a href="__MODULE__/Tool/files.html">
+					<img class="file-tool" src="/Application/EShop/Public/images/Index_img/icon-file.png" alt="">
+					<span>免费文档</span>
+				</a>
+			</div>
+			<a class="turn-back" href="/">返回首页</a>
+			<div class="mid-bottom-close"></div>
+		</div>
+	</div>
+</section>
+<script>
+	 $('.mid-bottom-close').on('click',function(){
+	 	$(this).parents('.feedback-wrap').hide();
+	 })
+</script>
+

@@ -1,0 +1,16 @@
+<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+	<h1 class="mui-title">{$title}</h1>
+	<button class="mui-btn mui-btn-link mui-btn-nav mui-pull-left" id="come-back" style="color: #444444 !important;padding: 0 !important;">
+		<span class="mui-icon mui-icon-arrowleft">
+		</span>返回
+	</button>
+	<button id="back-home" class="back-home"></button>
+</header>
+<script>
+	$('#come-back').on('click',function(){
+		window.history.back();
+	})
+	$('#back-home').on('click',function(){
+		window.location.href = '__MODULE__/Index/index.html';
+	})
+</script>

@@ -1,0 +1,87 @@
+/*页头样式*/
+.margin-header {margin-top: 3.67rem;}
+/*页头样式end*/
+
+/*首页*/
+/*mid-nav*/
+.index-nav {background-color: #ffffff;width: 100%;margin-bottom: 0}
+
+ /*mid-nav*/
+
+/*推荐服务商*/
+.intr-merchants {position: relative;overflow: hidden; width:19%;height: 5.4rem; float:left;margin-left:1%;border: 1px solid #e4e4e4;}
+.intr-merchants img {width: 100%;height: 100%;}
+.intr-merchants .company-name{font-size: 1.25rem;color:#ffffff;height:3rem;padding:2px 0;line-height: 1.5rem;overflow: hidden;position: absolute;left:0px;right: 0; bottom:0px;background-color:#000000;opacity: 0.6;}
+/*首页end*/
+
+/*公共样式*/
+.db {display: block;}
+.dn {display: none;}
+.pr {position: relative;}
+.pi {position: inherit;}
+.ov-h{overflow: hidden;}
+/*公共样式end*/
+
+/*字体样式*/
+.small-font {font-size: 1rem;}
+/*字体样式end*/
+
+/*底部导航栏*/
+.footer-nav {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	/*z-index: 100000;*/
+	width: 100%;
+	padding: 0;
+	border-top: 1px solid #e4e4e4;
+	text-align: center;
+	color: #777777;
+	background-color: #ffffff;
+}
+.footer-nav a {
+	float:left;
+	width: 33%;
+	/*height: 50px;*/
+	height: 4.17rem;
+	position: relative;
+}
+.footer-nav a img {
+	display: block;
+	/*width: 21px;*/
+	width: 1.75rem;		
+	/*height: 28px;*/
+	height: 2.33rem;
+	margin: 0 auto;
+	padding-top: 0.67rem;
+}
+
+.footer-nav a img.release-btn {
+	display: block;
+    width: 3rem;
+    height: 3rem;
+    margin: -0.75rem auto 0rem;
+    padding-top: 0;
+}
+
+.footer-nav a span {
+	display: block;
+	height: 1.67rem;
+	font-size: 1rem;
+	color: #999999;
+	line-height: 1.67rem;
+}
+/*底部导航栏end*/
+
+/*Business-index*/
+
+/*修改报价按钮修整*/
+.business-btn {display: flex;padding: 0.5rem;justify-content: space-between;}
+
+/*Business-index end*/
+
+/*Microstore*/
+.store-list-txt {float: left;padding: 0.5rem 0;}
+.store-list-txt .txt-title {line-height: 2.25rem;}
+.store-link-icon {font-size: 2rem;position: absolute;right: 0;top: 1.5rem;color:#999999;}
+/*Microstore end*/

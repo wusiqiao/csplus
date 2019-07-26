@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>用户登录</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body>
+<!--内容区 start-->
+<section class="login-wrap">
+
+    <div class="page-pwd">
+        <form onsubmit="return false;" id="loginForm"  method="post">
+
+                <div class="logo">
+                    <notempty name="login_pic">
+
+                        <img src="{$login_pic}" alt="" />
+                    <!--<span>为财务公司加无限可能！</span>-->
+                    </notempty>
+                </div>
+
+            <div class="login-form">
+                <div class="login-input">
+                    <span class="icon-tel-num"></span>
+                    <input type="text" name="account" id="account" placeholder="请输入您的手机号"/>
+                </div>
+                <div class="login-input">
+                    <span class="icon-pwd"></span>
+                    <input type="password"  name="password" id="password" placeholder="请输入您的密码" />
+                </div>
+                <div class="login-input" id="codes" style="display: none">
+                    <span class="icon-phone-code"></span>
+                    <input type="text" name="code" id="code" placeholder="验证码"/>
+                    <button class="get-number" onclick="javascript:change()">
+                        <img class="thumb-img" id="code-img" onClick="javascript:change()" src="__MODULE__/Login/codeimg.html" width="70" height="22" />
+                    </button>
+                </div>
+                <button class="login-btn" onclick="loginBtn('password')">登录</button>
+                <!--<a class="to-reg" href="">还没账号？马上注册</a>-->
+            </div>
+            <div class="login-method">
+	            <ul>
+	                <li>
+	                    <div class="login-phone-code">
+	                        <img src="/{$Think.MODULE_PATH}Public/images/login/login-btn-code.png" alt="" />
+	                        <span>验证码登录</span>
+	                    </div>
+	                    <div class="login-weixin" onclick="loginBtn('wx')">
+	                        <img src="/{$Think.MODULE_PATH}Public/images/login/login-btn-weixin.png" alt="" />
+	                        <span>微信登录</span>
+	                    </div>
+	                </li>
+	            </ul>
+	        </div>
+        </form>
+        
+    </div>
+    <div class="page-phone-code hide">
+        <form onsubmit="return false;" id="loginSmsForm"  method="post">
+            <div class="logo">
+                <notempty name="login_pic">
+
+                    <img src="{$login_pic}" alt="" />
+                    <!--<span>为财务公司加无限可能！</span>-->
+                </notempty>
+            </div>
+            <div class="login-form">
+                <div class="login-input">
+                    <span class="icon-tel-num"></span>
+                    <input type="text" name="account" id="sms_account" placeholder="请输入您的手机号"/>
+                </div>
+                <div class="login-input">
+                    <span class="icon-phone-code"></span>
+                    <input type="text" name="code" id="sms_code" placeholder="验证码"/>
+                    <button class="get-number" onclick="getSMS(this)">获取验证码</button>
+                </div>
+                <input type="hidden" name="codes" id="sms_codes"/>
+                <button class="login-btn" onclick="loginBtn('code')">登录</button>
+                <!--<a class="to-reg" href="">还没账号？马上注册</a>-->
+            </div>
+            <div class="login-method">
+	            <ul>
+	                <li>
+	                    <div class="login-pwd">
+	                        <img src="/{$Think.MODULE_PATH}Public/images/login/login-btn-psw.png" alt="" />
+	                        <span>密码登录</span>
+	                    </div>
+	                    <div class="login-weixin" onclick="loginBtn('wx')">
+	                        <img src="/{$Think.MODULE_PATH}Public/images/login/login-btn-weixin.png" alt="" />
+	                        <span>微信登录</span>
+	                    </div>
+	                </li>
+	            </ul>
+	        </div>
+        </form>
+        
+    </div>
+</section>
+<script type="text/javascript">
+    var u = navigator.userAgent;
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    if (isiOS) {
+        $('input').blur(function(){
+            $('body').scrollTop(0);
+        })
+    }
+    $(function(){
+        setTimeout(function(){
+            $('#password').val('');
+        },400)
+    })
+	var nHeightLogin = $(window).height();
+	$('.login-wrap').css('height',nHeightLogin);
+	$('.logo').css('height',nHeightLogin * 0.5);
+    function change() {
+        var src = '__MODULE__/Login/codeimg.html';
+        $('#code-img').attr('src', src);
+    }
+    function getSMS(obj) {
+        if (!(/^1[3|4|5|7|8][0-9]\d{4,8}$/.test($('#sms_account').val()))) {
+            alert('请输入正确的手机号');
+        } else {
+            $.ajax({
+                url: "__MODULE__/Check.html",
+                type: "post",
+                dataType: "json",
+                data: {
+                    "phone": $('#sms_account').val(),
+                    "action": "loginphone",
+                },
+                success: function (json) {
+                    if (json.result == '0') {
+                        alert(json.msg);
+                        settime(obj);
+                        $("#sms_codes").val(json.codes)
+                    } else {
+                        alert(json.msg);
+                        $(obj).attr("disabled", false);
+                        return false
+                    }
+
+                },
+                beforeSend: function () {
+                    $(obj).attr("disabled", true);
+                },
+                errors: function () {
+                    $(obj).attr("disabled", false);
+                }
+            });
+        }
+    }
+
+    var countdown = 60;
+
+    function settime(setbtn) {
+        if (countdown == 0) {
+            $(setbtn).attr("disabled", false);
+            $(setbtn).text("获取验证码");
+            $(setbtn).removeClass("check");
+            countdown = 60;
+            return;
+        } else {
+            $(setbtn).attr("disabled", true);
+            $(setbtn).text("重新发送(" + countdown + ")");
+            countdown--;
+        }
+        setTimeout(function () {
+            settime(setbtn);
+        }, 1000);
+    }
+</script>
+<script type="text/javascript">
+    $('.login-phone-code').on('click',function(){
+//      $('.login-wrap').addClass('active');
+		$('.page-pwd').addClass('hide');
+        $('.page-phone-code').removeClass('hide');
+    })
+    $('.login-pwd').on('click',function(){
+        $('.page-phone-code').addClass('hide');
+//      $('.login-wrap').removeClass('active');
+        $('.page-pwd').removeClass('hide');
+    })
+    function loginBtn(type) {
+        if ($("#account").val() == "" && type == 'password' ) {
+            layer.msg('账户不能为空！');
+            return false;
+        }
+        if ($("#password").val() == "" && type == 'password') {
+            layer.msg('密码不能为空！');
+            return false;
+        }
+        if ($("#sms_account").val() == "" && type == 'code' ) {
+            layer.msg('账户不能为空！');
+            return false;
+        }
+        if ($("#sms_code").val() == "" && type == 'code' ) {
+            layer.msg('验证码不能为空！');
+            return false;
+        }
+        if ($("#sms_code").val() != $("#sms_codes").val() && type == 'code' ) {
+            layer.msg('验证码不能错误！');
+            return false;
+        }
+        var data = {
+            "action": 'login',
+            "type" : type
+        };
+        if(type == 'password'){
+            data['account'] = $("#account").val();
+            data['password']= $("#password").val();
+            data['code']    = $("#code").val();
+        }else if(type == 'code'){
+            data['account'] = $("#sms_account").val();
+            data['phonecode']    = $("#sms_code").val();
+        }
+        $.ajax({
+            url: "__MODULE__/Login.html",
+            type: 'POST',
+            dataType: "json",
+            data: data,
+            beforeSend: function () {
+                var index = layer.load(0, {
+                    shade: [0.1, '#fff'] //0.1透明度的白色背景
+                });
+            },
+            success: function (data) {
+                if (data.error == 0) {
+                    layer.closeAll();
+                    layer.msg('登录成功');
+                    setTimeout(function () {
+                        window.location.href = data.url;
+                    }, 2000);
+
+
+
+                } else {
+                    if (data.verifyTimes > 2 &&  type == 'password') {
+                        $("#codes").show();
+                    }
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                    setTimeout(function () {
+                    }, 2000);
+                    $('#loginBtn').removeClass('disable');
+//                      $('#codes').css('display':'block',true),
+                }
+            }
+        });
+    }
+</script>
+<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+
+</body>
+</html>

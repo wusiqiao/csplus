@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>部门和员工设置</title>
+    <link href="/{$Think.APP_PATH}Public/vender/layer/skin/layer.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Application/EShop/Public/css/Organization/index.css?v={$vesion}">
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+    <link href="{$Think.const.CSS_URL}common.css?v={$vesion}" rel="stylesheet" />
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/vender/vue-tree-2.0/vue-tree.css">
+    <script>
+        window.addEventListener('resize',remChange());
+        function remChange() {
+            var html = document.querySelector('html');
+            var width = html.getBoundingClientRect().width;
+            if( width >= 750 ){
+                width = 750;
+            }
+            html.style.fontSize = width / 10 + 'px';
+            return remChange;
+        }
+    </script>
+    <style>
+        body{
+            font-size: 14px !important;
+        }
+        #object-tree{padding-left: 0}
+        .bottom-line{
+            position: relative !important;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap" style="overflow-y: scroll;">
+    <div class="content" style="border-radius: 3px">
+        <p class="directory" style="font-size: 14px">组织结构</p>
+        <ul id="object-tree" class="vue-tree">
+            <vue-tree style="cursor: pointer" :model="treeData" ></vue-tree>
+        </ul>
+    </div>
+</div>
+
+    <script src="__ROOT__/{$Think.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/vender/vue-tree-2.0/vue-tree.js"></script>
+    <script src="/{$Think.APP_PATH}Public/jquery/jquery.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+    <script type="text/javascript">
+
+        buildVueTree("vue_tree");
+        var vue_tree = new Vue({
+            el: "#object-tree",
+            data: {
+                treeData: [],
+                current:Object,
+                mountedCount :0,
+                totalCount:0
+            },
+            methods:{
+                child_mounted:function(){
+                    this.mountedCount++;
+                    if (this.mountedCount == this.totalCount){
+                        $(".item .tree-node-edit").hide();
+                    }
+                },
+                click:function (item) {
+                    parent.$("input[name='dept_id']").val(item.id);
+                    parent.$("input[name='dept_name']").val(item.text);
+                    var name = window.frameElement.getAttribute('name');
+                    var index = parent.layer.getFrameIndex(name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                }
+            }
+        });
+
+        $(function(){
+            getDeptList();
+        });
+
+        function getDeptList() {
+            $.post("/Organization/DeptList/type/2",function(result){
+                result[0]['name'] = result[0]['text'] + "("+result[0]['user_count']+")";
+                vue_tree.treeData = result[0];
+                vue_tree.totalCount = result[0].children.length;
+                getCount(result[0].children);
+            },'json')
+        }
+
+        function getCount(data){
+            for(var i in data){
+                vue_tree.totalCount += data[i].children.length;
+                if(data[i].children.length>0){
+                    getCount(data[i].children);
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>

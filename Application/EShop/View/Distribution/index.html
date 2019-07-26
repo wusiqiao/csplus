@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{$Think.const.CSS_URL}mui/mui.css">
+    <link href="/{$Think.MODULE_PATH}Public/popup/popup.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css?v=4" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="/{$Think.MODULE_PATH}Public/popup/popup.js"></script>
+    <script src="{$Think.const.JS_URL}mui/mui.min.js"></script>
+    <style type="text/css">
+    	html,body {
+    		height: 100%;
+    		background-color: #ffffff !important;
+    	}
+    	a {
+    		color: #FFFFFF;
+    	}
+    </style>
+</head>
+<body>
+    <include file="Index:header" />
+    <section class="my-distribution" style="padding-top: .85rem;height:350px">
+    	<div class="my-distribution-top">
+    		<div>
+    			<img src="{$my_head_pic}" alt="" />
+    		</div>
+    	</div>
+    	<div class="my-distribution-bottom">
+    		<a href="/Distribution/myIncome.html">
+    			<div class="left">
+	    			<div class="income">
+	    				<span class="font30 black-1">我的收益</span>
+	    				<span class="font22 gray-9">百万佣金轻松赚</span>
+	    			</div>
+	    			<div class="income-img"></div>
+	    		</div>
+    		</a>
+    		<a href="/Distribution/myTeam.html">
+    			<div class="right">
+	    			<div class="rank">
+	    				<span class="font30 black-1">我的下级</span>
+	    				<span class="font22 gray-9">让人脉变成现金</span>
+	    			</div>
+	    			<div class="rank-img"></div>
+	    		</div>
+    		</a>
+    		
+    	</div>
+    	<div class="distribution-introduce">
+    		<div class="share-reward font24"><span></span>分享有赏</div>
+			<volist name="products" id="product">
+				<div class="introduce">
+					<div class="introduce-img">
+						<img src="{$product.product_pic}" alt="" />
+					</div>
+					<div class="introduce-text">
+						<div class="title">{$product.product_title}</div>
+						<div class="gray-9">价格：{$product.cash_text}</div>
+						<div class="red">佣金：{$product.commision_amount_text}</div>
+					</div>
+					<div class="introduce-btn" onclick="location.href='/Product/productDetail/product_id/{$product.product_id}/has_commision/1'">分享有赏</div>
+				</div>
+			</volist>
+    	</div>
+    </section>   
+</body>
+
+</html>

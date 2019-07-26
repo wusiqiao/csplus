@@ -1,0 +1,29 @@
+<!-- Modal -->
+<eq name="redpacket" value="show">
+<div class="modal fade ticket-receive" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="">
+	<div class="modal-dialog-coupon" role="document">
+		<div class="modal-content-coupon">
+			<div class="close-coupon">×</div>
+			<div class="modal-body">
+				<div class="modal-top-coupon">
+					<div class="congratulation-coupon">恭喜您！获得</div>
+				</div>
+				<div class="modal-bottom-coupon">
+					<div class="box-coupon">
+						<div class="red-font " style="padding-top: .3rem;padding-bottom: .6rem;"> 
+							<span style="font-size: .8rem;display: inline-block;line-height: .8rem;font-family: heiti;">{$user_receive.reduce_cost}</span>元
+							<div class="red-font">优惠券</div>
+						</div>
+						
+						<div class="white">满{$user_receive.least_cost}元可用</div>
+					</div>
+					
+				</div>
+			</div>
+			<div class="modal-footer-coupon">
+				<a class="coupon-btn" href="javascript:;" id="ticket_receive" onclick="ticket_receive(this);" data-id="{$user_receive.id}">点击领取</a>
+			</div>
+		</div>
+	</div>
+</div>
+</eq>

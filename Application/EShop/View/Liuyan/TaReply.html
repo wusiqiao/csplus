@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta name="renderer" content="webkit">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+    <!--<link href="{$Think.const.CSS_URL}voucher.css" rel="stylesheet" />-->
+    <link rel="stylesheet" href="/{$Think.MODULE_PATH}Public/new_ui/css/reset.css">
+    <link rel="stylesheet" href="/{$Think.MODULE_PATH}Public/new_ui/css/phoenix.css">
+    <link rel="stylesheet" href="{$Think.const.JS_URL}load/dropload.css" />
+    <link href="{$Think.const.CSS_URL}/css-new/style.css" rel="stylesheet" />
+    <title>{$title}</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script>
+		$(window).resize(infinite);
+
+		function infinite() {
+			var htmlWidth = $('html').width();
+			if(htmlWidth >= 960) {
+				$("html").css({
+					"font-size": "42px"
+				});
+			} else {
+				$("html").css({
+					"font-size": 36 / 1080 * htmlWidth + "px"
+				});
+			}
+		}
+		infinite();
+	</script>
+</head>
+<body>
+
+<link rel="stylesheet" href="{$Think.const.CSS_URL}mui/mui.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}liuyan/liuyan.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}mui/imageviewer.css">
+<style>
+    html,body {overflow-x: hidden;}
+    .mui-bar {position: fixed;top: 0;left: 0;  height: 3.67rem;background-color: #ffffff;}
+    .mui-title {font-size: 1.33rem !important;line-height: 3.67rem;}
+    .mui-bar .mui-btn .mui-icon {top: 0.35rem;font-size: 3rem !important;}
+    .mui-bar .mui-btn-link {font-size: 1.25rem !important;}
+    .ask-pic{width:5rem;}
+    .ask-file{width:3rem;}
+    .file-background{background-color: initial !important;}
+</style>
+<script src="{$Think.const.JS_URL}mui/mui.js"></script>
+<header id="header" class="mui-bar mui-bar-nav link-style bd-b1">
+    <h1 class="mui-title">{$company_name}</h1>
+    <button class="mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left " style="color: #444444 !important;padding:0 !important ">
+		<span class="mui-icon mui-icon-arrowleft">
+		</span>
+    </button>
+</header>
+
+<div class="liuyan-wrap pt70 pb120" id="yxload">
+	<notempty name="product">
+		<div style="background: #FFFFDD;padding: 0.83rem;margin: 0.83rem;font-size: 1rem;line-height: 1.5rem;">
+			<div><label style="color: #AEAEA7;">服务订单标题:</label><span style="margin-left: 0.42rem;">{$product['product_title']}</span></div>
+			<div><label style="color: #AEAEA7;">服务订单类型:</label><span style="margin-left: 0.42rem;">{$product['product_category']}</span></div>
+			<div><label style="color: #AEAEA7;">服务订单状态:</label><span style="margin-left: 0.42rem;">{$product['order_state']}</span></div>
+		</div>
+	</notempty>
+    <notempty name="tool">
+        <div style="background: #FFFFDD;padding: 0.83rem;margin: 0.83rem;font-size: 1rem;line-height: 1.5rem;">
+        <volist name="tool" id="vo">
+            <div><label style="color: #AEAEA7;">{$vo.key}:</label><span style="margin-left: 0.42rem;">{$vo.value}</span></div>
+        </volist>
+        </div>
+    </notempty>
+	<div class="dialog-box yxcontent">
+		<foreach name="list" item="vo">
+			<if condition="$vo.flag eq 1">
+			        <time>{$vo.begtime}</time>
+			        <div class="dialog-content">
+                        <input type="hidden" name="left-time" value="{$vo.comment_time}">
+			            <a href="javascript:;"><img class="header-pic" src="{$vo.face}" alt=""></a>
+			            <if condition="$vo.attach neq ''">
+                        <p class="left-dia file-background">
+                            <eq name="vo.attach_type" value="image">
+                                <img class="ask-pic" data-preview-src="" data-preview-group="1" src="{:getAskUploadFileImages($vo['attach'])}">
+                            <else/>
+                                <a href="{$vo['attach']}">
+                                    <img class="ask-file" src="{:getAskUploadFileImages($vo['attach'])}">
+                                </a>
+                            </eq>
+                        </p>
+                    <else/>
+                        <p class="left-dia"><span class="left-triangle"></span>{$vo.content}</p>
+                    </if>
+			        </div>
+		    <else />
+			    <time>{$vo.begtime}</time>
+			    <div class="dialog-content rtl">
+			        <img class="header-pic" src="{$vo.face}" alt="">
+			        <if condition="$vo.attach neq ''">
+                        <p class="right-dia file-background">
+                            <eq name="vo.attach_type" value="image">
+                                <img class="ask-pic" data-preview-src="" data-preview-group="1" src="{:getAskUploadFileImages($vo['attach'])}">
+                            <else/>
+                                <a href="{$vo['attach']}">
+                                    <img class="ask-file" src="{:getAskUploadFileImages($vo['attach'])}">
+                                </a>
+                            </eq>
+                        </p>
+                    <else/>
+                        <p class="right-dia"><span class="right-triangle"></span>{$vo.content}</p>
+                    </if>
+			    </div>
+	
+			</if>
+	    </foreach>
+    </div>
+</div><!--end of wrap-->
+<empty name="system">
+    <form onsubmit="return false;" method="">
+        <input type="file" data-tag="0" name='imgFile0'  id='imgFile0'  style="display:none;">
+    </form>
+    <div class="reply-box">
+        <!--<button style="float: left;margin-top: 0.1rem; margin-right: 0.2rem;" id="show_images">+</button>-->
+        <input type="text" class="sent-txt" id="content" style="width: 80%;height: 2.8rem;" value="" placeholder="请输入您的留言内容" autofocus>
+        <button class="btn-sent btn-warning" style="background-color: #0099ff !important;    border: 1px solid #0099ff !important;">发送</button>
+        <script src="/{$Think.APP_PATH}Public/mui/js/mui.zoom.js"></script>
+        <script src="/{$Think.APP_PATH}Public/mui/js/mui.previewimage.js"></script>
+        <script type="text/javascript">
+            // 初始化previewImage
+            mui.previewImage();
+        </script>
+    </div>
+    <else/>
+    <include file="Public:contact" />
+    <!--<script>select_menu('my');</script>-->
+</empty>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+
+<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script src="{$Think.const.JS_URL}ajaxfileupload.js" type="text/javascript"></script>
+<script>
+    var isSystem = '{$is_system}';
+    var isMsgType= '{$msg_type}';
+    $(".yxcontent").on('click','#system-msg',function(){
+        var url = $(this).attr('data-url');
+        window.location.href=url;
+    })
+    $(function () {
+        
+        if(isSystem != '1'){
+            $('.liuyan-wrap').animate({scrollTop: 100*{$count}  + 300}, 1000);
+        }
+        $(".btn-warning").click(function () {
+            var content = $("#content").val();
+            if (content == "") {
+                layer.msg('留言内容不能为空！');
+                return false;
+            }
+            
+            if(isMsgType == 'order'){
+               var data = {
+                        "content": $("#content").val(),
+                        "oid": '{$obj_id}',
+                        "action": 'order',
+                    };
+            }else if(isMsgType.indexOf("tool") != -1){
+                var data = {
+                    "content": $("#content").val(),
+                    "tid": '{$obj_id}',
+                    "action": isMsgType,
+                };
+            }else{
+                var data = {
+                        "content": $("#content").val(),
+                        "id": '{$id}',
+                        "action": 'ok',
+                    };
+            }
+            $.ajax({
+                url: "__MODULE__/Liuyan/TaLeave.html",
+                type: 'POST',
+                dataType: "json",
+                data: data,
+                beforeSend: function () {
+                    var index = layer.load(0, {
+                        shade: [0.1, '#fff'] //0.1透明度的白色背景
+                    });
+                },
+                success: function (data) {
+                    layer.closeAll();
+                    layer.msg('提交成功');
+                    var result = '<div>';
+                    result += '<time>' + data.comment_time + '</time>'
+                    result += '<div class="dialog-content rtl">';
+                    result += '<img class="header-pic" src="' + data.face + '" alt="">'
+                    result += '<p class="right-dia"><span class="right-triangle"></span>' + content +'</p>'
+                    result += '</div>';
+                    $('.yxcontent').append(result);
+                    $('#mess_count').html(parseInt($('#mess_count').html())+1);
+                    $("#content").val('');
+                    $('body,html').animate({scrollTop: $('.liuyan-wrap').scrollTop() + 300}, 500);
+                },
+            });
+        });
+    });
+</script>
+    <script type="text/javascript">
+        $('#show_images').click(function(){
+            $('#imgFile0').click();
+        })
+        //上传文件
+        $('input[type=file]').change(function() {
+            var files = $(this).get(0).files[0]; //获取图片信息
+            var maxfilesize = 1024 * 1024 * 5; //最大文件大小设置为2M
+            var updateAlready   = $("input[name*=attach]").size();//已经上传的文件数
+            if(files.size > maxfilesize) {
+                layer.msg("文件大小最多只能5M,请重新上传");
+                return false;
+            }
+            //默认加载
+            var index = layer.load(1, {});
+            $.ajaxFileUpload({
+                url: '__MODULE__/Upload/update_ask_files/t/0.html', //你处理上传文件的服务端
+                secureuri: false,
+                fileElementId: 'imgFile0',
+                dataType: 'json',
+                success: function(data) {
+                    if(data.code == 0) {
+                        setAskUpload(data);
+                    } else {
+                        layer.closeAll();
+                        layer.msg(data.message);
+                    }
+                }
+            })
+        });
+        function setAskUpload(file){
+            console.log(123312);
+            console.log(file);
+            if(isMsgType == 'task'){
+               var data = {
+                        "attach_1": file.record.file_url,
+                        "tid": '{$task.task_id}',
+                        "action": 'task',
+                    };
+            }else{
+                var data = {
+                        "attach_1": file.record.file_url,
+                        "id": '{$id}',
+                        "action": 'ok',
+                    };
+            }
+            
+            $.ajax({
+                url: "__MODULE__/Liuyan/MeLeave.html",
+                type: 'POST',
+                dataType: "json",
+                data: data,
+                beforeSend: function () {
+
+                },
+                success: function (data) {
+                    layer.closeAll();
+                    layer.msg('提交成功');
+                    var result = '<div>';
+                    result += '<time>' + data.comment_time + '</time>';
+                    result += '<div class="dialog-content rtl">';
+                    result += '<img class="header-pic" src="' + data.face + '" alt="">';
+                    if(file.record.type == 'image'){
+                        result += '<p class="right-dia file-background"><img data-preview-src="" data-preview-group="1" class="ask-pic" src="'+file.record.file_url+'"></p>';
+                    }else{
+                        result += '<p class="right-dia file-background"><a href="'+file.record.file_url+'"><img class="ask-file" src="/{$Think.const.IMG_URL}Index_img/ask-'+file.record.type+'.png"></a></p>';
+                    }
+                    result += '</div>';
+                    $('.yxcontent').append(result);
+                    $('#mess_count').html(parseInt($('#mess_count').html())+1);
+                    $("#content").val('');
+                    $('body,html').animate({scrollTop: $('.liuyan-wrap').scrollTop() + 300}, 500);
+                },
+            });
+        }
+    </script>
+<script>
+    $(function(){
+        setInterval(function(){
+            var time = $('input[name="left-time"]:last').val();
+            var id = "{$id}";
+            $.ajax({
+                url:"/Liuyan/getNewNews",
+                data:{last_time:time,id:id,action:"{$action}",tool_id:"{$obj_id}"},
+                type:"post",
+                dataType:"json",
+                success:function(data){
+                    for(var i=0;i<data.length;i++){
+                        var result = '<div>';
+                        result += '<time>' + data[i].begtime + '</time>';
+                        result += '<div class="dialog-content">';
+                        result += '<img class="header-pic" src="' + data[i].face + '" alt="">';
+                        result += '<p class="left-dia"><span class="left-triangle"></span>'+data[i].content+'</p>';
+                        result += '<input type="hidden" name="left-time" value="'+data[i].comment_time+'"></div>';
+                        $('.yxcontent').append(result);
+                        $('#mess_count').html(parseInt($('#mess_count').html())+1);
+                        $("#content").val('');
+                        $('.liuyan-wrap').animate({scrollTop: $('.liuyan-wrap').scrollTop() + 300}, 500);
+                    }
+                    //if(time != data.comment_time){
+                        /*var result = '<div>';
+                        result += '<time>' + data.begtime + '</time>'
+                        result += '<div class="dialog-content">';
+                        result += '<img class="header-pic" src="' + data.face + '" alt="">'
+                        result += '<p class="left-dia"><span class="left-triangle"></span>'+data.content+'</p>';
+                        result += '<input type="hidden" name="left-time" value="'+data.comment_time+'"></div>';
+                        $('.yxcontent').append(result);
+                        $('#mess_count').html(parseInt($('#mess_count').html())+1);
+                        $("#content").val('');
+                        $('.liuyan-wrap').animate({scrollTop: $('.liuyan-wrap').scrollTop() + 300}, 500);*/
+                   // }
+                }
+            })
+        },5000);
+    })
+
+</script>
+<script>
+
+</script>
+</body>
+</html>

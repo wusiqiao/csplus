@@ -1,0 +1,236 @@
+<!--头部 start-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style” content=black"/>
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}/css-new/bootstrap.min.css" rel="stylesheet"/>
+    <link href="{$Think.const.CSS_URL}/css-new/core.css" rel="stylesheet"/>
+    <link href="{$Think.const.CSS_URL}/css-new/icons.css" rel="stylesheet"/>
+    <link href="{$Think.const.CSS_URL}/css-new/components.css" rel="stylesheet"/>
+    <link href="{$Think.const.CSS_URL}/css-new/pages.css" rel="stylesheet"/>
+    <link href="{$Think.const.CSS_URL}/css-new/menu.css" rel="stylesheet"/>
+    <link href="{$Think.const.CSS_URL}/css-new/responsive.css" rel="stylesheet"/>
+    <link href="{$Think.const.CSS_URL}/css-new/style.css?v=22" rel="stylesheet"/>
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+    <script src="{$Think.const.JS_URL}/jquery.min.js"></script>
+    <script src="{$Think.const.JS_URL}/bootstrap.min.js"></script>
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <style>
+        th, td {
+            text-align: center;
+            border: 1px solid #e4e4e4;
+        }
+        html{
+            height: 100% !important;
+        }
+    </style>
+    <script>
+        $(window).resize(infinite);
+
+        function infinite() {
+            var htmlWidth = $('html').width();
+            if (htmlWidth >= 960) {
+                $("html").css({
+                    "font-size": "42px"
+                });
+            } else {
+                $("html").css({
+                    "font-size": 36 / 1080 * htmlWidth + "px"
+                });
+            }
+        }
+
+        infinite();
+    </script>
+</head>
+
+<body style="height: 100%">
+<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+    <h1 class="mui-title">{$title}</h1>
+
+    <button class="mui-action-back mui-btn mui-btn-link mui-btn-nav mui-pull-left" id="come-back" style="color: #444444 !important;padding: 0 !important;">
+		<span class="mui-icon mui-icon-arrowleft">
+		</span>返回
+    </button>
+</header>
+<!--end 头部-->
+<div class="container" style="padding-top: 4.5rem">
+    <div class="row">
+        <div class="text-center m-t-30 m-t-10 m-b-10">
+            <eq name="type" value="1">
+            您现在使用的手机号是{:ception_phone($user['mobile'])}<br/>
+            更换号码后,下次登陆需要使用新手机号码
+            <else/>
+                请设置该账户的手机号码
+            </eq>
+        </div>
+        <form class="panel-body baseform" id="loginForm" onsubmit="return false;">
+            <input name="codes" id="codes" type="hidden">
+            <div class="col-xs-12 m-b-10">
+                <i class="md-sms phone_edit_i"></i>
+                <input type="tel" class="form-control" id="mobile" style="padding-left: 35px;" placeholder="请输入手机号"
+                       onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9]+/,'');}).call(this)"
+                       onblur="this.v();"/>
+            </div>
+            <div class="col-xs-8">
+                <i class="md-sms phone_edit_i"></i>
+                <input type="tel" class="form-control" id="code" style="padding-left: 35px;" placeholder="请输入验证码"/>
+            </div>
+            <!--<a class="send" title="点击切换验证码" href="javascript:;">-->
+                <!--<img id="imgVerify" style="cursor:pointer;"   src="__MODULE__/Login/yxcode.html" onclick="fleshVerify();"/>-->
+
+            <!--</a>-->
+            <div class="col-xs-4">
+                <input class="btn btn-default btn-custom waves-effect w-md" onclick="getSMS(this)" type="button"
+                       value="获取验证码"/>
+            </div>
+        </form>
+        <div class="panel-body text-center">
+            <button type="button" id="loginBtn" class="md-trigger btn btn-warning btn-block" data-modal="modal-1">提交
+            </button>
+
+        </div>
+    </div>
+
+    <div class="md-modal md-effect-1" id="modal-1" style="display: none">
+        <div class="panel ks_list">
+            <div class="md-content col-xs-12 text-center">
+                <div class="col-xs-12">
+                    <span class="pull-left">小贴士</span>
+                    <!--<a class="md-close"><i class="ion-close-round"></i></a>-->
+                </div>
+                <div>
+                    <p>
+                        <img src="images/login/yes2.png" width="50"/>
+                    </p>
+                    <p>
+                        更换手机号成功
+                    </p>
+                </div>
+                <div class="col-xs-12">
+                    <button class="md-close btn btn-warning btn-custom waves-light btn-block">确定</button>
+                </div>
+            </div>
+        </div>
+        <div class="md-overlay"></div>
+    </div>
+</div>
+<include file="Public:footer"/>
+<include file="Public:contact" />
+<!--&lt;!&ndash;底部 start&ndash;&gt;-->
+<!--<include file="Public:company_footer"/>-->
+<!--end 底部-->
+<script type="text/javascript">
+    // function fleshVerify(){
+    //     //重载验证码
+    //     $('#imgVerify').attr('src','__MODULE__/Login/yxcode.html');
+    // }
+    select_menu('my');
+    function getSMS(obj) {
+        if (!(/^1[3|4|5|7|8][0-9]\d{4,8}$/.test($('#mobile').val()))) {
+            alert('请输入正确的手机号');
+        } else {
+            $.ajax({
+                url: "__MODULE__/Check.html",
+                type: "post",
+                dataType: "json",
+                data: {
+                    "phone": $('#mobile').val(),
+                    "action": "chagephone",
+                },
+                success: function (json) {
+                    if (json.result == '0') {
+                        alert(json.msg);
+                        settime(obj);
+                        $("#codes").val(json.codes)
+                    } else {
+                        alert(json.msg);
+                        $(obj).attr("disabled", false);
+                        return false
+                    }
+
+                },
+                beforeSend: function () {
+                    $(obj).attr("disabled", true);
+                },
+                errors: function () {
+                    $(obj).attr("disabled", false);
+                }
+            });
+        }
+    }
+
+    var countdown = 60;
+
+    function settime(setbtn) {
+        if (countdown == 0) {
+            $(setbtn).attr("disabled", false);
+            $(setbtn).val("获取验证码");
+            $(setbtn).removeClass("check");
+            countdown = 60;
+            return;
+        } else {
+            $(setbtn).attr("disabled", true);
+            $(setbtn).val("重新发送(" + countdown + ")");
+            countdown--;
+        }
+        setTimeout(function () {
+            settime(setbtn);
+        }, 1000);
+    }
+</script>
+<script>
+    $(function () {
+        $(".btn-warning").click(function () {
+
+            if ($("#mobile").val() == "") {
+                layer.msg('手机号不能为空！');
+                return false;
+            }
+
+            if ($("#code").val() == "") {
+                layer.msg('您还没有获取验证码呀！');
+                return false;
+            }
+
+
+            var data = {
+                "mobile": $("#mobile").val(),
+                "code": $("#code").val(),
+                "action": 'ok',
+            };
+            $.ajax({
+                url: "__MODULE__/User/mobileChange.html",
+                type: 'POST',
+                dataType: "json",
+                data: data,
+                beforeSend: function () {
+                    var index = layer.load(0, {
+                        shade: [0.1, '#fff'] //0.1透明度的白色背景
+                    });
+                },
+                success: function (data) {
+                    if (data.error == 0) {
+                        layer.closeAll();
+                        layer.msg('操作成功');
+                        setTimeout(function () {
+                            window.location.href = "__MODULE__/Index/user";
+                        }, 2000);
+                    } else {
+                        layer.closeAll();
+                        layer.msg(data.msg);
+                        setTimeout(function () {
+                        }, 2000);
+                    }
+                },
+
+            });
+        });
+    });
+</script>

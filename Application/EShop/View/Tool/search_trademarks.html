@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <title>免费商标查询</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <style type="text/css">
+    	html,body {
+    		width: 100% !important;
+    	}
+    </style>
+</head>
+<body>
+<include file="Index:header" />
+	<section class="s-mark-wrap" style="margin-top: .85rem">
+		<div class="s-mark-top"></div>
+		<form onsubmit="return false;">
+			<div class="s-mark-form">
+				<div class="s-mark-input-wrap">
+					<div class="s-mark-input">
+						<input class="" name="brand_name" type="text" placeholder="请输入商标名称，如阿里巴巴"/>
+					</div>
+					<select name="trade" >
+						<option value="全部类别">全部类别</option>
+						<option value="化学原料">第01类-化学原料</option>
+						<option value="颜料油漆">第02类-颜料油漆</option>
+						<option value="日化用品">第03类-日化用品</option>
+						<option value="燃料油脂">第04类-燃料油脂</option>
+						<option value="医药">第05类-医药</option>
+						<option value="金属材料">第06类-金属材料</option>
+						<option value="机械设备">第07类-机械设备</option>
+						<option value="手工器械">第08类-手工器械</option>
+						<option value="科学仪器">第09类-科学仪器</option>
+						<option value="灯具空调">第11类-灯具空调</option>
+						<option value="运输工具">第12类-运输工具</option>
+						<option value="军火烟火">第13类-军火烟火</option>
+						<option value="珠宝钟表">第14类-珠宝钟表</option>
+						<option value="乐器">第15类-乐器</option>
+						<option value="办公用品">第16类-办公用品</option>
+						<option value="橡胶制品">第17类-橡胶制品</option>
+						<option value="皮革皮具">第18类-皮革皮具</option>
+						<option value="建筑材料">第19类-建筑材料</option>
+						<option value="家具">第20类-家具</option>
+						<option value="厨房洁具">第21类-厨房洁具</option>
+						<option value="绳网袋篷">第22类-绳网袋篷</option>
+						<option value="纱线丝">第23类-纱线丝</option>
+						<option value="布料床单">第24类-布料床单</option>
+						<option value="服装鞋帽">第25类-服装鞋帽</option>
+						<option value="纽扣拉链">第26类-纽扣拉链</option>
+						<option value="地毯席垫">第27类-地毯席垫</option>
+						<option value="健身器材">第28类-健身器材</option>
+						<option value="食品">第29类-食品</option>
+						<option value="方便食品">第30类-方便食品</option>
+						<option value="饲料种籽">第31类-饲料种籽</option>
+						<option value="啤酒饮料">第32类-啤酒饮料</option>
+						<option value="酒">第33类-酒</option>
+						<option value="烟草烟具">第34类-烟草烟具</option>
+						<option value="广告销售">第35类-广告销售</option>
+						<option value="金融物管">第36类-金融物管</option>
+						<option value="建筑修理">第37类-建筑修理</option>
+						<option value="通讯服务">第38类-通讯服务</option>
+						<option value="运输贮藏">第39类-运输贮藏</option>
+						<option value="材料加工">第40类-材料加工</option>
+						<option value="教育娱乐">第41类-教育娱乐</option>
+						<option value="网站服务">第42类-网站服务</option>
+						<option value="餐饮住宿">第43类-餐饮住宿</option>
+						<option value="医疗园艺">第44类-医疗园艺</option>
+						<option value="社会服务">第45类-社会服务</option>
+					</select>
+					
+				</div>
+				<div class="bg-white">
+					<div class="s-mark-good">
+						<img src="/{$Think.MODULE_PATH}Public/images/tool/picture1.png" alt="" />
+						<div>
+							<span>免费查询</span>
+							<p>轻轻一点即可知晓查询结果，不产生费用</p>
+						</div>
+					</div>
+					<div class="s-mark-good">
+						<img src="/{$Think.MODULE_PATH}Public/images/tool/picture2.png" alt="" />
+						<div>
+							<span>人工查询</span>
+							<p>结果更精准、注册成功率更高</p>
+						</div>
+					</div>
+					<div class="s-mark-good">
+						<img src="/{$Think.MODULE_PATH}Public/images/tool/picture3.png" alt="" />
+						<div>
+							<span>急速响应</span>
+							<p>提交申请后30分钟内告知查询结果</p>
+						</div>
+					</div>
+				</div>
+				<button type="submit" id="submit_button">查一下</button>
+			</div>
+		</form>
+		
+		
+	</section>
+</body>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script>
+    window.localStorage.clear();
+    $("#submit_button").on('click',function(){
+        var brandName = $("input[name=brand_name]").val();//城市
+        var trade = $("select[name=trade]").val();//行业
+        if($.trim(brandName) == ''){
+            layer.msg("请填写商标名称!!");
+            return false;
+        }
+        if($.trim(trade) == ''){
+            layer.msg("请选择类别!!");
+            return false;
+        }
+        var data = {
+            name:brandName,
+            trade:trade,
+        }
+        setLocalStorage(data,'trademarks');
+        window.location.href = '__MODULE__/Tool/verification/t/trademarks.html';
+    })
+    //设置localStorage
+    function setLocalStorage(data,itemValue){
+        data = $.isArray(data) || $.type(data) == 'object' ? JSON.stringify(data):data ;
+        localStorage.setItem(itemValue,data);
+    }
+</script>
+</html>

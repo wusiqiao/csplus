@@ -1,0 +1,159 @@
+<include file="UserSupervise:head"/>
+<link href="__ROOT__/Application/ESAdmin/Public/css/attachment.css?v=2" rel="stylesheet" />
+<style>
+    .mui-indexed-list-inner img {
+        width: .28rem;
+        height: .28rem;
+        margin-right: .2rem;
+    }
+    .mui-indexed-list-inner .company-select-item {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        height: .9rem;
+        line-height: .9rem;
+        padding: 0 .2rem;
+        box-shadow: 0 1px 0 #eeeeee inset;
+        background-color: #ffffff;
+    }
+    .mui-indexed-list-inner {
+        border-radius: .1rem;
+    }
+    .view-top {
+        margin-top: 1rem;
+    }
+    .icon-preview {
+        width: .38rem;
+        height: .38rem;
+        background: url('/{$Think.MODULE_PATH}Public/images/tool/icon-preview.png') no-repeat;
+        background-position: center;
+        background-size: .38rem .38rem;
+    }
+</style>
+<body>
+<section class="common-wrap fixed-page bg-none" style="overflow: hidden;">
+	<div class="mui-indexed-list-inner attachment-container"  style="overflow-y: auto;" id="wrkAttachment">
+        <div v-if="(historys != null) && (historys.length > 0)">
+            <div class="company-select-item" v-for="(item,index) in historys">
+                <div v-if="item.type=='image'" class="img-wrap" style="margin-top: 5%">
+                    <img :src="item.url" alt="" style="width: 32px;height: 32px"/>
+                </div>
+                <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type" style="margin-right: 10px;">
+            </div>
+            <span class="gray-6" style="width: 35%;overflow: hidden; white-space:nowrap; text-overflow:ellipsis;margin-right: 25%">
+                    {{item.name}}
+                </span>
+                <div style="float: right;width: 42%;">
+                    <span v-if="item.type == 'image'" style="color: #0b95ff;float: right;position: relative" @click="previewImg(item)">
+                        <div class="icon-preview icon-format" style="float: left;height: .89rem;margin-right: .1rem"></div>
+                        预览
+                    </span>
+                    <!--<span v-if="item.type != 'image'" style="color: #0b95ff;float: right;position: relative" @click="downloadFile(item)">
+                        <div class="icon-download icon-format" style="float: left;height: .89rem;margin-right: .1rem"></div>
+                        下载
+                    </span>-->
+                    <span v-if="item.type != 'image'" style="color: #0b95ff;float: right;position: relative">
+                        <div class="icon-download icon-format" style="float: left;height: .89rem;margin-right: .1rem"></div>
+                        <a :href="item.url" download="item.name" target="_blank" mce_href="#" style="color: rgb(54, 140, 253);">下载</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div v-else>
+            <li class="empty-voucher">
+                <img src="/Application/EShop/Public/images/voucher/emptyPic.png" alt="" style="width: 110px;height: 75px">
+                <div style="text-align: center;color:#cccccc;line-height: 2.67rem;">
+                    列表是空的哦
+                </div>
+            </li>
+        </div>
+	</div>
+
+</section>
+<include file="UserSupervise:foot_access_file"/>
+</body>
+</html>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+<script type="text/javascript">
+    var wrkAttachmentVue = new Vue({
+        el:"#wrkAttachment",
+        data:{
+            title:"",
+            attachments:[],
+            tabs:[],
+            historys:[],
+            current:0,
+            content: "",
+            callback:null,
+            layer_index:0
+        },
+        methods:{
+            getInfo:function(item,index){
+                getAttachmentInfos(index);
+            },
+            returnResult:function(){
+                var callback = $.dialog.list["attachment_dialog"].data.callback;
+                if (callback != undefined){
+                    callback.call(this, "1");
+                }
+            },
+            removeAttachment:function(index){
+                this.attachments.splice(index,1);
+            },
+            removeRemoteItem:function(item, index){
+                mui.confirm('确认删除?',"删除提示",['取消', '确定'],function(e) {
+                    if (e.index == 1){
+                        $.post("/ComAttachment/remove", {item_id: item.id}, function(result){
+                            wrkAttachmentVue.historys.splice(index, 1);
+                        },"json");
+                    }
+                });
+            },
+            closeLayer:function(){
+                closeLayer();
+            },
+            downloadFile:function(item){
+                var url = item.url + "?attname=" + item.name;
+                window.location.href = url;
+            },
+            previewImg:function(item){
+                var img= "<div style='width: calc(100vw - 40px)'>" +
+                    "<img src='" + item.url + "' style='width: 100%'/></div>";
+                top.layer.open({
+                    type: 1,
+                    closeBtn: 1,
+                    shade: true,
+                    title: false,
+                    shadeClose: true,
+                    area:['auto','auto'],
+                    content: img
+                });
+            }
+        }
+    });
+
+    function setArguments(data){
+        wrkAttachmentVue.tabs = data.tabs;
+        wrkAttachmentVue.callback = data.callback;
+        wrkAttachmentVue.current = data.active;
+        getAttachmentInfos(wrkAttachmentVue.current);
+    }
+
+    function getAttachmentInfos(index){
+        wrkAttachmentVue.current = index;
+        var attach_group = wrkAttachmentVue.tabs[index].attach_group;
+        $.post("/ComAttachment/list", {"group": attach_group}, function(result){
+            for(var i = 0;i<result.rows.length;i++){
+                var files = $.parseJSON(result.rows[i].images);
+                for(var j = 0;j<files.length;j++){
+                    wrkAttachmentVue.historys.push(files[j]);
+                }
+            }
+        },"json");
+    }
+
+
+</script>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <style>
+        .money-input:after {
+            content: '元';
+            position: absolute;
+            top: .2rem;
+            right: 0;
+            width: .7rem;
+            height: .7rem;
+            line-height: .7rem;
+            text-align: center;
+            color: #e91835;
+            font-size: 0.4rem;
+        }
+        html{
+            height: initial;
+        }
+        .search-img{
+            flex:0.1
+        }
+        .search-arrow{
+            flex:0.1;
+        }
+        .search-text{
+            padding-left: .2rem;
+            line-height: .5rem;
+            flex:1
+        }
+    </style>
+</head>
+<include file="Index:header" />
+<div class="custom-info-wrap common-wrap bg-none mt85" style="background-color: #EFEFF4;">
+    <div class="basic-info" style="background-color: #FFFFFF;">
+        <div class="info-line" style="justify-content: space-between;">
+            <div class="info-title">充值金额<i></i></div>
+            <div style="flex: 1;display: flex;align-items: center;justify-content: flex-end;margin: 0 0.21rem;">
+                <input type="text" name="money" style="flex: .8;" placeholder="请输入充值金额"  id="money"  value="" oninput="this.value=this.value.replace(/[^0-9.]+/,'');"/>
+                元
+            </div>
+         
+            <input type="hidden" value="{$company_id}" id="company_id">
+        </div>
+    </div>
+    <div style="height: .5rem"></div>
+    <div class="basic-info" style="background-color: #FFFFFF;">
+        <div class="title">付款方式</div>
+        <div class="info-line search-line" data-pay="0" style="padding: .3rem .2rem .2rem .2rem">
+            <div class="search-img">
+                <img src="{$Think.const.IMG_URL}/tool/wxpay.png" style="width: .5rem;height: 0.5rem;" alt="">
+            </div>
+            <div class="search-text">
+                微信付款
+            </div>
+            <div class="search-arrow">
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </div>
+        </div>
+        <div class="info-line search-line" data-pay="1" style="padding: .3rem .2rem .2rem .2rem">
+            <div  class="search-img">
+                <img src="{$Think.const.IMG_URL}/tool/payment.png" style="width: .5rem;height: 0.5rem;" alt="">
+            </div>
+            <div class="search-text">
+                线下付款
+            </div>
+            <div  class="search-arrow">
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </div>
+        </div>
+
+    </div>
+    <div style="height: 4rem"></div>
+</div>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script>
+    $('.search-line').click(function(){
+        var payType = $(this).attr('data-pay');
+        var money = $('input[name=money]').val();
+        var company_id = $('#company_id').val();
+        if (money == "") {
+            layer.msg("请输入充值金额！");
+            return false;
+        }
+        if (money <= 0 ) {
+            layer.msg("请输入大于0的充值金额!");
+            return false;
+        };
+        if (company_id > 0) {
+            $.post('/Money/companyRecharge/',{price_type:payType,money:money,company_id:company_id},function(data){
+                if (data.error == 0) {
+                    window.location.href = '/Money/companyRecharge/code/'+data.code;
+                } else {
+                    layer.msg(data.message);
+                }
+            },'JSON')
+        } else {
+            $.post('/Money/middleware_recharge/',{price_type:payType,money:money},function(data){
+                window.location.href = '/Money/recharge/code/'+data.code;
+            },'JSON')
+        }
+
+    })
+</script>

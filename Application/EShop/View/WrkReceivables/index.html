@@ -1,0 +1,140 @@
+<include file="UserSupervise:head"/>
+<style>
+    .modal input[type='text'] {
+        margin: 0 0;
+        padding: 0 .1rem;
+        border: 1px solid #e9e9e9;
+    }
+    #empty{
+        padding: 10%;
+        text-align: center;
+        background-color: #ffffff
+    }
+
+    .del {
+        margin-right: .2rem;
+        height: .75rem;
+        color: red;
+        border: 1px solid red;
+    }
+    html,body{
+        position:relative;
+        height:100%;
+        min-height:100%;
+    }
+    .search-fixed{
+        position: fixed;
+        height: .85rem;
+        top: .85rem;
+        padding: .1rem 0;
+        width: 100%;
+        background-color: #eee;
+    }
+    .mui-bar{
+        position: fixed !important;
+    }
+
+    .item-wrap{ overflow: auto; width: 100%!important;}
+    .item-container{float: left; margin: 0 auto; width:100%;overflow: auto;}
+    .item-container li{float:left;overflow: hidden; width:100%;}
+    .item-wrap::-webkit-scrollbar {/*隐藏滚轮*/
+        display: none;
+    }
+    .item-container-item{
+        width: 100%;
+        height: 0.95rem;
+        background-color: #ffffff;
+        border-radius: .1rem;
+        overflow: hidden;
+        margin-bottom: 0.1rem;
+    }
+    .list-entrance{
+        padding: 0 0.28rem;
+        height: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .entrance-icon-bule{
+        width: 0.33rem;
+        height: 0.35rem;
+        float: left;
+        background-image: url("/{$Think.MODULE_PATH}Public/images/icon/icon-paymentNotice.png");
+        background-size: 100% 100%;
+        margin: 0.3rem 0;
+        margin-right: 0.18rem;
+    }
+    .entrance-icon-red{
+        width: 0.33rem;
+        height: 0.35rem;
+        float: left;
+        background-image: url("/{$Think.MODULE_PATH}Public/images/icon/icon-PaymentList.png");
+        background-size: 100% 100%;
+        margin: 0.3rem 0;
+        margin-right: 0.18rem;
+    }
+    .entrance-icon-pink{
+        width: 0.33rem;
+        height: 0.35rem;
+        float: left;
+        background-image: url("/{$Think.MODULE_PATH}Public/images/icon/icon-OverdueList.png");
+        background-size: 100% 100%;
+        margin: 0.3rem 0;
+        margin-right: 0.18rem;
+    }
+</style>
+
+<body>
+<include file="Index:header" />
+<section class="common-wrap bg-none">
+    <div style="margin-top: .85rem;margin-bottom: 10%">
+        <div class="mui-content" id="main-content">
+            <div class="item-wrap" >
+                <div class="item-container-item">
+                    <if condition="$menuList['WrkReceivables']['menu_actions']['detail'] eq 1 and $menuList['WrkReceivables']['allow'] eq 1">
+                        <div class="list-entrance" onclick="WrkReceivablesFunctions.notice()">
+                            <div><i class="entrance-icon-bule"></i><span style="color: #212121;line-height: 0.95rem;">付款通知</span></div>
+                            <div style="color:#b4b1b4"><span style="margin-right: 0.2rem;">{$count}</span><i class="mui-icon mui-icon-arrowright"></i></div>
+                        </div>
+                        <else/>
+                        <div class="list-entrance" onclick="mui.alert('无此功能操作权限')">
+                            <div><i class="entrance-icon-blue"></i><span style="color: #212121;line-height: 0.95rem;">付款通知</span></div>
+                        </div>
+                    </if>
+                </div>
+                <div class="item-container-item">
+                    <if condition="$menuList['WrkAgreement']['menu_actions']['detail'] eq 1 and $menuList['WrkReceivables']['allow'] eq 1">
+                        <div class="list-entrance" onclick="WrkReceivablesFunctions.list()">
+                            <div style="overflow: hidden;"><i class="entrance-icon-pink"></i><span style="color: #212121;line-height: 0.95rem;">收款列表</span></div>
+                            <div style="color:#b4b1b4"><span style="margin-right: 0.2rem;"></span><i class="mui-icon mui-icon-arrowright"></i></div>
+                        </div>
+                    <else/>
+                        <div class="list-entrance" onclick="mui.alert('无此功能操作权限')">
+                            <div><i class="entrance-icon-pink"></i><span style="color: #212121;line-height: 0.95rem;">收款列表</span></div>
+                        </div>
+                    </if>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script src="/{$Think.const.MODULE_PATH}/Public/js/jquery.min.js"></script>
+<script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+<script src="/{$Think.const.MODULE_PATH}/Public/js/mui/mui.min.js"></script>
+<script src="/{$Think.const.MODULE_PATH}/Public/js/common.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+
+<script type="text/javascript">
+    var WrkReceivablesFunctions = {
+        list:function(){
+            window.location.href="__MODULE__/WrkReceivables/list";
+        },
+        notice:function(){
+            window.location.href="__MODULE__/WrkReceivables/notice";
+        }
+    };
+</script>
+</body>
+</html>

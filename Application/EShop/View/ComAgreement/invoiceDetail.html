@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .info-upset{
+        flex: 1;
+        font-size: 0.28rem;
+        color: #368bfe;
+        text-align: right;
+        margin: .1rem 0.21rem;
+        padding: .1rem 0rem;
+        line-height: .6rem;
+        height: .8rem;
+    }
+</style>
+
+<body>
+<if condition="$view_header neq 0 ">
+    <include file="Index:header" />
+</if>
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section" <if condition="$view_header neq 1 ">style="margin-top:0"</if>>
+        <form id="listForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title">合同信息</div>
+                <div class="info-line">
+                    <div class="info-title">公司名称</div>
+                    <input type="text" name="" value="{$model.company_name}" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">合同名称</div>
+                    <input type="text" name="" value="{$model.name}" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">合同金额</div>
+                    <input type="text" name="" value="￥{$model.agreement_money}" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">已开票金额</div>
+                    <input type="text" name="" value="￥{$model.amount_paid}" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">未开票金额</div>
+                    <input style="color: #e91835;" type="text" name="" value="￥{$model.amount_balance}" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title" style="padding-left: 0">合同开票状态<i></i></div>
+                    <input type="text" name="" value="{$model.state_value}"  readonly/>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <volist name="record" id="vo">
+                <div class="basic-info" id="record{$vo.id}">
+                    <div class="title">开票记录{$key+1}</div>
+                    <div class="info-line" >
+                        <div class="info-title">开票日期</div>
+                        <input type="text" name="" value="{$vo.invoice_day_fmt}" readonly/>
+                    </div>
+                    <div class="info-line" >
+                        <div class="info-title">发票类型</div>
+                        <input type="text" name="" value="{$vo.invoice_type_value}" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">发票编号</div>
+                        <input type="text" name="" value="{$vo.invoice_id}" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">发票金额</div>
+                        <input type="text" name="" value="￥{$vo.invoice_sum}" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">发票附件</div>
+                        <div class="info-upset" onclick="invoiceDetailFunctions.openAttachment();">
+                            点击查看附件<span class="mui-icon mui-icon-arrowright"></span>
+                        </div>
+                    </div>
+                    <div class="info-line" >
+                        <div class="info-title">签收人</div>
+                        <input style="color: #e91835;" type="text" name="confirm_name" value="{$vo.confirm_man_name}" readonly/>
+                        <if condition="$vo.state == 1">
+                            <if condition="($vo.confirm_man != 0) and ($vo.confirm_man != '') ">
+                                <div class="info-upset" style="text-align:right;color:#cccccc;">已签收</div>
+                                <else/>
+                            <div class="info-upset info-upsetbtn" onclick="invoiceDetailFunctions.confirmInvoice(this,'{$vo.id}')">
+                                签收<span class="mui-icon mui-icon-arrowright"></span>
+                            </div>
+                            </if>
+                            <else/>
+                            <div class="info-upset" style="text-align:right;color:red;">已作废</div>
+                        </if>
+                    </div>
+                </div>
+                <div style="margin: 10px"></div>
+            </volist>
+            <if condition="$record_count == 0">
+                <div class="basic-info">
+                    <div class="title">开票记录</div>
+                    <div class="" style="padding: 5px;text-align: center">
+                        无开票记录
+                    </div>
+                </div>
+            </if>
+
+            <div style="margin: 10px"></div>
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+        var invoiceDetailFunctions = {
+            confirmInvoice:function(obj,id){
+                mui.confirm(`<div style="color: #3b3c3b;font-size: 0.26rem;text-align:center;">请确认您已收到发票再进行签收。</div>`,`<div style="color: #999999;font-size: 0.3rem;text-align:center;">温馨提示</div>`,['已收到',`<span style="color: #c1c1c1;font-weight: normal;">取消</span>`],function(e){
+                    if(e.index == 0){
+                        $.post("/ComAgreement/confirmInvoice",{id:id},function(result){
+                            if(result.error == 0){
+                                $(`#record${id}`).find(".info-upsetbtn").replaceWith(`<div class="info-upset" style="text-align:center;color:#cccccc;">已签收</div>`)
+                                $(`#record${id}`).find("input[name='confirm_name']").val(result.confirm_name);
+                            }
+                            layer.msg(result.message);
+                        },'json')
+                    }
+                });
+            },
+            openAttachment : function (){
+                openWrkAttachmentForm("附件", [{attach_group:"{$model.wip_attach_group}"}]);
+            }
+        };
+
+    </script>
+</body>
+
+</html>

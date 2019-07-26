@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+    <link href="__ROOT__/Application/EShop/Public/css/attachment.css?v=2" rel="stylesheet" />
+</head>
+<style>
+    .basic-info {
+        margin-bottom: 1.0rem;
+    }
+    .basic-info .info-title {
+        width: 2.25rem;
+        color: #333333;
+        text-align: left;
+        padding: 0;
+        padding-left: .25rem;
+        color: #999999;
+    }
+</style>
+
+<body>
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <div class="basic-info">
+            <div class="info-line important-input">
+                <div class="info-title">公司名称<i></i></div>
+                <input type="text" name="" value="{$model.company_name}" readonly />
+            </div>
+            <div class="info-line important-input">
+                <div class="info-title">任务名称<i></i></div>
+                <input type="text" name="" value="{$model.task_name}" readonly />
+            </div>
+            <div class="info-line important-input">
+                <div class="info-title">提报时间<i></i></div>
+                <input type="text" name="" value="{$model.create_time|date='Y-m-d H:i',###}" readonly />
+            </div>
+            <div class="info-line important-input">
+                <div class="info-title">提报进度<i></i></div>
+                <input type="text" name="" value="{$model.progress_type_name}" readonly />
+            </div>
+            <div class="info-line important-input">
+                <div class="info-title">进度说明<i></i></div>
+                <div style="flex: 1;border: 1px solid #d3d3d3;margin: 10px;padding: 5px;">
+                    {$model.progress_situation}
+                </div>
+            </div>
+            <foreach name="model.extended_parameter" item="parameter">
+                <div class="info-line important-input">
+                    <div class="info-title">{$parameter.field}<i></i></div>
+                    <input type="text" name="" value="{$parameter.value}" readonly/>
+                </div>
+            </foreach>
+
+            <!--图片-->
+            <div class="info-line important-input">
+                <div class="info-title">图片<i></i></div>
+                <div style="flex: 1;padding: 5px;">
+            
+                </div>
+            </div>
+            <foreach name="model.images" item="image">
+                <!--点击预览-->
+                <div style="padding: 0.1rem 0.2rem;box-shadow: 0 1px 0 #eeeeee;" onclick="ToPreviewImage(`{$image.url}`);">
+                    <img style="width: 100%;" src="{$image.url}" />
+                </div>
+            </foreach>
+            <!--文件-->
+            <div class="info-line important-input">
+                <div class="info-title">文件<i></i></div>
+                <div style="flex: 1;padding: 5px;">
+            
+                </div>
+            </div>
+            <foreach name="model.attachment" item="attach">
+                <!--点击下载-->
+                <div class="attachment-container" style="width: 100%;background-color: #fff;padding: 0 0 0.1rem 0;margin-top: 0.1rem;box-shadow: 0 1px 0 #eeeeee;display: flex;align-items: center;">
+                    <div class="img-wrap attachment-icon attachment-icon-{$attach.type}" style="margin: 0 0.2rem"></div>
+                    <span style="margin: 0 0.1rem;flex: 1;">{$attach.name}</span>
+                    <a style="color: #368cfd;margin: 0 0.2rem;" href="{$attach.url}?attname={$attach.name}" download=""  title="下载"  mce_href="#">下载</a>
+                </div>
+            </foreach>
+            <!--<div class="info-line important-input" style="justify-content: space-between;">-->
+                <!--<div class="info-title">附件<i></i></div>-->
+                <!--<span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="openAttachment();">-->
+                    <!--点击查看-->
+                    <!--<span class="mui-icon mui-icon-arrowright"></span>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="info-line important-input" style="justify-content: space-between;">-->
+                <!--<div class="info-title">上传附件<i></i></div>-->
+                <!--<span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;">-->
+                    <!--点击查看附件-->
+                    <!--<span class="mui-icon mui-icon-arrowright"></span>-->
+                <!--</span>-->
+            <!--</div>-->
+        </div>
+        <if condition="$model.is_rejected eq 0 && $model.is_sure eq 1">
+        <div class="basic-info">
+            <div class="title">客户反馈</div>
+            <div class="info-line important-input">
+                <div class="info-title">进度状态<i></i></div>
+                <if condition="$model.sure_time gt 0">
+                <input type="text" name="" value="已确认" readonly/>
+                <else />
+                <input type="text" name="" value="未确认" readonly/>
+                </if>
+            </div>
+            <div class="info-line important-input">
+                <div class="info-title">操作时间<i></i></div>
+                <input type="text" name="" value="{$model.sure_time|date='Y-m-d H:i',###}" readonly/>
+            </div>
+            <div class="info-line important-input">
+                <div class="info-title">操作人员<i></i></div>
+                <input type="text" name="" value="{$model.receiver_name}" readonly/>
+            </div>
+        </div>
+        <elseif condition="$model.is_rejected eq 1"  />
+        <div class="basic-info">
+            <div class="title">客户驳回</div>
+            <div class="info-line important-input">
+                <div class="info-title">进度状态<i></i></div>
+                <input type="text" name="" value="{$model.rejected_content}" readonly/>
+            </div>
+            <div class="info-line important-input">
+                <div class="info-title">操作时间<i></i></div>
+                <input type="text" name="" value="{$model.rejected_time|date='Y-m-d H:i',###}" readonly/>
+            </div>
+            <div class="info-line important-input">
+                <div class="info-title">操作人员<i></i></div>
+                <input type="text" name="" value="{$model.receiver_name}" readonly/>
+            </div>
+            <!--图片-->
+            <div class="info-line important-input">
+                <div class="info-title">图片<i></i></div>
+                <div style="flex: 1;padding: 5px;">
+
+                </div>
+            </div>
+            <foreach name="model.rejected_images" item="rejimage">
+                <!--点击预览-->
+                <div style="padding: 0.1rem 0.2rem;box-shadow: 0 1px 0 #eeeeee;" onclick="ToPreviewImage(`{$rejimage.url}`);">
+                    <img style="width: 100%;" src="{$rejimage.url}" />
+                </div>
+            </foreach>
+            <!--文件-->
+            <div class="info-line important-input">
+                <div class="info-title">文件<i></i></div>
+                <div style="flex: 1;padding: 5px;">
+
+                </div>
+            </div>
+            <foreach name="model.rejected_attachment" item="rejattach">
+                <!--点击下载-->
+                <div class="attachment-container" style="width: 100%;background-color: #fff;padding: 0 0 0.1rem 0;margin-top: 0.1rem;box-shadow: 0 1px 0 #eeeeee;display: flex;align-items: center;">
+                    <div class="img-wrap attachment-icon attachment-icon-{$rejattach.type}" style="margin: 0 0.2rem"></div>
+                    <span style="margin: 0 0.1rem;flex: 1;">{$rejattach.name}</span>
+                    <a style="color: #368cfd;margin: 0 0.2rem;" href="{$rejattach.url}?attname={$rejattach.name}" download=""  title="下载"  mce_href="#">下载</a>
+                </div>
+            </foreach>
+        </div>
+        </if>
+        <div class="order-reorder ptb15 plr25 footer" style="background-color: rgb(255, 255, 255);">
+            <button onclick="window.location.href='/WrkTaskPlan/detail/id/{$model.task_plan_id}';" class="myorder bg-e" style="width: 90%; color: #666666; border-color: #666666; margin: auto;">返回任务进度条</button>
+        </div>
+    </section>
+    <include file="UserSupervise:foot_access_file" />
+    <script type="text/javascript">
+        function openAttachment(){
+          openWrkAttachmentForm("附件", [{attach_group:"{$model.attach_group}"}]);
+        }
+
+        function ToPreviewImage(url){
+            top.layer.open({
+                type:1,
+                title:'图片预览',
+                shade:0.8,
+                closeBtn:1,
+                area:["100%","100%"],
+                content:`<div style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
+                        <img style="width: 100%;" src="${url}" alt="">
+                    </div>`
+            });
+        }
+    </script>
+</body>
+
+</html>

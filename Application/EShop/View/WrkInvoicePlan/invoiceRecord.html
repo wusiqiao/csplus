@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .info-upset{
+        flex: 1;
+        font-size: 0.28rem;
+        text-indent: 0.2rem;
+        color: #368bfe;
+        line-height: 0.95rem;
+    }
+</style>
+
+<body>
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section" style="margin-top: 0">
+        <form id="listForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title">合同信息</div>
+                <div class="info-line">
+                    <div class="info-title">公司名称</div>
+                    <input type="text" name="" v-model="model.company_name" readonly/>
+                    <input type="hidden" name="id" value="{$id}" readonly/>
+                    <input type="hidden" name="plan_id" value="{$plan.id}" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">合同名称</div>
+                    <input type="text" name="" v-model="model.wag_name" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">合同金额</div>
+                    <input type="text" name="" v-model="'￥'+model.agreement_money" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">已开票金额</div>
+                    <input type="text" name="" v-model="'￥'+model.amount_paid" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">未开票金额</div>
+                    <input style="color: #e91835;" type="text" name="" v-model="'￥'+model.wag_amount_balance" readonly/>
+                </div>
+                <div class="info-line important-input" v-if="model.state != 0">
+                    <div class="info-title">结余金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+model.free_amount" placeholder="" readonly/>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <volist name="list" id="vo">
+                <div class="basic-info" id="record{$vo.id}">
+                    <div class="title">开票记录{$key+1}</div>
+                    <div class="info-line" >
+                        <div class="info-title">开票日期</div>
+                        <input type="text" name="" value="{$vo.invoice_day_fmt}" readonly/>
+                    </div>
+                    <div class="info-line" >
+                        <div class="info-title">发票类型</div>
+                        <input type="text" name="" value="{$vo.invoice_type_value}" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">发票编号</div>
+                        <input type="text" name="" value="{$vo.invoice_id}" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">发票金额</div>
+                        <input type="text" name="" value="￥{$vo.invoice_sum}" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">签收人</div>
+                        <input style="color: #e91835;" type="text" name="" value="{$vo.confirm_man_name}" readonly/>
+                    </div> 
+                    <div class="info-line">
+                        <div class="info-title">发票附件</div>
+                        <div style="text-align:right;padding: 0 0.21rem;" class="info-upset" onclick="invoiceRecordFunctions.openAttachment();">
+                            点击查看附件<span class="mui-icon mui-icon-arrowright"></span>
+                        </div>
+                    </div>
+                        <!--发票状态为正常以及开票计划状态不为手动结束才可作废-->
+                        <if condition="$vo.state != 0">
+                            <if condition="$plan.state neq 2">
+                                <if condition="$instance_permit egt 4">
+                                    <div class="info-upset info-upsetbtn" style="text-align:right;padding: 0 0.21rem;" onclick="invoiceRecordFunctions.cancelInvoice(this,'{$vo.id}')">作废<span class="mui-icon mui-icon-arrowright"></span></div>
+                                <else/>
+                                    <div class="info-upset" style="text-align:right;padding: 0 0.21rem;color:#cccccc;" onclick="layer.msg('您没有权限！')">作废</div>
+                                </if>
+                            <else/>
+                                <div class="info-upset" style="text-align:right;padding: 0 0.21rem;color:#cccccc;" onclick="layer.msg('开票计划已手动结束')">作废</div>
+                            </if>
+                        <else/>
+                            <div class="info-upset" style="text-align:right;padding: 0 0.21rem;color:red;">已作废</div>
+                        </if>
+                    </div>
+                </div>
+                <!--发票状态为正常以及开票计划状态不为手动结束才可作废-->
+                <!-- <if condition="$vo.state != 0 and $plan_state neq 2"> -->
+                    <!--权限大等于协作人-->
+                    <!-- <if condition="$instance_permit egt 4">
+                            <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="invoiceRecordFunctions.cancelInvoice(this,'{$vo.id}')">作废</button>
+                        <else/>
+                            <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;background-color: #cccccc!important;">作废</button>
+                        </if>
+                    </if> -->
+                <div style="margin: 10px"></div>
+            </volist>
+            <if condition="$count == 0">
+                <div class="basic-info">
+                    <div class="title">开票记录</div>
+                    <div class="" style="padding: 5px;text-align: center">
+                        无开票记录
+                    </div>
+                </div>
+            </if>
+
+            <div style="margin: 10px"></div>
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+
+        var invoiceRecordVue = new Vue({
+            el:"#listForm",
+            data:{
+                model:{
+                    company_name:"",
+                    wag_name:"",
+                    agreement_money:"",
+                    amount_paid:"",
+                    wag_amount_balance:"",
+                    free_amount:""
+                }
+            }
+        });
+
+        var invoiceRecordFunctions = {
+            getDetail:function(){
+                $.post("/WrkInvoicePlan/getDetail",{plan_id:"{$plan.id}"},function(result){
+                    invoiceRecordVue.model = result;
+                },'json')
+            },
+            cancelInvoice:function(obj,id){
+                mui.confirm(`<div style="color: #3b3c3b;font-size: 0.26rem;text-align:center;">发票作废将发送消息通知给客户，请知悉。</div>`,`<div style="color: #999999;font-size: 0.3rem;text-align:center;">温馨提示</div>`,['确认作废',`<span style="color: #c1c1c1;font-weight: normal;">返回</span>`],function(e){
+                    if(e.index == 0){
+                        if($(obj).data("count") != 1){
+                            $(obj).data("count",1);
+                            $.post("/WrkInvoicePlan/cancelInvoice",{id:id,plan_id:"{$plan.id}"},function(result){
+                                if(result.error == 0){
+                                    // $(obj).hide();
+                                    invoiceRecordFunctions.getDetail();
+                                    if(typeof(parent.getDetail) == "function"){
+                                        parent.getDetail();
+                                    }
+                                    //invoiceDetailVue.model = parent.invoiceDetailVue.model;
+                                    $(`#record${id}`).find(".info-upsetbtn").replaceWith(`<div class="info-upset" style="text-align:right;padding: 0 0.21rem;color:red;">已作废</div>`)
+                                }
+                                layer.msg(result.message);
+                                setTimeout(function(){
+                                    $(obj).data("count",null);
+                                },500)
+                            },'json')
+                        }
+                    }
+                });
+            },
+            openAttachment : function (){
+                openWrkAttachmentForm("附件", [{attach_group:"{$plan.attach_group}"}]);
+            }
+        };
+
+        $(function(){
+            //invoiceRecordVue.model = parent.invoiceDetailVue.model;
+            invoiceRecordFunctions.getDetail();
+        });
+
+
+
+    </script>
+</body>
+
+</html>

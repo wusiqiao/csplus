@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body style="margin-top: .85rem;">
+	<include file="Index:header" />
+	<div class="my-wrap-top my-wrap-top-img custom-info-top">
+        <!--<a href="__MODULE__/User/user_header.html">-->
+        <a>
+        	<img src="{$customer.head_pic}?v={$versions}" alt="" />
+        </a>
+        <div>{$customer.name}</div>
+        <div>累计成交金额{$customer.money}元</div>
+    </div>
+    <section class="custom-info-wrap common-wrap bg-none">
+    	<div class="my-wrap-center">
+            <div class="nav-default">
+                <a href="/UserSupervise/customer_edit/id/{$customer.id}.html">
+                    <img class="edit-info" src="/Application/EShop/Public/images/my/edit-info.png">
+                    <span>编辑用户资料</span>
+                </a>
+                <a href="/WxBranchTemplate/index/user/{$customer.id}.html">
+                    <img class="msg-template" src="/Application/EShop/Public/images/my/msg-template.png" alt="">
+                    <span>发送模板通知</span>
+                </a>
+                <a href="javascript:;" data-mobile="{$customer.mobile}" onclick="toTelephone(this);">
+                    <img class="user-tel" src="/Application/EShop/Public/images/my/user-tel.png" alt="">
+                    <span>拨打电话</span>
+                </a>
+            </div>
+        </div>
+    	<div class="basic-info mg-b-20">
+    		<div class="title">基本资料</div>
+    		<div class="info-line">
+    			<div class="info-title">联系人<i></i></div>
+    			<div class="info-con">{$customer.name}</div>
+    		</div>
+    		
+    		<!--<div class="info-line">-->
+    			<!--<div class="info-title">职务<i></i></div>-->
+    			<!--<div class="info-con">总经理</div>-->
+    		<!--</div>-->
+			<div class="info-line">
+				<div class="info-title">备注<i></i></div>
+				<div class="info-con">{$customer.comments}</div>
+			</div>
+    		<div class="info-line">
+    			<div class="info-title">手机<i></i></div>
+    			<div class="info-con">{$customer.mobile}</div>
+    		</div>
+    		<div class="info-line">
+    			<div class="info-title">公司名称<i></i></div>
+    			<div class="info-con">{$customer.company_name}</div>
+    		</div>
+    		<div class="info-line">
+    			<div class="info-title">机构代码<i></i></div>
+    			<div class="info-con">{$customer.company_code}</div>
+    		</div>
+    		<div class="info-line">
+    			<div class="info-title">法人代表<i></i></div>
+    			<div class="info-con">{$customer.name}</div>
+    		</div>
+    		<div class="info-line">
+    			<div class="info-title">身份证<i></i></div>
+    			<div class="info-con">{$customer.code}</div>
+    		</div>
+    		<div class="info-line">
+    			<div class="info-title">开户银行<i></i></div>
+    			<div class="info-con">{$customer.bank_address}</div>
+    		</div>
+			<div class="info-line">
+				<div class="info-title">银行账号<i></i></div>
+				<div class="info-con">{$customer.bank_account}</div>
+			</div>
+			<div class="info-line">
+    			<div class="info-title">注册地址<i></i></div>
+    			<div class="info-con">{$customer.region} {$customer.address}</div>
+    		</div>
+    		<div class="info-line">
+    			<div class="info-title">电话<i></i></div>
+    			<div class="info-con">{$customer.telephone}</div>
+    		</div>
+    		<div class="info-line">
+    			<div class="info-title">传真<i></i></div>
+    			<div class="info-con">{$customer.fax_number}</div>
+    		</div>
+    		<div class="info-line">
+                <div class="info-title"><span class="fr">QQ</span><i></i></div>
+                <div class="info-con">{$customer.qq}</div>
+            </div>
+            <div class="info-line">
+                <div class="info-title"><span class="fr">E-mail</span><i></i></div>
+                <div class="info-con">{$customer.email}</div>
+            </div>
+            <div class="info-line">
+    			<div class="info-title">办公地址<i></i></div>
+    			<div class="info-con">{$customer.region} {$customer.address}</div>
+    		</div>
+            <volist name="customer.information" id="vo">
+                <div class="info-line">
+                    <div class="info-title">{$vo.title}<i></i></div>
+                    <div class="info-con">{$vo.value}</div>
+                </div>
+            </volist>
+    		<!--<div class="info-line">
+    			<div class="info-title">所在分组<i></i></div>
+    			<div class="info-con">{$customer.group_name}</div>
+    		</div>-->
+    		<!--<div class="info-line">
+    			<div class="info-title">用户标签<i></i></div>
+    			<div class="info-con icon">
+                    <volist name="customer.tags" id="vo">
+                        <span>{$vo.value}</span>
+                    </volist>
+    			</div>
+    		</div>-->
+    		<!--<div class="info-line">
+    			<div class="info-title">注册时间<i></i></div>
+    			<div class="info-con">{$customer.reg_time}</div>
+    		</div>-->
+    		
+    		<!--<div class="info-line">
+    			<div class="info-title">税号<i></i></div>
+    			<div class="info-con">{$customer.tax_number}</div>
+    		</div>-->
+    		
+    		
+            
+    		
+    	</div>
+    </section>
+<include file="UserSupervise:foot_access_file"/>
+    <script type="text/javascript">
+    	function toTelephone(obj){
+    	    var mobile = $(obj).data('mobile');
+    	    if (!(/^1[3|4|5|7|8][0-9]\d{4,8}$/.test(mobile))){
+				layer.msg('该用户没有绑定手机号码!')
+			} else {
+    	        window.location.href = 'tel:'+mobile;
+			}
+		}
+    </script>
+	
+</body>
+</html>

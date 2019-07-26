@@ -1,0 +1,22 @@
+<notempty  name="subscribeInfo">
+	<div class="unsubscribe-tip" style="display:none">
+		<div class="tip-item img">
+			<img src="{$subscribeInfo.shop_logo}">
+			<div>关注本公众号<br>第一时间获取最新服务进度</div>
+		</div>
+		<div class="tip-item btn" onclick="$('#subscribeModal').show();">立即关注</div>
+	</div>
+</notempty>
+<div class="modal" id="subscribeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display:none;z-index: 10000">
+    <div class="wrap-modal index-touch-focus">
+    	<div class="touch-to-focus">
+    		<div>
+    			<img src="{$subscribeInfo.shop_qrcode}" alt="" />
+	    		<div class="title"></div>
+	    		<div>长按识别二维码</div>
+    		</div>
+    		<div class="close-qrcode"></div>
+    	</div>
+    	
+    </div>
+</div>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+	<link rel="stylesheet" href="/{$Think.MODULE_PATH}Public/popup/popup.css">
+	<link href="{$Think.const.CSS_URL}mui/iconfont.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}/css-new/form.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+	<script src="{$Think.const.JS_URL}/jquery.min.js"></script>
+	<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+	<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <script src="/{$Think.MODULE_PATH}Public/popup/popup.js"></script>
+    <title>{$title}</title>
+</head>
+<body>
+	<!--end 头部-->
+	<include file="Index:header" />
+	
+	<section class="identity clearfix" style="margin-top: 0.85rem;">
+	    <div class="device-two identity-active">修改资料</div>
+	    <div class="device-two" onclick="location.href='__MODULE__/User/password.html'">修改密码</div>
+	</section>
+		<div class="wrap" style="padding-top:0.15rem">
+			<form class="input-group-style form-color-gray" action="" id="UserForm" onsubmit="return false;">
+				<div class="input-row-style" style="position: relative;">
+					<label for="account">手机账号</label>
+					<input type="text" value="{$user['mobile']}" readonly="readonly" placeholder="请输入"/>
+					<neq name="user.mobile">
+						<a href="__MODULE__/user/mobileVerify.html" class="change-btn">更换</a>
+						<else/>
+						<a href="__MODULE__/user/mobileChange/type/0.html" class="change-btn">填写</a>
+					</neq>
+
+				</div>
+				<div class="input-row-style">
+					<label for="">姓名</label>
+					<input type="text" name="name" placeholder="请输入" value="{$user['name']}" />
+				</div>
+				<div class="input-row-style" style="border-bottom: none;">
+					<label for="">电子邮箱</label>
+					<input type="text" name="email" placeholder="请输入" value="{$user['email']}"/>
+				</div>
+			</form>
+			<div class="form-btn-style">
+				<button type="button" onclick="formSubmit('UserForm','__SELF__')">确认</button>			
+			</div>
+		</div>
+		
+		<!--底部 start-->
+		<include file="Public:contact" />
+		<!--end 底部-->
+	
+	
+		<!--底部 start-->
+		<!--end 底部-->
+		<script>
+            select_menu('my');
+			function formSubmit(formid, form_url) {
+				$.ajax({
+					url: form_url,
+					type: "post",
+					dataType: "json",
+					data: $('#' + formid).serialize(),
+					success: function(data) {
+						console.info(data);
+						if(data.error == 0) {
+							layer.closeAll();
+							layer.msg(data.msg);
+							setTimeout(function() {
+								window.location.href = "__MODULE__/Index/user.html"
+							}, 500);
+						} else {
+							layer.closeAll();
+							layer.msg(data.msg);
+						}
+					},
+					error: function() {
+						layer.msg('系统故障！请重试！');
+						setTimeout(function() {
+							window.location.href = "__MODULE__/Index/user.html"
+						}, 500);
+					},
+					beforeSend: function() {
+						layer.closeAll();
+						layer.msg('正在提交....');
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

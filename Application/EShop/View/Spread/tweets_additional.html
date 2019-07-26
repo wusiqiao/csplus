@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+		<link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}/css-new/icons.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}/css-new/pages.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}/css-new/components.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}common.css?v=4" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+		<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+		<title>软文设置</title>
+	</head>
+    <style>
+        img{
+            width: 96%;
+            height: 32%;
+        }
+        .mui-switch:before
+        {
+            font-size: 13px;
+            position: absolute;
+            top: -0.1rem;
+            right: 11px;
+            content: 'Off';
+            text-transform: uppercase;
+            color: #999;
+        }
+		.div-spacing{
+			margin: .3rem;
+		}
+		.upload-button{
+			background-color: #0498FC;
+			padding: .1rem .2rem;
+			border-radius: .05rem;
+			color: #fff;
+		}
+		.spacing-font{
+			font-size: .30rem;
+			color: #6D6D6D;
+		}
+    </style>
+	<body>
+		<include file="Index:header" />
+
+		<section class="mg-b-20 " style="margin-top: 1rem">
+            <div class=" div-spacing">
+                <div class="pr flex-start table-cell bg-white">
+                    <div class="dib col-9 pl25 spacing-font">是否开启</div>
+                    <div class="dib col-3">
+                        <div class="mui-switch mui-switch-blue <eq name='additional.is_open' value='1'>mui-active</eq> " id="mySwitch">
+                            <div class="mui-switch-handle"></div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="is_open" value="{$additional.is_open}">
+                </div>
+            </div>
+            <div class="bg-white div-spacing" style="text-align: center;padding: .2rem;color:red">
+                友情提示建议图片规格:1200*360
+            </div>
+			<div >
+				<div class="div-spacing">
+					<div class="pr flex-start table-cell bg-white">
+						<div class="dib col-9 pl25 spacing-font">顶部广告</div>
+						<div class="dib col-3">
+	                        <div class="" style="position: relative;  padding: 0 0;text-align: center">
+	                            <span class="upload-button" id="top_pic_button">点击上传</span>
+	                        </div>
+						</div>
+					</div>
+                    <div id="" class="bg-white">
+                        <ul id="top_uls" data-am-widget="gallery"  data-am-gallery="{ pureview: true }">
+                            <notempty name="additional.top_pic">
+                                <li class='dib' style='padding: .15rem;'>
+                                    <div class='am-gallery-item'>
+                                        <input name="top_pic" value="{$additional.top_pic} " type="hidden">
+                                        <div style='position: relative;'>
+                                            <span class='del-img' onclick='del_img(this);'></span>
+                                            <a href='{$additional.top_pic}' target='_blank'>
+                                                <img src='{$additional.top_pic}' width='50' height='50' />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </notempty>
+                        </ul>
+                    </div>
+					<input type="file" name="fileImg1" id="TopPic" style="display: none;" />
+				</div>
+				<div class="div-spacing">
+					<div class="pr flex-start table-cell bg-white">
+						<div class="dib col-9 pl25 spacing-font">底部广告1</div>
+						<div class="dib col-3">
+							<div class="" style="position: relative;  padding: 0 0;text-align: center;margin-right: .1rem">
+	                            &nbsp;<span class="upload-button" id="bottom_pic_button1">点击上传</span>
+							</div>
+						</div>
+					</div>
+					<div id="" class="bg-white">
+						<ul id="bottom_uls1" data-am-widget="gallery"  data-am-gallery="{ pureview: true }">
+                            <notempty name="additional.bottom_pic1">
+                                <li class='dib' style='padding: .15rem;'>
+                                    <div class='am-gallery-item'>
+                                        <input name="bottom_pic1" value="{$additional.bottom_pic1} " type="hidden">
+                                        <div style='position: relative;'>
+                                            <span class='del-img' onclick='del_img(this);'></span>
+                                            <a href='{$additional.bottom_pic1}' target='_blank'>
+                                                <img src='{$additional.bottom_pic1}' width='50' height='50' />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </notempty>
+                        </ul>
+					</div>
+					<input type="file" name="fileImg2" id="BottomPic1" style="display: none;" />
+				</div>
+				<div class="div-spacing">
+					<div class="pr flex-start table-cell bg-white">
+						<div class="dib col-9 pl25 spacing-font">底部广告2</div>
+						<div class="dib col-3">
+							<div class="" style="position: relative;  padding: 0 0;text-align: center;margin-right: .1rem">
+	                            &nbsp;<span class="upload-button" id="bottom_pic_button2">点击上传</span>
+							</div>
+						</div>
+					</div>
+					<div id="" class="bg-white">
+						<ul id="bottom_uls2" data-am-widget="gallery"  data-am-gallery="{ pureview: true }">
+                            <notempty name="additional.bottom_pic2">
+                            <li class='dib' style='padding: .15rem;'>
+                                <div class='am-gallery-item'>
+                                    <input name="bottom_pic2" value="{$additional.bottom_pic2} " type="hidden">
+                                    <div style='position: relative;'>
+                                        <span class='del-img' onclick='del_img(this);'></span>
+                                        <a href='{$additional.bottom_pic2}' target='_blank'>
+                                            <img src='{$additional.bottom_pic2}' width='50' height='50' />
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                            </notempty>
+                        </ul>
+					</div>
+					<input type="file" name="fileImg3" id="BottomPic2" style="display: none;" />
+				</div>
+			</div>
+		</section>
+		<notempty name="reports">
+			
+		</notempty>
+		<include file="Public:modal_img_show"/>
+		<div style="height: 1rem;"></div>
+		<div class="flex-between white" style="position: fixed;left: 0;right: 0;bottom: 0;background-color: #ffffff;">
+			<if condition=" ($menuList['ComTweetsAdditional']['menu_actions']['update'] eq 1 and $menuList['ComTweetsAdditional']['allow'] eq 1)  or $permissions['_IS_Manager_'] eq 1">
+            	<button class="btn-1 bd-none bg-blue" id="step_button" >提交</button>
+				<else/>
+				<button class="btn-1 bd-none bg-blue" onclick="mui.alert('无此功能操作权限')">提交</button>
+			</if>
+        </div>
+	</body>
+	<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+	<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+	<script src="{$Think.const.JS_URL}ajaxfileupload.js" type="text/javascript"></script>
+	<script src="{$Think.const.JS_URL}uploadFile.js" type="text/javascript"></script>
+    <script>
+        $('')
+        document.getElementById("mySwitch").addEventListener("toggle",function(event){
+            if(event.detail.isActive){
+                $('input[name=is_open]').val(1);
+            }else{
+                $('input[name=is_open]').val(0);
+            }
+        })
+        var topPic = new Uploads();//加载上传类
+        topPic.setButtonId("top_pic_button");//设置上传文件点击按钮
+        topPic.setMaxCount(1);
+        topPic.setFileId("TopPic");//设置inputid
+        topPic.setFileListsId("top_uls");//设置文件显示列表Dom
+        topPic.setValidateType('img');//设置验证类型
+        topPic.setInputName('top_pic');//设置inputName
+        // topPic.setAfterFunction(validate);
+        topPic.bindButtonClick();
+        topPic.bindFileChanre();
+        var bottomPic1 = new Uploads();//加载上传类
+        bottomPic1.setButtonId("bottom_pic_button1");//设置上传文件点击按钮
+        bottomPic1.setMaxCount(1);
+        bottomPic1.setFileId("BottomPic1");//设置inputid
+        bottomPic1.setFileListsId("bottom_uls1");//设置文件显示列表Dom
+        bottomPic1.setValidateType('img');//设置验证类型
+        bottomPic1.setInputName('bottom_pic1');//设置inputName
+        // bottomPic1.setAfterFunction(validate);
+        bottomPic1.bindButtonClick();
+        bottomPic1.bindFileChanre();
+        var bottomPic2 = new Uploads();//加载上传类
+        bottomPic2.setButtonId("bottom_pic_button2");//设置上传文件点击按钮
+        bottomPic2.setMaxCount(1);
+        bottomPic2.setFileId("BottomPic2");//设置inputid
+        bottomPic2.setFileListsId("bottom_uls2");//设置文件显示列表Dom
+        bottomPic2.setValidateType('img');//设置验证类型
+        bottomPic2.setInputName('bottom_pic2');//设置inputName
+        // bottomPic2.setAfterFunction(validate);
+        bottomPic2.bindButtonClick();
+        bottomPic2.bindFileChanre();
+        function del_img(obj){
+            $(obj).parents('li').remove();
+            return false;
+        }
+        $("#step_button").on('click',function(){
+            var topPic		=	$("#top_uls > li > div > input[name*=pic]").val();
+            var BottomPic1		=	$("#bottom_uls1 > li > div > input[name*=pic]").val();
+            var BottomPic2		=	$("#bottom_uls2 > li > div > input[name*=pic]").val();
+            var isOpen = $('input[name=is_open]').val();
+            var data = {
+                top_pic:topPic,
+                bottom_pic1:BottomPic1,
+                bottom_pic2:BottomPic2,
+                is_open:isOpen
+            }
+            $.ajax({
+                url: '__MODULE__/Spread/tweets_additional_update.html',
+                type: "post",
+                dataType: "json",
+                data: data,
+                success: function (data) {
+                    if (data.error == 0) {
+                        layer.closeAll();
+                        layer.msg(data.message);
+                    } else {
+                        layer.closeAll();
+                        layer.msg(data.message);
+                    }
+                },
+                error: function () {
+                    layer.msg('系统错误！');
+                },
+                beforeSend: function () {
+                    layer.closeAll();
+                    layer.msg('正在提交....');
+                }
+            });
+        })
+    </script>
+</html>

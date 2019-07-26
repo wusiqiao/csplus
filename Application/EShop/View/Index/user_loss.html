@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>服务已到期</title>
+    <style>
+        html{
+            height: 100%;
+        }
+        body{
+            margin: 0;
+            width: 100%;
+            min-width: 500px;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .info_box{
+            width: 500px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .img_box{
+            width: 60px;
+            height: 60px;
+            margin: 20px 42% 40px;
+            background-color: antiquewhite;
+        }
+        .info_blue{
+            width: 100%;
+            text-align: center;
+            color: #529bfd;
+            font-size: 1.3rem;
+            font-weight:500;
+            margin: 20px 0;
+        }
+        .info_gray{
+            padding: 0;
+            margin: 20px 0;
+            width: 100%;
+            text-align: center;
+            color: #999;
+        }
+        .btn_box{
+            width: 100%;
+            text-align: center;
+            margin: 50px 0 20px;
+        }
+        .btn_bg_blue{
+            line-height: 32px;
+            background-color: #529bfd;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 5px 30px;
+            margin: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="info_box">
+        <div class="img_box"><img src="../../Application/ESAdmin/Public/images/img/user_loss.jpg" alt=""></div>
+        <div class="info_blue">您的服务已到期</div>
+        <p class="info_gray">如需继续使用请联系客服进行续费或拨打售后热线: 05925239592</p>
+        <div class="btn_box">
+            <span class="btn_bg_blue">返回</span>
+        </div>
+    </div>
+</body>
+<script src="__ROOT__/{$Think.APP_PATH}/Public/easyui/jquery.js"></script>
+<script>
+    $(".btn_bg_blue").on("click",function(){
+        window.history.back();
+    })
+</script>
+</html>

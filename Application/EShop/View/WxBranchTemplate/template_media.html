@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <link href="/{$Think.MODULE_PATH}Public/video/preview-media.min.css" rel="stylesheet" />
+    <title>{$title}</title>
+    <style>
+    	html,body {
+    		background-color: #ffffff !important;
+    	}
+    </style>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body>
+	<include file="Index:header" />
+    <section class="preview-video-wrap mt85">
+        <div class="preview-video-top">
+            <div class="title">消息模板视频演示~</div>
+            <!--<div>您可以先<br>观看视频原型演示</div>-->
+        </div>
+		
+		<div class="playvideo">
+			<div class="preview-media">
+		    	<video poster="/{$Think.MODULE_PATH}Public/video/template0830.png" data-config='{"mediaTitle": "视频"}'>
+	        	<source src="/{$Think.MODULE_PATH}Public/video/template0830.mp4" type="video/mp4"></source>
+		      	  您的浏览器不支持HTML5视频
+		   	 </video>
+		
+			</div>
+		</div>
+		<div style="margin-top: 1rem;text-align: center">
+            <a href="/WxBranchTemplate" style="border: 1px solid #3C9EFA;padding: .3rem;color:#3C9EFA;border-radius: .1rem">返回消息模板首页</a>
+        </div>
+    </section>
+    <!--end 底部-->
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="/{$Think.MODULE_PATH}Public/video/preview-media.min.js"></script>
+    <script>
+		document.body.style.overflow='hidden';
+	    previewmedia('video');
+	</script>
+</body>
+</html>

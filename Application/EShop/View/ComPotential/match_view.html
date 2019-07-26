@@ -1,0 +1,132 @@
+<include file="UserSupervise:head" />
+<link href="/{$Think.APP_PATH}Public/css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<style>
+.user-head-img {
+	max-width: 0.7rem;
+	max-height: 0.7rem;
+	border-radius: 50%;
+}
+</style>
+
+<body>
+    <include file="Index:header" />
+    <section class="secondary-wrap match-view-wrap blue-checkbox">
+    	<div class="bg-white" style="margin-bottom:20px;padding:15px">
+    		<p><i class="fa fa-exclamation-circle" style="color:red;" aria-hidden="true"></i>点击开始匹配按钮，系统将自动检测出预留手机</p>
+    		<p>&nbsp;&nbsp;号相同的个人微信号和公司联系人</p>
+    		<div style="margin-top:10px" align="center">
+    			<a href="javascript:void(0);" style="padding:5px;border: 1px solid #4591fe; color:#4591fe" onclick="queryMatch()">开始匹配</a>
+    		</div>
+    	</div>
+            <div class="flex-start-center flex-1">
+            	<div style="width:25%">
+                	<input id="checkAll"  type="checkbox" />
+                	<label class="ml15 blue-4591fe"  for="checkAll">全选</label>
+            	</div>
+                <div>
+                	<p id="checkTxt" class="grey">当前共选择0条记录</p>
+                </div>
+            </div>
+            <div style="height:7.5rem;overflow-y:auto;width:105%;padding-bottom:2rem">
+	        <template v-for="(v,key) in matchData">
+	            <li class="plr20 mb20 bg-white">
+	                <div style="display:flex;height:1.8rem;">
+	                    <div class="flex-between ">
+	                        <div class="user-cehck-div" style="margin-right:15px">
+	                            <input type="checkbox" name="user_id" onclick="checkCount()" :company_id="v.company_id" :value="v.id">
+	                            <!-- <span class="font26 gray-9">{{v.contact}}</span> -->
+	                        </div>
+	                        <div style="width:2rem">
+	                            <div><img class="user-head-img" :src="v.head_pic" alt=""></div>
+	                            <div style="width:2rem;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">{{v.name}}</div>
+	                        </div>
+	                        <div style="padding:15px">
+	                        	<i class="fa fa-lock" style="color:#4591fe;font-size:20px" aria-hidden="true"></i>
+	                        </div>
+	                        <div class="ptb15" style="width:3rem">
+	                            <div class="flex-between line50 gray-9">
+	                                <div style="width:3rem;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">{{v.company_name}}</div>
+	                            </div>
+	                            <div class="flex-between line50 gray-9">
+	                                <div style="width:3rem;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">联系人：{{v.linkman}}</div>
+	                                <!-- <div>{{v.contact}}</div> -->
+	                            </div>
+	                        </div>
+	                    </div>
+                    </div>
+	            </li>
+	        </template>
+	    </div>
+        <div class="bottom-btn">
+            <button onclick="bindBtn()">确定绑定</button>
+            <!-- <button onclick="closeBtn()" class="left-btn" id="cancel">取消</button> -->
+        </div>
+    </section>
+    <include file="UserSupervise:foot_access_file" />
+</body>
+
+</html>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script type="text/javascript">
+var vue = new Vue({
+    el: ".match-view-wrap",
+    data: {
+        matchData: []
+    },
+    methods: {}
+});
+// function closeBtn() {
+//     var index = parent.layer.getFrameIndex(window.name);
+//     parent.layer.close(index);
+// }
+
+function queryMatch() {
+    $.post("/ComPotential/matchView/type/search", function(result) {
+        vue.matchData = result;
+        $("input[type='checkbox']:checkbox:checked").attr("checked",false);
+        checkCount();
+    }, "json");
+}
+// queryMatch();
+
+function bindBtn() {
+    var user_ids = [];
+    var company_ids = [];
+    $("input[name='user_id']:checkbox:checked").each(function() {
+        user_ids.push($(this).attr("value"));
+        company_ids.push($(this).attr("company_id"));
+    });
+    if (user_ids.length > 0) {
+        $.post("/ComPotential/matchView", { branch_ids: company_ids, user_ids: user_ids }, function(result) {
+            layer.msg(result.message);
+            if (result.code == 0) {
+                queryMatch();
+            }
+        }, "json");
+    } else {
+        alert("请至少勾选一条记录");
+    }
+}
+
+function checkCount(){
+    var num = 0;
+    $("input[name='user_id']:checkbox:checked").each(function() {
+        num = num +1;
+    });
+    $("#checkTxt").text("当前共选择"+num+"条记录");
+}
+
+$("#checkAll").click(function() {
+    if (this.checked) {
+        $("input[name='user_id']:checkbox").each(function() {
+            $(this).prop("checked", true);
+        });
+        checkCount();
+    } else {
+        $("input[name='user_id']:checkbox").each(function() {
+            $(this).prop("checked", false);
+        });
+        checkCount();
+    }
+});
+</script>

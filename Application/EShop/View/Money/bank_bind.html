@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+		<link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+		<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+		<title>{$title}</title>
+
+	</head>
+	<style>
+		.set-tips{
+			padding: 0 4%;
+			color: #999999;
+			font-size: 0.22rem;
+			line-height: .52rem;
+		}
+		/*bank*/
+		.bank-list {
+			z-index: 999;
+			width: 90%;
+			position: absolute;
+			left: 5%;
+			top: 50%;
+			border-radius: 10px;
+			overflow: hidden;
+			transform: translateY(-50%);
+		}
+		.chose-bank {
+			position: relative;
+			box-shadow: 0 1px 0 #f4f4f4;
+			height: 5rem;
+			overflow-y: scroll;
+		}
+		.line input[type='radio']:checked:before {
+			content: '\e618';
+			font-family: iconfont;
+			color: #ff840b;
+			font-size: 0.5rem;
+		}
+
+		.line input[type='radio']:before {
+			content: '\e618';
+			font-family: iconfont;
+			color: #e4e4e4;
+			font-size: 0.5rem;
+		}
+
+		.line input[type=radio] {
+			position: absolute;
+			top: 50%;
+			right: 6%;
+			display: inline-block;
+			width: 0.5rem;
+			height: 0.5rem;
+			border: 0;
+			outline: 0!important;
+			background-color: transparent;
+			-webkit-appearance: none;
+			transform: translateY(-50%);
+		}
+
+		.line input[type=radio] {
+			margin: 0;
+		}
+
+		.line {
+			position: relative;
+			width: 100%;
+			height: 1rem;
+			box-shadow: 0 -1px 0 #e4e4e4;
+		}
+
+		.line img,
+		.line span {
+			position: absolute;
+			line-height: 1rem;
+		}
+
+		.line img {
+			height: 0.5rem;
+			top: 50%;
+			left: 10%;
+			transform: translateY(-50%);
+		}
+
+		.line span {
+			padding-left: 45%;
+		}
+
+		input:disabled {
+			color: #000000 !important;
+			opacity: 1;
+		}
+		#bg {
+			background-color: #000;
+			position: fixed;
+			z-index: 99;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: -5rem;
+			display: none;
+			width: 100%;
+			height: 100%;
+			opacity: 0.3;
+			filter: alpha(opacity=30);
+			-moz-opacity: 0.3;
+		}
+	</style>
+	<body>
+		<include file="Index:header" />
+		<section class="user-wrap">
+		<div class="input-wrap">
+			<form action="" id="MoneyForm" onsubmit="return false;">
+				<div class="user-input">
+					<span class="user-account"></span>
+					<input type="text" placeholder="请输入持卡人" name="real_name" value="{$user['real_name']}" />
+				</div>
+				<div class="user-input">
+					<span class="icon-bank-sn"></span>
+					<input type="text" placeholder="请输入银行卡号" name="bank_account" value="{$user['bank_account']}" />
+				</div>
+				<div class="user-input">
+					<span class="icon-bank"></span>
+					<input type="text" placeholder="请选择开户行" id="deposit_name" readonly="readonly"  value="{$user['title']}" />
+					<input type="hidden" id="deposit" name="deposit" value="{$user['deposit']}" />
+				</div>
+				<div class="user-input">
+					<span class="icon-bank-subsidiary"></span>
+					<input type="text" placeholder="请输入支行名称" name="bank_address" value="{$user['bank_address']}"/>
+				</div>
+				<div class="user-input">
+					<span class="user-telephone"></span>
+					<input type="number" disabled="disabled" placeholder="请先绑定手机号" name="mobile" value="{$user['mobile']}"/>
+				</div>
+				<div class="user-input">
+					<span class="icon-phone-code"></span>
+					<input type="text" name="code" placeholder="请输入"/>
+					<button class="get-code" onclick="getSMS(this)">点击获取</button><input type="hidden" id="codes" class="form-control" />
+				</div>
+			</form>
+			<div class="commit-user">
+				<button type="button" onclick="formSubmit('MoneyForm', '__SELF__')">提交绑定</button>
+			</div>
+
+			<div class="set-tips">
+				<!--<img src="{$Think.const.IMG_URL}bank/danger.png" alt="" />-->
+				温馨提示，提现是现金将提现到绑定的银行卡，请绑定储蓄卡。
+			</div>
+		</div>
+		</section>
+		<!--弹窗自定义样式-->
+		<div id="bg" style="display: none;"></div>
+		<!--弹窗自定义样式end-->
+
+		<!--弹窗内容样式定义-->
+		<div class="bank-list" style="display: none;background-color: #ffffff;">
+			<form action="">
+				<div style="">
+					<div class="chose-bank">
+						<volist name="banks" id="p">
+	                        <div class="line" val="{$p['title']}" deposit="{$p['id']}">
+								<img src="{$Think.const.IMG_URL}/{$p['picurl']}" width="" />
+								<span>{$p['title']}</span>
+							</div>
+						</volist>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!--弹窗内容样式定义end-->
+		<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+		<script type="text/javascript">
+			$("#deposit_name").on('click',function(){
+				$(".bank-list,#bg").show();
+			})
+			$("#bg").on('click',function(){
+				$(".bank-list,#bg").hide();
+			})
+			$(".line").on('click',function(){
+				var deposit = $(this).attr('deposit');
+				$("#deposit").val(deposit);
+				$("#deposit_name").val($(this).attr('val'))
+                $(".bank-list,#bg").hide();
+			})
+			function getSMS(obj) {
+			    var mobile = "{$user['mobile']}";
+                if (!(/^1[3|4|5|7|8][0-9]\d{4,8}$/.test($.trim(mobile)))){
+                    layer.msg('手机号格式错误');
+                    return false;
+                }
+				$.ajax({
+					url: "__MODULE__/Check.html",
+					type: "post",
+					dataType: "json",
+					data: {
+						"phone": mobile,
+						"action": "checkbank",
+					},
+					success: function(json) {
+						if(json.result == '0') {
+							layer.msg(json.msg);
+							settime(obj);
+							$("#codes").val(json.codes)
+						} else {
+							layer.msg(json.msg);
+							return false
+						}
+					},
+					errors: function() {
+                        layer.msg('发送验证码失败');
+					},
+					beforeSend: function() {
+						settime(obj);
+					}
+				});
+			}
+			var countdown = 60;
+
+			function settime(setbtn) {
+				if(countdown == 0) {
+					$(setbtn).attr("disabled", false);
+					$(setbtn).html("获取验证码");
+					$(setbtn).removeClass("check");
+					countdown = 60;
+					return;
+				} else {
+					$(setbtn).attr("disabled", true);
+					$(setbtn).html("" + countdown + "秒后重新获取");
+					countdown--;
+				}
+				setTimeout(function() {
+					settime(setbtn);
+				}, 1000);
+			}
+		</script>
+		<script>
+			function formSubmit(formid, form_url) {
+				if($("input[name='mobile']").val() == "") {
+					layer.msg('电话号码不能为空！');
+					return false;
+				}
+				if($("input[name='real_name']").val() == "") {
+					layer.msg('持卡人不能为空！');
+					return false;
+				}
+				if($("input[name='bank_account']").val() == "") {
+					layer.msg('银行卡号不能为空！');
+					return false;
+				}
+				if($("input[name='deposit']").val() == "") {
+					layer.msg('开户行不能为空！');
+					return false;
+				}
+				if($("input[name='code']").val() == "") {
+					layer.msg('验证码不能为空！');
+					return false;
+				}
+				if($("input[name='bank_address']").val() == "") {
+					layer.msg('支行名称不能为空！');
+					return false;
+				}
+				console.log($('#' + formid).serialize());
+				$.ajax({
+					url: form_url,
+					type: "post",
+					dataType: "json",
+					data: $('#' + formid).serialize(),
+					success: function(data) {
+						console.info(data);
+						if(data.error == 0) {
+							layer.closeAll();
+							layer.msg(data.msg);
+							setTimeout(function() {
+                                self.location=document.referrer;
+							}, 500);
+						} else {
+							layer.closeAll();
+							layer.msg(data.msg);
+						}
+
+					},
+					error: function() {
+						layer.msg('系统错误！');
+					},
+					beforeSend: function() {
+						layer.closeAll();
+						layer.msg('正在提交....');
+					}
+				});
+			}
+		</script>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet"/>
+    <link href="/{$Think.APP_PATH}Public/vender/layer/skin/layer.css?v={$version}" rel="stylesheet"/>
+    <link href="__ROOT__/Application/EShop/Public/css/attachment.css?v=2" rel="stylesheet"/>
+    <style>
+        .layui-layer-dialog .layui-layer-content {
+            text-align: center;
+        }
+        .group-member {
+            padding: 0.36rem;
+            overflow: hidden;
+        }
+
+        .group-member-list {
+            width: 100%;
+            padding: 0.6rem 0;
+            background-color: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            overflow: hidden;
+        }
+
+        .member-item {
+            margin: 0.26rem 0.46rem;
+            position: relative;
+
+        }
+
+        .member-item img {
+            width: 3.2rem;
+            height: 3.2rem;
+        }
+
+        .member-item-name {
+            width: 3.2rem;
+            font-size: 0.86rem;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .remove-member {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0.88rem;
+            height: 0.88rem;
+            background-image: url("/{$Think.MODULE_PATH}Public/images/icon/icon-remove.png");
+            background-size: 100% 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="attachment-container">
+    <div class="group-member">
+        <div class="group-member-list">
+            <foreach name="list" item="item">
+                <div class="member-item">
+                    <img src="{$item.head_pic}">
+                    <div class="member-item-name">
+                        <if condition="$item.staff_name">
+                            {$item.staff_name}
+                            <elseif condition="$item.comments">
+                                {$item.comments}
+                                <else/>
+                                {$item.name}
+                        </if>
+                    </div>
+                    <if condition="($item.role neq 20) AND $isLord">
+                        <div class="remove-member" onclick="removeMembers('{$item.id}', this)"></div>
+                    </if>
+                </div>
+            </foreach>
+            <!-- 新增群成员 -->
+            <div class="member-item member-item-add" onclick="toAddGroupMember()">
+                <img src="/{$Think.MODULE_PATH}Public/images/icon/icon-addnew.png" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/{$Think.APP_PATH}Public/jquery/jquery.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+<script>
+    function toAddGroupMember() {
+        top.layer.open({
+            type: 2,
+            title: '添加群成员',
+            shade: 0.8,
+            closeBtn: 1,
+            area: ["100%", "100%"],
+            content: "/Talks/addgroupmember?groupId={$groupId}"
+        });
+    }
+
+    function removeMembers(id, obj){
+        layer.confirm('确定删除?', function(index){
+            layer.close(index);
+            $.post('/Talks/delMember',{
+                groupId : {$groupId},
+                userId : id,
+            }, function(res){
+                if(res.code == 0){
+                    $(obj).parent().remove();
+                }
+                layer.msg(res.message);
+            }, 'json');
+        })
+    }
+</script>
+</body>
+
+</html>

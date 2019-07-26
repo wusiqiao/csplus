@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+</head>
+<style>
+.wxuser-list-item{
+    margin-bottom:0.2rem;
+    border-radius: 3px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0.12rem 0.3rem;
+}
+.blue-checkbox{
+    overflow: hidden;margin-right: 0.3rem;
+}
+.user-hpic{
+    overflow: hidden;
+}
+.user-hpic img{
+    height:0.8rem;width:0.8rem;border-radius: 50%;margin-right: .5rem;
+}
+</style>
+
+<body >
+    <div class="custom-info-wrap common-wrap bg-none" style="background-color: #EFEFF4;height:100%;" id="members">
+        <div class="search-fixed" id="search-fixed" style="margin: 0">
+            <div class="mui-search-area" style="width: 90%;margin: 0 5%;">
+                <input class="mui-search-area-input mui-input-clear" name="keyword" type="search" id="" placeholder="请输入昵称或备注搜索" v-model="where.name">
+                <button id="search"></button>
+            </div>
+        </div>
+        <section class="common-wrap bg-none" style="margin-bottom: 1.2rem;">
+            <div class="mui-content">
+                <div class="item-wrap">
+                    <ul class="wxuser-list">
+                        <li class="wxuser-list-item" v-for="item, index in list">
+                            <div class="blue-checkbox">
+                                <input name="ids" type="checkbox" :value="item.id" v-model="ids">
+                            </div>
+                            <div class="user-hpic" style="overflow: hidden;">
+                                <img :src="item.head_pic" alt="">
+                            </div>
+                            <div class="user-name">
+                                {{item.staff_name ? item.staff_name : item.comments ? item.comments + '（' + item.name + '）' : item.name}}
+                            </div>
+                        </li>
+                    </ul>
+                    <div v-if="current < totalPage" style="width: 100%;text-align: center;">
+                        <button class="bg-368bfe" v-on:click="loadMoreData" style="width: 100%;padding: 0.2rem 0;color: #fff;">点击加载更多</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="order-bottom-btn">
+            <button class="bg-368bfe" v-on:click="addMembsers">添加</button>
+        </div>
+    </div>
+</body>
+<script src="/{$Think.APP_PATH}Public/jquery/jquery.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+
+<script>
+    (function(){
+         self.Members = new Vue({
+            el: "#members",
+            data: {
+                list: [],
+                where : {
+                    groupId:{$groupId},
+                    page : 1,
+                    name : null
+                },
+                ids : [],
+                totalPage:1,
+                timeoutId : null,
+                current:1 
+            },
+            watch: {
+              'where.name' : function(val){
+                this.where.page = 1;
+                if(this.timeoutId){
+                    clearTimeout(this.timeoutId);
+                    this.timeoutId = null;
+                }
+
+                this.timeoutId = setTimeout(this.searchNames, 500);
+              }  
+            },
+            mounted() {
+                this.searchNames();
+            },
+            methods : {
+                searchNames : function(){
+                    var that = this;
+                    $.get('/Talks/searchMember', this.where, function(res){
+                        that.list = res.rows;
+                        that.totalPage = Math.ceil(res.total / 50)
+                    }, 'json')
+                },
+                addMembsers : function(){
+                    var that = this;
+                    var ids = that.ids;
+                    if(ids.length == 0){
+                        layer.msg('请选择要添加的成员', {icon:5});
+                        return false
+                    }
+
+                    $.post('/Talks/addMember', {
+                        groupId:{$groupId},
+                        userIds:ids.join(',')
+                    }, function(res){
+                        if(res.code == 0){
+                            layer.msg('邀请成功');
+                            that.searchNames();
+                        }else{
+                            layer.msg(res.message);
+                        }
+                    }, 'json')
+                },
+                loadMoreData(){
+                    var that = this;
+                    if( this.current >= this.totalPage){
+                        layer.msg("无更多数据");
+                        return ;
+                    }else{
+                        this.current += 1;
+                    }
+                    var obj = {
+                        groupId:{$groupId},
+                        page : this.current,
+                        name : null
+                    }
+                    $.get('/Talks/searchMember',obj,function(res){
+                        // console.log(res)
+                        if(res.code == 0){
+                            for(var k in res.rows){
+                                that.list.push(res.rows[k]);
+                            }
+                        }
+                    }, 'json')
+                }
+            },
+        });
+    })(window)
+</script>
+
+</html>

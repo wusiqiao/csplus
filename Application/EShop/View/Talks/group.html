@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no">
+	<meta name="renderer" content="webkit">
+	<meta name="screen-orientation" content="portrait">
+	<meta name="x5-orientation" content="portrait">
+	<meta name="full-screen" content="yes">
+	<meta name="x5-fullscreen" content="true">
+	<link rel="stylesheet" href="{$Think.const.JS_URL}load/dropload.css" />
+	<link rel="stylesheet" href="{$Think.const.CSS_URL}mui/mui.css">
+	<link rel="stylesheet" href="{$Think.const.CSS_URL}liuyan/liuyan.css">
+	<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+	<title>{$title}</title>
+	<style>
+		.item-wrap {
+			overflow: auto;
+			width: 100% !important;
+		}
+
+		.item-container {
+			float: left;
+			margin: 0 auto;
+			width: 100%;
+			overflow: auto;
+		}
+
+		.item-container li {
+			float: left;
+			overflow: hidden;
+			width: 100%;
+		}
+
+		.item-wrap::-webkit-scrollbar {
+			/*隐藏滚轮*/
+			display: none;
+		}
+
+		.item-container-item {
+			width: 100%;
+			height: 0.95rem;
+			background-color: #ffffff;
+			border-radius: .1rem;
+			overflow: hidden;
+			margin-bottom: 0.1rem;
+		}
+
+		.list-entrance {
+			padding: 0 0.28rem;
+			height: 0.95rem;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		/*  */
+		.entrance-icon {
+			width: 0.75rem;
+			height: 0.75rem;
+			float: left;
+			margin: 0.1rem 0;
+			margin-right: 0.18rem;
+			background-color: #fff;
+		}
+		.entrance-icon-add{
+			width: 0.55rem;
+			height: 0.55rem;
+			float: left;
+			margin: 0.2rem 0;
+			margin-right: 0.18rem;
+			background-color: #fff;
+		}
+		.common-wrap {
+			padding: 0 .2rem;
+		}
+		.dot{
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			z-index: 8;
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background-color: red;
+		}
+		.entrance-name{
+			flex: 1;
+			color: #212121;
+			line-height: 0.95rem;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		.order-bottom-btn {
+			height: 1.2rem;
+			padding: .15rem 0;
+		}
+	</style>
+</head>
+
+<body>
+	<include file="Index:header" />
+
+	<div id="group-content" class="liuyan-wrap pb70" style="margin-bottom: 66px;margin-top: 1rem;" hidden>
+		<section class="common-wrap bg-none">
+			<div style="margin-top: .85rem;margin-bottom: 10%">
+				<!-- 群聊列表 -->
+				<div class="mui-content">
+					<div class="item-wrap">        
+						<!-- 列表项 -->
+						<div class="item-container-item" v-for="item, index in list" v-on:click="onShow(item, index)">
+							<div class="list-entrance">
+								<div style="display: flex;align-items: center;width: 90%;">
+									<div style="overflow: hidden;position: relative;">
+										<img class="entrance-icon" src="/{$Think.MODULE_PATH}Public/images/icon/attach-group.png" alt="">
+										<div class="dot" v-show="item.count > 0"></div>
+									</div>
+									<span class="entrance-name">{{item.name}}</span>
+								</div>
+								<div style="color:#b4b1b4">
+									<span style="margin-right: 0.2rem;"></span>
+									<i class="mui-icon mui-icon-arrowright"></i>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="order-bottom-btn">
+					<div @click="actionAddGroup" style="flex: 1;"><button class="bg-368bfe" style="width: calc(100% - 0.2rem);">新建群聊</button></div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<include file="Public:contact" />
+	<include file="UserSupervise:foot_access_file"/>
+	<script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+	<script src="/{$Think.const.MODULE_PATH}/Public/js/Ws.js"></script>
+	<script>
+		(function(){
+			$("#group-content").show();
+			var group = new Vue({
+				el:"#group-content",
+				data:{
+					list : {$list}
+				},
+				mounted() {
+
+				},
+				methods: {
+					onShow :  function(item, index){
+						window.location.href = `__MODULE__/Talks/message/group_id/${item.group_id}`;
+					},
+					actionAddGroup(){
+						layer.open({
+							type: 2,
+							title: "新增群聊",
+							shadeClose: true,
+							shade: 0.8,
+							area: ['100%', '100%'],
+							content: "/Talks/addgroup",
+							success: function (layero, index) {
+
+							},
+							end: function () {
+								
+							}
+						});
+					}
+				}
+			})
+
+			//长连接对象
+			const Sockets = new Socket({$branchId}, {$userId}, {
+				msg: function(data) {
+					if(data.groupType == 20){
+						var list = [];
+						var that = null;
+
+						for (var index in group.list){
+							if(group.list[index].group_id == datamsg_group_id){
+								that = group.list[index];
+								that.count = that.count + 1;
+							}else{
+								list.push(group.list[index]);
+							}
+						}
+
+						if(that){
+							list.unshift(that);
+							group.list = list;
+						}
+					}
+				}
+			});
+		})(window)
+	</script>
+	<!--end 底部-->
+</body>
+
+</html>

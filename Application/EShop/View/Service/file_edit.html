@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+    .delete-div span{
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .basic-info .info-title {
+	    color: #333333;
+	}
+</style>
+<body>
+	<include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" >
+    	<form onsubmit="return false;" id="customerForm">
+	    	<div class="basic-info">
+	    		<div class="title">公司新增</div>
+	    		<div class="info-line important-input pr">
+	    			<div class="info-title">客户名<i></i></div>
+	    			<input type="text" value="{$customer.name}" placeholder="请输入客户姓名"/>
+                    <input type="hidden"/>
+	    		</div>
+	    		<div class="info-line important-input pr">
+	    			<div class="info-title">手机<i></i></div>
+	    			<input type="number" name="" value="" placeholder="请输入手机号码"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">电话<i></i></div>
+	    			<input type="number" name="" value="" placeholder="请输入电话号码"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title"><span class="fr">E-mail</span><i></i></div>
+	    			<input type="email" value="" placeholder="请输入E-mail"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">传真<i></i></div>
+	    			<input type="number" value="" placeholder="请输入传真号码"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title"><span class="fr">QQ</span><i></i></div>
+	    			<input type="text" value="" placeholder="请输入QQ号码" />
+	    		</div>
+	    		<div class="info-line" style="position: relative;box-shadow: none;">
+	    			<div class="info-title">联系地址<i></i></div>
+	    			<div class="area-chose" id='showCityPicker1'>
+	    				<div class="province-city" id="showCity1" style="color:#999999;margin: .3rem;">
+                            {$customer.region}
+	    				</div>
+                        <input type="hidden" value="{$customer.province}"  name="users[province]" id="province1"   />
+                        <input type="hidden" value="{$customer.city}"  name="users[city]" id="city1"  />
+                        <input type="hidden" value="{$customer.district}"  name="users[district]" id="district1"  />
+                        <span class="mui-icon mui-icon-arrowright" style="position: absolute; right:4%;top:35%;color: #cccccc;"></span>
+	    			</div>
+	    		</div>
+                <div class="info-line">
+                    <div class="info-title"><i></i></div>
+                    <textarea rows="" cols="" name="users[address]" placeholder="请输入详细地址" ></textarea>
+                </div>
+	    		<div class="info-line important-input pr">
+	    			<div class="info-title">公司名称<i></i></div>
+	    			<input type="text" name="" value="" placeholder="请输入公司名称" />
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">机构代码<i></i></div>
+	    			<input type="text" name="" value="" placeholder="请输入机构代码" />
+	    		</div>
+				<div class="info-line">
+					<div class="info-title">法人代表<i></i></div>
+					<input type="text" name="" value="" placeholder="请输入法人姓名" />
+				</div>
+	    		<div class="info-line">
+	    			<div class="info-title">身份证<i></i></div>
+	    			<input type="number" name="" value="" placeholder="请输入法人身份证号" />
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">开户银行<i></i></div>
+	    			<input type="text" name="" value="" placeholder="请输入开户银行" />
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">银行账号<i></i></div>
+	    			<input type="number" name="" value="" placeholder="请输入银行卡号" />
+	    		</div>
+	    		<div class="info-line" style="position: relative;box-shadow: none;">
+	    			<div class="info-title">联系地址<i></i></div>
+	    			<div class="area-chose" id='showCityPicker2'>
+	    				<div class="province-city" id="showCity2" style="color:#999999;margin: .3rem;">
+                            {$customer.region}
+	    				</div>
+                        <input type="hidden" value="{$customer.province}"  name="users[province]" id="province2"   />
+                        <input type="hidden" value="{$customer.city}"  name="users[city]" id="city2"  />
+                        <input type="hidden" value="{$customer.district}"  name="users[district]" id="district2"  />
+                        <span class="mui-icon mui-icon-arrowright" style="position: absolute; right:4%;top:35%;color: #cccccc;"></span>
+	    			</div>
+	    		</div>
+	    		<div class="info-line">
+                    <div class="info-title"><i></i></div>
+                    <textarea name="" rows="" cols="" placeholder="请输入详细地址" ></textarea>
+                </div>
+	    		<div class="info-line">
+	    			<div class="customize blue-4591fe">+新增自定义类型</div>
+	    		</div>
+	    	</div>
+	    	<button class="save-edited mt30 bg-368bfe">保存</button>
+    	</form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+  	<include file="UserSupervise:foot_access_file"/>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    
+    
+    
+	
+</body>
+</html>

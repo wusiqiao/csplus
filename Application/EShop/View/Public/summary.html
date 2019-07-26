@@ -1,0 +1,364 @@
+<link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+<link href="__ROOT__/Application/EShop/Public/css/attachment.css?v=2" rel="stylesheet" />
+<link href="/{$Think.APP_PATH}Public/vender/layer/skin/layer.css?v={$version}" rel="stylesheet" />
+<style>
+    .input-header {
+        background-color: #eee;
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    #txt-content {
+        min-height: 2rem;
+        border: 1px solid #d3d3d3;
+        background-color: #fff;
+        padding: 0.2rem 0.2rem;
+        border-radius: 3px;
+        margin: 0.46rem 0;
+        word-break: break-all;
+    }
+</style>
+<div class="attachment-container" v-cloak>
+    <div class="attachment-tabs" >
+        <ul>
+            <li class="active" style="border-top-left-radius: 0.2rem;border-bottom-left-radius: 0.2rem;" onclick="historyShow(this)">
+                <div class="">备注记录</div>
+            </li>
+            <li class="" style="border-top-right-radius: 0.2rem;border-bottom-right-radius: 0.2rem;" onclick="attachmentShow(this)">
+                <div class="">附件</div>
+            </li>
+        </ul>
+    </div>
+    <div id="history"  v-if="(historys != null) && (historys.length > 0)">
+        <ul class="records">
+           <li v-for="(item, iid) in historys">
+               <div class="time" >{{item.create_time_fmt}}</div>
+               <div style="margin:0 auto 0.6rem;width:96%;">
+                    <template v-if="item.direction == 1">
+                        <div>
+                            <div class="item-contents">
+                                <!-- 头像 -->
+                                <img :src="item.user_head_pic" alt=""/>
+                                <div class="contents-box">
+                                    <p class="contents-name">{{item.staff_name}}</p>
+                                    <div class="contents-direction">
+                                        <span v-html="item.content"></span>
+                                        <ul class="attachments">
+                                            <li v-for="(item,index) in JSON.parse(item.images)" :title="item.name" style="margin:5px 15px 5px 0;">
+                                                <div v-if="item.type=='image'" class="img-wrap">
+                                                    <img :src="item.url" alt=""/>
+                                                </div>
+                                                <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type"></div>
+                                                <div style="white-space: nowrap;">
+                                                    <span v-if="item.type == 'image'" @click="ToPreviewImage(item)" style="color: #368BFE;">预览</span>
+                                                    <a v-if="item.type != 'image'" style="color: #368cfd;margin: 0 0.2rem;" :href="item.url" :download="item.name" target="_blank" mce_href="#">下载</a>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else-if="item.direction == 2">
+                        <div>
+                            <div class="item-contents" style="justify-content: flex-end;">
+                                <div class="contents-box">
+                                    <p class="contents-name" style="text-align:right;">{{item.staff_name}}</p>
+                                    <div class="contents-direction">
+                                        <span v-html="item.content"></span>
+                                        <ul class="attachments">
+                                            <li v-for="(item,index) in JSON.parse(item.images)" :title="item.name" style="margin:5px 15px 5px 0;">
+                                                <div v-if="item.type=='image'" class="img-wrap">
+                                                    <img :src="item.url" alt=""/>
+                                                </div>
+                                                <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type"></div>
+                                                <div style="white-space: nowrap;">
+                                                    <span v-if="item.type == 'image'" @click="ToPreviewImage(item)" style="color: #368BFE;">预览</span>
+                                                    <a v-if="item.type != 'image'" style="color: #368cfd;margin: 0 0.2rem;" :href="item.url" :download="item.name" target="_blank" mce_href="#">下载</a>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- 头像 -->
+                                <img :src="item.user_head_pic" alt=""/>
+                            </div>
+
+                        </div>
+                    </template>
+               </div>
+           </li>
+        </ul>
+    </div>
+    <div v-else id="history" class="empty-proxy">
+        <span>附件记录为空</span>
+    </div>
+    <div id="attachment" style="display:none;height: 68vh;overflow-y: auto;overflow-x: hidden;background-color: #f6f7fb;">
+        <div v-for="(val, key) in historys">
+            <div v-for="(item,index) in JSON.parse(val.images)" :title="item.name" style="display:flex;width: 95%;margin:0.6rem auto;background-color: #fff;padding: 5px 0;">
+                <img :src="val.user_head_pic" alt="" style="width:2.3rem;height:2.3rem;border-radius: 50%;margin: 0 0.3rem;"/>
+                <div style="flex:1;">
+                    <p class="contents-name">{{val.staff_name}}</p>
+                    <div style="width:100%;display:flex;">
+                        <div v-if="item.type=='image'" class="img-wrap" style="width:2.8rem;height:2.8rem;overflow: hidden;border:1px solid #d3d3d3;">
+                            <img style="width: 100%;" :src="item.url" alt=""/>
+                        </div>
+                        <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type" style="background-size: 2.8rem;width: 2.8rem; height: 2.8rem"></div>
+                        <div style="margin-left:0.6rem;flex: 1;">
+                            <p style="color: #666;margin: 3px 0px;">附件名称：{{item.name}}</p>
+                            <p style="color: #666;margin: 3px 0px;">创建时间：{{val.create_time_fmt}}</p>
+                            <div style="white-space: nowrap;">
+                                <span v-if="item.type == 'image'" @click="ToPreviewImage(item)" style="color: #368BFE;">预览</span>
+                                <a v-if="item.type != 'image'" style="color: #368cfd;margin: 0 0.2rem;" :href="item.url" :download="item.name" target="_blank" mce_href="#">下载</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="attachment-input">
+        <div class="input-header">
+            <div class="input-area">
+                <div id="txt-content" contentEditable="true"></div>
+                <!-- <textarea rows="4" placeholder="备注内容" v-model="content" autofocus></textarea> -->
+            </div>
+            <div style="width: 6.6rem;display: flex;align-items: center;margin: 0 0.2rem;overflow: hidden;">
+                <div class="btn-attachment-tool" onclick="addAttachTool()"><img style="width: 1.8rem;height: 1.8rem;margin: 0 0.6rem;" src="/{$Think.MODULE_PATH}Public/images/icon/icon-addfile.png" alt=""></div>
+                <div style="flex: 1;margin: 0.46rem 0.1rem;">
+                    <div class="common-button btn-ok" @click="postAttachmentData()">发送</div>
+                </div>
+            </div>
+        </div>
+        <div id="btn-attachment-footer">
+            <div style="display: flex;align-items: center;overflow: hidden;">
+                <div style="margin: 0.1rem 0.6rem;display: flex;flex-direction: column;align-items: center;">
+                    <div class="btn-attachment-addImg">
+                        <input type="file" accept="image/*" id="img-upload-attach" multiple="multiple">
+                    </div>
+                    <div style="padding: 0.1rem 0;text-align: center;color: #666;">上传图片</div>
+                </div>
+                <div style="margin: 0.1rem 0.6rem;display: flex;flex-direction: column;align-items: center;">
+                    <div class="btn-attachment-addFile">
+                        <input type="file" accept="application/*" id="file-upload-attach" multiple="multiple">
+                    </div>
+                    <div style="padding: 0.1rem 0;text-align: center;color: #666;">上传文件</div>
+                </div>
+            </div>
+            <ul class="attachments">
+                <li v-for="(item,index) in attachments" @click="removeAttachment(index)" :title="item.file_name">
+                    <div v-if="item.type=='image'" class="img-wrap"><img :src="item.src" alt=""/></div>
+                    <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type">
+                        <span class="btn-item-remove"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+
+<script type="text/javascript">
+    var attachmentVue = new Vue({
+        el:".attachment-container",
+        data:{
+            title:"",
+            attachments:[],
+            tabs:[],
+            historys:[],
+            current:0,
+            is_delete:0,
+            content: "",
+            callback:null,
+            layer_index:0
+        },
+        methods:{
+            getInfo:function(item,index){
+                getAttachmentInfos(index);
+            },
+            returnResult:function(){
+                var callback = $.dialog.list["note_dialog"].data.callback;
+                if (callback != undefined){
+                    callback.call(this, "1");
+                }
+            },
+            removeAttachment:function(index){
+                this.attachments.splice(index,1);
+            },
+            removeRemoteItem:function(item, index){
+                mui.confirm('确认删除?',"删除提示",['取消', '确定'],function(e) {
+                    if (e.index == 1){
+                        $.post("/ComAttachment/remove", {item_id: item.id}, function(result){
+                            attachmentVue.historys.splice(index, 1);
+                        },"json");
+                    }
+                });
+            },
+            postAttachmentData:function(){
+                if (this.attachments.length == 0 && $("#txt-content").text() == ""){
+                    // closeLayer();
+                    return;
+                }
+                var formData = new FormData();
+                var attach_group = this.tabs[this.current].attach_group;
+                if (attach_group != undefined && attach_group != "") {
+                    formData.append("attach_group", attach_group);
+                }
+                formData.append("content", $("#txt-content").text());
+                var files = this.attachments;
+                $(files).each(function (index) {
+                    formData.append(this.type+"-file-"+index, this.file);
+                });
+                $.ajax({
+                    url: "/ComAttachment/addNote",
+                    type: 'POST',
+                    data: formData,
+                    dataType:'json',
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        layer.load(2, {shade: [0.1,'#fff'] });
+                    },
+                    success: function (response) {
+                        layer.closeAll();
+                        if (response.code == 0) {
+                            layer.msg("上传完成");
+                            var history = response.message;
+                            attachmentVue.historys.push(history);
+
+                            attachmentVue.$nextTick(function() {
+                                var scrollHeight = $('.records').prop("scrollHeight");
+                                $('.records').scrollTop(scrollHeight);
+                            });
+
+                            $("#txt-content").text("")
+                            attachmentVue.attachments = [];
+                            attachmentVue.tabs[attachmentVue.current].attach_group = history["group"];
+                            if (attachmentVue.callback != undefined){
+                                attachmentVue.callback.call(this, history);
+                            }
+                        }else{
+                            layer.msg(response.message);
+                        }
+                    },
+                    error:function () {
+                        layer.closeAll();
+                        layer.msg('上传失败');
+                    }
+                });
+            },
+            closeLayer:function(){
+                closeLayer();
+            },
+            ToPreviewImage(item){
+                top.layer.open({
+                    type:1,
+                    title:'图片预览',
+                    shade:0.8,
+                    closeBtn:1,
+                    area:["100%","100%"],
+                    content:`<div style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
+                        <img style="width: 100%;" src="${item.url}" alt="">
+                    </div>`
+                });
+            }
+        }
+    });
+    function closeLayer(){
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    }
+    function setArguments(data){
+        console.log(data)
+        attachmentVue.tabs = data.tabs;
+        attachmentVue.callback = data.callback;
+        attachmentVue.current = data.active;
+        getAttachmentInfos(attachmentVue.current);
+    };
+
+    function historyShow(el){
+        $("#history").show();
+        $("#attachment").hide();
+        $(el).addClass("active");
+        $(el).siblings().removeClass("active");
+    }
+    function attachmentShow(el){
+        $("#history").hide();
+        $("#attachment").show();
+        $(el).addClass("active");
+        $(el).siblings().removeClass("active");
+    }
+
+    function getAttachmentInfos(index){
+        attachmentVue.current = index;
+        var attach_group = attachmentVue.tabs[index].attach_group;
+        $.post("/ComAttachment/noteList", {"group": attach_group}, function(result){
+            attachmentVue.historys = result.rows;
+            attachmentVue.is_delete = result.is_delete;
+                attachmentVue.$nextTick(function() {
+                    var scrollHeight = $('.records').prop("scrollHeight");
+                    $('.records').scrollTop(scrollHeight);
+                });
+        },"json");
+    };
+    function addAttachTool(){
+        if($("#btn-attachment-footer").css("display") == "none"){
+            $("#btn-attachment-footer").show();
+        }else{
+            $("#btn-attachment-footer").hide();
+        }
+    }
+    var u = navigator.userAgent;
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    if (isiOS) {
+        $('input,textarea').blur(function(){
+            top.document.body.scrollTop = 0;
+        })
+    }
+    $("#img-upload-attach").change(function(){
+        var oFiles = $(this).get(0).files;
+        $(oFiles).each(function () {
+            var _file = this;
+            //var rFilter = /^(image\/jpeg|image\/png)$/i;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(this);
+                reader.onload = function () {
+                    attachmentVue.attachments.push({type:"image",src: reader.result, file: _file, file_name: _file.name})
+                }
+            }else{
+                return false;
+            }
+        });
+    });
+    $("#file-upload-attach").change(function(){
+        var oFiles = $(this).get(0).files;
+        $(oFiles).each(function () {
+            var _file = this;
+            //var rFilter = /^(image\/jpeg|image\/png)$/i;
+            if (/^(image\/jpeg|image\/png)$/i.test(this.type)) {
+                return false;
+            }else{
+                var type = "unknown";
+                if (/(\.xls|\.xlsx)$/i.test(this.name)) {
+                    type = "excel";
+                }else{
+                    if (/(\.doc|.\.docx)$/i.test(this.name)) {
+                        type = "word";
+                    }else{
+                        if (/(\.txt)$/i.test(this.name)) {
+                            type = "txt";
+                        }
+                    }
+                }
+                attachmentVue.attachments.push({type:type,src: "", file: _file, file_name: _file.name})
+            }
+        });
+    })
+</script>

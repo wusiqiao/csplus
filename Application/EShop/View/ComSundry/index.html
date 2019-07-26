@@ -1,0 +1,304 @@
+<include file="UserSupervise:head" />
+
+<head>
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+    <title>{$title}</title>
+</head>
+<style>
+.modal input[type='text'] {
+    margin: 0 0;
+    padding: 0 .1rem;
+    border: 1px solid #e9e9e9;
+}
+</style>
+
+<body>
+    <section class="common-wrap bg-none mt85">
+        <include file="Index:header" />
+        <ul class="main-tab">
+            <li onclick="window.location.href = '__MODULE__/ComSundryTransfer/index'">内部借用</li>
+            <li onclick="window.location.href = '__MODULE__/ComSundryOrder/index'">客户借还</li>
+            <li class="active">物品管理</li>
+        </ul>
+        <section>
+            <form id="head-form">
+                <div class="chose-company mb20">
+                    <div class="company-selected flex-1">
+                        <div class="lender-company">选择公司</div>
+                        <div class="select-icon1" id="select-company"></div>
+                        <input id="lender-company" name="customer_company" type="hidden">
+                    </div>
+                </div>
+            </form>
+            <div>
+                <div class="manage-titles mb20">
+                    <div>物品名称</div>
+                    <div>物品状态</div>
+                    <div>在手员工</div>
+                    <div>物品编号</div>
+                    <div>存放库号</div>
+                </div>
+                <ul id="ComSundry-item" class="">
+                    <foreach name="model" item="v">
+                        <li class="manage-list blue-checkbox">
+                            <input name="sundry_id" type="radio" value="{$v.id}" />
+                            <div class="con">
+                                <div class="word-hidden">{$v.name}</div>
+                                <div class="word-hidden">{$v.status}</div>
+                                <div class="word-hidden">{$v.user_name}</div>
+                                <div class="word-hidden">{$v.no}</div>
+                                <div class="word-hidden">{$v.position}</div>
+                            </div>
+                        </li>
+                    </foreach>
+                </ul>
+            </div>
+        </section>
+        <div class="order-bottom-btn">
+            <button class="left-btn mui-disabled" id="edit">物品编辑</button>
+            <button class="bg-368bfe" id="add">物品新增</button>
+        </div>
+        <!--modal 物品编辑-->
+        <div class="wrap-modal" id="edit-good" style="display: none;">
+            <div class="modal-common-wrap modal">
+                <div class="modal-title bg-e gray-9">物品编辑</div>
+                <form id="edit-form">
+                    <div id="edit-good-content" class="modal-content">
+                    </div>
+                </form>
+                <div class="modal-btn">
+                    <button id="popup-close" class="popup-close">取消</button>
+                    <button onclick="formSubmit('edit-form','__MODULE__/ComSundry/edit')" class="blue" id="edit-complete">确定</button>
+                </div>
+            </div>
+        </div>
+        <!--modal end-->
+        <!--modal 物品新增-->
+        <div class="wrap-modal" id="add-good" style="display: none;">
+            <div class="modal-common-wrap modal">
+                <div class="modal-title bg-e gray-9">物品新增</div>
+                <form id="add-form">
+                    <div id="add-good-content" class="modal-content">
+                    </div>
+                </form>
+                <div class="modal-btn">
+                    <button id="popup-close" class="popup-close">取消</button>
+                    <button onclick="formSubmit('add-form','__MODULE__/ComSundry/edit')" class="blue" id="add-complete">确定</button>
+                </div>
+            </div>
+        </div>
+        <!--modal end-->
+    </section>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script type="text/javascript">
+    mui.init();
+    // mui.ready(function() {
+    //     // mui('.manage-list').on('change', 'input', function() {
+    //     //     var nCheckBox = $('input:radio:checked').length;
+    //     //     console.log(nCheckBox);
+    //     //     var manageBtn = document.getElementById('edit');
+    //     //     if (nCheckBox) {
+    //     //         if (manageBtn.classList.contains("mui-disabled")) {
+    //     //             manageBtn.classList.remove("mui-disabled");
+    //     //         }
+    //     //     } else {
+    //     //         if (!manageBtn.classList.contains("mui-disabled")) {
+    //     //             manageBtn.classList.add("mui-disabled");
+    //     //         }
+    //     //     }
+    //     // });
+
+    // });
+
+    $(document).on("change", "input[type=radio]", function() {
+        var nCheckBox = $('input:radio:checked').length;
+        console.log(nCheckBox);
+        var manageBtn = document.getElementById('edit');
+        if (nCheckBox) {
+            if (manageBtn.classList.contains("mui-disabled")) {
+                manageBtn.classList.remove("mui-disabled");
+            }
+        } else {
+            if (!manageBtn.classList.contains("mui-disabled")) {
+                manageBtn.classList.add("mui-disabled");
+            }
+        }
+    });
+
+    $('#edit').on('click', function() {
+        var editBtn = document.getElementById('edit');
+        if (!editBtn.classList.contains("mui-disabled")) {
+            var id = $('input:radio:checked').val();
+            $("#edit-good-content").load("__MODULE__/ComSundry/edit/id/" + id);
+            $('#edit-good').show();
+        }
+    })
+
+    $('.popup-close,.popup-complete').on('click', function() {
+        $(this).parents('.wrap-modal').hide();
+    })
+    $('#add').on('click', function() {
+        if ($("#lender-company").val() == "") {
+            alert('请选择公司');
+        } else {
+            $("#add-good-content").load("__MODULE__/ComSundry/edit");
+            $('#add-good').show();
+        }
+    })
+
+    function formSubmit(formid, form_url) {
+        var body = $('#' + formid).serializeArray();
+        var head = $("#head-form").serializeArray();
+        var data = head.concat(body);
+        $.ajax({
+            url: form_url,
+            type: "post",
+            dataType: "json",
+            data: data,
+
+            success: function(data) {
+                console.info(data);
+                if (data.error == 0) {
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                    setTimeout(function() {
+                        window.location.href = "__MODULE__/ComSundry/index"
+                    }, 500);
+                } else {
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                }
+            },
+            error: function() {
+                layer.msg('系统故障！请重试！');
+                setTimeout(function() {
+                    // window.location.href = "__MODULE__/ComSundry/edit/id/{$model.id}"
+                }, 500);
+            },
+            beforeSend: function() {
+                layer.closeAll();
+                layer.msg('正在提交....');
+            }
+        });
+    }
+
+    //添加用户
+    $('#select-company').on('click', function() {
+        var url = '__MODULE__/ComSundryOrder/select_company1';
+        layer.open({
+            type: 2,
+            title: '选择公司',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['100%', '100%'],
+            content: url, //iframe的url
+            success: function(layero, index) {},
+            end: function() {}
+        });
+    })
+
+    var statusPick = new mui.PopPicker();
+    statusPick.setData([{
+            value: "0",
+            text: "借用中"
+        },
+        {
+            value: "1",
+            text: "已归还"
+        },
+        {
+            value: "2",
+            text: "未借用"
+        }
+    ]);
+
+    function statusList(e) {
+        statusPick.show(function(item) { //弹出列表并在里面写业务代码
+            var itemCallback = statusPick.getSelectedItems();
+            $(e).prev("div").html(itemCallback[0].text);
+            $(e).next("input").val(itemCallback[0].value);
+
+            if (itemCallback[0].value == 0) {
+                $('#lender').show();
+            } else {
+                $('#lender').hide();
+            }
+        });
+    }
+
+    var userPick = new mui.PopPicker();
+    userPick.setData({$userList}
+    );
+
+    function userList(e) {
+        userPick.show(function(item) { //弹出列表并在里面写业务代码
+            var itemCallback = userPick.getSelectedItems();
+            $(e).prev("div").html(itemCallback[0].text);
+            $(e).next("input").val(itemCallback[0].value);
+        });
+    }
+
+    var customerPick = new mui.PopPicker();
+
+    function customerList(e) {
+        customerPick.show(function(item) { //弹出列表并在里面写业务代码
+            var itemCallback = customerPick.getSelectedItems();
+            $(e).prev("div").html(itemCallback[0].text);
+            $(e).next("input").val(itemCallback[0].value);
+        });
+    }
+
+    function getCompany(value, text) {
+        $(".lender-company").text(text);
+        // $("input[name='lender-company']").val()
+        $("#lender-company").val(value);
+
+        var url = "__MODULE__/ComSundry/index";
+        //刷新物品列表
+        $.ajax({
+            url: url,
+            type: "post",
+            data: { "customer_company": value },
+            success: function(data) {
+                data = $.parseJSON(data);
+                // console.info(data);
+                var html = '';
+                $.each(data, function(k, v) {
+                    html += '<li class="manage-list blue-checkbox">' +
+                        '<input name="sundry_id" type="radio" value="' + v.id + '" />' +
+                        '<div class="con">' +
+                        '<div class="word-hidden">' + v.name + '</div>' +
+                        '<div class="word-hidden">' + v.status + '</div>' +
+                        '<div class="word-hidden">' + v.user_name + '</div>' +
+                        '<div class="word-hidden">' + v.no + '</div>' +
+                        '<div class="word-hidden">' + v.position + '</div>' +
+                        '</div>' +
+                        '</li>';
+                });
+                $("#ComSundry-item").html(html);
+            }
+        });
+
+        var manageBtn = document.getElementById('edit');
+        manageBtn.classList.add("mui-disabled");
+
+        //刷新借用人列表
+        var url = "__MODULE__/ComSundryOrder/select_lender/branch_id/" + value;
+        $.ajax({
+            url: url,
+            success: function(data) {
+                // console.info(data);
+                // console.log(data.result);
+                customerPick.setData(
+                    $.parseJSON(data)
+                );
+            }
+        });
+    }
+    </script>
+</body>
+
+</html>

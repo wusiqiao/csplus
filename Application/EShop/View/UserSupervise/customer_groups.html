@@ -1,0 +1,196 @@
+<include file="UserSupervise:head"/>
+<body>
+<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+    <h1 class="mui-title">{$title}</h1>
+    <button class="mui-btn mui-btn-link mui-btn-nav mui-pull-left" onclick="location.href = '__MODULE__/Work/index.html'" style="color: #444444 !important;padding: 0 !important;">
+			<span class="mui-icon mui-icon-arrowleft">
+			</span>返回
+    </button>
+    <button id="back-home" class="back-home" onclick="location.href = '__MODULE__/Index/index.html'"></button>
+</header>
+<div class="group-items template-1"  data-url="/UserSupervise/group_detail/id/{%id%}" style="display:none">
+    <div class="group-title">
+        <input type="checkbox" value="{%id%}"/>
+        <span>{%value%}</span>
+    </div>
+    <div class="group-amount">
+        <span>0</span>
+        <span class="mui-icon mui-icon-arrowright"></span>
+    </div>
+</div>
+<section class="custom-wrap" style="padding-top: 1rem;">
+
+    <ul class="main-tab">
+        <li class="active" >分组</li>
+        <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['SysTargetTag']['menu_actions']['list'] eq 1 and $menuList['SysTargetTag']['allow'] eq 1)">
+            <li onclick="window.location.href = '/UserSupervise/customer_tags.html'">标签</li>
+            <else/>
+            <li onclick="mui.alert('无此功能操作权限');" >标签</li>
+        </if>
+    </ul>
+    <notempty name="groups">
+        <ul class="con-tab pr">
+            <li class="cons">
+                <div class="edit-groups group-jump">
+                    <volist name="groups" id="vo">
+                        <notempty name="vo.default">
+                            <div class="group-items default-ungroup" data-url="/UserSupervise/group_detail/id/{$vo.id}">
+                                <div class="group-title">
+                                    <!--<input type="checkbox" />-->
+                                    <span>{$vo.value}</span>
+                                </div>
+                                <div class="group-amount">
+                                    <span>{$vo.user_count}</span>
+                                    <span class="mui-icon mui-icon-arrowright"></span>
+                                </div>
+                            </div>
+                            <else/>
+                            <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['SysTargetGroup']['menu_actions']['detail'] eq 1 and $menuList['SysTargetTag']['allow'] eq 1)">
+                            <div class="group-items" data-url="/UserSupervise/group_detail/id/{$vo.id}" >
+                                <else/>
+                                <div class="group-items" >
+                            </if>
+                                <div class="group-title">
+                                    <input type="checkbox" value="{$vo.id}"/>
+                                    <span>{$vo.value}</span>
+                                </div>
+                                <div class="group-amount">
+                                    <span>{$vo.user_count}</span>
+                                    <span class="mui-icon mui-icon-arrowright"></span>
+                                </div>
+                            </div>
+                        </notempty>
+                    </volist>
+                </div>
+            </li>
+        </ul>
+        <else/>
+        <include file="UserSupervise:no_data"/>
+    </notempty>
+	<div style="height: 1.35rem;"></div>
+</section>
+
+<div class="bottom-btn">
+    <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['SysTargetGroup']['menu_actions']['add'] eq 1 and $menuList['SysTargetGroup']['allow'] eq 1)">
+        <button id="creat-group">创建分组</button>
+        <else/>
+        <button onclick="mui.alert('无此功能操作权限')">创建分组</button>
+    </if>
+    <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['SysTargetGroup']['menu_actions']['delete'] eq 1 and $menuList['SysTargetGroup']['allow'] eq 1)">
+        <button id="cancel" class="hide">取消</button>
+        <button id="edit-group" data-type="view" class="bg-e91835">删除分组</button>
+        <else/>
+        <button id="cancel" class="hide">取消</button>
+        <button onclick="mui.alert('无此功能操作权限')" class="bg-e91835">删除分组</button>
+    </if>
+</div>
+<include file="UserSupervise:foot_access_file"/>
+<script type="text/javascript">
+    autoSize();
+    function autoSize(){
+        var nDocumentH = $(window).height();
+        var nSelectorH = $('.filter-selector').innerHeight();
+        var nMainTabH = $('.custom-wrap').outerHeight();
+        var n = nDocumentH - nSelectorH - nMainTabH;
+        $('.selector-result').css('height',n);
+    }
+    $('.custom-wrap > ul > li').on('click',' .group-jump > .group-items',function(){
+        if ($(this).data('url')){
+            window.location.href = $(this).data('url');
+        } else {
+            mui.alert('无此功能操作权限')
+        }
+    })
+    $('.show-icon').on('click',function(){
+        $(this).toggleClass('hide-icon').parents('.more-tag').toggleClass('active');
+    })
+    $('#edit-group').on('click',function(){
+        $('#creat-group').addClass('hide');
+        $('#cancel').removeClass('hide');
+        $('.edit-groups').addClass('active').removeClass('group-jump');
+    })
+    $('#cancel').on('click',function(){
+        $(this).addClass('hide');
+        $('#creat-group').removeClass('hide');
+        $('.edit-groups').removeClass('active').addClass('group-jump');
+        $('#edit-group').data('type','view');
+    })
+    $('#edit-group').on('click',function(){
+        var type = $(this).data('type');
+        if(type == 'view') {
+            $('#creat-group').addClass('hide');
+            $('#cancel').removeClass('hide');
+            $('.edit-groups').addClass('active').removeClass('group-jump');
+            $(this).data('type','edit');
+        } else {
+            var checkeds = $('.edit-groups').find('.group-items > .group-title > input:checked');
+            if ( checkeds.length > 0 ) {
+                var btnArray = ['取消','删除'];
+                var message = (checkeds.length == 1) ?
+                    '删除分组"'+$('.edit-groups').find('.group-items > .group-title > input:checked').next('span').text()+'"后所有成员将移至"未分组",确定删除?':
+                    '删除所选择的'+checkeds.length+'个分组后所有成员将全部移至"未分组",确定删除?';
+                mui.confirm(message, '删除分组', btnArray,function(e){
+                    if ( e.index == 1 ) {
+                        var ids = checkeds.map(function(){
+                            return $(this).val();
+                        }).get();
+                        $.post('/UserSupervise/rmCustomerGroup',{id:ids},function(result){
+                            if ( result.error == 1 ) {
+                                layer.msg(result.message);
+                            } else  {
+                                layer.msg(result.message || '分组删除成功!');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },1000)
+                            }
+                        },'json');
+                    }
+                })
+                //开始进行删除确认
+            } else {
+                mui.alert('请选择至少一项!');
+                return false;
+            }
+        }
+    })
+    //创建分组
+    $('#creat-group').on('click',function(){
+        var btnArray = ['取消','确定'];
+        mui.prompt('增加新的分组','分组名称',"新增分组",btnArray,function(e){
+            if(e.index	==	1){
+                if($.trim(e.value) == '') {
+                    layer.msg('分组名称不能为空');
+                    return false;
+                }
+                if($.trim(e.value).length > 5) {
+                    layer.msg('分组名称不能大于5个字');
+                    return false;
+                }
+                $.ajax({
+                    url: '__MODULE__/UserSupervise/createCustomerGroup.html',
+                    type: 'POST',
+                    dataType: "json",
+                    data: {value:$.trim(e.value)},
+                    success: function(data) {
+                        if(data.error == 0) {
+                            var single = {
+                                'id' : data.id,
+                                'value' : $.trim(e.value),
+                                'user_count' : 0
+                            }
+                            var html = parseTemplate('.template-1', single);
+                            $('.edit-groups').prepend(html);
+                            layer.msg(data.message);
+                        } else{
+                            layer.msg(data.message);
+                        }
+                    }
+                });
+            }else{
+                layer.msg("已取消添加分组");
+            }
+        });
+    })
+</script>
+</body>
+</html>

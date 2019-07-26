@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <!--<link href="{$Think.const.CSS_URL}voucher.css" rel="stylesheet" />-->
+    <link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+    <!--<link href="{$Think.const.CSS_URL}/css-new/style.css?v=22" rel="stylesheet" />-->
+    <link href="{$Think.const.CSS_URL}/css-new/form.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css?v={$vesion}" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css?v={$vesion}" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v={$vesion}" rel="stylesheet" />
+    <link rel="stylesheet" href="{$Think.const.CSS_URL}mui/imageviewer.css">
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <title>{$title}</title>
+</head>
+<style>
+    .tips{
+        padding:0 0.05rem;
+        color: #fff;
+        /* color: #0099FF; */
+        border: 1px solid #0099FF !important;
+        background-color: #0099ff;
+        border-radius: 0.05rem;
+        margin-right: 0.1rem;
+        line-height: 0.5rem;
+        float: left;
+        height: 0.5rem;
+        margin-bottom: 0.05rem;
+        margin-top: 0.05rem;
+    }
+    .look-left{
+        left: 0.1rem !important;
+    }
+    .look-right{
+        right: 0.1rem !important;
+    }
+    .report-remark{
+        width: 70%;
+        overflow-wrap: normal;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: block;
+        white-space: nowrap;
+    }
+    .mui-popup-buttons .mui-popup-button:first-child {
+        color: #a1a1a1 !important;
+    }
+    .modal-body:after{
+        content:' ';
+        position: absolute;
+        right:5%;
+        top:50%;
+        margin-top:-5px;
+        width:0px;
+        height:0px;
+        border-left:6px solid transparent;
+        border-right:6px solid transparent;
+        border-top:6px solid #0f7fc7;
+        font-size:0px;
+        line-height:0px
+    }
+</style>
+<body>
+<section class='secondary-wrap'>
+    <include file="Index:header" />
+
+    <switch name="order.order_state">
+        <case value="3"><section class="order-status-img status-daifukuan mb15"></section></case>
+        <case value="5"><section class="order-status-img status-daiyanshou mb15"></section></case>
+        <case value="4"><section class="order-status-img status-fuwuzhong mb15"></section></case>
+        <case value="6"><section class="order-status-img status-fuwuzhong mb15"></section></case>
+        <case value="7"><section class="order-status-img status-yiwancheng mb15"></section></case>
+        <case value="8"><section class="order-status-img status-yiguanbi mb15"></section></case>
+        <case value="9"><section class="order-status-img status-yiwancheng mb15"></section></case>
+    </switch>
+
+    <div class="copy-order ptb25 plr15 gray-9 bg-white mb15">
+        <div>订单编号：{$order.order_sn} <span class="copy-code" onclick="">复制</span></div>
+        <div>购买时间：{$order.order_on_time}</div>
+        <gt name="order.order_state" value="6">
+            <div class="">完成时间：{$order.finish_time}</div>
+        </gt>
+    </div>
+
+    <section class="con-wrap mb15">
+        <div class="con-img-title roller-blind  <neq name='order.order_state' value='3'>active</neq>">
+            <img class="process" src="/Application/EShop/Public/images/img/icon-company.png" alt="">
+            <div class="business-title blue-368bfe ">服务详情</div>
+            <eq name="order.order_state" value="3">
+                <i class="pull-right mui-icon mui-icon-arrowup"></i>
+                <else/>
+                <i class="pull-right mui-icon mui-icon-arrowdown"></i>
+            </eq>
+        </div>
+        <div class="simple-data-wrap black-2c" <neq name="order.order_state" value="3">style="display:none"</neq>>
+        <div class="simple-line">
+            <div class="common-field gray-9">业务类型</div>
+            <div>{$order['product_category']}</div>
+        </div>
+        <div class="simple-line">
+            <div class="common-field gray-9">服务属性</div>
+            <div>
+                <volist name="atts.tips" id="vo">
+                    <span class="tips">{$vo}</span>
+                </volist>
+            </div>
+        </div>
+        <div class="simple-line">
+            <div class="common-field gray-9">成交价格</div>
+            <div>
+                <if condition="$order.real_cash gt 0">
+                    <span class="r-cash">¥{$order.real_cash}元</span>
+                    <else/>
+                    <span class="r-cash">面议</span>
+                </if>
+            </div>
+        </div><!--$order.order_state = 3 and -->
+
+        <if condition="($order.payment_money elt 0) and ($order.pay elt 0) and ($order.order_state eq 3) or($order.order_state eq 8)">
+            <if condition="$order.real_cash gt 0">
+            <gt name="ticket.count" value="0">
+                <div class="simple-line">
+                    <div class="gray-9">优惠券</div>
+                    <div>
+                        <span class="available">{$ticket.count}个可用</span>
+                    </div>
+                </div>
+            </gt>
+            <lt name="ticket.count" value="1">
+                <div class="simple-line">
+                    <div class="gray-9">优惠券</div>
+                    <div>
+                        <span class="available">0个可用</span>
+                    </div>
+                </div>
+            </lt>
+            </if>
+            <else/>
+            <div class="simple-line">
+                <div class="gray-9">优惠券</div>
+                <div>
+                    <span class="blue" id="real">-¥{$order.service_voucher_cash}{$order.voucher}元</span>
+
+                </div>
+            </div>
+            <div class="simple-line">
+                <div class="gray-9">实付金额</div>
+                <div>
+                    <if condition="$order.price_type eq 0">
+                        <span class="r-cash" id="real">¥{$order.payment_money}{$order.pay}元</span>
+                        <else/>
+                        <span class="r-cash">¥{$order.payment_money}{$order.pay}元</span>
+                    </if>
+                </div>
+            </div>
+        </if>
+
+
+
+        <div class="simple-line">
+            <div class="part-title gray-9">服务要求</div>
+            <div class="part-con">
+                <p><span class="blue" >{$order.order_desc}</span></p>
+            </div>
+        </div>
+        </div>
+
+    </section>
+
+    <notempty name="refund">
+        <div class="con-wrap mb15">
+            <div class="">
+                <div class="con-title" style="color:#ff8c1b;font-weight: bold">退款内容:</div>
+                <div class="con-title">
+                    <div class="dib col-3 gray-color">退款金额:</div>
+                    <div class="dib" style="color:#ff8c1b;width: 70%;">
+                        {$refund['user_cash']}元&nbsp;
+                        <notempty name="refund.attach_1">
+                            <button  class="btn btn-warning" data-preview-src="" data-preview-group="1" id ="show_attach" style="padding: 0 .25rem !important;float: right;">查看附件</button>
+                            <volist name="refund.attach" id="vo" key="k">
+                                <img src="{$vo}" id="img-{$k}" style="display:none" data-preview-src="" data-preview-group="1"/>
+                            </volist>
+                        </notempty>
+                    </div>
+                </div>
+
+
+                <div class="con-title">
+                    <div class="dib col-3 gray-color">退款原因:</div>
+                    <div class="dib">{$refund['refund_comment']}&nbsp;</div>
+                </div>
+
+                <notempty name="refund.refund_reply">
+                    <div class="con-title" style="color:#ff8c1b;font-weight: bold">回复内容:</div>
+                    <div class="con-title">
+                        {$refund['refund_reply']}
+                    </div>
+                </notempty>
+                <notempty name="refund.finally_desc">
+                    <div class="con-title" style="color:#ff8c1b;font-weight: bold">处理结果:</div>
+                    <div class="con-title">
+                        {$refund['finally_desc']}
+                    </div>
+                    <div class="pt15 pb15 tc">
+                        <a href="__MODULE__/Money.html" class="btn btn-warning" style="width:50%;margin: 0 auto;">查看退款</a>
+                    </div>
+                </notempty>
+                <if condition="$order.refund_state eq 3">
+                    <div class="pt15 pb15" >
+                        <a href="tel:{:getPlatformValue('tel')}" style="width:50%;margin: 0 auto" class="btn btn-warning btn-block">联系客服</a>
+                    </div>
+                </if>
+            </div>
+
+        </div>
+    </notempty>
+    <if condition="$order.order_state eq 7">
+        <section class="con-wrap mb15" >
+            <div class="con-img-title">
+                <img class="pingjia" src="{$Think.const.IMG_URL}/img/icon-pingjia.png" alt="" />
+                <div class="blue-368bfe">服务评价</div>
+            </div>
+            <form class="con-wrap mb15" id="TaskForm" onsubmit="return false;">
+                <div id="star" data-score="5" title="regular">
+                </div>
+                <div class="pb15">
+                    <textarea class="form-control" name="comments" placeholder="说说您对这次服务的评价吧"></textarea>
+                </div>
+
+            </form>
+        </section>
+    </if>
+    <if condition="$order.order_state eq 9">
+        <section class="con-wrap mb15" >
+            <div class="con-img-title">
+                <img class="process" src="{$Think.const.IMG_URL}/img/icon-pingjia.png" alt="" />
+                <div class="blue-368bfe">服务评价</div>
+            </div>
+            <form class="con-wrap" id="TaskForm" onsubmit="return false;">
+                <div class="star">
+                    {$star}
+                </div>
+                <div class="order-star-evaluate">{$comment}</div>
+            </form>
+        </section>
+    </if>
+    <notempty name="report">
+        <section class="con-wrap mb15" >
+            <div class="con-img-title">
+                <img class="process" src="{$Think.const.IMG_URL}/img/icon-process.png" alt="" />
+                <div class="blue-368bfe">服务进度</div>
+            </div>
+            <div class="progress-line pd-t-40">
+                <volist name="report" id="vo" key="k">
+                    <div class="process-list">
+                        <div class="process-des
+	                            <eq name='vo.own' value='1' >left<else/>right</eq>
+	                            <eq name='k' value='1' >
+	                            	<if condition='$is_over eq 1'>
+	                            	 over
+	                                <elseif condition='$vo.topic eq 0'/>
+	                               avtive system
+	                                <elseif condition='$vo.topic eq 2' />
+	                               avtive step
+	                               <elseif condition='$vo.topic eq 3' />
+	                               avtive faker
+	                                <else/>
+	                               avtive flowed-resc
+	                                </if>
+	                            </eq>">
+                            <span>{$vo.report_desc}</span>
+                            <notempty name="vo.report_title">
+                                <span class="report-remark <eq name='vo.own' value='1' >report-remark-left <else/>report-remark-right</eq>" style="width: 150px;">{$vo.report_title}</span>
+                            </notempty>
+
+                            <span class="gray-color-sm">{$vo.view_date}</span>
+
+                            <eq name="vo.other" value="1">
+                                <a class="check-it <eq name='vo.own' value='1' >look-left<else/>look-right</eq>" href="{$vo.line}" >查看</a>
+                                <else/>
+                                <notempty name="vo.pic0">
+                                    <a class="check-it <eq name='vo.own' value='1' >look-left<else/>look-right</eq>" href="__MODULE__/Order/reportInfo/id/{$vo['report_id']}.html" >查看</a>
+                                    <else/>
+                                    <notempty name="vo.enc0">
+                                        <a class="check-it <eq name='vo.own' value='1' >look-left<else/>look-right</eq>" href="__MODULE__/Order/reportInfo/id/{$vo['report_id']}.html" >查看</a>
+                                        <else/>
+                                        <notempty name="vo.report_remark">
+                                            <a class="check-it <eq name='vo.own' value='1' >look-left<else/>look-right</eq>" href="__MODULE__/Order/reportInfo/id/{$vo['report_id']}.html" >查看</a>
+                                        </notempty>
+                                    </notempty>
+                                </notempty>
+                            </eq>
+
+                            <!--<notempty name="vo.pic0">-->
+                            <!--<notempty name="vo.report_remark">-->
+                            <!--<a class="check-it" href="__MODULE__/Order/reportInfo/id/{$vo['report_id']}.html" >查看</a>-->
+                            <!--<else/>-->
+                            <!--<a style="float: right;margin-top: -1.7rem;color: #ff8c1b !important;border: 1px solid #ff840b !important;height: initial;border-radius: 0.2rem;padding: 0 0.5rem !important;" href="__MODULE__/Order/reportInfo/id/{$vo['report_id']}.html" >查看</a>-->
+                            <!--</notempty>-->
+
+
+                            <!--</notempty>-->
+                        </div>
+                    </div>
+                </volist>
+
+            </div>
+
+        </section>
+    </notempty>
+
+
+
+
+    <include file="Public:modal_img_show"/>
+
+    <if condition="$order.order_state eq 3 and $order.surety_state eq 0">
+        <eq name="is_unlink" value="1">
+            <div style="height: 1.35rem;"></div>
+            <div class="order-bottom-btn">
+                <button class="bg-368bfe" data-id="{$order.id}" onclick="remind_unline(this);">
+                    提醒收款
+                </button>
+            </div>
+
+            <else/>
+            <!--order.real_cash -->
+            <div style="height: 1.05rem;"></div>
+            <div class="cancle-topay ptb15 plr25" style="overflow: hidden;">
+                <div class="total-price">合计：<span class="blue-368bfe">¥{$order.real_cash}&nbsp;元</span></div>
+                <button class="cancel" data-toggle="modal" data-target="#closeModal">取消订单</button>
+                <if condition="$order.real_cash gt 0">
+                    <button class="topay" class="button-style-price bg-blue" onclick="location='__MODULE__/Order/servicePay/id/{$order.id}.html'">
+                        我要付款
+                    </button>
+                    <else/>
+                    <button class="waiting">
+                        等待报价
+                    </button>
+                </if>
+            </div>
+        </eq>
+        <elseif condition="$order.order_state eq 4"/>
+        <if condition="$order.refund_state eq 0">
+            <div style="height: 1.12rem;"></div>
+            <div class="cancel-upfile-urgent-progress-button">
+                <div class="menu-more" id=""  data-id="{$order.id}" >
+                    <div onclick="showMore(this);">更多</div>
+                    <div class="more-list" style="display: none">
+                        <button onclick="order_close(this);" order_id="{$order.id}">取消订单</button>
+                    </div>
+                </div>
+                <div id="">
+                    <button class="empty-background-btn" id="enclosure"  data-id="{$order.id}" >上传附件</button>
+                    <button class="full-background-btn" id="prompting"  data-id="{$order.id}" >催进度</button>
+                </div>
+
+            </div>
+        </if>
+        <elseif condition="$order.order_state eq 5 and $order.refund_state eq 0"/>
+        <if condition="$order['trade_type'] eq 0"  >
+            <div style="height: 1.35rem;"></div>
+            <div class="order-bottom-btn">
+                <button class="left-btn" type="button" onclick="location='__MODULE__/Order/enclosure/id/{$order.id}/type/2.html'" >延迟验收</button>
+                <button class="bg-368bfe" onclick="order_over(this);" order_id="{$order.id}" >确认验收</button>
+            </div>
+
+            <else/>
+            <div style="height: 1.35rem;"></div>
+            <div class="order-bottom-btn">
+                <button class="bg-368bfe" onclick="order_over(this);" order_id="{$order.id}" >确认验收</button>
+            </div>
+        </if>
+        <elseif condition="$order.order_state eq 6"/>
+        <div style="height: 1.35rem;"></div>
+        <div class="order-bottom-btn">
+            <button class="bg-368bfe" onclick="location='__MODULE__/Order.html'">
+                我的订单
+            </button>
+        </div>
+
+        <elseif condition="$order.order_state eq 7"/>
+        <div style="height: 1.35rem;"></div>
+        <div class="order-bottom-btn">
+            <button class="left-btn" onclick="location='__MODULE__/Order/index.html'" >我的订单</button>
+            <button class="bg-368bfe" onclick="write_comments(this);"  order_id="{$order.id}" >提交评价</button>
+        </div>
+        <elseif condition="$order.order_state eq 8"/>
+        <div style="height: 1.05rem;"></div>
+        <div class="order-reorder ptb15 plr25">
+            <div class="menu-more" data-id="{$order.id}" >
+                <div onclick="showMore(this);">更多</div>
+                <div class="more-list" style="display: none">
+                    <button class="menu-del" onclick="order_del(this);" order_id="{$order.id}">删除订单</button>
+                </div>
+            </div>
+            <button class="myorder" onclick="location='__MODULE__/Order/index.html'" >我的订单</button>
+            <eq name="product_state" value="1">
+                <button class="reorder" type="button" onclick="location='__MODULE__/Product/productDetail/product_id/{$order.product_id}.html'"  order_id="{$order.id}" >重新下单</button>
+                <else/>
+                <button class="reorder" type="button" style="background-color: #A4A4A4" onclick="mui.alert('该服务已下架')" >重新下单</button>
+            </eq>
+
+        </div>
+
+        <elseif condition="$order.order_state eq 9"/>
+        <div style="height: 1.35rem;"></div>
+        <div class="order-bottom-btn">
+            <button class="left-btn" onclick="location='__MODULE__/Order/index.html'" >我的订单</button>
+            <button class="bg-368bfe" type="button" onclick="location='__MODULE__/Product/productDetail/product_id/{$order.product_id}.html'"  order_id="{$order.id}" >再次下单</button>
+        </div>
+    </if>
+
+    <if condition="$view_redpacket eq 1">
+        <a class="release" href="__MODULE__/index/receive_redpacket/id/{$order.id}.html">
+            <img src="{$Think.const.IMG_URL}Index_img/receive_redpacket.png" alt="" />
+        </a>
+    </if>
+
+    <div class="modal fade" tabindex="-1" id="closeModal" role="dialog">
+        <div class="modal-dialog" role="document" style="top: 30%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">取消订单原因</h4>
+                </div>
+                <div class="modal-body" style="padding: .2rem !important;">
+                    <select name="close_desc" class="form-control" style="border: 1px solid #ccc !important;">
+                        <option value="">请选择理由</option>
+                        <option value="我不需要了">我不需要了</option>
+                        <option value="商家无法满足要求">商家无法满足要求</option>
+                        <option value="买错了">买错了</option>
+                        <option value="其他原因">其他原因</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="order_close_direct(this);"  order_id="{$order.id}">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <include file="Public:contact" />
+</section>
+</body>
+<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<!--<script src="https://cdn.staticfile.org/clipboard.js/1.5.15/clipboard.min.js"></script>-->
+<script src="{$Think.const.JS_URL}clipboard/dist/clipboard.min.js"></script>
+<script src="{$Think.const.JS_URL}/jquery.raty.min.js?v={$vesion}"></script>
+<script src="{$Think.const.JS_URL}ajaxfileupload.js" type="text/javascript"></script>
+<if condition="$order.refund_state neq 0  ">
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.zoom.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.previewimage.js"></script>
+    <script type="text/javascript">
+        // 初始化previewImage
+        mui.previewImage({addTap:{control:'#show_attach',bind:document.getElementById('img-1')}});
+    </script>
+</if>
+<script>
+    $('.close-coupon,.close-qrcode,.close-particular').on('click',function(){
+        $('body').css({'overflow-y':'initial','height':'','position':''})
+        $(this).parents('.modal').hide();
+    });
+    $.fn.raty.defaults.path = '{$Think.const.IMG_URL}/img';
+    var orderState = '{$order.order_state}';
+    if(window.localStorage.getItem('order_{$order.id}') == 1 && orderState == 3){
+        var btnArray = ['好的，我了解了', '不再提示'];
+        mui.confirm('为了确保您所购买的服务更符合您的实际情况，请先与我们客服联系后再付款', '温馨提示', btnArray, function(e) {
+            if (e.index == 1) {
+                window.localStorage.removeItem('order_{$order.id}');
+                layer.msg('消息将不再提示！');
+            }
+        })
+    }
+    $('#star').raty({
+        score: function () {
+            console.log(666);
+            return $(this).attr('data-score');
+        },
+        //readOnly: true,
+    });
+    $('#star_2').raty({
+        score: function () {
+            return $(this).attr('data-score');
+        },
+        readOnly: true,
+    });
+    $(function () {
+        var clipboard = new ClipboardJS('.copy-code', {
+            text: function() {
+                return '{$order["order_sn"]}';
+            }
+        });
+        clipboard.on('success', function(e) {
+            layer.msg('复制成功!');
+        });
+
+        clipboard.on('error', function(e) {
+            layer.msg('复制失败!');
+        });
+    })
+    $('.roller-blind').on('click',function(){
+        $(this).toggleClass('active').children('i').toggleClass('mui-icon-arrowup').toggleClass('mui-icon-arrowdown');
+        $('.simple-data-wrap').slideToggle();
+    })
+</script>
+<script>
+    //New Jan 15,2018 催进度
+    $('#prompting').click(function(){
+        var orderId = $(this).attr('data-id');
+        $.post('__MODULE__/Order/promptingOrder.html', {order_id:orderId}, function(data){
+            if(data.error == 0){
+                layer.msg('　　　您已成功催促对方服务进度！', {icon: 1,time:3000});
+            }else{
+                layer.msg('　　　您今天已催过进度！', {icon: 5,time:3000});
+            }
+        },'JSON')
+
+    })
+    $('#enclosure').click(function(){
+        var orderId = $(this).attr('data-id');
+        window.location.href = '/Order/enclosure/id/'+orderId+'.html';
+    })
+    function order_del(obj){
+        var orderId		=	$(obj).attr("order_id");
+        var btnArray 	=	['取消', '确定'];
+        mui.confirm('确认删除订单?',"删除订单",btnArray,function(e){
+            if(e.index	==	1) {
+                $.ajax({
+                    url: '__MODULE__/Order/orderDel.html',
+                    type: "post",
+                    dataType: "json",
+                    data: {order_id: orderId},
+                    success: function (data) {
+                        if (data.error == 0) {
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                            setTimeout(function () {
+                                location = '__MODULE__/Order.html';
+                            }, 500);
+                        } else {
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function () {
+                        layer.msg('系统错误！');
+                    },
+                    beforeSend: function () {
+                        layer.closeAll();
+                        layer.msg('正在提交....');
+                    }
+                });
+            }
+        });
+    }
+    function remind_unline(obj){
+        var orderId = $(obj).data('id');
+        console.log(orderId)
+        $.post('__MODULE__/Order/remindUnline.html', {order_id:orderId}, function(data){
+            if(data.error == 0){
+                layer.msg('　　　您已成功提醒收款！', {icon: 1,time:3000});
+            }else{
+                layer.msg('　　  '+data.message, {icon: 5,time:3000});
+            }
+        },'JSON')
+    }
+    function showMore(obj){
+        $(obj).next('.more-list').toggle();
+    }
+    //NEW Jan 15,2018 退款申请
+    $("#submit_refund").click(function(){
+        var orderId = $(this).attr('data-id');
+        var cashMax= $(this).attr('data-max');
+        var theView =   '';
+        theView += '<div style="position:relative;"><div class="input-row-style pl15">';
+        theView += '<label style="font-weight:initial;color:#999">退款金额</label>';
+        theView += '<input type="number" name="user_cash" placeholder="请输入"  class="mui-input-clear refund-input">';
+        theView += '<span class="mui-icon mui-icon-clear mui-hidden"></span>';
+        theView += '</div>';
+        theView += '<div class="input-row-style pl15 flex-start">';
+        theView += '<label style="font-weight:initial;color:#999">退款原因</label>';
+        theView += '<textarea class="refund-textarea" name="refund_comment" placeholder="请输入"></textarea>';
+        theView += '</div>';
+        theView += '<div class="input-row-style pl15">';
+        theView += '<label style="font-weight:initial;color:#999">上传附件</label>';
+        theView += '<input type="file" name="imgFile" id="imgFile" style="display:none">';
+        theView += '<div class="dib col-6" id="attach_btn"><img  src="{$Think.const.IMG_URL}revision/img-none.png" alt="" style="display: inline-block;width: .35rem;margin-right: 2%;"/>点击上传图片</div>';
+        theView += '</div>';
+        theView += '<div class="input-row-style"> ';
+        theView += '<div ><ul id="ul_pics"></ul></div>';
+        theView += '</div>';
+        theView += '<div class="input-row-style" style="padding: .15rem .25rem;color: red;"> ';
+        theView += '请输入与服务商协商一致的金额，不能大于已付款金额。<br>请输入具体退款原因，提交后将告知服务商，7天内对方未回复将自动退款。';
+        theView += '</div></div>';
+        layer.open({
+            type: 1,
+            title:'提示',
+            area: ['80%'], //宽高
+            content: theView,
+            btn:['提交','取消'],
+            yes:function(){
+                var refundComment = $('textarea[name=refund_comment]').val();
+                var userCash      = $('input[name=user_cash]').val();
+                var attach        = $('#ul_pics').find('li').map(function() {return $(this).attr('data-pic');}).get();
+                if(userCash > parseInt(cashMax)){
+                    layer.msg('退款金额不能大于已付款金额!!');
+                    return false;
+                }
+                if(!userCash || userCash == 0){
+                    layer.msg('退款金额不能为空或等于零!!');
+                    return false;
+                }
+                if(refundComment == ''){
+                    layer.msg('请填写退款原因!!');
+                    return false;
+                }
+                var index = layer.load(2, {shade: [0.1,'#fff'] });
+                $.post('__MODULE__/Order/releaseRefund.html',
+                        {order_id:orderId,user_cash:userCash,refund_comment:refundComment,attach:attach},
+                        function(data){
+                            if(data.error == 0){
+                                layer.closeAll();
+                                layer.msg(data.message);
+                                setTimeout(function(){
+                                    window.location.reload(true);
+                                },2000)
+                            }else{
+                                layer.close(index);
+                                layer.msg(data.message);
+                                return false;
+                            }
+
+                        },'JSON');
+            }
+        });
+    })
+    //NEW Jan 15,2018
+    $("html").on('click','#attach_btn',function(){
+        return  $("#imgFile").click();
+    });
+    //NEW Jan 15,2018 上传图片
+    $('html').on('change','input[type=file]',function(){
+        var files       =   $(this).get(0).files[0];//获取图片信息
+        var maxfilesize =   1024*1024*5;//最大文件大小设置为2M
+        if(files.size > maxfilesize){
+            layer.msg("文件大小最多只能5M,请重新上传");
+            return false;
+        }
+        if(files.type != 'image/jpeg' && files.type != 'image/jpg' && files.type != 'image/gif' && files.type != 'image/png'){
+            layer.msg("文件类型只能是jpeg/jpg/gif/png类型");
+            return false;
+        }
+        //默认加载
+        var index = layer.load(2, {
+        });
+        $.ajaxFileUpload({
+            url: '__MODULE__/Upload/Index/t/22.html',
+            secureuri: false,
+            fileElementId: 'imgFile', //上传控件ID
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg('图片大小最多只能5M,请重新上传');
+                    setTimeout(function () {
+                        layer.closeAll();
+                    }, 2000);
+                } else {
+                    parent.layer.close(index);
+                    $("#ul_pics").html($("#ul_pics").html() + "<li class='dib' style='width:33%;padding: .15rem;' data-pic='"+data.pic+"'><div class='am-gallery-item'><div><a href='javascript:(0)' onclick='del_img(this)' target='_blank' style='display:inline-block;height:100%;position:relative;'>" + "<span class='del-img'></span>" +  "<img width='50' height='50' src='" + data.pic + "' /></a></div></div></li>");
+                }
+            }
+        });
+    });
+    function del_img(obj){
+        $(obj).parents('li').remove();
+        $('#attach_btn').show();
+        return false;
+    }
+    function show_pic(obj){
+        var imgUrl	=	$(obj).attr("pic-url");
+        console.log(imgUrl);
+        $("#modal_show_pic").attr("src",imgUrl);
+        $(".btn-lg").click();
+    }
+    //New Jan 9,2018
+    function delayInspect(obj){
+        layer.confirm('延迟验收后，服务商将再次进入服务中，每个订单仅允许延迟一次。<br>是否确认延迟验收？', { title: '提示'}, function (index) {
+            layer.close(index);
+            window.location.href = $(obj).attr('data-url');
+        });
+    }
+    $("#show_pic_close").click(function(){
+        $('#myModal').modal('hide')
+    })
+    //完成订单
+    function order_over(obj){
+        var orderId		=	$(obj).attr("order_id");
+        var btnArray 	=	['取消', '确定'];
+        mui.confirm(' ',"订单确认验收",btnArray,function(e){
+            if(e.index	==	1){
+                $.ajax({
+                    url: '__MODULE__/Order/serviceOver.html',
+                    type: "post",
+                    dataType: "json",
+                    data: {order_id:orderId},
+                    success: function (data) {
+                        if (data.error == 0) {
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                            setTimeout(function () {
+                                location ='__MODULE__/Order/serviceDetail/id/'+orderId+'.html';
+                            }, 500);
+                        } else {
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                        }
+
+                    },
+                    error: function () {
+                        layer.msg('系统错误！');
+                    },
+                    beforeSend: function () {
+                        layer.closeAll();
+                        layer.msg('正在提交....');
+                    }
+                });
+            }else{
+                layer.msg("订单确认完成已取消");
+            }
+        });
+    }
+    //评论
+    function write_comments(obj){
+        var orderId		=	$(obj).attr("order_id");
+        var btnArray 	=	['取消', '确定'];
+        mui.confirm('将对此订单进行评价',"订单评价",btnArray,function(e){
+            if(e.index	==	1) {
+                var comments = $("textarea[name=comments]").val();
+                var star = $("input[name=score]").val();
+                if (comments == '') {
+                    layer.msg('写点评价吧，什么都好！');
+                    return false;
+                }
+                $.ajax({
+                    url: '__MODULE__/Order/writeComments.html',
+                    type: "post",
+                    dataType: "json",
+                    data: {comments: comments, star: star, order_id: orderId},
+                    success: function (data) {
+                        if (data.error == 0) {
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                            setTimeout(function () {
+                                location = '__MODULE__/Order/serviceDetail/id/' + orderId + '.html';
+                            }, 500);
+                        } else {
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function () {
+                        layer.msg('系统错误！');
+                    },
+                    beforeSend: function () {
+                        layer.closeAll();
+                        layer.msg('正在提交....');
+                    }
+                });
+            }
+        });
+    }
+    function order_close_direct(obj){
+        var orderId	= $(obj).attr("order_id");
+        var closeDesc = $('select[name=close_desc]').val();
+        if ($.trim(closeDesc) == ''){
+            layer.msg('请选择取消原因');
+            return false;
+        }
+        $(".btn-primary").prop("disabled","true");
+        $.ajax({
+            url: '__MODULE__/Order/orderClose.html',
+            type: "post",
+            dataType: "json",
+            data: {order_id:orderId,closeDesc:closeDesc},
+            success: function (data) {
+                if (data.error == 0) {
+                    layer.closeAll();
+                    if(data.type == 'jump'){
+                        window.location.href = data.url;
+                    }else{
+                        $('#closeModal').modal('hide');
+                        layer.msg(data.msg);
+                        setTimeout(function () {
+                            location.reload();
+                        }, 500);
+                    }
+
+                } else {
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                }
+            },
+            error: function () {
+                layer.msg('系统错误！');
+            },
+            beforeSend: function () {
+                layer.closeAll();
+                layer.msg('正在提交....');
+            }
+        });
+    }
+
+
+    //取消订单
+    function order_close(obj){
+        var orderId		=	$(obj).attr("order_id");
+        var btnArray 	=	['取消', '确定'];
+        mui.confirm('点击确认后,将取消该订单!',"订单取消",btnArray,function(e){
+            if(e.index	==	1){
+
+                $.ajax({
+                    url: '__MODULE__/Order/orderClose.html',
+                    type: "post",
+                    dataType: "json",
+                    data: {order_id:orderId},
+                    success: function (data) {
+                        if (data.error == 0) {
+                            layer.closeAll();
+                            if(data.type == 'jump'){
+                                window.location.href = data.url;
+                            }else{
+                                layer.msg(data.msg);
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 500);
+                            }
+
+                        } else {
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function () {
+                        layer.msg('系统错误！');
+                    },
+                    beforeSend: function () {
+                        layer.closeAll();
+                        layer.msg('正在提交....');
+                    }
+                });
+            }else{
+//					layer.msg("订单确认完成已取消");
+            }
+        });
+    }
+</script>
+</html>

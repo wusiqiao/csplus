@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    html,body{
+        height: auto;
+    }
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+   
+    #current-billing-plan .info-title{
+        width: 2.35rem;
+    }
+</style>
+
+<body>
+<if condition="$view_header eq 1">
+    <include file="Index:header" />
+</if>
+<section class="custom-info-wrap common-wrap bg-none mt85" id="body-section" <if condition="$view_header neq 1">style="margin-top:0"</if>>
+        <form id="customerForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title">合同信息</div>
+                <div class="info-line important-input">
+                    <div class="info-title">公司名称<i></i></div>
+                    <input type="text" name="" v-model="model.company_name" readonly/>
+                    <input type="hidden" name="id" value="{$id}" readonly/>
+                    <input type="hidden" name="plan_id" value="{$plan_id}" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同名称<i></i></div>
+                    <input type="text" name="" v-model="model.wag_name" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同金额<i></i></div>
+                    <input type="text" class="money_input" name="" v-model="'￥'+model.agreement_money" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">已开票金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+model.amount_paid" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">未开票金额<i></i></div>
+                    <input style="color: #e91835;" type="text" name="" v-model="'￥'+model.wag_amount_balance" readonly/>
+                </div>
+                <div class="info-line important-input" v-if="model.state != 0">
+                    <div class="info-title">结余金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+model.free_amount" placeholder="" readonly/>
+                </div>
+                <if condition="$type eq 1">
+                    <div class="info-line important-input">
+                        <div class="info-title" style="padding-left: 0">开票计划期数<i></i></div>
+                        <input type="text" name="" v-model="model.detail_count" readonly/>
+                    </div>
+                </if>
+            </div>
+            <div style="margin: 10px"></div>
+            <if condition="$type eq 1">
+                <div id="current-billing-plan" class="basic-info">
+                    <!--<div class="info-line">
+                        <div class="info-title">公司资料<i></i></div>
+                    </div>-->
+                    <div class="title">本期开票计划</div>
+                    <div class="info-line important-input">
+                        <div class="info-title">当前计划期数<i></i></div>
+                        <input style="color: #e91835;" type="text" name="" v-model="model.current_count" placeholder="" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">本期开票状态<i></i></div>
+                        <input type="text" name="" v-model="model.current_state_value" placeholder="" readonly/>
+                    </div>
+                    <div class="info-line important-input">
+                        <div class="info-title">计划开票日期<i></i></div>
+                        <input type="text" name="" v-model="model.plan_day_fmt" placeholder="" readonly/>
+                    </div>
+                    <div class="info-line important-input">
+                        <div class="info-title">计划开票金额<i></i></div>
+                        <input style="color: #e91835;" type="text" name="" v-model="'￥'+model.plan_money" placeholder="" readonly/>
+                    </div>
+                    <div class="info-line important-input">
+                        <div class="info-title">计划未开票金额<i></i></div>
+                        <input type="text" name="" v-model="'￥'+model.plan_money_balance" placeholder="" readonly/>
+                    </div>
+                </div>
+            </if>
+            <div style="margin: 10px"></div>
+            <div class="basic-info">
+                <if condition="$instance_permit egt 4">
+                    <div class="info-line" v-if="model.state == 0">
+                        <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="toInvoice()">立即开票</button>
+                    </div>
+                </if>
+                <div class="info-line">
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="toInvoiceRecord()">开票列表</button>
+                </div>
+                <if condition="$instance_permit egt 4">
+                    <div class="info-line" v-if="model.state == 0">
+                        <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;background-color: red!important;" onclick="finishInvoice(this)">结束开票</button>
+                    </div>
+                </if>
+            </div>
+            <div style="margin: 10px"></div>
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+
+        var invoiceDetailVue = new Vue({
+            el:"#customerForm",
+            data:{
+                model:{
+                    company_name:"",
+                    wag_name:"",
+                    agreement_money:"",
+                    amount_paid:"",
+                    wag_amount_balance:"",
+                    free_amount:"",
+                    detail_count:"",
+                    current_count:"",
+                    current_state_value:"",
+                    plan_day_fmt:"",
+                    plan_money:"",
+                    plan_money_balance:""
+                }
+            }
+        });
+
+        $(function(){
+            getDetail();
+        });
+
+        function getDetail(){
+            $.post("/WrkInvoicePlan/getDetail",{plan_id:"{$plan_id}",id:"{$id}"},function(result){
+                invoiceDetailVue.model = result;
+            },'json')
+        }
+
+        function toTelephone (obj){
+            var mobile = $(obj).data('mobile');
+            if (!(/^1[3|4|5|7|8][0-9]\d{4,8}$/.test(mobile))){
+                layer.msg('号码错误!')
+            } else {
+                window.location.href = 'tel:'+mobile;
+            }
+        }
+
+        function finishInvoice(obj){
+            mui.confirm(`<div style="color: #3b3c3b;font-size: 0.26rem;text-align:center;">客户合同将结束开票，开票计划及开票提醒将取消，确认结束开票？</div>`,`<div style="color: #999999;font-size: 0.3rem;text-align:center;">温馨提示</div>`,["确认",`<span style="color: #c1c1c1;font-weight: normal;">取消</span>`],function(e){
+                if(e.index	==	0){
+                    if($(obj).data("count") != 1){
+                        $(obj).data("count",1);
+                        $.post("/WrkInvoicePlan/finishInvoice",{plan_id:"{$plan_id}"},function(result){
+                            layer.msg(result.message);
+                            if(result.error==0){
+                                getDetail();
+                            }
+                            setTimeout(function(){
+                                $(obj).data("count",null);
+                            },500)
+                        },'json');
+                    }
+                }
+            });
+        }
+
+        function toInvoice(){
+            top.layer.open({
+                type:2,
+                title:"立即开票",
+                shadeClose:true,
+                shade:0.8,
+                area:['100%','100%'],
+                content:"__MODULE__/WrkInvoicePlan/invoice/plan_id/{$plan_id}",
+                closeBtn:1,
+                success: function(layero, index) {},
+                end: function() {}
+            })
+        }
+
+        function toInvoiceRecord(){
+            top.layer.open({
+                type:2,
+                title:"开票列表",
+                shadeClose:true,
+                shade:0.8,
+                area:['100%','100%'],
+                content:"__MODULE__/WrkInvoicePlan/invoiceRecord/plan_id/{$plan_id}",
+                closeBtn:1,
+                success: function(layero, index) {},
+                end: function() {}
+            })
+        }
+    </script>
+</body>
+
+</html>

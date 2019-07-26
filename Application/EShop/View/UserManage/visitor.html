@@ -1,0 +1,54 @@
+<include file="UserSupervise:head"/>
+<body>
+	<include file="Index:header" />
+<li data-value="{%pinyin%}" id="template-1" style="display:none" data-tags="{%pinyin%}" data-url="/UserSupervise/customer_detail/id/{%id%}">
+    <div class="check-div">
+        <img src="{%head_pic%}" alt="">
+        <span class="nickname">{%name%}</span>
+    </div>
+    <div class="check-div blue-4591fe">
+        <span>{%group_name%}</span>
+        <span class="mui-icon mui-icon-arrowright"></span>
+    </div>
+</li>
+<section class="custom-wrap mt85" style="overflow: hidden;">
+    <ul class="con-tab pr">
+        <li id="list" class="cons">
+        	<ul class="mui-main-tab">
+		        <li onclick="window.location.href = '/UserManage/member.html'">会员</li>
+		        <li onclick="window.location.href = '/UserManage/index.html'">粉丝</li>
+		        <li class="active">访客</li>
+		    </ul>
+            <ul class="visitor-list">
+            	<li onclick="window.location.href = '/UserManage/match_view.html'">
+            		<img class="header-img-88 mr30" src="{$Think.const.IMG_URL}Index_img/img1.png" alt="" />
+            		<div>
+            			<div class="black-1 font26">米兰达</div>
+            			<div class="gray-9c font24">最新访问时间：2018-9-20 14:20:39</div>
+            		</div>
+            	</li>
+            	<li>
+            		<img class="header-img-88 mr30" src="{$Think.const.IMG_URL}Index_img/img1.png" alt="" />
+            		<div>
+            			<div class="black-1 font26">米兰达</div>
+            			<div class="gray-9c font24">最新访问时间：2018-9-20 14:20:39</div>
+            		</div>
+            	</li>
+            	<li>
+            		<img class="header-img-88 mr30" src="{$Think.const.IMG_URL}Index_img/img1.png" alt="" />
+            		<div>
+            			<div class="black-1 font26">米兰达</div>
+            			<div class="gray-9c font24">最新访问时间：2018-9-20 14:20:39</div>
+            		</div>
+            	</li>
+            </ul>
+        </li>
+    </ul>
+    
+</section>
+
+<include file="UserSupervise:foot_access_file"/>
+<script src="{$Think.const.JS_URL}/mui/mui.indexedlist.js"></script>
+
+</body>
+</html>

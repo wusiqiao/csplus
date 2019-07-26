@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+    .delete-div span{
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .grey{
+        color:#808080;
+    }
+    .relieve{
+        color:#4891FE;
+        text-align: center;
+    }
+    .drop::after{
+        display: inline-block;
+        content: '';
+        width: 0;
+        height:0;
+        border: 5px solid transparent;
+        border-top:5px solid #A5A4A4;
+        border-bottom: none;
+    }
+     .lable{
+        display: inline-block;
+        height: 30px;
+        line-height: 30px;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        padding: 0 5px;
+        color: #A9A9A9;
+    }
+    .tag-checkbox input[type='checkbox'] {
+        content: '';
+        width: 30px;
+        height: 30px;
+        background-image: url(/{$Think.MODULE_PATH}Public/images/work/none.png);
+        background-repeat: no-repeat;
+        background-size: .33rem .33rem;
+        background-position: center;
+        outline: none;
+        background-color: transparent;
+        -webkit-appearance: none;
+    }
+    .tag-checkbox input[type='checkbox']:checked {
+        content: '';
+        width: 30px;
+        height: 30px;
+        background-image: url(/{$Think.MODULE_PATH}Public/images/work/ok.png);
+        background-repeat: no-repeat;
+        background-size: .33rem .33rem;
+        background-position: center;
+        outline: none;
+        background-color: transparent;
+        -webkit-appearance: none;
+    }
+    .basic-info .info-line {
+        display: flex;
+        flex-wrap: wrap;
+        box-shadow:initial;
+    }
+    .view-info{
+        margin-right: .15rem;
+        padding: 0 .25rem;
+        width: 1.75rem;
+        height: 1rem;
+        line-height: 1rem;
+        text-align: justify;
+        color: #999999;
+    }
+    .info-button{
+        color: #368bfe;
+        padding: .1rem .2rem;
+        border: 1px solid #368bfe;
+        border-radius: .1rem;
+    }
+</style>
+
+<body style="margin-top: .85rem;">
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none" style="color:#2f2d2d">
+        <div class="basic-info mb20">
+            <div class="info-line " style="display: flex" onclick="infoDetailShow()">
+                <div style="font-size: .34rem;flex:1;height: .5rem;line-height: .5rem;margin: .2rem">{$model.company_name}</div>
+                <div style="flex:.5;text-align: right;margin: .2rem;height: .5rem;line-height: .5rem;" id="arrow-icon"><span class="mui-icon mui-icon mui-icon-arrowdown"></span></div>
+            </div>
+            <div id="detail-info">
+                <div class="info-line " style="display: flex">
+                    <div class="view-info" style="flex:1;text-align: left;">通知类型</div>
+                    <div class="view-info" style="flex:1;text-align: right;color: #000">{$model.title}</div>
+                </div>
+                <div class="info-line " style="display: flex">
+                    <div class="view-info" style="flex:1;text-align: left;">通知状态</div>
+                    <div class="view-info" style="flex:1;text-align: right;color: #000">{$model.view_state}</div>
+                </div>
+                <div class="info-line " style="display: flex">
+                    <div class="view-info" style="flex:1;text-align: left;">通知时间</div>
+                    <div class="view-info" style="flex:1;text-align: right;color: #000">{$model.creater_time}</div>
+                </div>
+                <div class="info-line " style="display: flex">
+                    <div class="view-info" style="flex:1;text-align: left;">备注及详情</div>
+                    <div class="view-info" style="flex:1;text-align: right;color: #000"></div>
+                </div>
+                <div class="info-line "  id="app" style="padding: .3rem;">
+                    <div  v-for="(content, keys) in contents" style="width: 100%">
+                        <span class="gray-a1" v-if="content.key">{{content.key}}：</span>
+                        <span class="gray-a1">{{content.value}}</span>
+                    </div>
+                </div>
+                <eq name="model.the_state" value="1">
+                    <div class="info-line " style="display: flex;margin: .2rem 0;height: .6rem;">
+                        <div style="flex:1;text-align: right;padding: 0 .2rem"><a class="info-button" href="javascript:;" onclick="putButton(2)">确认通知</a></div>
+                        <div style="flex:1;text-align: left;padding: 0 .2rem"><a class="info-button" href="javascript:;" onclick="putButton(3)">取消通知</a></div>
+                    </div>
+                </eq>
+                <eq name="model.the_state" value="2">
+                    <div class="info-line " style="display: flex;margin: .2rem 0;height: .6rem;">
+                        <div style="flex:1;text-align: center;padding: 0 .2rem;"><a class="info-button" style="color:#bababa;border: initial" href="javascript:;">已确认</a></div>
+                    </div>
+                </eq>
+                <eq name="model.the_state" value="3">
+                    <div class="info-line " style="display: flex;margin: .2rem 0;height: .6rem;">
+                        <div style="flex:1;text-align: center;padding: 0 .2rem;"><a class="info-button" style="color:#bababa;border: initial"  href="javascript:;">已取消确认</a></div>
+                    </div>
+                </eq>
+            </div>
+
+
+        </div>
+        <volist name="notice_list" id="vo">
+            <div class="basic-info mb20" onclick="location.href='/Notice/notice_view/id/{$vo.id}'">
+                <div class="info-line pr" style="margin:  .2rem">
+                    <div style="width: 100%;font-size: .34rem;height: .5rem;line-height: .5rem">{$vo.company_name}</div>
+                    <div style="display: flex;width: 100%;">
+                        <div style="flex: 1;text-align: left;color: #bbb">{$model.title}</div>
+                        <div style="flex: 1;text-align: right;color: #4B90Fe">{$vo.state_view}</div>
+                    </div>
+                    <div style="width: 100%;color: #bbb">{$vo.created_time}</div>
+                </div>
+            </div>
+        </volist>
+    </section>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+    <script type="text/javascript">
+        var vue = new Vue({
+            el: '#app',
+            data:{
+                contents:{$content}
+            }})
+        function putButton(state) {
+            $.post('/Notice/put_notice',{id:'{$model.id}',state:state},function(result){
+                 layer.msg(result.message)
+                if (result.error == 0){
+                    location.reload()
+                 }
+            },'json')
+        }
+        function infoDetailShow(){
+            $('#detail-info').toggle()
+            $('#arrow-icon span').toggleClass('mui-icon-arrowright')
+            $('#arrow-icon span').toggleClass('mui-icon-arrowdown')
+        }
+    </script>
+</body>
+
+</html>

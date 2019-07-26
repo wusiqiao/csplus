@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{$title}</title>
+    <link rel="stylesheet" href="/Application/EShop/Public/css/Organization/index.css?v={$vesion}">
+    <link href="/{$Think.APP_PATH}Public/vender/layer/skin/layer.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+    <link href="{$Think.const.CSS_URL}common.css?v={$vesion}" rel="stylesheet" />
+    <script>
+        window.addEventListener('resize',remChange());
+        function remChange() {
+            var html = document.querySelector('html');
+            var width = html.getBoundingClientRect().width;
+            if( width >= 750 ){
+                width = 750;
+            }
+            html.style.fontSize = width / 10 + 'px';
+            return remChange;
+        }
+    </script>
+    <style>
+        .readonly{
+            background-color: rgb(221, 221, 221) !important;
+        }
+        input[type='text']{
+            width: 50% !important;
+            padding: 0 0;
+            height: 30px;
+        }
+        .txt{
+            color: #0B0000;
+            font-size: 14px;
+        }
+        .selectSpan{
+            height: 38px;
+        }
+        .info-con {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: .32rem .2rem .32rem 0;
+            line-height: .35rem;
+            color: #333333;
+        }
+         .info-con.icon {
+            padding: .24rem .2rem .12rem 0;
+        }
+        .back-home{
+            top:5px;
+            right:.45rem;
+            background-size: .6rem .55rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap" style="margin-top: 40px">
+        <include file="Index:header" />
+        <div class="content" style="padding:3% 3%;border-radius: 5px;" >
+            <p class="row" style="padding-right: 0">
+                <span class="Star title">
+                <span class="txt">微信绑定<span></span></span>
+                </span>
+                <if condition="$id eq ''">
+                        <input type="text" value="" class="flexInput addStaff" placeholder="请选择一位用户" name="name"
+                               data-url="/UserSupervise/target_addition/id/-1/key/addStaff.html" readonly id="select_user">
+                       <!-- <span class="spanBtn bgGray" style="width: 30%">待确认</span>
+                        <span class="spanBtn mainColor send" onclick="sendInvite(this)" style="border-radius: 6px;width: 30%!important;">发送邀请</span>
+                    -->
+                    <else/>
+                    <img src="" name="head_pic" width="50px" height="50px" style="border-radius: 100%;display: none;margin-left: 20px" id="head_pic">
+                    <span id="name" class="title" style="margin: 5px 15px;"></span>
+                </if>
+                <input type="hidden" value="{$id}" name="id">
+                <input type="hidden" value="1" name="is_add">
+            </p>
+            <div class="tip" style="margin-top: 5px">
+                <p class="iWrap">
+                    <i class="danger"></i>
+                </p>
+                <div class="pWrap" >
+                    <p style="font-size: 11px">1、输入之前确保员工已经关注微信公众号</p>
+                    <p style="font-size: 11px">2、员工需要在微信上进行确认才能绑定成功</p>
+                    <p style="font-size: 11px">3、未绑定微信的账户将被禁用，完成绑定后自动启用</p>
+                </div>
+            </div>
+            <if condition="$id neq ''">
+                    <p class="row" style="margin-top: 10px">
+                        <span class="title">
+                            <span class="txt Star">姓名<span></span></span>
+                        </span>
+                        <input type="text" placeholder="" name="staff_name" readonly class="readonly">
+                    </p>
+                    <p class="row">
+                        <span class="title">
+                            <span class="txt Star">手机号<span></span></span>
+                        </span>
+                        <input type="text" placeholder="" name="mobile" readonly class="readonly">
+                    </p>
+                <else/>
+                    <p class="row" style="margin-top: 10px">
+                            <span class="title">
+                                <span class="txt Star">姓名<span></span></span>
+                            </span>
+                        <input type="text" placeholder="请输入员工姓名" name="staff_name">
+                    </p>
+                    <p class="row">
+                            <span class="title">
+                                <span class="txt Star">手机号<span></span></span>
+                            </span>
+                        <input type="text" placeholder="请输入手机号码" name="mobile">
+                    </p>
+            </if>
+            <div class="tip">
+                <p class="iWrap">
+                    <i class="danger"></i>
+                </p>
+                <div class="pWrap">
+                    <p style="font-size: 11px">手机号将作为登录账号，且作为找回密码的凭据</p>
+                </div>
+            </div>
+            <!--<div class="tip">-->
+                <!--<i class="danger"></i>手机号将作为登录账号，且作为找回密码的凭据-->
+            <!--</div>-->
+            <div class="row">
+                <span class="title">
+                    <span class="txt Star">所属部门<span></span></span>
+                </span>
+                <div class="selectBox" onclick="showDept()">
+                    <input type="text" name="dept_name" readonly placeholder="请选择所属部门" style="width: 100% !important;border-style: none;height: 26px;">
+                    <input type="hidden" name="dept_id" readonly>
+                    <span  class="selectSpan"><i></i></span>
+                </div>
+            </div>
+            <div class="row selectRole" style="margin-top: 10px">
+                <span class="title">
+                    <span class="txt Star">角色<span></span></span>
+                </span>
+                <if condition="$id neq $curr_userId or $id eq ''">
+                    <div class="selectBox" onclick="showRole()">
+                        <input type="text" name="role_name" placeholder="请选择角色" style="width: 100% !important;border-style: none;height: 26px;" readonly>
+                        <input type="hidden" name="role_ids">
+                        <span class="selectSpan"><i></i></span>
+                    </div>
+                    <else/>
+                    <div class="selectBox" style="background-color: rgb(221, 221, 221)">
+                        <input type="text" name="role_name" placeholder="请选择角色" style="width: 100% !important;border-style: none;height: 26px;background-color: rgb(221, 221, 221)" readonly>
+                        <input type="hidden" name="role_ids">
+                        <span class="selectSpan"><i></i></span>
+                    </div>
+                </if>
+
+            </div>
+            <p class="row isAdmin" style="margin-top: 10px;display: none">
+                <span class="title">
+                    <span class="txt Star">角色<span></span></span>
+                </span>
+                <input type="text" readonly class="readonly" value="系统管理员">
+            </p>
+
+           <!-- <div class="row">
+                <span class="title">
+                    <span class="txt Star">数据权限<span></span></span>
+                </span>
+            </div>-->
+
+            <!--<div class="row">
+                <span class="title">
+                    <span class="txt Star">上级主管<span></span></span>
+                </span>
+                <div class="selectBox" onclick="showDirector()">
+                    <input type="text" name="director_name" readonly placeholder="请选择上级主管" style="width: 100% !important;border-style: none;height: 26px;">
+                    <input type="hidden" name="director_id">
+                    <span  class="selectSpan"><i></i></span>
+                </div>
+            </div>-->
+            <p class="padding80" style="font-size: 11px;padding-bottom: 0">如需设置对应角色拥有的权限，请登录PC后台操作</p>
+            <div class="fixedBtn" style="height: auto;position: relative!important;">
+                <span class="save" style="height: 35px;margin: 10px;font-size: 14px;line-height: 35px">保存</span>
+                <span class="cancel" style="height: 35px;margin: 10px;font-size: 14px;line-height: 35px;background-color: white">取消</span>
+            </div>
+        </div>
+
+    </div>
+    <script src="/{$Think.APP_PATH}Public/jquery/jquery.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+    <script type='text/javascript' src='__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.js'></script>
+    <script>
+        function sendInvite(){
+            var id = $("input[name='id']").val();
+            if(id != ""){
+                var mobile = $("input[name='mobile']").val();
+                if(!(/^\d{8,15}$/.test(mobile))){
+                    //layer.msg("请输入正确的手机号码！");
+                    return false;
+                }
+                $.post("/ComFan/notifyUser",{user_ids:id,type:"addStaff",mobile:mobile},function(result){
+                    /*layer.msg(result.message);
+                    if(result.code == 0){
+                        $(obj).html('重新邀请');
+                        $('.flexInput').addClass('on');
+                        $('.bgGray').css('display','block');
+                    }*/
+                },'json')
+            }else{
+                layer.msg("请先选择一位用户");
+            }
+        }
+
+        $(".save").on("click",function(){
+            var id = $("input[name='id']").val();
+            var staff_name = $("input[name='staff_name']").val();
+            var mobile = $("input[name='mobile']").val();
+            var deptment_id = $("input[name='dept_id']").val();
+            var director_id = $("input[name='director_id']").val();
+            var role_ids = $("input[name='role_ids']").val();
+            var is_add = $("input[name='is_add']").val();
+            if(id == ""){
+                layer.msg("请先选择一位用户!");
+                return false;
+            }
+            if(is_add == 1){
+                if(staff_name == ""){
+                    layer.msg("请输入姓名!");
+                    return false;
+                }
+                if(mobile == "" || !(/^(13[0-9]|14[5-9]|15[012356789]|166|17[0-8]|18[0-9]|19[8-9])[0-9]{8}$/.test(mobile))){
+                    layer.msg("请输入正确的手机号!");
+                    return false;
+                }
+            }
+            if(role_ids == ""){
+                layer.msg("请选择角色!");
+                return false;
+            }
+            if(deptment_id == ""){
+                layer.msg("请选择部门!");
+                return false;
+            }
+            /*if(director_id == ""){
+                layer.msg("请选择上级主管!");
+                return false;
+            }*/
+            $.post("/Organization/editStaff",{type:"addStaff",id:id,staff_name:staff_name,mobile:mobile,deptment_id:deptment_id,director_id:director_id,role_ids:role_ids,is_add:is_add},function(result){
+                layer.msg(result.message);
+                if(result.code == 0){
+                    if(is_add != 0){
+                        sendInvite();
+                    }
+                    setTimeout(function(){
+                        window.history.back(-1);
+                    },1000)
+                }
+            },'json')
+        });
+
+        $(".cancel").on("click",function(){
+            window.history.back(-1);
+        });
+
+        $(function(){
+            var id = $("input[name='id']").val();
+            if(id){
+                $.get("/Organization/editStaff",{id:id},function(result){
+                    $("#head_pic").show().attr("src",result.head_pic);
+                    $("#name").html(result.name);
+                    $("input[name='staff_name']").val(result.staff_name);
+                    $("input[name='mobile']").val(result.mobile);
+                    $("input[name='dept_name']").val(result.deptment_name);
+                    $("input[name='dept_id']").val(result.deptment_id);
+                    $("input[name='director_name']").val(result.director_name);
+                    $("input[name='director_id']").val(result.director_id);
+                    $("input[name='role_ids']").val(result.role_ids);
+                    if(result.role_ids == 2 || result.is_leader == 1){
+                        $(".isAdmin").show();
+                        $(".selectRole").hide();
+                    }
+                    $("input[name='role_name']").val(result.role_name);
+                    $("input[name='is_add']").val(0);
+                },'json')
+            }
+        });
+
+        var picker = new mui.PopPicker();
+        function showDirector(){
+            layer.open({
+                type: 2,
+                title: "选择主管",
+                shadeClose: true,
+                shade: 0.8,
+                area: ['100%', '100%'],
+                content: '/Organization/select_staff',
+                success: function (layero, index) {
+
+                },
+                end: function () {
+                }
+            });
+        }
+
+        function showDept() {
+            var url = '__MODULE__/Organization/select_dept/type/2';
+            var select_dept = layer.open({
+                type: 2,
+                title: '选择部门',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['100%', '100%'],
+                content: url,
+                success: function(layero, index) {},
+                end: function() {}
+            });
+        }
+
+        function getDeptmentForEditStaff(id,name){
+            $("input[name='dept_name']").val(name);
+            $("input[name='dept_id']").val(id);
+        }
+
+        //添加用户
+        $('.addStaff').on('click',function(){
+            layer.open({
+                type: 2,
+                title: "选择用户",
+                shadeClose: true,
+                shade: 0.8,
+                area: ['100%', '100%'],
+                content: '/Organization/select_user', //iframe的url
+                success: function (layero, index) {
+                },
+                end: function () {
+                }
+            });
+        });
+
+        function showRole(){
+            layer.open({
+                type : 2,
+                title : "选择角色",
+                shadeClose:true,
+                shade:0.8,
+                area:['100%','100%'],
+                content:"/Organization/select_role",
+                success:function(layero,index){
+
+                },
+                end:function(){
+
+                }
+            })
+        }
+    </script>
+</body>
+</html>

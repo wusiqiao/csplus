@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <title>免费文档下载</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <style type="text/css">
+    	html,body {
+    		width: 100% !important;
+    	}
+    </style>
+</head>
+<body>
+<include file="Index:header" />
+	<section class="file-wrap" style="margin-top: .85rem">
+		<div class="file-top"></div>
+		<div class="file-link-wrap">
+			<div class="file-links">
+				<volist name="encs" id="vo">
+					<a class="file-link" data-url="{$vo.enc_url}" onclick="jump(this);">
+						<div class="protocol">
+							<img src="{$vo.icon}" width="18" height="19" alt="" />
+							<span>{$vo.name}</span>
+						</div>
+						<span class="mui-icon mui-icon-arrowright"></span>
+					</a>
+				</volist>
+
+				<!--<a class="file-link" href="">-->
+					<!--<div class="rules">-->
+						<!--<img src="/{$Think.MODULE_PATH}Public/images/tool/front-icon-rules.png" alt="" />-->
+						<!--<span>公司章程</span>-->
+					<!--</div>-->
+					<!--<span class="mui-icon mui-icon-arrowright"></span>-->
+				<!--</a>-->
+				<!--<a class="file-link" href="">-->
+					<!--<div class="contract">-->
+						<!--<img src="/{$Think.MODULE_PATH}Public/images/tool/front-icon-contract.png" alt="" />-->
+						<!--<span>租凭合同</span>-->
+					<!--</div>-->
+					<!--<span class="mui-icon mui-icon-arrowright"></span>-->
+				<!--</a>-->
+				<!--<a class="file-link" href="">-->
+					<!--<div class="equity">-->
+						<!--<img src="/{$Think.MODULE_PATH}Public/images/tool/front-icon-equity.png" alt="" />-->
+						<!--<span>股权转让协议</span>-->
+					<!--</div>-->
+					<!--<span class="mui-icon mui-icon-arrowright"></span>-->
+				<!--</a>-->
+				<!--<a class="file-link" href="">-->
+					<!--<div class="meeting">-->
+						<!--<img src="/{$Think.MODULE_PATH}Public/images/tool/front-icon-meeting.png" alt="" />-->
+						<!--<span>股东会决议</span>-->
+					<!--</div>-->
+					<!--<span class="mui-icon mui-icon-arrowright"></span>-->
+				<!--</a>-->
+				<!--<a class="file-link" href="">-->
+					<!--<div class="labor">-->
+						<!--<img src="/{$Think.MODULE_PATH}Public/images/tool/front-icon-labor.png" alt="" />-->
+						<!--<span>劳动合同</span>-->
+					<!--</div>-->
+					<!--<span class="mui-icon mui-icon-arrowright"></span>-->
+				<!--</a>-->
+				
+			</div>
+			<!--<a class="link-feedback" href="/">返回首页</a>-->
+			
+		</div>
+	</section>
+</body>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+<script>
+	function jump(obj)
+	{
+        var u = navigator.userAgent;
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        var url = $(obj).data('url');
+		if (isAndroid) {
+			mui.confirm('直接下载文件,或转移到PC端下载!','文件下载',['取消','直接下载'],function(result){
+			    if(result.index == 1){
+                    window.location.href = url;
+				}
+			})
+		} else if (isiOS){
+		    mui.alert('IOS暂时未开放下载功能,请转移到PC端下载!');
+		} else {
+            window.location.href = url;
+		}
+
+
+	}
+</script>
+
+</html>

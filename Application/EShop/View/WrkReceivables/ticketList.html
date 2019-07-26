@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+	<title>{$title}</title>
+	
+</head>
+<style>
+    .overflow-div{
+        overflow: hidden;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+    }
+    .voucher-dev{
+        width: 65%;
+    }
+    .scope-voucher{
+        line-height: .3rem !important;
+        margin-bottom: 0 !important;
+        height: .6rem;
+    }
+    .voucher-style .to-use{
+        background-color: #e11636;  
+    }
+    .get-price{
+        color: #e11636;
+    }
+    .icon-each{
+        background-image: url('/{$Think.MODULE_PATH}Public/images/distribution/icon-red.png');
+    }
+    
+</style>
+<body>
+
+<section class="voucher-wrap" style="padding: 0;">
+    <div class="voucher-con" id="con" style="overflow-y:auto;height:100vh;">
+        <div v-for="item in ticketList" class="v-content">
+            <div class="hsui-sync-refresh-content">
+                <div class="clearfix item-wrap red-list">
+                    <div class="my-vouchers">
+                        <span class="icon-each">券</span>
+                        <div class="voucher-style">
+                            <div class="voucher-dev">
+                                <div class="voucher-style-title">满{{item.least_cost}}元即可使用</div>
+                                <div class="scope-voucher overflow-div"></div>
+                                <div class="gray-voucher">{{item.ticket_end_date}}到期</div>
+                            </div>
+                            <div class="operate-btn">
+                                <div class="get-price">￥{{item.reduce_cost}}</div>
+                                <div class="gray-voucher">优惠券</div>
+                                <div class="to-use" @click="useCoupon(item.id,item.reduce_cost)">立即使用</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-bottom: 0.2rem;line-height: 0.75rem;text-align: center;border-radius: 3px;" class="save-edited bg-368bfe" onclick="useCoupon(null,null)">取消使用优惠卷</div>
+    </div>
+</section>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+<script>
+    $('#come-back').on('click',function(){
+        window.location.href = document.referrer;
+    })
+    $('#back-home').on('click',function(){
+        window.location.href = '__MODULE__/Index/index.html';
+    })
+</script>
+<span style="display: none" id="is_set_mobile" data-ismobile = "{$is_set_mobile}"></span>
+
+<include file="Public:contact" />
+<!--end 底部-->
+
+<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script src="{$Think.const.JS_URL}mui/mui.min.js"></script>
+<script src="{$Think.const.JS_URL}load/dropload.min.js"></script>
+<script src="{$Think.const.JS_URL}common.js"></script>
+
+<script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+<script>
+    var  couponVue = new Vue({
+        el:"#con",
+        data:{
+            ticketList:[]
+        }
+    });
+
+    $(function(){
+        getItems();
+
+    });
+    function getItems(){
+        $.post("/WrkReceivables/ticketList/least_cost/{$least_cost}"
+        ,function(result){
+            couponVue.ticketList = result;
+        },'json')
+    }
+    function useCoupon(sp_ticket_stock_id,reduce_cost){
+        parent.setCoupon(sp_ticket_stock_id,reduce_cost);
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+
+    }
+
+</script>
+</body>
+</html>

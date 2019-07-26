@@ -1,0 +1,198 @@
+<include file="UserSupervise:head" />
+<link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.min.css" rel="stylesheet" />
+<link href="/{$Think.MODULE_PATH}Public/css/listSearch.css" rel="stylesheet" />
+<style>
+    .modal input[type='text'] {
+        margin: 0 0;
+        padding: 0 .1rem;
+        border: 1px solid #e9e9e9;
+    }
+
+    #empty {
+        padding: 10%;
+        text-align: center;
+        background-color: #ffffff
+    }
+
+    .del {
+        margin-right: .2rem;
+        height: .75rem;
+        color: red;
+        border: 1px solid red;
+    }
+
+    html,
+    body {
+        position: relative;
+        height: 100%;
+        min-height: 100%;
+    }
+
+    .mui-bar {
+        position: fixed !important;
+    }
+
+    .item-wrap {
+        overflow: auto;
+        width: 100% !important;
+    }
+
+    .item-container {
+        float: left;
+        margin: 0 auto;
+        width: 100%;
+        overflow: auto;
+    }
+
+    .item-container li {
+        float: left;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .item-wrap::-webkit-scrollbar {
+        /*隐藏滚轮*/
+        display: none;
+    }
+    .icon-company{
+        width: 0.3rem;
+        height: 0.3rem;
+        background-size: 100% 100%;
+        background-image: url("/{$Think.MODULE_PATH}Public/images/icon/icon-company.png");
+        margin-right: 0.18rem;
+    }
+</style>
+
+<body>
+    <include file="Index:header" />
+    <div id="list-header">
+        <!-- tab分栏 -->
+        <div class="wrk-tab">
+            <div class="wrk-tab-item wrk-tab-item-active" data-value="">全部</div>
+            <div class="wrk-tab-item" data-value="0">未结束</div>
+            <div class="wrk-tab-item" data-value="1">已结束</div>
+        </div>
+        <!-- 搜索 -->
+        <div class="search-fixed">
+            <div class="mui-search-area" style="width: calc(100% - 0.4rem);margin: 0rem 0.2rem;">
+                <input class="mui-search-area-input mui-input-clear" name="keyword" type="text" id="search1"
+                    placeholder="请输入合同名称搜索">
+                <button id="search"></button>
+            </div>
+        </div>
+    </div>
+    <!-- 列表 -->
+    <section class="common-wrap bg-none">
+        <div id="list-box" style="margin-top: 2.5rem;margin-bottom: 10%">
+            <div class="mui-content" id="main-content">
+                <div class="item-wrap">
+                    <ul class="item-container">
+                        <li v-for="(item,index) in invoice_list" :id="item.item_id" style="margin-bottom:0.19rem;border-radius: 0.04rem;">
+                        <div class="list-card" :id="item.id" @click="toDetail(item)">
+                            <div class="list-card-companyName"><i class="icon-company"></i><span style="font-size: 0.3rem;color: #666666;">{{item.name}}</span></div>
+                            <div class="list-card-info">
+                                <div class="list-card-info-item">
+                                    <div class="list-card-info-title">合同金额</div>
+                                    <div style="color: #666666;">￥{{item.agreement_money}}</div>
+                                </div>
+                                <div class="list-card-info-item">
+                                    <div class="list-card-info-title">已开票金额</div>
+                                    <div style="color: #666666;">￥{{item.amount_paid}}</div>
+                                </div>
+                                <div class="list-card-info-item">
+                                    <div class="list-card-info-title">未开票金额</div>
+                                    <div style="color: #666666;">￥{{item.amount_balance}}</div>
+                                </div>
+                            </div>
+                            <div class="list-card-state">{{item.state_value}}</div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="blue-checkbox mb15" v-if="invoice_list.length == 0" id="empty">
+                    <p style="color:#808080"> 没有数据</p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <include file="UserSupervise:foot_access_file" />
+
+    <script src="/{$Think.const.MODULE_PATH}/Public/js/jquery.min.js"></script>
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.const.MODULE_PATH}/Public/js/common.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.min.js"></script>
+
+    <script type="text/javascript">
+        mui.init();
+        var invoiceVue = new Vue({
+            el: "#main-content",
+            data: {
+                invoice_list: []
+            },
+            methods: {
+                onItemTap: function (item) {
+                    console.log(item);
+                },
+                toDetail: function (item) {
+                    var url = "__MODULE__/ComAgreement/invoiceDetail/id/" + item.id;
+                    window.open(url, '_self')
+                }
+            }
+        });
+
+        var invoiceListFunctions = {
+            queryData: function ($target, page,query) {
+                var keyword = $("input[name='keyword']").val();
+                var state = $(".wrk-tab-item-active").data("value");
+                $.post("/ComAgreement/invoiceList", { page: page, keyword: keyword, state: state }, function (result) {
+                    if(query == 1){
+                        invoiceVue.invoice_list = [];
+                        $(".item-wrap").scrollTop(0);
+                    }
+                    invoiceVue.invoice_list = invoiceVue.invoice_list.concat(result);
+                    $target.data("loading", false);
+                }, 'json');
+            }
+        };
+
+        pullRefresh(".item-wrap", ".item-container", function ($target, page) {
+            invoiceListFunctions.queryData($target,page,0)
+        });
+
+        $('#search').on("click", function () {
+            invoiceListFunctions.queryData($(".item-wrap"), 1,1);
+            resetPullRefresh($(".item-wrap"));
+        });
+
+        var winHeight = $(window).height();
+        $(window).resize(function () {
+            var thisHeight = $(this).height();
+            if (winHeight - thisHeight > 140) {
+                $('.footer').css('position', 'static');
+                $('.item-wrap').css('padding-bottom', '0');
+                $(".footer").hide();
+            } else {
+                $('.footer').css({ 'position': 'fixed' });
+                $('.item-wrap').css('padding-bottom', '10%');
+                $(".footer").show();
+            }
+        });
+
+        // tab切换
+        $(".wrk-tab .wrk-tab-item").on("click", function () {
+            if (!$(this).hasClass("wrk-tab-item-active")) {
+                if($(this).data("value") == 2){
+                    $("#search-select-time").attr("disabled","disabled");
+                }else{
+                    $("#search-select-time").removeAttr("disabled");
+                }
+                $(this).addClass("wrk-tab-item-active");
+                $(this).siblings(".wrk-tab-item").removeClass("wrk-tab-item-active");
+                invoiceListFunctions.queryData($(".item-wrap"), 1,1);
+                resetPullRefresh($(".item-wrap"));
+            }
+        });
+    </script>
+</body>
+
+</html>

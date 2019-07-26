@@ -1,0 +1,335 @@
+<include file="UserSupervise:head"/>
+<link rel="stylesheet" href="/{$Think.APP_PATH}Public/css/comm.css">
+<style>
+    .item-wrap {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+    .item-wrap::-webkit-scrollbar {
+        display: none;
+    }
+    .item-container {
+        width: 100%
+    }
+
+    .item-container li {
+        width: 100%;
+    }
+
+    .item-container li .item {
+        height: auto;
+        position: relative;
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 5px;
+        background: #fff
+    }
+</style>
+<body>
+    <section class="edit-group-wrap mt85"  id="main-content" v-cloak>
+        <header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+            <h1 class="mui-title">{$title}</h1>
+            <button class="mui-btn mui-btn-link mui-btn-nav mui-pull-left" onclick="location.href = '__MODULE__/UserSupervise/customer_tags.html'" style="color: #444444 !important;padding: 0 !important;">
+				<span class="mui-icon mui-icon-arrowleft">
+				</span>返回
+            </button>
+            <button id="back-home" class="back-home" onclick="location.href = '__MODULE__/Index/index.html'"></button>
+        </header>
+    	<div id="list" class="pr">
+    		<!--<div class="mui-indexed-list-bar">-->
+				<!--<a>A</a>-->
+				<!--<a>B</a>-->
+				<!--<a>C</a>-->
+				<!--<a>D</a>-->
+				<!--<a>E</a>-->
+				<!--<a>F</a>-->
+				<!--<a>G</a>-->
+				<!--<a>H</a>-->
+				<!--<a>I</a>-->
+				<!--<a>J</a>-->
+				<!--<a>K</a>-->
+				<!--<a>L</a>-->
+				<!--<a>M</a>-->
+				<!--<a>N</a>-->
+				<!--<a>O</a>-->
+				<!--<a>P</a>-->
+				<!--<a>Q</a>-->
+				<!--<a>R</a>-->
+				<!--<a>S</a>-->
+				<!--<a>T</a>-->
+				<!--<a>U</a>-->
+				<!--<a>V</a>-->
+				<!--<a>W</a>-->
+				<!--<a>X</a>-->
+				<!--<a>Y</a>-->
+				<!--<a>Z</a>-->
+			<!--</div>-->
+	    	<div class="mui-head">
+	    		<div class="group-name">
+	    			<label for="">标签名称</label>
+					<if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['SysTargetTag']['menu_actions']['update'] eq 1 and $menuList['SysTargetTag']['allow'] eq 1)">
+							<input type="text" name="value"  value="{$tag.value}"/>
+							<button id="edit-tag">修改</button>
+						<else/>
+							<input type="text" name="value" readonly value="{$tag.value}"/>
+							<button onclick="mui.alert('无此功能操作权限')">修改</button>
+					</if>
+	    		</div>
+	            <input type="hidden" name="id" value="{$tag.id}">
+	    		<div class="edit-btn">
+					<if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['SysTargetTag']['menu_actions']['update'] eq 1 and $menuList['SysTargetTag']['allow'] eq 1)">
+							<button id="remove-custom">移除用户</button>
+							<button id="append-custom" data-url="/UserSupervise/target_addition/id/{$tag.id}/key/tag.html">添加用户</button>
+						<else/>
+							<button onclick="mui.alert('无此功能操作权限')">移除用户</button>
+							<button onclick="mui.alert('无此功能操作权限')">添加用户</button>
+					</if>
+	    		</div>
+	            <input type="hidden" name="old_value" value="{$tag.value}">
+	            <input type="hidden" id="handle_status" >
+	    	</div>
+        	<div class="mui-indexed-list-alert"></div>
+			<div class="groups customer group-jump mui-indexed-list-inner">
+                <div class="item-wrap groups customer bg-none" style="margin-bottom: 20px;">
+                    <ul class="bg-none item-container mui-table-view" id="customer_lists">
+                        <li v-for="(item,index) in item_list" @tap="onItemTap(item)" :id="item.item_id" class="plr20 bg-white mb20">
+                            <div class="flex-between border-b"  :data-id="item.id" >
+                                <!--onclick='window.open("/ComPotential/user_detail/id/"+this.getAttribute("data-id"),"_self");' :data-id="item.id"-->
+                                <div class="check-div">
+                                    <input name="user_id" v-model="users" type="checkbox" :value="item.id">
+                                    <img :src="item.head_pic" alt="" onclick="toDetail(this)" :data-id="item.id">
+                                    <span class="nickname" onclick="toDetail(this)" :data-id="item.id">{{item.name}}</span>
+                                    <span class="tel" onclick="toDetail(this)" :data-id="item.id">{{item.mobile}}</span>
+                                </div>
+                                <!--<div class="eidt-user" onclick='window.open("/ComPotential/user_edit/id/"+this.getAttribute("data-id"),"_self");' :data-id="item.id"></div>-->
+                                <div style="overflow: hidden;width: 100%;height: 45px;margin: 0" onclick="toDetail(this)" :data-id="item.id" ></div>
+                                <div class="eidt-user" onclick="toEdit(this)" :data-id="item.id" style="padding-right: 5%"></div>
+                            </div>
+                            <div class="ptb15" onclick="toDetail(this)" :data-id="item.id">
+                                <div class="flex-between line50 gray-9">
+                                    <div>{{item.branch_name}}</div>
+                                    <div>{{item.contact}}</div>
+                                </div>
+                                <div class="flex-between line50">
+                                    <div class="blue-4591fe dis-flex word-keep">
+                                        分组：<span class="icon-mark">{{item.group_name}}</span>
+                                    </div>
+                                    <div class="blue-4591fe dis-flex word-keep">
+                                        标签：<Tempalte v-for="(tag,tagIndex) in item.tags">
+                                                <span class="icon-mark" v-if="tagIndex < 2">
+                                                  {{tag.value}}
+                                                </span>
+                                        <span class="icon-mark" v-else-if="tagIndex == 2">
+                                                  ……
+                                                </span>
+                                    </Tempalte>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+				<div class="mui-bottom-space hide" style="height: 1.35rem;"></div>
+			</div>
+			<div id="remove-operation" class="remove-operation hide">
+				<button id="close-remove">取消</button>
+				<button id="remove-submit">确认移除</button>
+			</div>
+
+	    </div>
+	    <div class="wrap-modal" style="display: none;">
+	        <div class="modal-common-wrap modal-group">
+	            <div class="modal-contents">
+	                <div>
+	                	<div class="modal-title mb15">编辑标签名称</div>
+	                	<div class="flex-center">
+	            			<input class="single-input mb15" style="padding-left: .2rem" type="text" name="newName" />
+	            		</div>
+	                </div>
+	            </div>
+	            <div class="modal-btns">
+	                <button id="popup-close" class="popup-close" onclick="closeModal()">取消</button>
+	                <button class="blue" onclick="elterTag()">确定</button>
+	            </div>
+	        </div>
+	    </div>
+    </section>
+	<include file="UserSupervise:foot_access_file"/>
+	<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+	<script src="/{$Think.MODULE_PATH}Public/js/common.js"></script>
+	<script src="{$Think.const.JS_URL}/mui/mui.indexedlist.js"></script>
+	<script>
+        mui.init();
+        var vue = new Vue({
+            el: "#main-content",
+            data: {
+                item_list: [],
+                tag_id:{$id},
+                users:[],
+            },
+            methods: {
+                onItemTap: function(item) {}
+            }
+        });
+        var listHeight = 300;
+        var nWinHeight = $(window).height();
+        var headHeight = $(".mui-head").height();
+        var operationHeight = $('.edit-btn').height();
+        listHeight = nWinHeight - (headHeight*2);
+        $(function(){
+            pullRefresh(".item-wrap", ".item-container", function($target, current_page) {
+                $.post("/UserSupervise/targetUsers", { page: current_page,id:vue.tag_id,key:'tag'}, function(result) {
+                    vue.item_list = vue.item_list.concat(result);
+                    $target.data("loading", false);
+                }, "json");
+            }, listHeight)
+        })
+        function queryData() {
+            $('.item-wrap').data("last_scroll_top",0);
+            $('.item-wrap').data("current_page",1);
+            pullRefresh(".item-wrap", ".item-container", function($target, current_page) {
+                $.post("/UserSupervise/targetUsers", {page: current_page,id:vue.tag_id,key:'tag'}, function (result) {
+                    vue.item_list = result;
+                    $(".item-wrap").scrollTop(0);
+                    $(".item-wrap").data("loading", false);
+                }, "json");
+            },listHeight)
+        }
+	</script>
+    <script type="text/javascript">
+    	//修改分组名称
+
+		function elterTag(){
+        	var currentName = $('input[name="value"]').val();
+        	var newName = $('input[name="newName"]').val();
+			var tagId = $('input[name=id]').val();
+        	if($.trim(newName) == ''){
+        		layer.msg('标签名称不能为空');
+                return false;
+        	}
+        	if($.trim(newName).length > 5) {
+                layer.msg('标签名称不能大于5个字');
+                return false;
+			}
+        	if($.trim(newName) === $.trim(currentName)) {
+                layer.msg('标签名称未更改');
+                return false;
+			}
+            var btnArray = ['取消','确定'];
+            var message = '确定将标签名称"'+currentName+'"修改为"'+newName+'"';
+            mui.confirm(message, '', btnArray,function(e) {
+                if (e.index == 1) {
+					$.ajax({
+						url: '__MODULE__/UserSupervise/save_tag_name_revise.html',
+						type: 'POST',
+						dataType: "json",
+						data: {value:$.trim(newName),id:tagId},
+						success: function(data) {
+							$('input[name="value"]').val($.trim(newName));
+							layer.msg(data.message);
+							setTimeout(function(){
+								window.location.href = '__MODULE__/UserSupervise/tag_detail/id/' + tagId;
+							},500)
+
+						}
+					});
+                }
+            })
+        }
+        $('#edit-tag').on('click',function(){
+        	$('.wrap-modal').show();
+        })
+        function closeModal(){
+        	$('.wrap-modal').hide();
+        	layer.msg('已取消编辑分组名称');
+        }
+
+        //添加用户
+        $('#append-custom').on('click',function(){
+            var name = $('input[name=old_value]').val();
+            var type = '标签';
+            var url = $(this).data('url');
+            layer.open({
+                type: 2,
+                title: type+'"'+name+'"添加用户',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['100%', '100%'],
+                content: url, //iframe的url
+                success: function (layero, index) {
+                    var body = layer.getChildFrame('body', index);
+                    body.contents().find("#name").val('"'+name+'"'+type);
+                },
+                end: function () {
+                    if($('#handle_status').val() == 1) {
+                        // location.reload();
+                        queryData()
+                    }
+                }
+            });
+        })
+    	$('#remove-custom,#close-remove').on('click',function(){
+    		$('.groups').toggleClass('edit').toggleClass('group-jump');
+    		$('#remove-operation').toggleClass('hide');
+            $('.mui-bottom-space').toggleClass('hide');
+    	})
+        $('#remove-submit').on('click',function(){
+            var checkeds = vue.users;
+            var value = $('input[name=old_value]').val();
+            if ( checkeds.length > 0 ) {
+                var btnArray = ['取消','确定'];
+                var message = '所选用户将全部移除"'+value+'"标签,<br>确定移除？';
+                mui.confirm(message, '', btnArray,function(e){
+                    if ( e.index == 1 ) {
+                        $.post('/UserSupervise/rmCustomerFromTag',{users:checkeds,id:vue.tag_id},function(result){
+                            if ( result.error == 1 ) {
+                                layer.msg(result.message);
+                            } else  {
+                                layer.msg(result.message || '用户移除成功!');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                        },'json');
+                    }
+                })
+                //开始进行删除确认
+            } else {
+                mui.alert('请选择至少一项!');
+                return false;
+            }
+        })
+        function toDetail(obj){
+            var isManager = "{$permissions['_IS_Manager_']}";
+            var isDetail = "{$menuList['ComPotential']['menu_actions']['detail']}";
+            var isAllow = "{$menuList['ComPotential']['allow']}";
+            if (isManager == '1' || (isDetail == '1' && isAllow == '1'))
+            {
+                window.open("/ComPotential/user_detail/id/"+obj.getAttribute("data-id"),"_self");
+            } else {
+                mui.alert('无此功能操作权限');
+            }
+        }
+        function toEdit(obj){
+            var isManager = "{$permissions['_IS_Manager_']}";
+            var isDetail = "{$menuList['ComPotential']['menu_actions']['update']}";
+            var isAllow = "{$menuList['ComPotential']['allow']}";
+            if (isManager == '1' || (isDetail == '1' && isAllow == '1'))
+            {
+                event.stopPropagation();
+                window.open("/ComPotential/user_edit/id/"+obj.getAttribute("data-id"),"_self")
+            } else {
+                mui.alert('无此功能操作权限');
+            }
+        }
+
+        $('#come-back').on('click',function(){
+            window.location.href = document.referrer;
+        })
+        $('#back-home').on('click',function(){
+            window.location.href = '__MODULE__/Index/index.html';
+        })
+    </script>
+
+</body>
+</html>

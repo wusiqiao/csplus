@@ -1,0 +1,184 @@
+<include file="UserSupervise:head"/>
+<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+	<h1 class="mui-title">{$title}</h1>
+	<button class="mui-btn mui-btn-link mui-btn-nav mui-pull-left" onclick="location.href = '__MODULE__/Work/index.html'" style="color: #444444 !important;padding: 0 !important;">
+				<span class="mui-icon mui-icon-arrowleft">
+				</span>返回
+	</button>
+	<button id="back-home" class="back-home" onclick="location.href = '__MODULE__/Index/index.html'"></button>
+</header>
+<div class="group-items template-1" data-url="/UserSupervise/tag_detail/id/{%id%}" style="display:none">
+    <div class="group-title" data-id="{%id%}">
+        <input type="checkbox" value="{%id%}"/>
+        <span>{%value%}</span>
+    </div>
+    <div class="group-amount">
+        <span>0</span>
+        <span class="mui-icon mui-icon-arrowright"></span>
+    </div>
+</div>
+<body>
+    <section class="custom-wrap mt85">
+    	<ul class="main-tab">
+			<if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['SysTargetGroup']['menu_actions']['list'] eq 1 and $menuList['SysTargetGroup']['allow'] eq 1)">
+    				<li onclick="window.location.href = '/UserSupervise/customer_groups.html'">分组</li>
+				<else/>
+					<li onclick="mui.alert('无此功能操作权限');" >分组</li>
+			</if>
+    		<li class="active">标签</li>
+    	</ul>
+			<ul class="con-tab pr">
+				<li class="cons ">
+					<div class="edit-groups group-jump">
+						<notempty name="tags">
+						<volist name="tags" id="vo">
+								<if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['SysTargetTag']['menu_actions']['detail'] eq 1 and $menuList['SysTargetTag']['allow'] eq 1)">
+									<div class="group-items" data-url="/UserSupervise/tag_detail/id/{$vo.id}">
+										<else/>
+									<div class="group-items" >
+								</if>
+								<div class="group-title" data-id="{$vo.id}">
+									<input type="checkbox" value="{$vo.id}"/>
+									<span>{$vo.value}</span>
+								</div>
+								<div class="group-amount">
+									<span>{$vo.user_count}</span>
+									<span class="mui-icon mui-icon-arrowright"></span>
+								</div>
+							</div>
+						</volist>
+							<else/>
+							<include file="UserSupervise:no_data"/>
+						</notempty>
+
+					</div>
+				</li>
+			</ul>
+
+		<div style="height: 1.35rem;"></div>
+    </section>
+	<div class="bottom-btn">
+		<if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['SysTargetTag']['menu_actions']['add'] eq 1 and $menuList['SysTargetTag']['allow'] eq 1)">
+				<button id="creat-tag">创建标签</button>
+			<else/>
+			<button onclick="mui.alert('无此功能操作权限')">创建标签</button>
+		</if>
+		<if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['SysTargetTag']['menu_actions']['delete'] eq 1 and $menuList['SysTargetTag']['allow'] eq 1)">
+			<button id="cancel" class="hide">取消</button>
+			<button id="edit-tag" data-type="view" class="bg-e91835">删除标签</button>
+			<else/>
+			<button id="cancel" class="hide">取消</button>
+			<button onclick="mui.alert('无此功能操作权限')" class="bg-e91835">删除标签</button>
+		</if>
+	</div>
+    <include file="UserSupervise:foot_access_file"/>
+	<script type="text/javascript">
+		autoSize();
+		function autoSize(){
+			var nDocumentH = $(window).height();
+			var nSelectorH = $('.filter-selector').innerHeight();
+			var nMainTabH = $('.custom-wrap').outerHeight();
+			var n = nDocumentH - nSelectorH - nMainTabH;
+			$('.selector-result').css('height',n);
+		}
+        $('.custom-wrap > ul > li').on('click','.group-jump > .group-items',function(){
+            if ($(this).data('url')){
+                window.location.href = $(this).data('url');
+			} else {
+                mui.alert('无此功能操作权限')
+			}
+
+        })
+        $('.show-icon').on('click',function(){
+			$(this).toggleClass('hide-icon').parents('.more-tag').toggleClass('active');
+		})
+        $('#edit-tag').on('click',function(){
+            var type = $(this).data('type');
+            if(type == 'view') {
+                $('#creat-tag').addClass('hide');
+                $('#cancel').removeClass('hide');
+                $('.edit-groups').addClass('active').removeClass('group-jump');
+                $(this).data('type','edit');
+            } else {
+                var checkeds = $('.edit-groups').find('.group-items > .group-title > input:checked');
+                if ( checkeds.length > 0 ) {
+                    var btnArray = ['取消','删除'];
+                    var message = (checkeds.length == 1) ?
+                        '确认删除标签"'+$('.edit-groups').find('.group-items > .group-title > input:checked').next('span').text()+'"?':
+                        '确认删除所选择的'+checkeds.length+'个标签?';
+                    mui.confirm(message, '删除标签', btnArray,function(e){
+                        if ( e.index == 1 ) {
+                            var ids = checkeds.map(function(){
+                                return $(this).val();
+                            }).get();
+                            $.post('/UserSupervise/rmCustomerTag',{id:ids},function(result){
+                                if ( result.error == 1 ) {
+                                    layer.msg(result.message);
+                                } else  {
+                                    layer.msg(result.message || '标签删除成功!');
+                                    setTimeout(function () {
+                                        window.location.reload()
+                                    },1000)
+                                }
+                            },'json');
+                        }
+                    })
+                    //开始进行删除确认
+                } else {
+                    mui.alert('请选择至少一项!');
+                    return false;
+                }
+            }
+        })
+        $('#creat-tag').on('click',function(){
+            var btnArray = ['取消','确定'];
+            mui.prompt('增加新的标签','标签名称',"新增标签",btnArray,function(e){
+                if(e.index	==	1){
+                    if($.trim(e.value) == '') {
+                        layer.msg('标签名称不能为空');
+                        return false;
+                    }
+                    if($.trim(e.value).length > 5) {
+                        layer.msg('标签名称不能大于5个字');
+                        return false;
+                    }
+                    $.ajax({
+                        url: '__MODULE__/UserSupervise/createCustomerTag.html',
+                        type: 'POST',
+                        dataType: "json",
+                        data: {value:$.trim(e.value)},
+                        success: function(data) {
+                            if(data.error == 0) {
+                                var single = {
+                                    'id' : data.id,
+                                    'value' : $.trim(e.value),
+                                    'user_count' : 0
+                                }
+                                var html = parseTemplate('.template-1', single);
+                                $('.edit-groups').prepend(html);
+                                $('#no_data').hide();
+                                layer.msg(data.message);
+                            } else{
+                                layer.msg(data.message);
+                            }
+                        }
+                    });
+                }else{
+                    layer.msg("已取消添加标签");
+                }
+            });
+        })
+        $('#cancel').on('click',function(){
+            $(this).addClass('hide');
+            $('#edit-tag').data('type','view');
+            $('#creat-tag').removeClass('hide');
+            $('.edit-groups').removeClass('active').addClass('group-jump');
+        })
+		// $(".main-tab li").click(function(){
+		// 	$(this).addClass('active').siblings().removeClass('active');
+		//     var num = $(".main-tab li").index(this);
+		//     $(".con-tab .cons").eq(num).removeClass('hide').siblings().addClass('hide');
+		// })
+   </script>
+</body>
+</html>

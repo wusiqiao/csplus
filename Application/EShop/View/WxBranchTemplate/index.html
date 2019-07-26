@@ -1,0 +1,197 @@
+<include file="UserSupervise:head"/>
+<link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+<link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+<style>
+    #showTemplateValuePicker{
+    	border-radius: 5px;
+        height: 1rem;
+        background-color: #fff;
+    }
+    .select-value{
+        text-align: left;
+        flex: 1;
+        line-height: 1rem;
+        padding-left: .2rem;
+    }
+	.simple-template .title {
+		white-space : initial;
+	}
+	.simple-center-title {
+		font-weight: bold;
+		text-align: left;
+		font-size: .3rem;
+	}
+</style>
+<body>
+	<include file="Index:header" />
+	<section class="template-wrap mt85"  >
+	    <ul class="main-tab">
+	        <li onclick="window.location.href = '/WxBranchTemplate/template_history.html'">历史</li>
+	        <li class="active">模板群发</li>
+	        <li onclick="window.location.href = '/WxBranchTemplate/template_draft.html'">草稿</li>
+	    </ul>
+        <div class="template-notice">
+            <div class="title font24" style="line-height: .5rem;padding-left: .2rem;">提示</div>
+            <p class="font24">1.请先在公众号"模板消息"中添加模板,再点击<span class="blue-4591fe" onclick="loadingBranchTemplate()">获取模板数据</span><br>2.选择要发送的模板格式,新建群发任务</p>
+        </div>
+		<notempty name="templates">
+
+		<div class="pr">
+			<div class="simple-center-title blue-4591fe font24">选择一个模板</div>
+			<div class="dis-flex pr" id="showTemplatePicker">
+                <div class="select-value" id="showTemplateValuePicker"></div>
+				<div class="select-icon"></div>
+			</div>
+
+			<if condition="cookie('show_model')!=1">
+            <div class="interface-tip modal">
+		    	<div>模板消息读取自微信接口，如需添加新的模板请前往微信公众平台</div>
+		    	<div class="ok">我知道了</div>
+		    	<div class=""></div>
+		    </div>
+			</if>
+
+		</div>
+		<div class="filed-prompt " id="content-panel">
+			<div class="simple-center-title blue-4591fe font24">模板示例</div>
+			<div class="common-wrap">
+				<div class="pr">
+					
+					<div class="template-tip font24">字段定义</div>
+					<div class="simple-template">
+						<!--<span class="title">{{}}</span>-->
+						<i class="gray-a1" class="tpl-title"></i>
+					</div>
+					<div style="padding: 0.3rem 0;">
+						<div class="simple-template" v-for="content in contents.content_records">
+							<span class="title gray-a1" v-if="content.key!=''">{{ content.key }}：</span>
+							<span>{{ content.title }}</span>
+							<span style="color:#999">{{ content.view }}</span>
+						</div>
+					</div>
+				</div>
+				<hr/>
+				<div class="pr">
+					<div class="template-tip font24">场景应用</div>
+					<div style="padding: 0.3rem 0;">
+						<div class="simple-template" v-if="contents.example_records.first">
+							<span >{{ contents.example_records.first.title }}</span>
+						</div>
+						<div class="simple-template" v-for="(content , keys) in contents.example_records">
+							<span class="title gray-a1" v-if="content.key!=''">{{ content.key }}：</span>
+							<span v-if="keys != 'first'" style="flex: 1;">{{ content.title }}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="height: 1.35rem;"></div>
+		<div class="template-bottom-btn">
+			<button class="bg-368bfe"  onclick="templateAppend();">新建群发</button>
+		</div>
+			<else/>
+            <div style="text-align: center;height: 10rem;" id="no_data">
+                <p style="color:#999;line-height: 1rem;font-size: .2rem;">您尚未添加任何模板,请先登录公众号添加模板</p>
+                <div style="margin-top: .5rem;text-align: center;line-height: .5rem;display: flex" id="look_media">
+                    <!--<img style="height: .5rem;" src="{$Think.const.IMG_URL}/img/media.png">-->
+                    <div style="flex: .4;position: relative;">
+                        <span class="media-icon" style="left: 75%;top:.05rem"></span>
+                    </div>
+                    <span style="flex: .6;text-align: left;color:#3C9EFA;font-size: .3rem">点击查看视频教程</span>
+                </div>
+            </div>
+		</notempty>
+	    
+	</section>
+	<include file="WxBranchTemplate:foot_access_file"/>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+
+	<script type="text/javascript">
+        var vue = new Vue({
+            el: '#content-panel',
+            data:{
+                templates:{$templates},
+                contents:{},
+                selected:0,
+                show_model:true,
+                send_url:'/WxBranchTemplate/template_append'
+            },
+            created:function(){
+                this.selected = this.templates[0]['value'];
+                $('#showTemplateValuePicker').text(this.templates[0]['text'])
+            },
+            mounted:function(){
+                (function (mui, document) {
+                    mui.init();
+                    mui.ready(function () {
+                        var templatePicker = new mui.PopPicker({
+                            layer: 1
+                        });
+                        var templateData = $.parseJSON('{$templates}');
+                        if(templateData){
+                            templatePicker.setData(templateData);
+                            var showTemplatePickerButton = document.getElementById('showTemplatePicker');
+                            var templateResult = document.getElementById('showTemplateValuePicker');
+                            // console.log(document.childNodes);
+                            showTemplatePickerButton.addEventListener('tap', function (event) {
+                                templatePicker.show(function (items) {
+                                    templateResult.innerText = (items[0] || {}).text;
+                                    vue.selected = items[0].value;
+                                    get_template()
+                                });
+                            }, false);
+                        }
+                    });
+                })(mui, document);
+            },
+            methods:{
+                get_template(){
+                    get_template()
+                }
+            }
+        });
+    	function get_template(){
+    	    $(".tpl-title").text($("#templates").find("option[value='"+ vue.selected +"']").text());
+    	    $.post("/WxBranchTemplate/getContent", {template_id: vue.selected}, function(result){
+    	        if (result.code == 0){
+                    vue.contents = result.message;
+				}
+			},"json");
+		}
+		function templateAppend(){
+    	    var id = vue.selected;
+    	    var user = '{$user}';
+            window.location.href = user > 0 ? vue.send_url+'/template_id/'+id+'/user/'+user+'.html' : vue.send_url+'/template_id/'+id+'.html';
+        }
+        function loadingBranchTemplate() {
+            var load = layer.msg('　　　获取模板数据...', {
+                icon: 16,
+                time:false,
+                shade:[0.1,'#000'],
+            });
+            $.post('/{$Think.const.CONTROLLER_NAME}/importBranchTemplate',function(data){
+                layer.close(load);
+                layer.msg(data.message);
+                if (data.code == 0) {
+                    setTimeout(function(){
+                        window.location.reload();
+					},1000)
+                }
+            },'JSON')
+        }
+        $(function(){
+            get_template();
+            $('.ok').on('click',function(){
+                var date=new Date();
+                date.setTime(date.getTime()+30*24*3600*1000);
+                document.cookie="show_model=1;expires="+"date.toGMTString()";
+                $('.interface-tip ').hide();
+            })
+            $('#look_media').on('click',function(){
+                window.location.href='/WxBranchTemplate/template_media';
+            })
+        });
+	</script>
+</body>
+</html>

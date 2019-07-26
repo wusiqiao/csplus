@@ -1,0 +1,95 @@
+<if condition="$init eq 0">
+<include file="UserSupervise:head"/>
+<style>
+	.mui-indexed-list-inner img {
+	    width: .28rem;
+	    height: .28rem;
+	    margin-right: .2rem;
+	}
+	.mui-indexed-list-inner .company-select-item {
+	    display: flex;
+	    justify-content: flex-start;
+	    align-items: center;
+		height: .9rem;
+		line-height: .9rem;
+	    padding: 0 .2rem;
+	    box-shadow: 0 1px 0 #eeeeee inset;
+	    background-color: #ffffff;
+	}
+	.mui-indexed-list-inner {
+		border-radius: .1rem;
+	}
+</style>
+<body>
+<section class="common-wrap fixed-page bg-none">
+	<div class="mui-search-area">
+		<input id="company-name" class="mui-search-area-input mui-input-clear" type="text" placeholder="请输入公司名称搜索"/>
+		<button></button>
+	</div>
+	<div class="mui-indexed-list-inner blue-checkbox" style="overflow-y: auto;">
+        <foreach name="company" item="v">
+        <div class="company-select-item" >
+            <input type="checkbox" name="branch_id" id="" linkman="{$v.linkman}" contact="{$v.contact}" branch_name="{$v.text}" value="{$v.value}" />
+            <span class="ml15 gray-6">{$v.text}</span>
+        </div>
+        </foreach>
+	</div>
+	<div class="bottom-btn">
+        <button id="" class="left-btn" onclick="closeBtn()">取消</button>
+        <button id="cancel" onclick="bindBtn()">绑定公司</button>
+
+    </div>
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script>
+	$(function () {
+		function calculateH(){
+			var winH = $(document).height();
+			var searchH = $('.mui-search-area').height();
+			var btnH = $('.bottom-btn').height();
+			$('.mui-indexed-list-inner').css('height',winH - searchH - btnH - 60);
+		}
+        calculateH();
+    })
+
+$('#company-name').on('change',function(){
+    $(".mui-indexed-list-inner").load("__MODULE__/ComFan/selectCompany/type/1/init/1/name/" + $('#company-name').val());
+})
+function closeBtn() {
+    var index = parent.layer.getFrameIndex(window.name);
+    parent.layer.close(index);
+}
+
+function bindBtn() {
+    var branch_ids = [];
+    var user_ids = [];
+    $("input[name='branch_id']:checkbox:checked").each(function() {
+        branch_ids.push($(this).attr("value"));
+    });
+    user_ids.push("{$id}");
+    $.post("/ComPotential/bindCompany", { branch_ids: branch_ids, user_ids: user_ids }, function(result) {
+        if (result.code == 0) {
+            layer.msg('绑定成功');
+            parent.queryCompanyData();
+            setTimeout(function() {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+            }, 1500);
+        } else {
+            layer.msg('绑定失败');
+        }
+    }, "json");
+
+}
+
+</script>
+<else/>
+    <foreach name="company" item="v">
+        <div class="company-select-item">
+            <input type="checkbox" name="branch_id" linkman="{$v.linkman}" contact="{$v.contact}" branch_name="{$v.text}" value="{$v.value}" />
+            <span class="ml15 gray-6">{$v.text}</span>
+        </div>
+    </foreach>
+</if>
+</body>
+</html>

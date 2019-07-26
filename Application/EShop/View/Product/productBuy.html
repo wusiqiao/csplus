@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+		<link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+		<link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+		<link href="/{$Think.APP_PATH}/mui/css/mui.picker.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}css-new/form.css" rel="stylesheet">
+		<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+		<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+		<title>{$title}</title>
+		<style>
+		</style>
+	</head>
+    <style>
+        .tips{
+            padding: 0.05rem;
+            color: #fff;
+            /* color: #0099FF; */
+            border: 1px solid #0099FF !important;
+            background-color: #0099ff;
+            border-radius: 0.05rem;
+            margin-right: 0.1rem;
+            line-height: 0.6rem;
+        }
+    </style>
+	<body>
+	<include file="Index:header" />
+		<section class="secondary-wrap" id="app">
+			<form class="" id="FromId" method="post" onsubmit="return false;">
+				<section class="con-wrap mb15">
+					
+					<div id="" class="des-title">
+						{$product.product_title}
+					</div>
+					<div class="simple-data-wrap black-2c">
+						<div class="simple-line">
+							<div class="gray-9"><nobr>服务分类&nbsp;&nbsp;</nobr></div>
+							<div style="height: initial;">
+								{$product.category_view}
+								<div style="color:#C3C3C3;">{$product.cate_attr_data}</div>
+							</div>
+						</div>
+						<div class="simple-line">
+	                        <div class="gray-9"><nobr>服务属性&nbsp;&nbsp;&nbsp;&nbsp;</nobr></div>
+	                        <div style="height: initial;">
+	                            <volist name="atts.tips" id="vo">
+	                                <span class="tips">{$vo.name}</span>
+	                            </volist>
+	                        </div>
+	                    </div>
+						<div class="simple-line">
+							<div class="gray-9">服务价格</div>
+							<div style="height: initial;">
+                                <neq name="atts.r_cash" value="面议">
+                                <span class="r-cash">￥{$atts.r_cash}元</span>
+                                <span class="o-cash">￥{$atts.o_cash}</span>
+                                    <else/>
+                                    <span class="r-cash">面议</span>
+                                </neq>
+                            </div>
+						</div>
+                        <neq name="atts.r_cash" value="面议">
+						<div class="simple-line">
+							<div class="gray-9">优惠券</div>
+							<div style="height: initial;">
+								<span class="available">{$ticket.count}个可用</span>
+							</div>
+						</div>
+                        </neq>
+	                    <input type="hidden" name="attribute" class="mui-input-clear" value="{$atts.id}"/>
+
+
+                    </div>
+
+				</section>
+				
+				<section class="simple-textarea mb15 pr">
+					<div class="gray-9 mr20">服务要求</div>
+					<textarea v-model="textareaValue" :maxlength="size" name="order_desc" rows="" cols="" :placeholder="placeholder" value="123一二三四五六七八九十十一十二十三十四十五十六十七十八十"></textarea>
+					<div v-bind:style="styleObj">{{computedCharLen}}/{{size}}</div>
+				</section>
+				<!--<div>
+					{{computedTxt}}
+				</div>-->
+				<section class="con-wrap mb15">
+					<div class="simple-input-line">
+						<label class="gray-9" for="">联系人</label>
+						<input type="text" name="contacts" class="mui-input-clear" value="{$user_name}" placeholder="请输入"/>
+					</div>
+	
+					<div class="simple-input-line">
+						<label class="gray-9" for="">联系电话</label>
+						<input type="tel" name="tel" class="mui-input-clear" value="{$mobile}" placeholder="请输入"/>
+					</div>
+				</section>
+				<section class="order-bottom-btn">
+					<button class="bg-368bfe" id="submit_button">提交订单</button>
+				</section>
+				<input type="hidden" name="product_id" value="{$product.id}"/>
+			</form>
+			<div style="height: 2rem;"></div>
+		</section>
+	</body>
+	<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+	<script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+	<script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+	<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+	<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+	<script>
+		var vue = new Vue({
+			el:'#app',
+			data:function(){
+				return {
+					placeholder:"请填写您对服务商的具体服务要求",
+					textareaValue:'',
+					size:'300',
+					styleObj: {
+						position:'absolute',
+						right:'.4rem',
+						bottom:'0',
+						color:'#999999'
+					}
+				}
+			},
+			methods: {
+				methodGetByteLen(str, len) {
+					if (this.computedByteLen <= len) {
+						console.log(str);
+						return str
+					}
+					for (let i = Math.floor(len / 2); i < str.length; i++) {
+						if (str.substr(0, i).replace(/[^\x00-\xff]/g, '01').length >= len) {
+							return str.substr(0, Math.floor(i / 2) * 2) + '...'
+						}
+					}
+				}
+			},
+			computed: {
+				// 获取字符的个数
+				computedCharLen() {
+					return this.textareaValue.length;
+				},
+				// 获取字节的个数
+				computedByteLen() {
+					return this.textareaValue.replace(/[^\x00-\xff]/g, '01').length
+				},
+			   // 控制显示的内容
+				computedTxt() {
+					return this.methodGetByteLen(this.textareaValue, 30)
+				}
+			}
+		})
+	</script>
+	<script>
+		$("#submit_button").on('click',function(){
+			var orderDesc	=	$("textarea[name=order_desc]");//服务要求
+			var constant	=	$("input[name=contacts]");//联系人
+			var tel			=	$("input[name=tel]");//联系电话
+			var myreg 		= /^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+			var obj = $(this);
+//			if(orderDesc.val() == ''){
+//				layer.msg("请填写服务要求!!");
+//				console.log(orderDesc.val());
+//				return false;
+//			}
+			if(constant.val() == ''){
+				layer.msg("请填写联系人!!");
+				return false;
+			}
+			if(tel.val() == ''){
+				layer.msg("请填写联系电话!!");
+				return false;
+			}
+			if(!myreg.test(tel.val()) ||　tel.val().length != 11){
+				layer.msg("请填写正确的联系电话!!");
+				return false;
+			}
+            obj.prop('disabled','disabled');
+			$.ajax({
+				type:"post",
+				url:"__MODULE__/Product/productBuy.html",
+				data:$("#FromId").serialize(),
+				dataType:"json",
+				success: function(data){
+					console.log(data);
+					layer.msg(data.msg);
+					if(data.error == 0){
+						layer.closeAll();
+						if(data.startUp == 1){
+                            window.localStorage.setItem('order_'+data.order_id,'1');
+                        }
+						setTimeout(function() {
+								window.location.href= data.url;
+							}, 10);
+					}else{
+						layer.closeAll();
+						layer.msg(data.msg);
+                        obj.prop('disabled','');
+					}
+				},
+			});
+			
+		})
+	</script>
+
+</html>

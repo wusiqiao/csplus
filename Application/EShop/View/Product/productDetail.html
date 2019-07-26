@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+		<link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css?v=1">
+		<link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}style.css?v=2" rel="stylesheet" />
+        <link href="/{$Think.MODULE_PATH}Public/css/assembly/coupon.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}/iframe.css" rel="stylesheet" />
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+		<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+		<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
+		<title>{$title}</title>
+	</head>
+    <style>
+    	.app {
+    		padding-top: .85rem;
+    	}
+        .myModal{
+            background-color: #fff;
+            height: 100%;
+            width: 100%;
+            top: 100%;
+            z-index: 1022;
+        }
+        .myModal .modal-header{
+            height: 21%;
+        }
+        .myModal .modal-header img{
+            height: 2rem;
+            width: 3rem;
+        }
+        .myModal .modal-header .case-show{
+            padding: 1rem;
+            color: #0099FF;
+            font-weight: bold;
+            display: initial;
+        }
+        .myModal .options-list{
+            height: 43%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .myModal .options .topic-title{
+            margin-bottom: 0.2rem;
+            padding-left: 0.2rem;
+        }
+        .myModal .options .topic-title-tip{
+            color: red;
+            margin-left: 0.2rem;
+        }
+        .myModal .options .tips-list{
+            /*margin-top: 0.2rem;*/
+            margin-bottom: 0.2rem;
+            padding: 0 0.2rem;
+        }
+        .myModal .options .tips-list .checked {
+            color: #0099FF;
+            border: 1px solid #0099FF !important;
+            box-shadow: 0px 1px 7px #0099Ff;
+        }
+        .myModal .options .tips-list .dont {
+            color: #ccc;
+            border: 1px solid #ccc !important;
+            border: 1px solid #999;
+            padding: 0.1rem;
+            margin-left: 0.1rem;
+            display: -webkit-inline-box;
+            margin-top: .2rem;
+        }
+        .myModal .options .tips-list .tip {
+            border: 1px solid #999;
+            padding: 0.1rem;
+            margin-left: 0.1rem;
+            display: -webkit-inline-box;
+            margin-top: .2rem;
+        }
+		.buy-div{
+			bottom: 30%;
+			position: absolute;
+			text-align:  center;
+			width:  100%;
+            height: 1.0rem;
+            line-height: 1.0rem;
+			color: #fff !important;
+			background-color: #0099FF;
+		}
+		.buy-div .buy-button{
+			color:#fff;
+		}
+        .myModal .modal-header .case-close{
+            position: absolute;right: 0.2rem;top: 0.2rem;
+        }
+        .o-cash{
+            text-decoration: line-through;
+            color: #ccc;
+            margin-left: 0.2rem;
+        }
+        .r-cash{
+            color:#0099FF;
+        }
+        .modal-particular{
+         z-index: 1050 !important;
+        }
+        .close-coupon{
+            z-index: 5;
+        }
+        .modal-bg {
+        	display: none;
+        	position: fixed;
+        	top: 0;
+        	left: 0;
+        	right: 0;
+        	bottom: 0;
+        	z-index: 1000;
+        	background-color: rgba(0,0,0,.5);
+        }
+    </style>
+	<body>
+		<div class="app">
+			<include file="Public:modal_subscribe" />
+			<include file="Index:header" />
+			<!--服务详情购买-->
+			<section id="buy_detail_list">
+				<div id="" class="con-wrap mg-b-20">
+	                <!--标记-->
+					<if condition="$product_data.product_pic neq ''">
+	                    <div style="width: 10rem;height: 5rem;">
+	                        <img src="{$product_data.product_pic}" width="100%" height="100%" alt="">
+	                    </div>
+	
+					</if>
+					<div class="border-b">
+						<div id="" class="con-title">
+							<strong>{$product_data.product_title}</strong>
+						</div>
+					</div>
+	                <div class="con-title border-b">
+	                    <div class="dib col-3 gray-9" >服务类型</div>
+	                    <div class="dib">
+	                        {$product_data.category_view}
+	                        <if condition="$product_data.cate_attr_data != ''">
+	                            <div style="color:#C3C3C3;">{$product_data.cate_attr_data}</div>
+	                        </if>
+	                    </div>
+	                </div>
+					<!--style2end-->
+	                <div class="con-title border-b">
+	                    <div class="dib col-3 gray-9" >服务选项</div>
+	                    <div class="dib button-case" style="width: 72%;">
+	                        <span class="cases-show">请选择</span>
+	                        <i class="pull-right mui-icon mui-icon-arrowright"></i>
+	                    </div>
+	                </div>
+					<if condition="$product_data.is_step eq 1">
+						<div class="con-title gray-9" >服务流程</div>
+					</if>
+					<if condition="$product_data[is_step] eq 1">
+					<div class="ser-process border-b" style="padding: 0.15rem 0;background: #fafafa;">
+						<div class="mui-slider" >
+							<div class="mui-slider-group" style="transform: translate3d(0px, 0px, 0px) translateZ(0px);">
+								<volist name="product_data[step_view][data]"  id ='vo' key="k">
+									<volist name="vo" id='val' key="k2">
+									<if condition="$k2 eq 1">
+									<section class="product-step product-step-{$product_data[remainder][$k]} mui-slider-item">
+									</if>
+									<div class="step-modular ">
+										<div class="step-point">
+											<div></div>
+										</div>
+										<p>{$val}</p>
+									</div>
+									<if condition="($k2 eq 4) or ($k eq $product_data.step_view.count and $k2 eq $product_data.step_view.remainder) ">
+									</section>
+									</if>
+									</volist>
+								</volist>
+							</div>
+						</div>
+					</div>
+					</if>
+	
+					<div class="flex-start con-title">
+						<div class="col-3 gray-9">其他说明</div>
+						<div class="flex-start-content">{$product_data.product_desc}</div>
+					</div>
+				</div>
+				</div>
+	            <div class="tab-title product-menu">
+	                <ul>
+	                    <li v-bind="content" class="menu-click">服务详情</li>
+	                    <li v-bind="comment">客户评价</li>
+	                </ul>
+	            </div>
+	            <div class="menu-show">
+	                <div id="content-show" style="margin-bottom: 1rem">
+	                    {$product_data.content|html_entity_decode}
+	                </div>
+	
+	                <div id="comment-show" style="margin-top: 1px;display: none">
+	                    <div class="wrap pb70" id="yxload">
+	                        <ul class="consult-list yxcontent" style="padding: initial;">
+	
+	                        </ul>
+	                    </div>
+	                    <section style="height: 1.5rem;"></section>
+	                </div>
+	            </div>
+	
+			</section>
+				<!-- Modal -->
+				<div class="modal-bg"></div>
+				<div id="myModal" class="myModal" style="position: fixed;left: 0;display: none;">
+	                <div class="modal-header">
+	                    <img src="{$topics_img}" alt="">
+	                    <div class="case-show">暂无数据</div>
+	                    <close class="case-close">✘</close>
+	                </div>
+	                <div class="options-list" >
+	                    <div class="options" style="margin-bottom: .6rem">
+	                    <volist name="topics_list" id="vo">
+	                        <span class="topic-title">{$vo.name}</span>
+	                        <span class="topic-title-tip" style="display: none">请选择{$vo.name}</span>
+	                        <ul class="tips-list" data-id="{$vo.id}">
+	                        <volist name="vo.children" id="ch">
+								<eq name="ch.checked" value="1">
+									<range name="ch.id"  value="$first_attr" type="in">
+                                            <li class="tip checked" data-id="{$ch.id}">{$ch.name}</li>
+										<else/>
+                                            <li class="tip" data-id="{$ch.id}">{$ch.name}</li>
+									</range>
+									<else/>
+									<li class="dont" data-id="{$ch.id}">{$ch.name}</li>
+								</eq>
+
+	                        </volist>
+	                        </ul>
+	                    </volist>
+	                    </div>
+	                </div>
+                    <eq name="can_buy" value="1">
+                        <div class="buy-div">
+                            <a href="javascript:(0)" class="buy-button">立即购买</a>
+                        </div>
+                    </eq>
+				</div>
+
+				<footer class="con-btn-service">
+					<!--<if condition="$store_data.mobile != ''">-->
+						<!--<a href="tel:{$store_data['mobile']}" class="small-btn-service"><i class="contact"></i><span>联系</span></a>-->
+					<!--<else/>-->
+						<!--<a href="tel:{$store_data['mobile']}" disabled="disabled" class="small-btn-service"><i class="contact"></i><span>联系</span></a>-->
+					<!--</if>-->
+					<!--<a  href="__MODULE__/Index/shopAsk" class="small-btn-service"><i class="consult"></i><span>咨询</span></a>-->
+
+
+                    <eq name="can_buy" value="1">
+						<notempty name="show_share">
+							<a id="share-it1" class="small-btn-service">分享赚钱</a>
+                            <div class="share-tip" id="share-tip" style="display: none">分享商品，躺着赚佣金<span>×</span></div>
+							<div class="share-tip" id="share-tip-mini" style="display: none">点击右上角"...",分享给好友<span>×</span></div>
+							<a id="screen"  data-target="#myModal" class="big-btn-service big-btn-service_{$show_share}">
+								<button id="buy-product">立即购买</button>
+							</a>
+							<else/>
+							<a id="screen"  data-target="#myModal" style="width: 100%" class="big-btn-service big-btn-service_{$show_share}">
+								<button id="buy-product">立即购买</button>
+							</a>
+						</notempty>
+                        <else/>
+                        <div class="share-tip" id="share-tip" style="display: none">分享商品，躺着赚佣金<span>×</span></div>
+                        <div class="share-tip" id="share-tip-mini" style="display: none">点击右上角"...",分享给好友<span>×</span></div>
+                        <a id="share-it2" class="small-btn-service" style="width: 100%;background-color:#0099ff"  >分享</a>
+                    </eq>
+				</footer>
+			<include file="Public:modal_ticket_particular" />
+			<include file="Public:contact" />
+	        <include file="Public:modal_share"/>
+		</div>
+
+		<!--服务详情购买end-->
+	<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+	<script src="{$Think.const.JS_URL}mui/mui.min.js"></script>
+	<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+	<script src="/{$Think.MODULE_PATH}Public/js/load/dropload.min.js"></script>
+    <!--<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>-->
+
+	<script type="text/javascript">
+        var canBuy = '{$can_buy}';
+        if (window.__wxjs_environment === 'miniprogram') {
+            $("#share-tip-mini").show();
+        }else {
+            $("#share-tip").show();
+        }
+		$('.share-tip span').on('click',function(){
+			$(this).parents('.share-tip').hide();
+		})
+        $('.close-coupon,.close-qrcode').on('click',function(){
+            $(this).parents('.modal').hide();
+            $('.modal-backdrop').hide();
+        });
+        $('.close-particular').on('click',function(){
+            $(this).parents('.modal').hide();
+            $('.modal-backdrop').hide();
+            document.body.removeEventListener('touchmove',handler, {passive: false});
+            $('body').css({'overflow-y':'initial','height':'','position':''})
+        });
+         wx.config({
+                debug: false,
+                appId: '{$signPackage.appId}',
+                timestamp: '{$signPackage.timestamp}',
+                nonceStr: '{$signPackage.nonceStr}',
+                signature: '{$signPackage.signature}',
+                jsApiList: [
+                    // 所有要调用的 API 都要加到这个列表中
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage'
+                ]
+         });
+
+        wx.ready(function () {
+        	
+        	//如果是小程序环境
+			//share类型判断
+			//传递id title descript
+			if(window.__wxjs_environment ==='miniprogram') {
+				wx.miniProgram.postMessage({ 
+					data: {
+					    type:"share",
+						from: 'Product.productDetail',
+                        title: '{$share_data.title}',
+                        desc: '{$share_data.desc}',
+                        link: '{$share_data.link}'
+					}
+				});
+			}
+        	
+            //发送给朋友
+            wx.onMenuShareAppMessage({
+                title: '{$share_data.title}',
+                desc: '{$share_data.desc}',
+                link: '{$share_data.link}',
+                imgUrl: '{$share_data.imgUrl}',
+				success:function(){
+                    var isLogin = '{$is_login}';
+                    if(isLogin == '0'){
+                        $.post('__MODULE__/Index/HandlerUserRegion',function(){
+
+                        })
+                    }
+                }
+            });
+            //分享到朋友圈
+            wx.onMenuShareTimeline({
+                title: '{$share_data.title}',
+                desc: '{$share_data.desc}',
+                link: '{$share_data.link}',
+                imgUrl: '{$share_data.imgUrl}',
+                success:function(){
+                    var isLogin = '{$is_login}';
+                    if(isLogin == '0'){
+                        $.post('__MODULE__/Index/HandlerUserRegion',function(){
+
+                        })
+                    }
+                }
+            });
+            wx.error(function(res){
+    //            alert(res);
+            });
+        });
+		//修改
+		$(document).on('click', '#edit', function() {
+			var id = $(this).attr("proid");
+			window.location.href = '__MODULE__/Microstore/product_edit/id/' + id + '.html';
+		});
+		//下架/上架
+		$(document).on('click', '#edit_state', function() {
+			var state = $(this);
+			var stateView = $(this).text();
+			var productId = $(this).attr("proid");
+			var productEditState = $(this).attr("pro_type");
+			var btnArray = ['是', '否'];
+				mui.confirm("是否" + stateView + "商品?", stateView, btnArray, function(e) {
+					if (e.index == 0) {
+						$.ajax({
+							type: 'post',
+							url: '__MODULE__/Product/product_edit_state.html',
+							dataType: 'json',
+							data: {
+								product_id: productId,
+								product_edit_state: productEditState
+							},
+							success: function(data) {
+								if(data.error == 0) {
+									layer.closeAll();
+									layer.msg(data.msg);
+									if(productEditState == 'grounding') {
+										state.text('下架').attr("pro_type", 'undercarriage');
+									} else if(productEditState == 'undercarriage') {
+										state.text('重新上架').attr("pro_type", 'grounding');
+									}
+								} else {
+									layer.closeAll();
+									layer.msg(data.msg);
+								}
+							}
+						})
+					} else {
+					}
+				})
+		});
+		//删除
+		$(document).on('click', '#dele', function() {
+			var thisProduct = $(this);
+			var productId = $(this).attr("proid");
+			var btnArray = ['是', '否'];
+				mui.confirm("是否删除该商品", '删除', btnArray, function(e) {
+					if (e.index == 0) {
+						$.ajax({
+							type: 'post',
+							url: '__MODULE__/Product/product_delete.html',
+							dataType: 'json',
+							data: {
+								product_id: productId
+							},
+							success: function(data) {
+								if(data.error == 0) {
+									layer.closeAll();
+									layer.msg(data.msg);
+									setTimeout(function(){
+                                        location = '__MODULE__/Index.html';
+									},1000)
+								} else {
+									layer.closeAll();
+									layer.msg(data.msg);
+								}
+							}
+						})
+					} else {
+					}
+				})
+		});
+	</script>
+	<script>
+	var is_look = '{$is_look}' || '0';
+    //多选弹窗 start
+    $('#screen').click(function(){
+    	$('.modal-bg').show();
+        CaseModal();
+    });
+    $('.case-close').click(function () {
+        CaseModal('hide');
+        $('.modal-bg').hide();
+    });
+    $('.myModal > .options-list > .options > .tips-list > .tip').click(function(){
+        if(!$(this).hasClass('checked')){
+            $(this).addClass('checked');
+            $(this).parent('.tips-list').prev('.topic-title-tip').hide();
+            $(this).siblings('.tip').removeClass('checked');
+            var checkedCount = $('.myModal > .options-list > .options > .tips-list  > .checked').length;
+            getAttrsChecked($(this),checkedCount);
+
+        }
+    });
+    $('.buy-div').on('click',function(){
+        if(!FromValidate()){
+            return false;
+        }
+        var aid   = $('.myModal > .modal-header > .case-show').data('id');
+        var rcash = $('.myModal > .modal-header > .case-show').data('rcash');
+        var ocash = $('.myModal > .modal-header > .case-show').data('ocash');
+        var pid = {$product_data['id']};
+        var html  = '';
+        $('#buy-product').data('id',aid);
+        if(rcash > 0){
+            html += '<span class="r-cash">'+rcash+'元</span>';
+            html += ocash > 0 ? '<span class="o-cash">'+ocash+'元</span>' : '';
+        }else{
+            html += '<span class="r-cash">面议</span>';
+        }
+        $('.cases-show').html(html);
+        CaseModal('hide');
+        $('.modal-bg').hide();
+        if(aid > 0){
+            window.location.href = '/Product/productBuy/id/'+pid+'/aid/'+aid+'.html';
+            return false;
+        }else{
+            layer.msg('参数错误!!');
+        }
+    });
+    $("#buy-product").click(function(){
+        var aid = $(this).data('id');
+        var pid = {$product_data['id']};
+        if(aid > 0 && is_look == 1){
+            window.location.href = '/Product/productBuy/id/'+pid+'/aid/'+aid+'.html';
+            return false;
+        }else{
+            CaseModal('show');
+
+        }
+    });
+    $('.button-case').click(function(){
+        CaseModal('show');
+        $('.modal-bg').show();
+    });
+    function FromValidate(){
+        var tipsCount = $('.myModal > .options-list > .options > .tips-list').length;
+        var tipsCheckedCount = $('.myModal > .options-list > .options > .tips-list > .checked').length;
+        if(tipsCount == tipsCheckedCount){
+            return true;
+        }else{
+            $('.myModal > .options-list > .options > .tips-list').map(function(){
+                if($(this).find('.checked').length == 0){
+                    $(this).prev('.topic-title-tip').show();
+                }
+            });
+            return false;
+        }
+    }
+    function getAttrsChecked(obj,Counts){
+
+        var pid = {$product_data['id']};
+        var tid = obj.data('id');
+        var tipsCount = $('.myModal > .options-list > .options > .tips-list').length;
+
+        if(Counts < tipsCount){
+            var checkedStr = $('.myModal >.options-list > .options > .tips-list > .checked').map(function(){
+                return $(this).data('id');
+            }).get().join(',');
+            $.post('__MODULE__/Product/getAttrsChecked',{tid:checkedStr,pid:pid},function(data){
+                //获取其他两项列表
+                obj.parent('.tips-list').siblings('.tips-list').find('li').map(function(){
+                    var indexId = $(this).data('id');
+                    var indexPid= $(this).parent('ul').data('id');
+                    var indexPid= indexPid.toString();
+                    if(data.attrs_p){
+                        data.attrs_p.unshift('0');
+                        if($.inArray(indexPid,data.attrs_p) > -1){
+                            if($.inArray(indexId.toString(),data.attrs) > -1){
+                                $(this).removeClass('dont').addClass('tip');
+                            }else{
+                                $(this).addClass('dont').removeClass('tip checked');
+                            }
+                        }
+                    }
+                })
+                var tipsCheckedCount = $('.myModal > .options-list > .options > .tips-list > .checked').length;
+                if(tipsCheckedCount == tipsCount){
+                    getAttrsCase(tid);
+                }else{
+                    $('.myModal > .modal-header > .case-show').data('rcash','').data('ocash','').data('id','').text('暂无数据')
+                }
+            },'json')
+
+        }else if(Counts == tipsCount){
+            $.post('__MODULE__/Product/getAttrsChecked',{tid:tid,pid:pid},function(data){
+                //获取其他两项列表
+                obj.parent('.tips-list').siblings('.tips-list').find('li').map(function(){
+                    var indexId = $(this).data('id');
+                    if(data.attrs_p) {
+                        data.attrs_p.unshift('0');
+                        if ($.inArray(indexId.toString(), data.attrs) > -1) {
+                            $(this).removeClass('dont').addClass('tip');
+                        } else {
+                            $(this).addClass('dont').removeClass('tip checked');
+                        }
+                    }
+                })
+                var tipsCheckedCount = $('.myModal > .options-list > .options > .tips-list > .checked').length;
+                if(tipsCheckedCount == tipsCount){
+                    getAttrsCase(tid);
+                }else{
+                    $('.myModal > .modal-header > .case-show').data('rcash','').data('ocash','').data('id','').text('暂无数据')
+                }
+            },'json')
+
+        }
+
+    }
+    function getAttrsCase(tid){
+        var pid = {$product_data['id']};
+        var tipsCount = $('.myModal > .options-list > .options > .tips-list').length;
+        var tipsCheckedCount = $('.myModal > .options-list > .options > .tips-list > .checked').length;
+        if(tipsCount == tipsCheckedCount){
+            var checkedStr = $('.myModal >.options-list > .options > .tips-list > .checked').map(function(){
+                return $(this).data('id');
+            }).get();
+            var res = checkedStr.sort(function(a,b) {
+                return a - b;
+            }).join(',');
+            $.post('__MODULE__/Product/getAttrsCase',{tips:res,pid:pid,tid:tid},function(data){
+                //获取其他两项列表
+                if(data.error  == 0){
+                    $('.myModal > .modal-header > .case-show').data('rcash',data.attrs['real_cash']).data('ocash',data.attrs['original_cash']).data('id',data.attrs['id']).text(data.attrs['cash']);
+                }else{
+                    //如果没有数据- 去除其中一个选项 首或尾
+                    if($('.myModal > .options-list > .options > .tips-list > .checked').length == tipsCount){
+                        var tisps = res.split(',');
+                        if(tisps[tisps.length - 1] == tid.toString()){
+                            var delTip = tisps.shift();
+                        }else {
+                            var delTip = tisps.pop();
+                        }
+                        $('.myModal > .options-list > .options > .tips-list > li[data-id='+delTip+']').removeClass('checked');
+                    }
+                    $('.myModal > .modal-header > .case-show').data('rcash','').data('ocash','').data('id','').text('暂无数据')
+                }
+            },'json')
+        }
+
+    }
+    function handler(event) {
+        event.preventDefault();
+    }
+    //显示多选列表
+    function CaseModal(type){
+        if(type === 'show'){
+            $('body').css({'overflow-y':'hidden','height':'100%','position':'fixed'});
+            document.body.addEventListener('touchmove', handler, {passive: false});
+            document.getElementById('myModal').addEventListener('touchmove', function(e) {
+                e.stopPropagation();
+            }, false);
+            $('.myModal').show().animate({top:'30%'});
+        }else if (type === 'hide') {
+            document.body.removeEventListener('touchmove',handler, {passive: false});
+            $('body').css({'overflow-y':'initial','height':'','position':''});
+            $('.myModal').animate({top:'100%'},function () {
+                $('.myModal').hide()
+            });
+        }
+    }
+
+    //多选弹窗 end
+	function comments() {
+			//获取数据
+			var product_id	= {$product_data['id']};
+			$('.yxcontent').empty();
+			$("#yxload .dropload-down").remove();
+			var counter = 0;
+			var num = 8;
+			var pageStart = 0,
+				pageEnd = 0;
+			// dropload
+			$('#yxload').dropload({
+				domDown : {                                                          // 下方DOM
+	                domClass   : 'dropload-down',
+	                domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
+	                domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+	                domNoData  : '<div class="dropload-noData">暂无数据</div>'
+	            },
+				scrollArea: window,
+				loadDownFn: function(me) {
+					data = {
+						product_id:product_id
+					};
+					$.ajax({
+						type: 'post',
+						url: '__MODULE__/Index/theCommentsHistory/start/' + pageStart + '/n/' + num + '.html',
+						dataType: 'json',
+						data: data,
+						success: function(data) {
+							if(data.count == 0) {
+								if(pageStart == 0) {
+									html = '<div class="empty-voucher">';
+									html += '<img src="{$Think.const.IMG_URL}voucher/emptyPic.png" alt="" width="100"/>';
+									html += '<div style="text-align: center;color:#cccccc;line-height: 1rem;">列表是空的哦</div></div>';
+									$(".dropload-down").html("");
+									$(".yxcontent").append(html);
+								} else {
+									$(".dropload-down").html("<center class='gray-9'>亲,已经没有更多的数据了哦!</center>");
+								}
+								return false;
+							}
+							var result = '';
+							counter++;
+							pageStart = num * counter;
+							for(var i = 0; i < data.lists.length; i++) {
+								result	+=	'<div class="evaluate-list bd-b1" style="margin-bottom:.15rem">';
+								result	+=	'<div class="evaluate-head">';
+								result	+=	'<span class="evaluate-img"><img src="'+data.lists[i].head_url+'"/></span>';
+								result	+=	'<div id="" class="evaluate-head-title" style="width: 100%;">';
+								result	+=	'<div id="" class="title1"><span>'+data.lists[i].name+'</span>';
+								// result	+=	'<span class="ev-icon-customer" style="height: initial;">客户</span>';
+								result	+=	'</div><div class="time gray-color">'+data.lists[i].comment_time+'</div></div></div>';
+								result	+=	'<div class="star evaluate-star">'+data.lists[i].view_star+'</div>';
+								result	+=	'<p class="evaluate-des" >'+data.lists[i].content+'</p>';
+								// result  +=  '<div class="evaluate-ser">';
+								// result	+=	'<span class="gray-color1" style="width:20%">服务：</span><p class="gray-color line-overflow" style="width: 80%;clear:initial">'+data.lists[i].task_title+'</p>';
+								// result	+=	'</div>';
+								result  +=  '</div>';
+							}
+							// 为了测试，延迟1秒加载
+							setTimeout(function() {
+								$('.yxcontent').append(result);
+								// 每次数据加载完，必须重置
+								me.resetload();
+							}, 100);
+						},
+						error: function(xhr, type) {
+							// 即使加载出错，也得重置
+							me.resetload();
+						}
+					});
+				}
+			});
+		};
+	</script>
+        <script>
+            function ticket_receive(obj) {
+                var activity_id = $(obj).data("id");
+                $.ajax({
+                    type: 'POST',
+                    url: '__MODULE__/User/scopeTicketReceive.html',
+                    dataType: 'json',
+                    data: {
+                        activity_id: activity_id
+                    },
+                    success: function(data) {
+                        if(data.error == 0) {
+                            layer.closeAll();
+                            layer.msg('领取成功,正在跳转至优惠券页面!!');
+                            setTimeout(function(){
+                                window.location.href='__MODULE__/user/myVoucher.html';
+                            },1000);
+                        } else if(data.error == 1){
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                        } else{
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                            setTimeout(function(){
+                                window.location.href=data.url;
+                            },1000);
+                        }
+                    },
+                });
+            }
+            $(function(){
+                var isRedpacket= '{$redpacket}';
+                if(isRedpacket == 'show'){
+                    $('body').css({'overflow-y':'hidden','height':'100%','position':'fixed'});
+                    document.body.addEventListener('touchmove',handler, {passive: false});
+                    $('#particular').modal('show');
+                }
+                // $('#particular').on('show.bs.modal', function (e) {
+                //     $('body').css({'overflow-y':'hidden','height':'100%','position':'fixed'});
+                //     document.body.addEventListener('touchmove',handler, {passive: false});
+                // })
+                $('#particular').on('hidden.bs.modal', function (e) {
+                    document.body.removeEventListener('touchmove',handler, {passive: false});
+                    $('body').css({'overflow-y':'initial','height':'','position':''});
+                })
+                var theObj = $('.item-detail > .pro_list > .tips-list > .checked:first');
+                getAttrsCase(theObj.data('id'));
+                setTimeout(function(){
+                    var aid   = $('.myModal > .modal-header > .case-show').data('id');
+                    var rcash = $('.myModal > .modal-header > .case-show').data('rcash');
+                    var ocash = $('.myModal > .modal-header > .case-show').data('ocash');
+                    var pid = {$product_data['id']};
+                    var html  = '';
+                    $('#buy-product').data('id',aid);
+                    if(rcash > 0){
+                        html += '<span class="r-cash">'+rcash+'元</span>';
+                        html += ocash > 0 ? '<span class="o-cash">'+ocash+'元</span>' : '';
+                    }else{
+                        html += '<span class="r-cash">面议</span>';
+                    }
+                    $('.cases-show').html(html);
+                },500)
+                function Redhandler(event) {
+                    event.preventDefault();
+                }
+                //判断是否只有一个选项
+                // var tipsListCount = $('.options-list').find('.options').length;
+                // if (tipsListCount == 1){
+                //     var tipsCount = $('.options-list').find('.options > .tips-list > .tip').length;
+                //     if (tipsCount == 1){
+                //         var tipsObj = $('.options-list').find('.options > .tips-list > .tip');
+                //         tipsObj.addClass('checked');
+                //         var checkedCount = $('.myModal > .options-list > .options > .tips-list  > .checked').length;
+                //         getAttrsChecked(tipsObj,checkedCount);
+                //         setTimeout(function(){
+                //             var aid   = $('.myModal > .modal-header > .case-show').data('id');
+                //             var rcash = $('.myModal > .modal-header > .case-show').data('rcash');
+                //             var ocash = $('.myModal > .modal-header > .case-show').data('ocash');
+                //             var html  = '';
+                //             $('#buy-product').data('id',aid);
+                //             console.log('aid='+aid+' || rcash='+rcash+' || ocash='+ocash);
+                //             if(rcash > 0){
+                //                 html += '<span class="r-cash">'+rcash+'元</span>';
+                //                 html += ocash > 0 ? '<span class="o-cash">'+ocash+'元</span>' : '';
+                //             }else{
+                //                 html += '<span class="r-cash">面议</span>';
+                //             }
+                //             $('.cases-show').html(html);
+                //         },500);
+                //
+                //     }
+                // }
+                //菜单切换
+                $('.product-menu ul li').on('click',function(){
+                    var bind = $(this).attr('v-bind');
+                    $(this).addClass('menu-click');
+                    $(this).siblings().removeClass('menu-click');
+                    $("#"+bind+"-show").show();
+                    $("#"+bind+"-show").siblings().hide();
+                    if(bind == 'comment'){
+                        comments();
+                    }
+                });
+            })
+        </script>
+	</body>
+</html>
+

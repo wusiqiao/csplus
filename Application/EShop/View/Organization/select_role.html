@@ -1,0 +1,279 @@
+<include file="UserSupervise:head"/>
+<link rel="stylesheet" href="/{$Think.APP_PATH}Public/css/comm.css">
+<style>
+	.item-wrap {
+		overflow-y: auto !important;
+		overflow-x: hidden !important;
+	}
+	.item-wrap::-webkit-scrollbar,
+    #group-list::-webkit-scrollbar,
+    #select-part::-webkit-scrollbar {
+        display: none;
+    }
+	.item-container {
+		width: 100%
+	}
+
+	.item-container li {
+		width: 100%;
+	}
+
+	.item-container li .item {
+		height: auto;
+		position: relative;
+		width: 100%;
+		padding: 5px;
+		margin-bottom: 5px;
+		background: #fff
+	}
+</style>
+<body>
+<li data-value="{%pinyin%}" id="template-1" style="display:none" data-tags="{%pinyin%}" data-url="/UserSupervise/customer_detail/id/{%id%}">
+	<div class="check-div">
+		<input type="checkbox" value="{%id%}">
+		<img src="{%head_pic%}" alt="">
+		<span class="nickname">{%name%}</span>
+	</div>
+	<div class="check-div blue-4591fe url">
+		<span>{%group_name%}</span>
+		<span class="mui-icon mui-icon-arrowright"></span>
+	</div>
+</li>
+<section class="group-addition-wrap custom-wrap" style="overflow: hidden;">
+	<ul class="con-tab pr" id="main-content">
+		<li id="list" class="cons">
+			<div class="mui-search-area">
+				<input class="mui-search-area-input mui-input-clear" v-model="likename" type="text" placeholder="请输入角色名搜索"/>
+				<button onclick="queryData()"></button>
+			</div>
+			<div class="mui-indexed-list-alert"></div>
+			<div class="mui-indexed-list-inner pr"   v-cloak>
+				<div class="mui-indexed-list-empty-alert">没有数据</div>
+
+				<div class="item-wrap groups customer bg-none">
+					<ul class="item-container mui-table-view bg-none" style="margin-bottom: 1rem" id="customer_lists">
+						<li v-for="(item,index) in role_list" @tap="onItemTap(item)" :id="item.item_id" class="plr20 bg-white mb20">
+							<div class="flex-between border-b"  >
+								<div class="check-div">
+									<input name="user_id" @change="singleChecked" type="checkbox" v-model="users" :value="item.id" :id="'R'+item.id" :data-name="item.name">
+									<span class="nickname">{{item.name}}</span>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="mui-bottom-check-commit">
+				<div class="chose-all">
+					<!--<div id="selectAll" class="gray-9">
+						<input type="checkbox" v-model="allChecked" @change="allButton" value="all">
+						<span>全选</span>
+					</div>-->
+					<div id="count" class="blue-4591fe">已选择{{usersCount}}个</div>
+				</div>
+				<button :class="{'mui-disabled':hasCheckedClass}" @click="addRoles">选好了</button>
+			</div>
+		</li>
+	</ul>
+	<input type="hidden" id="user_select">
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script src="{$Think.const.JS_URL}/mui/mui.indexedlist.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/js/common.js"></script>
+<script>
+	function autoHeight(){
+        var nWinHeight = $(window).height();
+        var nGroupHeight = $("#group-wrap").height();
+        $('#group-list').css({'max-height':nWinHeight * 0.3,'overflow':'auto'});
+
+        var nbtnH = $(".add-select-item").height();
+        var ntitleH = $(".groups .title").height();
+        $('#select-part').css({'max-height':nWinHeight - nGroupHeight - nbtnH - (ntitleH * 2),'overflow':'auto'});
+    }
+    //下拉加载
+    var vue = new Vue({
+        el: "#main-content",
+        data: {
+            role_list: [],
+            users: [],
+            user_total:[],
+            likename:'',
+            allChecked:''
+        },
+        computed:{
+            usersCount(){
+                return this.users.length;
+            },
+            hasCheckedClass(){
+                return this.users.length == 0 ? true : false;
+            }
+        },
+        methods: {
+            onItemTap: function(item) {},
+            singleChecked(){
+                if(this.users.length > 0 && (this.users.length != this.user_total.length))
+                {
+                    this.allChecked = '';
+                }
+            },
+            allButton(){
+                if (this.allChecked != '') {
+                    this.users = [];
+                    for (var i = 0; i < this.user_total.length; i++) {
+                        this.users.push(this.user_total[i].id)
+                    }
+                } else {
+                    this.users = [];
+                }
+            },
+            addRoles(){
+                var userTotalCount = this.users.length;
+                if (userTotalCount > 0) {
+					var role_ids = this.users.join(",");
+					var names = [];
+					for(var i in this.users){
+                        names[i] = $("#R"+this.users[i]).data("name");
+					}
+					var role_names = names.join(";");
+					parent.$("input[name='role_ids']").val(role_ids);
+					parent.$("input[name='role_name']").val(role_names);
+                    var name = window.frameElement.getAttribute('name')
+                    var index = parent.layer.getFrameIndex(name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                } else {
+                    layer.msg('请选择角色')
+                }
+
+            }
+        }
+    });
+    var name = "";
+    var groupIds = [];
+    var tagIds = [];
+    var branchId = "";
+    var listHeight = 300;
+    $(function(){
+        autoHeight();
+        var nWinHeight = $(window).height();
+        var matchHeight = $(".match-check").height();
+        var areaHeight = $('.mui-search-area').height();
+        var commitHeight = $('.mui-bottom-check-commit').height();
+        listHeight = nWinHeight - matchHeight - ( 2 * areaHeight ) - commitHeight;
+        pullRefresh(".item-wrap", ".item-container", function($target, current_page) {
+            $.post("/Organization/select_role", { page: current_page,name: vue.likename}, function(result) {
+                vue.role_list = vue.role_list.concat(result.data);
+                if (current_page === 1) {
+                    vue.user_total = result.user_total;
+                }
+                $target.data("loading", false);
+            }, "json");
+        },listHeight)
+    })
+
+
+    function queryData() {
+        $('.item-wrap').data("last_scroll_top",0);
+        $('.item-wrap').data("current_page",1);
+        pullRefresh(".item-wrap", ".item-container", function($target, current_page) {
+            $.post("/Organization/select_role", {
+                page: current_page,
+                name: vue.likename
+            }, function (result) {
+                vue.role_list = result.data;
+                if (current_page === 1) {
+                    vue.user_total = result.user_total;
+                    if (result.user_total == 0) {
+                        layer.msg('无查询结果')
+                    }
+                }
+                $target.scrollTop(0);
+                $target.data("loading", false);
+            }, "json");
+        },listHeight)
+    }
+    $('.select-match').on('click', function() {
+        $('.slide-match-wrap').addClass('active');
+        autoHeight();
+    })
+    $(function(){
+        setTimeout(function(){
+            userSelect();
+        },800)
+    })
+    function userSelect()
+    {
+        var ids = $('#user_select').val();
+        vue.users = ids ? ids.split(',') : [];
+    }
+    $('.select-item span').on('click', function() {
+        $(this).toggleClass('active');
+    })
+    $('#tag-tip').on('click', function() {
+        $('#tagModal').show();
+    })
+
+    $('#group-tip').on('click', function() {
+        $('#groupModal').show();
+    })
+
+    $('.popup-close,.close-popup,.popup-complete').on('click', function() {
+        $(this).parents('.wrap-modal').hide();
+    })
+
+    $(".slide-match-wrap").mouseup(function(e) {
+        var _con = $('#select-wrap,#groupModal,#tagModal'); // 设置目标区域
+        if (!_con.is(e.target) && _con.has(e.target).length === 0) { // Mark 1
+            $(".slide-match-wrap").removeClass('active');
+            $('.wrap-modal').hide();
+        }
+    });
+    $('.confirm-match').on('click', function() {
+        $(this).parents('.slide-match-wrap').removeClass('active');
+        handlerCustomerLists();
+    })
+    function handlerCustomerLists() {
+        var groupDom = $('#select-wrap').find('div:first > .select-item > .active');
+        var tagSingleDom = $('#select-wrap').find('#tag-wrap > #select-part > .select-element');
+        var tagDom = tagSingleDom.find('.select-item > .active');
+        groupIds = [];
+        tagIds = [];
+        if (groupDom.length > 0) {
+            groupIds = groupDom.map(function() {
+                return $(this).data('id')
+            }).get();
+        }
+        if (tagDom.length > 0) {
+            tagSingleDom.map(function() {
+                var tagSingleIds = $(this).find('.select-item > .active');
+                if (tagSingleIds.length > 0) {
+                    var template = tagSingleIds.map(function() {
+                        return $(this).data('id')
+                    }).get();
+                    tagIds.push(template);
+                }
+            });
+        }
+        queryData();
+    }
+</script>
+<script type="text/javascript">
+
+    mui.init();
+    $('.show-icon').last().on('click',function(){
+        var self = $(this);
+        self.toggleClass('hide-icon').parent('.more-tag').toggleClass('active');
+    })
+
+    $('#edit-group').on('click',function(){
+        $('#creat-group').toggleClass('hide');
+        $(this).parents('.edit-groups').toggleClass('active');
+    })
+
+    $('#edit-tag').on('click',function(){
+        $('#creat-tag').toggleClass('hide');
+        $(this).parents('.edit-groups').toggleClass('active');
+    })
+</script>
+</body>
+</html>

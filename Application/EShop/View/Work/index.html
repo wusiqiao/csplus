@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+	<link href="{$Think.const.CSS_URL}mui/mui.css?v={$version}" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css?v={$version}" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}reset.css?v={$version}" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}common.css?v={$version}" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}style.css?v={$version}" rel="stylesheet" />
+	<title>{$title}</title>
+	<style>
+		.nav-default-new {
+			width: 100%;
+			overflow: hidden;
+		}
+
+		.nav-default-new a {
+			float: left;
+			width: 25%;
+			flex: 1;
+			text-align: center;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
+			align-items: center;
+			padding: .2rem 0;
+		}
+
+		img.manage {
+			display: block;
+			width: .59rem;
+			height: .59rem;
+			margin-bottom: .15rem;
+		}
+	</style>
+</head>
+
+<body>
+	<section class="work-wrap">
+		<div id="shop-center" class="my-wrap-center" style="height: auto;">
+			<div class="center-title"><i><img src="{$Think.const.IMG_URL}/distribution/company-act.png" alt="" /></i>
+				<span>商城管理</span>
+			</div>
+			<div class="nav-default-new">
+				<a href="__MODULE__/Liuyan.html">
+					<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/msg.png" />
+					<span>消息管理</span>
+				</a>
+				<if condition="( $menuList['ToolNuclearName']['menu_actions']['list'] eq 1 and $menuList['ToolNuclearName']['allow'] eq 1 )">
+					<a href="__MODULE__/Work/tool_query_list/type/0">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/veri.png" />
+						<span>核名跟踪</span>
+					</a>
+				</if>
+				<if condition="$menuList['ToolTrademarks']['menu_actions']['list'] eq 1 and $menuList['ToolTrademarks']['allow'] eq 1">
+					<a href="__MODULE__/Work/tool_query_list/type/1">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/search.png" />
+						<span>商标跟踪</span>
+					</a>
+				</if>
+				<if condition=" ( $menuList['Consultation']['menu_actions']['list'] eq 1 and $menuList['Consultation']['allow'] eq 1 )">
+					<a href="__MODULE__/Work/tool_query_list/type/2">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-consult.png" />
+						<span>咨询跟踪</span>
+					</a>
+				</if>
+				<if condition="( $menuList['ComOrder']['menu_actions']['list'] eq 1 and $menuList['ComOrder']['allow'] eq 1  )">
+					<a href="__MODULE__/Order/sell.html">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/order.png" />
+						<span>订单管理</span>
+					</a>
+				</if>
+			</div>
+		</div>
+		<div id="work-center" class="my-wrap-center" style="height: auto;">
+			<div class="center-title"><i><img src="{$Think.const.IMG_URL}/distribution/work-act.png" alt="" /></i>
+				<span>工作中心</span>
+			</div>
+			<div class="nav-default-new">
+				<if condition="$menuList['WrkAgreement']['menu_actions']['list'] eq 1 and $menuList['WrkAgreement']['allow'] eq 1">
+					<a href="/WrkAgreement/index">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-WrkAgreement.png" />
+						<span>合同管理</span>
+					</a>
+				</if>
+				<if condition="$menuList['WrkInvoicePlan']['menu_actions']['list'] eq 1 and $menuList['WrkInvoicePlan']['allow'] eq 1">
+					<a href="/WrkInvoicePlan/index">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-WrkInvoicePlan.png" />
+						<span>开票管理</span>
+					</a>
+				</if>
+				<if condition="$menuList['WrkReceivables']['menu_actions']['list'] eq 1 and $menuList['WrkReceivables']['allow'] eq 1">
+					<a href="/WrkReceivables/index">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-WrkReceivables.png" />
+						<span>收款管理</span>
+					</a>
+				</if>
+				<if condition="$menuList['WrkPrompt']['menu_actions']['list'] eq 1 and $menuList['WrkPrompt']['allow'] eq 1">
+					<a href="/WrkPrompt/index">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-WrkPrompt.png" />
+						<span>催款管理</span>
+					</a>
+				</if>
+                <if condition="$menuList['WrkTaskPlan']['menu_actions']['list'] eq 1 and $menuList['WrkTaskPlan']['allow'] eq 1">
+					<a href="/WrkTaskPlan/index">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-WrkTaskPlan.png" />
+						<span>任务管理</span>
+					</a>
+				</if>
+				<if condition="$menuList['WxOperateTemplate']['menu_actions']['list'] eq 1 and $menuList['WxOperateTemplate']['allow'] eq 1">
+					<a href="/WxOperateTemplate/index">
+						<img class="manage"
+							src="/{$Think.MODULE_PATH}Public/images/icon/icon-SocialSecurityNotice.png" />
+						<span>清卡通知</span>
+					</a>
+				</if>
+				<if condition="$menuList['WxOperateTemplate']['menu_actions']['list'] eq 1 and $menuList['WxOperateTemplate']['allow'] eq 1">
+					<a href="/SocialSecurityNotice/index">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/icon/icon-items.png" />
+						<span>社保通知</span>
+					</a>
+				</if>
+				<if condition="$menuList['WxBranchTemplate']['menu_actions']['list'] eq 1 and $menuList['WxBranchTemplate']['allow'] eq 1">
+					<a href="__MODULE__/wxBranchTemplate/index.html">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/template.png" />
+						<span>模板通知</span>
+					</a>
+				</if>
+			</div>
+		</div>
+		<div id="money-center" class="my-wrap-center" style="height: auto;">
+			<div class="center-title"><i><img src="{$Think.const.IMG_URL}/icon/icon-capital-manager.png" alt="" /></i>
+				<span>资金管理</span>
+			</div>
+			<div class="nav-default-new">
+				<if condition="( $menuList['ComRecharge']['menu_actions']['list'] eq 1 and $menuList['ComRecharge']['allow'] eq 1  )">
+					<a href="__MODULE__/ComBranchCapital/recharge">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/icon/icon-recharge-manager.png" />
+						<span class="">充值管理</span>
+					</a>
+				</if>
+				<if condition="( $menuList['ComWithdrawals']['menu_actions']['list'] eq 1 and $menuList['ComWithdrawals']['allow'] eq 1  )">
+					<a href="__MODULE__/ComBranchCapital/withdrawal">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/icon/icon-withdrawal-manager.png" />
+						<span class="">提现管理</span>
+					</a>
+				</if>
+
+			</div>
+		</div>
+		<div id="customer-center" class="my-wrap-center" style="height: auto;">
+			<div class="center-title"><i><img src="{$Think.const.IMG_URL}/work/user.png" alt="" /></i>
+				<span>客户管理</span>
+			</div>
+			<div class="nav-default-new">
+				<if condition="$menuList['ComCompany']['menu_actions']['list'] eq 1 and $menuList['ComCompany']['allow'] eq 1">
+					<a href="/ComCompany/index.html">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-files.png" />
+						<span>客户档案</span>
+					</a>
+				</if>
+				<if condition="( $menuList['ComPotential']['menu_actions']['list'] eq 1 and $menuList['ComPotential']['allow'] eq 1  )">
+					<a href="__MODULE__/ComPotential/index">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-custom.png" />
+						<span>用户管理</span>
+					</a>
+				<elseif condition="$menuList['ComFans']['menu_actions']['list'] eq 1 and $menuList['ComFans']['allow'] eq 1" />
+					<a href="__MODULE__/ComFan/index">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-custom.png" />
+						<span>用户管理</span>
+					</a>
+				<elseif condition="$menuList['ComGuest']['menu_actions']['list'] eq 1 and $menuList['ComGuest']['allow'] eq 1" />
+					<a href="__MODULE__/ComGuest/index">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-custom.png" />
+						<span>用户管理</span>
+					</a>
+				</if>
+				<if condition=" ( $menuList['SysDocument']['menu_actions']['list'] eq 1 and $menuList['SysDocument']['allow'] eq 1 )">
+					<a href="javascript:;" onclick="entrance(this)" data-url="__MODULE__/SysDocument/entrance">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-file.png" />
+						<span>客户文件</span>
+					</a>
+				</if>
+			</div>
+		</div>
+		<div id="employees-center" class="my-wrap-center" style="height: auto;">
+			<div class="center-title"><i><img src="{$Think.const.IMG_URL}/distribution/center.png" alt="" /></i>
+				<span>员工管理</span>
+			</div>
+			<div class="nav-default-new">
+				<if condition="( $menuList['Organization']['menu_actions']['detail'] eq 1 and $menuList['Organization']['allow'] eq 1 ) or ( $menuList['StaffRole']['menu_actions']['detail'] eq 1 and $menuList['StaffRole']['allow'] eq 1 ) or ( $menuList['StaffList']['menu_actions']['detail'] eq 1 and $menuList['StaffList']['allow'] eq 1 ) ">
+					<a href="/Organization/index.html">
+						<img class="manage" src="/{$Think.MODULE_PATH}Public/images/work/icon-staff.png" />
+						<span>员工管理</span>
+					</a>
+				</if>
+			</div>
+		</div>
+		<div class="in-develop">
+				<img src="{$Think.const.IMG_URL}/work/icon-develop.png" alt="">
+				<span>开发中</span>
+			</div>
+			<div class="online-application">
+				<div class="work-row">
+					<a href="__MODULE__/ComSundryOrder">
+						<span class="icon-img item-mng"></span>
+						<span class="">物品管理</span>
+					</a>
+				</div>
+			</div>
+		<div style="height: 1rem;"></div>
+	</section>
+	<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	<include file="Public:footer" />
+	<script src="{$Think.const.JS_URL}mui/mui.js"></script>
+	<script>select_menu("work");</script>
+	<script>
+		(function () {
+			window.onload = function () {
+				// 工作中心
+				if ($("#work-center .nav-default-new").find("a").length == 0) {
+					$("#work-center").hide();
+				} else {
+					$("#work-center").show();
+				}
+				// 商城管理
+				if ($("#shop-center .nav-default-new").find("a").length == 0) {
+					$("#shop-center").hide();
+				} else {
+					$("#shop-center").show();
+				}
+				// 资金管理
+				if ($("#money-center .nav-default-new").find("a").length == 0) {
+					$("#money-center").hide();
+				} else {
+					$("#money-center").show();
+				}
+				// 客户管理
+				if ($("#customer-center .nav-default-new").find("a").length == 0) {
+					$("#customer-center").hide();
+				} else {
+					$("#customer-center").show();
+				}
+				// 员工管理
+				if ($("#employees-center .nav-default-new").find("a").length == 0) {
+					$("#employees-center").hide();
+				} else {
+					$("#employees-center").show();
+				}
+			}
+		})(window)
+		function entrance(obj) {
+			var url = $(obj).data('url');
+			var hasAdmin = '{$isAdmin}';
+			var companyCount = '{$company_count}';
+			if (companyCount > 0) {
+				window.location.href = url;
+			} else if (hasAdmin == '1') {
+				mui.alert('暂无公司选择！<br>请先在客户档案中新增公司!');
+			} else {
+				mui.alert('未绑定任何公司!<br>请联系商家绑定公司!');
+			}
+		}
+	</script>
+</body>
+
+</html>

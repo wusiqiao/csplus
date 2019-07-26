@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>我的下级</title>
+    <link rel="stylesheet" href="{$Think.const.CSS_URL}mui/mui.css">
+    <link href="/{$Think.MODULE_PATH}Public/popup/popup.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="/{$Think.MODULE_PATH}Public/popup/popup.js"></script>
+    <script src="{$Think.const.JS_URL}mui/mui.min.js"></script>
+    <style>
+    	
+    </style>
+</head>
+<body>
+    <include file="Index:header" />
+    <section class="my-level-wrap pt85">
+    	<div class="my-level-banner flex-center">
+    		<div class="income-rules" id="income-rules">分销规则<span class="mui-icon mui-icon-arrowright"></span></div>
+    		<div>
+    			<div>下级数量</div>
+    			<div class="my-level-account"><span><?php echo(count($member_profits));?></span>人</div>
+    		</div>
+    	</div>
+    	<ul>
+    		<volist name="member_profits" id="vo">
+			<li class="my-level-line line-{$vo.member_id}">
+    			<div class="flex-between my-level-title">
+    				<div class="my-level-name">{$vo.member_name}</div>
+    				<div class="flex-center">
+    					<div class="shorthand">
+    						<strong>{$vo.commision}元</strong>
+    						<div>贡献收益</div>
+    					</div>
+    					<div class="show-detail detail" data-value="{$vo.member_id}"></div>
+    				</div>
+    			</div>
+    			<div class="my-level-detail">
+    				<div class="with-interest">
+    					<div class="flex-between">
+    						<div>关注时间</div>
+    						<div>{$vo.subscribe_time}</div>
+    					</div>
+    					<!--<div class="flex-between">-->
+    						<!--<div>注册状态</div>-->
+    						<!--<div>{$vo.subscribe_state}</div>-->
+    					<!--</div>-->
+    				</div>
+					<div class="detail-content"></div>
+    			</div>
+    		</li>
+			</volist>
+    	</ul>
+    </section>
+	<!--modal-->
+	<section class="modals-wrap" id="modals-wrap-rule">
+		<div class="modals-income-rules" style="height: auto">
+			<div class="modals-title">分销规则</div>
+            <div class="modals-content" style="height: auto">
+                1. 如何邀请好友成为“我的下级”？<br>
+                <p>&emsp;&emsp;分享首页或者单个商品详情页给好友，好友通过该页面首次完成关注（公众号）或注册（商城会员）就能成为“我的下级”。<br></p>
+                2. 如何产生收益？<br>
+                <p>&emsp;&emsp;你的下级在本商城成功购买相应的商品或服务，你就可以获得固定比例或金额的交易佣金。<br></p>
+                3. 如何提现？<br>
+                <p>&emsp;&emsp;交易完成后交易佣金处于冻结期不可提现，需等待商家解冻后才能提现。交易过程中若出现项目分期，交易佣金可能会出现分批解冻的情况。<br></p>
+                4. 提现申请后佣金何时到账？<br>
+                <P>&emsp;&emsp;提现需经过商家审核，审核成功后商家会主动联系你手动结算佣金。</p>
+            </div>
+			<div class="modals-foot" id="close-rule">确定</div>
+		</div>
+
+	</section>
+<script type="text/javascript">
+	$(".my-level-line .detail").click(function(){
+	    var _this = this;
+	    if ($(this).hasClass("show-detail")) {
+            $(this).removeClass("show-detail").addClass("hide-detail");
+            var member_id = $(this).attr("data-value");
+            $.post("/Distribution/getTeamMemberCommisionIncomeDetail", {member_id: member_id}, function (result) {
+                if (result.code == 0) {
+                    $(_this).parents(".my-level-line").find(".detail-content").html("");
+                    var tpl = '<div class="flex-between contribution-income"><div>\n' +
+                        '<div class="basecolor income-money {%status%}">￥{%commision%}</div>\n' +
+                        '<div>{%income_time%}</div></div>\n' +
+                        '<div class="income-info"><div class="income-icon">贡献收益</div>\n' +
+                        '<div>{%memo%}</div>\n' +
+                        '</div></div>';
+                    $(result.message).each(function () {
+                        var content = tpl.replace("{%commision%}", this.commision);
+                        content = content.replace("{%income_time%}", this.income_time);
+                        content = content.replace("{%memo%}", this.memo);
+                        content = content.replace("{%status%}", this.status == 0 ? "unlock" : "lock");
+                        $(_this).parents(".my-level-line").find(".detail-content").append(content);
+                    });
+                    $(_this).parents(".my-level-line").find(".my-level-detail").show();
+                } else {
+                	$(_this).parents(".my-level-line").find(".detail-content").html("");
+                	$(_this).parents(".my-level-line").find(".my-level-detail").show();
+                }
+            }, "json");
+        }else{
+            $(this).removeClass("hide-detail").addClass("show-detail");
+            $(_this).parents(".my-level-line").find(".my-level-detail").hide();
+		}
+	});
+    $('#income-rules').click(function(){
+        $('#modals-wrap-rule').show();
+    })
+    $('#close-rule').click(function(){
+        $(this).parents('#modals-wrap-rule').hide();
+    })
+</script>
+
+</body>
+
+
+</html>

@@ -1,0 +1,84 @@
+<foreach name="model.records" item="v">
+ <div class="process-list clearfix">
+    <if condition="$v.type eq 1">
+        <div class="process-des right {$v.active} font24">
+        <span class="word-keep">借用申请</span>
+        <span class="word-keep">借用时间：{$v.date}</span>
+        <span class="font16 word-keep">{$v.user_name}&nbsp;{$v.created_at}</span>
+
+        <if condition="$sundryOrder.status eq 1 && $is_customer eq 1">
+            <button class="operation-sign" onclick="approval({$v.id})">借用批准</button>
+        </if>
+    </div>
+    <elseif condition="$v.type eq 2" />
+        <div class="process-des left {$v.active} font24">
+        <span class="word-keep">借用批准</span>
+        <span  class="word-keep">相关物品:{$v.sundry_names}</span>
+        <span class="word-keep">取件时间：{$v.date}</span>
+        <span class="font16 word-keep">{$v.user_name}&nbsp;{$v.created_at}</span>  
+        <if condition="$sundryOrder.status eq 2 && $is_customer eq 1">
+            <button class="operation-sign" onclick="sign({$v.id})">借用签收</button>
+        </if>
+        </div>
+    <elseif condition="$v.type eq 3" />
+        <div class="process-des left {$v.active} font24">
+        <span class="word-keep">借用签收</span>
+        <span class="word-keep">取件时间：{$v.date}</span>
+        <span  class="word-keep">相关物品:{$v.sundry_names}</span>
+        <span class="font16 word-keep">{$v.user_name}&nbsp;{$v.created_at}</span>
+        <if condition="$sundryOrder.status eq 3 && $is_customer eq 0">
+        <button class="operation-sign"  onclick="return_sundry({$v.id})">归还通知</button>
+        </if>
+        </div>
+    <elseif condition="$v.type eq 4" />
+        <div class="process-des right {$v.active} font24">
+        <span class="word-keep">归还通知</span>
+        <span class="word-keep">取件时间：{$v.date}</span>
+        <span  class="word-keep">相关物品:{$v.sundry_names}</span>
+        <span class="font16 word-keep">{$v.user_name}&nbsp;{$v.created_at}</span>
+        <if condition="$sundryOrder.status eq 3 && $is_customer eq 1">
+        <button class="operation-sign" onclick="returnSign({$v.id})">归还签收</button>
+        </if>
+        </div>
+    <elseif condition="$v.type eq 5" />
+        <div class="process-des left {$v.active} font24">
+        <span class="word-keep">归还签收</span>
+        <span class="word-keep">取件时间：{$v.date}</span>
+        <span  class="word-keep">相关物品:{$v.sundry_names}</span>
+        <span class="font16 word-keep">{$v.user_name}&nbsp;{$v.created_at}</span>
+        <!-- <button class="operation-sign">物品操作</button> -->
+        </div>
+    <elseif condition="$v.type eq 9" />
+        <div class="process-des left {$v.active} font24">
+        <span class="word-keep">拒绝借用</span>
+        <span class="word-keep">备注：{$v.remarks}</span>
+        <span class="font16 word-keep">{$v.user_name}&nbsp;{$v.created_at}</span>
+        <!-- <button class="operation-sign">物品操作</button> -->
+        </div>
+    <else/>
+
+    </if>
+</div>
+</foreach>
+<!-- <if condition="$sundryTransfer:status neq 7">
+    <button type="button" class="ml15 blue" id="transfer">物品签收</button>
+</if> -->
+<script type="text/javascript">
+    function approval(record_id) {
+        $("#processModal").load("__MODULE__/ComSundryOrder/borrow/record_id/" + record_id);
+        $('#processModal').show();
+    }
+    function sign(record_id) {
+        $("#processModal").load("__MODULE__/ComSundryOrder/sign/record_id/" + record_id);
+        $('#processModal').show();
+    }
+    function returnSign(record_id) {
+        $("#processModal").load("__MODULE__/ComSundryOrder/returnSign/record_id/" + record_id);
+        $('#processModal').show();
+    }
+    function return_sundry(record_id) {
+        $("#processModal").load("__MODULE__/ComSundryOrder/return/record_id/" + record_id);
+        $('#processModal').show();
+    }
+    
+</script>

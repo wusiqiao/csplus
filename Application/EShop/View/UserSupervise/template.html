@@ -1,0 +1,95 @@
+<include file="UserSupervise:head"/>
+<body>
+	<section class="template-wrap " id="template-wrap">
+	    <ul class="main-tab">
+	        <li onclick="window.location.href = '/UserSupervise/template_history.html'">历史</li>
+	        <li class="active">模板群发</li>
+	        <li onclick="window.location.href = '/UserSupervise/template_draft.html'">草稿</li>
+	    </ul>
+		<div>
+			<div class="simple-center-title blue-4591fe font24" id="templates">选择一个模板</div>
+			<div class="dis-flex pr">
+				<select name="">
+					<option value="23">会议通知</option>
+					<option value="24">预警通知</option>
+				</select>
+				<div class="select-icon"></div>
+			</div>
+		</div>
+		<div class="filed-prompt">
+			<div class="simple-center-title blue-4591fe font24">模板示例</div>
+			<div class="common-wrap">
+				<div class="pr">
+					<div class="interface-tip modal" v-show="show_model">
+				    	<div>模板消息读取自微信接口，如需添加新的模板请前往微信公众平台</div>
+				    	<div class="ok" @click="ok()">我知道了</div>
+				    	<div class=""></div>
+				    </div>
+					<div class="template-tip font24">字段定义</div>
+					<div class="simple-template">
+						<span class="title">字段1</span>
+						<i class="gray-a1 tpl_title"></i>
+					</div>
+					<div class="simple-template" v-for="content in contents.content_records">
+						<span class="title gray-a1" v-if="content.key!=''">{{ content.key }}</span>
+						<span>{{ content.title }}</span>
+					</div>
+					
+				</div>
+				<hr/>
+				<div class="pr">
+					<div class="template-tip font24">场景应用</div>
+					<div class="simple-template">
+						<span>您有一个会议需要参加</span>
+					</div>
+					<div class="simple-template" v-for="content in contents.example_records">
+						<span class="title gray-a1" v-if="content.key!=''">{{ content.key }}</span>
+						<span class="flex-1">{{ content.title }}</span>
+					</div>
+					
+				
+			</div>
+		</div>
+		<div style="height: 1.35rem;"></div>
+		<div class="template-bottom-btn">
+			<button class="bg-368bfe" @click="appendTemplate()">新建群发</button>
+		</div>
+	    
+	</section>
+	<include file="UserSupervise:foot_access_file"/>
+	<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+	<script type="text/javascript">
+		var vue = new Vue({
+			el: '#template-wrap',
+			data: {
+				contents:{
+					content_records:[
+						{key: "", title: ""},
+						{key: "发布类型：", title: "{{keyword1.DATA}}"},
+						{key: "发布标题：", title: "{{keyword2.DATA}}"},
+						{key: "发布时间：", title: "{{keyword3.DATA}}"},
+						{key: "审核结果：", title: "{{keyword4.DATA}}"},
+						{key: "会议介绍：", title: "{{remark.DATA}}"}
+					],
+					example_records:[
+						{key: "", title: "您好，以下是您发布信息的审核结果"},
+						{key: "发布类型：", title: "品牌悬赏"},
+						{key: "发布标题：", title: "连锁奶茶品牌拓展悬赏信息"},
+						{key: "发布时间：", title: "2017年1月3日 11:12"},
+						{key: "审核结果：", title: "审核通过"}
+					]
+				},
+				show_model: true
+			},
+			methods:{
+				appendTemplate(){
+					window.location.href = '/UserSupervise/new_template.html';
+				},
+				ok(){
+					this.show_model = false;
+				}
+			}
+		})
+	</script>
+</body>
+</html>

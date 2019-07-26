@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <title>{$title}</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <style type="text/css">
+    	html,body {
+    		width: 100% !important;
+    	}
+    </style>
+</head>
+<body>
+	<section class="verification-wrap">
+		<div class="verification-top">
+			<!--<div>累计核名<span>131296</span>次</div>-->
+		</div>
+		<form onsubmit="return false;">
+            <input name="codes" id="codes" value="" type="hidden">
+			<div class="verification-form">
+				<div class="verification-input-wrap">
+					<div class="verification-input">
+						<span class="verification-tel"></span>
+						<input id="account" name="account" type="text" placeholder="请输入联系电话"/>
+					</div>
+					<div class="verification-input">
+						<span class="verification-vercode"></span>
+						<input name="phonecode" type="text" placeholder="请输入短信验证码"/>
+						<button id="getCode" onclick="getSMS(this)">发送验证</button>
+					</div>
+					<div class="verification-input">
+						<span class="verification-name"></span>
+						<input name="nickname" type="text" placeholder="请输入您的称呼"/>
+					</div>
+				</div>		
+				<div class="verfication-tip">
+					<div class="small-tip">*今日已有{$tool_counts.today}人获取查询结果，总查询人数已达{$tool_counts.total}人</div>
+					<div class="tc">输入联系方式专人与您对接<br>30分钟内告知查询结果</div>
+				</div>
+				<button type="submit" class="verification-btn">立即核名/查询/领取</button>
+			</div>
+		</form>
+	</section>
+	<include file="Tool:modal_feedback" />
+</body>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script>
+    $(function(){
+        var itemValue = '{$type}';
+        if ($.type(getLocalStorage()) == 'null'){
+            window.location.href = '__MODULE__/Tool/wrong';
+        }
+    })
+    function getSMS(obj) {
+        if (!(/^\d{8,15}$/.test($('#account').val()))) {
+            alert('请输入正确的11位手机号');
+        } else {
+            var item = '{$type}';
+            $.ajax({
+                url: "__MODULE__/Check.html",
+                type: "post",
+                dataType: "json",
+                data: {
+                    "phone": $('#account').val(),
+                    "action": "tool_"+item,
+                },
+                success: function (json) {
+                    if (json.result == '0') {
+                        layer.msg(json.msg);
+                        settime(obj);
+                        $("#codes").val(json.codes)
+                    } else {
+                        layer.msg(json.msg);
+                        $(obj).attr("disabled", false);
+                        return false
+                    }
+                },
+                beforeSend: function () {
+                    $(obj).attr("disabled", true);
+                },
+                errors: function () {
+                    $(obj).attr("disabled", false);
+                }
+            });
+        }
+    }
+    var countdown = 60;
+    function settime(setbtn) {
+        if (countdown == 0) {
+            $(setbtn).attr("disabled", false);
+            $(setbtn).css("color", "#fff");
+            $(setbtn).text("获取验证码");
+            $(setbtn).removeClass("check");
+            countdown = 60;
+            return;
+        } else {
+            $(setbtn).attr("disabled", true);
+            $(setbtn).css("color", "#e4e4e4");
+            $(setbtn).text("重新发送(" + countdown + ")");
+            countdown--;
+        }
+        setTimeout(function () {
+            settime(setbtn);
+        }, 1000);
+    }
+    function getLocalStorage(){
+        var itemValue = '{$type}';
+        var value     = localStorage.getItem(itemValue);
+        return $.parseJSON(value);
+    }
+    $(".verification-btn").click(function () {
+        var itemValue = '{$type}';
+        var account = $("input[name=account]").val();
+        var phonecode = $("input[name=phonecode]").val();
+        var nickname = $("input[name=nickname]").val();
+        var codes = $("input[name=codes]").val();
+        if ($.trim(account) == "") {
+            layer.msg('手机号不能为空');
+            return false;
+        }
+        if ($.trim(phonecode) == "") {
+            layer.msg('验证码不能为空！');
+            return false;
+        }
+        if ($.trim(phonecode) != $.trim(codes)) {
+            layer.msg('您输入的验证码不正确！');
+            return false;
+        }
+		if ($.trim(nickname) == ""){
+			layer.msg('请输入您的称呼！');
+			return false;
+		}
+        var res = {};
+        var data = getLocalStorage();
+        res.mobile =  account;
+        res.phonecode =  phonecode;
+        res.nickname =  nickname ? nickname : null;
+        res.type = itemValue;
+        res.value = data;
+        $.ajax({
+            url: "__MODULE__/Tool/verification.html",
+            type: 'POST',
+            dataType: "json",
+            data: res,
+            beforeSend: function () {
+                var index = layer.load(0, {
+                    shade: [0.1, '#fff'] //0.1透明度的白色背景
+                });
+            },
+            success: function (data) {
+                if (data.error == 0) {
+                    layer.closeAll();
+                    window.localStorage.clear();
+                    $('.feedback-wrap').show();
+                } else {
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                }
+            },
+        });
+    })
+</script>
+</html>

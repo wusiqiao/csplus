@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	    <meta name="apple-mobile-web-app-capable" content="yes" />
+	    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+	    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/{$Think.APP_PATH}Public/js/load/dropload.css" />
+	    <title>{$title}</title>
+	    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	</head>
+    <style>
+        .single-name{
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+		/*下拉加载提示框*/
+		.mui-pull-bottom-wrapper{
+			text-align: center;
+			padding: .2rem;
+		}
+    </style>
+	<body>
+		<section class=" mui-scroll-wrapper" id="pullrefresh" data-url="__MODULE__/User/getBelongsToBranch" page-size="10">
+			<div class="mui-scroll">
+				<div class="custom-style item-tpl" style="display:none">
+					<div class="custom-info">
+						<div class="custom-img">
+							<img src="{%head_pic%}" alt="" />
+						</div>
+						<div class="custom-contact">
+							<div class="contact-info">
+								<span class="single-name" style="width: 60%">{%name%}</span>
+								<span class="tel"  style="width: 40%">{%mobile%}</span>
+							</div>
+							<div class="business-info">
+								<div></div>
+								<div class="red">成交额：{%turnover%}</div>
+							</div>
+						</div>
+					</div>
+					<div class="reg-time">注册日期：{%date%}</div>
+				</div>
+				<ul class=" processing">
+				</ul>
+			</div>
+		</section>
+	</body>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+	<script src="/{$Think.APP_PATH}Public/mui/js/mui.pullToRefresh.js"></script>
+	<script src="/{$Think.APP_PATH}Public/mui/js/mui.pullToRefresh.material.js"></script>
+    <script src="{$Think.const.JS_URL}common.js?v=2"></script>
+	<script src="/{$Think.APP_PATH}Public/js/mobile.js"></script>
+    <script>
+        var pullRefreshApi;
+        mui.ready(function () {
+            var type = '{$type}';
+            var process = $('.tab-bar > .active').data('process');
+            var pullToRefreshObj = pullRefresh("#pullrefresh", {process:process,type:type});
+            pullRefreshApi = mui("#pullrefresh .mui-scroll").pullToRefresh(pullToRefreshObj);
+        });
+        // function dropload_data(){
+        //     var type = '{$type}';
+        //     var process = $('.tab-bar > .active').data('process');
+        //     var pullToRefreshObj = pullRefresh("#pullrefresh", {process:process,type:type});
+        //     pullRefreshApi.refresh(true);
+        //     mui("#pullrefresh .mui-scroll").pullToRefresh(pullToRefreshObj);
+        // }
+    </script>
+</html>

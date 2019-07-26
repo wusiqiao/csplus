@@ -1,0 +1,93 @@
+
+<neq name="Think.session.user_type" value="2">
+    <footer class="footer-navs">
+        <a href="__MODULE__/Index" id="footer-index" style="text-decoration: none;">
+            <img src="{$Think.const.IMG_URL}distribution/home-act.png" />
+            <span class="footer-nav-text" style="color:transparent;background:linear-gradient(135deg, #1c6fff, #64bbfd);-webkit-background-clip:text;">首页</span>
+        </a>
+        <a href="__MODULE__/Index/classification.html" id="footer-cate" style="text-decoration: none;">
+            <img src="{$Think.const.IMG_URL}distribution/cate.png" />
+            <span class="footer-nav-text">分类</span>
+        </a>
+        <a href="__MODULE__/Store/my.html" id="footer-company" style="text-decoration: none;">
+            <img src="{$Think.const.IMG_URL}distribution/company.png"/>
+            <span class="footer-nav-text">公司</span>
+        </a>
+        <a href="__MODULE__/Index/user.html" id="footer-my" style="text-decoration: none;">
+            <img src="{$Think.const.IMG_URL}distribution/my.png"/>
+            <span class="footer-nav-text">我的</span>
+            <gt name="Think.session.unread_ask" value="0">
+                <round></round>
+            </gt>
+        </a>
+    </footer>
+    <else/>
+    <footer class="footer-navs">
+    <a href="__MODULE__/Index" id="footer-index" style="text-decoration: none;">
+        <img src="{$Think.const.IMG_URL}distribution/home-act.png" />
+        <span class="footer-nav-text" style="color:transparent;background:linear-gradient(135deg, #1c6fff, #64bbfd);-webkit-background-clip:text;">首页</span>
+    </a>
+    <a href="__MODULE__/Work/index.html" id="footer-work" style="text-decoration: none;">
+        <img src="{$Think.const.IMG_URL}distribution/work.png" />
+        <span class="footer-nav-text">工作</span>
+    </a>
+    <a href="__MODULE__/Spread/index.html" id="footer-spread" style="text-decoration: none;">
+        <img src="{$Think.const.IMG_URL}distribution/spread.png"/>
+        <span class="footer-nav-text">推广</span>
+    </a>
+    <a href="__MODULE__/Index/user.html" id="footer-my" style="text-decoration: none;">
+        <img src="{$Think.const.IMG_URL}distribution/my.png"/>
+        <span class="footer-nav-text">我的</span>
+        <gt name="Think.session.unread_ask" value="0">
+            <round></round>
+        </gt>
+    </a>
+    </footer>
+</neq>
+<script>
+    
+    function set_menu_img($nav){
+        var src = $nav.find("img").attr("src");
+        if (src.indexOf("-act") == -1){
+           src = src.replace(".png", "-act.png"); 
+           $nav.find("img").attr("src", src);
+           $nav.find("span").css({"color":"transparent","background":"linear-gradient(135deg, #1c6fff, #64bbfd)","-webkit-background-clip":"text"});                   
+        }    
+    }
+    $('#more-nav').click(function () {
+        $('.float-classification').css({'display': 'block'});
+    })
+    function select_menu(target){
+        if (target == undefined){
+            target = "index";
+        }
+        $(".footer-navs img").each(function(){
+            var src = $(this).attr("src");
+            if(src){
+                $(this).attr("src", src.replace("-act", ""));
+            }
+        });
+        $(".footer-navs span").each(function(){
+            $(this).css("color", "");
+        });
+        switch (target){
+            case "my":
+                set_menu_img($("#footer-my"));
+                break;
+            case "cate":
+                set_menu_img($("#footer-cate"));
+                break;
+            case "company":
+                set_menu_img($("#footer-company"));
+                break;
+            case "work":
+                set_menu_img($("#footer-work"));
+                break;
+            case "spread":
+                set_menu_img($("#footer-spread"));
+                break;
+            default:
+               	set_menu_img($("#footer-index"));
+        }
+    }
+</script>

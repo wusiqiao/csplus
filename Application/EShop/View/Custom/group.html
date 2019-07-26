@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body>
+    <section class="edit-group-wrap">
+    	<div class="head">
+    		<div class="group-name">
+    			<label for="">分组名称</label>
+    			<input type="text" />
+    			<button>修改</button>
+    		</div>
+    		<div class="edit-btn">
+    			<button id="remove-custom">移除客户</button>
+    			<button>添加客户</button>
+    		</div>
+    	</div>
+		<div class="groups customer">
+			<ul class="bg-white">
+				<div class="title">M</div>
+				<li>
+					<div>
+						<input type="checkbox" />
+						<img src="{$Think.const.IMG_URL}/voucher/u1.png" alt="" />
+						<span class="nickname">莫声谷</span>
+					</div>
+					<div class="blue-4591fe">
+						<span>代帐一组</span>
+						<span class="mui-icon mui-icon-arrowright"></span>
+					</div>
+				</li>
+				<li>
+					<div>
+						<input type="checkbox" />
+						<img src="{$Think.const.IMG_URL}/voucher/u1.png" alt="" />
+						<span class="nickname">梅超风</span>
+					</div>
+					<div class="blue-4591fe">
+						<span>代帐一组</span>
+						<span class="mui-icon mui-icon-arrowright"></span>
+					</div>
+				</li>
+				<div class="title">S</div>
+				<li>
+					<div>
+						<input type="checkbox" />
+						<img src="{$Think.const.IMG_URL}/voucher/u1.png" alt="" />
+						<span class="nickname">宋远桥</span>
+					</div>
+					<div class="blue-4591fe">
+						<span>代帐二组</span>
+						<span class="mui-icon mui-icon-arrowright"></span>
+					</div>
+				</li>
+				<li>
+					<div>
+						<input type="checkbox" />
+						<img src="{$Think.const.IMG_URL}/voucher/u1.png" alt="" />
+						<span class="nickname">孙携之</span>
+					</div>
+					<div class="blue-4591fe">
+						<span>工商意向组</span>
+						<span class="mui-icon mui-icon-arrowright"></span>
+					</div>
+				</li>
+				<li>
+					<div>
+						<input type="checkbox" />
+						<img src="{$Think.const.IMG_URL}/voucher/u1.png" alt="" />
+						<span class="nickname">孙建</span>
+					</div>
+					<div class="blue-4591fe">
+						<span>商标意向组</span>
+						<span class="mui-icon mui-icon-arrowright"></span>
+					</div>
+				</li>
+			</ul>
+		</div>		
+		<div id="remove-operation" class="remove-operation hide">
+			<button>取消</button>
+			<button>确认移除</button>
+		</div>
+    </section>
+    <script type="text/javascript">
+    	$('#remove-custom').on('click',function(){
+    		$('.groups').toggleClass('edit');
+    		$('#remove-operation').toggleClass('hide');
+    	})
+    </script>
+	
+</body>
+</html>

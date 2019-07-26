@@ -1,0 +1,254 @@
+<include file="UserSupervise:head"/>
+<style>
+	.modal input[type='text'] {
+	    margin: 0 0;
+	    padding: 0 .1rem;
+	    border: 1px solid #e9e9e9;
+	}
+    #empty{
+        padding: 10%;
+        text-align: center;
+        background-color: #ffffff
+    }
+    html,body{
+        position:relative;
+        height:100%;
+        min-height:100%;
+    }
+    .search-fixed{
+        position: fixed;
+        top: 1.68rem;
+        padding: .1rem 0;
+        width: 100%;
+        background-color: #eee;
+        z-index: 88;
+    }
+
+    .item-wrap{ overflow: auto; width: 100%!important;}
+    .item-container{float: left; margin: 0 auto; width:100%;overflow: auto;}
+    .item-container li{float:left;overflow: hidden; width:100%;}
+    .item-wrap::-webkit-scrollbar {/*隐藏滚轮*/
+        display: none;
+    }
+
+    /* tab */
+    .wrk-tab{
+        width: 100%;
+        height: 0.78rem;
+        background-color: #ffffff;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0.88rem;
+        z-index: 88;
+    }
+    .wrk-tab-item{
+        width: 0.9rem;
+        height: 100%;
+        line-height: 0.78rem;
+        text-align: center;
+        font-weight: 700;
+        font-size: 0.28rem;
+        color: #2f2f2f;
+        margin: 0 0.185rem;
+        box-sizing: border-box;
+    }
+    .wrk-tab-item-active{
+        color:#4591fe;
+        border-bottom:0.045rem solid #4591fe; 
+    }
+
+    /* card */
+    .list-card{
+        padding:0.2rem;
+        position: relative;
+        /* height: 1.33rem; */
+        background-color: #ffffff;
+    }
+    .list-card-content{
+        width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+    .list-card-content-left{
+        float: left;
+        width: 0.38rem;
+        height: 0.38rem;
+        margin: 0.01rem 0.04rem 0;
+        background-image: url("/{$Think.MODULE_PATH}Public/images/icon/icon-company.png");
+        background-size: 100% 100%;
+    }
+    .list-card-content-right{
+        float: right;
+        width: 6.1rem;
+        height: 0.95rem;
+    }
+    .list-card-companyName{
+        font-size: 0.3rem;
+        color: #666666;
+    }
+    .list-card-info{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #acabab;
+        font-size: 0.26rem;
+        line-height: 0.26rem;
+        margin-top: 0.26rem;
+    }
+    .list-card-time{
+        font-size: 0.24rem;
+        color: #acabab;
+        margin-left: 0.6rem;
+        margin-top: 0.2rem;
+    }
+    .list-card-state{
+        width: 1.05rem;
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.22rem;
+        text-align: center;
+        position: absolute;
+        top:0;
+        right: 0.18rem;
+        color: #77c9f0;
+        background-color: #ebf8fe;
+    }
+
+</style>
+
+<body>
+<include file="Index:header" />
+<!-- tab分栏 -->
+<div class="wrk-tab">
+    <div class="wrk-tab-item wrk-tab-item-active" data-value="">全部</div>
+    <div class="wrk-tab-item" data-value="1">服务中</div>
+    <div class="wrk-tab-item" data-value="2">冻结中</div>
+    <div class="wrk-tab-item" data-value="3">已结束</div>
+</div>
+<!-- 搜索 -->
+<div class="search-fixed">
+    <div class="mui-search-area" style="width: 90%;margin: 0 5%;">
+        <input class="mui-search-area-input mui-input-clear" name="keyword" type="text" id="search1" placeholder="请输入合同名称搜索">
+        <button id="search"></button>
+    </div>
+</div>
+<!-- 列表 -->
+<section class="common-wrap bg-none">
+	<div style="margin-top: 2.5rem;margin-bottom: 10%">
+        <div class="mui-content" id="main-content">
+            <div class="item-wrap" >
+                <ul class="item-container">
+                    <li v-for="(item,index) in agreement_list" :id="item.item_id" style="margin-bottom:0.19rem;border-radius: 0.04rem;">
+                        <div class="list-card" @click="toDetail(item)">
+                            <div class="list-card-content" style="">
+                                <div class="list-card-content-left"></div>
+                                <div class="list-card-content-right">
+                                    <div class="list-card-companyName">
+                                        <div>{{item.name}}</div>
+                                    </div>
+                                    <div class="list-card-info">
+                                        <div>合同金额：￥{{item.agreement_money}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-card-time">
+                                服务期限：{{item.start_time_fmt}} - {{item.finish_time_fmt}}
+                            </div>
+                            <div class="list-card-state">
+                                {{item.state_value}}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            <div class="blue-checkbox mb15" id="empty" style="display: none">
+                <p style="color:#808080"> 没有数据</p>
+            </div>
+            </div>
+        </div>
+	</div>
+</section>
+<include file="UserSupervise:foot_access_file"/>
+
+<script src="/{$Think.const.MODULE_PATH}/Public/js/jquery.min.js"></script>
+<script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+<script src="/{$Think.const.MODULE_PATH}/Public/js/mui/mui.min.js"></script>
+<script src="/{$Think.const.MODULE_PATH}/Public/js/common.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+
+<script type="text/javascript">
+    var ComAgreementVue = new Vue({
+        el: "#main-content",
+        data: {
+            agreement_list: []
+        },
+        methods: {
+            onItemTap:function(item){
+                console.log(item);
+            },
+            toDetail:function(item){
+                window.open('detail.html?id='+item.id,'_self')
+            }
+        }
+    });
+
+    var ComAgreementFunctions = {
+        queryData : function($target,page,query) {
+            var keyword = $("input[name='keyword']").val();
+            var state = $(".wrk-tab-item-active").data("value");
+            $.post("/ComAgreement/list",{page:page,keyword:keyword,state:state},function(result){
+                if(query == 1){
+                    ComAgreementVue.agreement_list = [];
+                    $target.scrollTop(0);
+                }
+                ComAgreementVue.agreement_list = ComAgreementVue.agreement_list.concat(result);
+                if(ComAgreementVue.agreement_list.length == 0){
+                    $("#empty").show();
+                }else{
+                    $("#empty").hide();
+                }
+                $target.data("loading", false);
+            },'json');
+        }
+    };
+
+    $('#search').on("click",function(){
+        ComAgreementFunctions.queryData($(".item-wrap"),1,1);
+        resetPullRefresh(".item-wrap");
+    });
+
+    var winHeight = $(window).height();
+    $(window).resize(function(){
+        var thisHeight=$(this).height();
+        if(winHeight - thisHeight >140){
+            $('.footer').css('position','static');
+            $('.item-wrap').css('padding-bottom','0');
+            $(".footer").hide();
+        }else{
+            $('.footer').css({'position':'fixed'});
+            $('.item-wrap').css('padding-bottom','10%');
+            $(".footer").show();
+        }
+    });
+
+    // tab切换
+    $(".wrk-tab .wrk-tab-item").on("click",function(){
+        if(!$(this).hasClass("wrk-tab-item-active")){
+            $(this).addClass("wrk-tab-item-active");
+            $(this).siblings(".wrk-tab-item").removeClass("wrk-tab-item-active");
+            ComAgreementFunctions.queryData($(".item-wrap"),1,1);
+            resetPullRefresh(".item-wrap");
+        }
+    });
+
+    $(function(){
+        pullRefresh(".item-wrap", ".item-container", function($target, page){
+            ComAgreementFunctions.queryData($target,page,0);
+        });
+    });
+</script>
+</body>

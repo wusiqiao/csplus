@@ -1,0 +1,174 @@
+<include file="UserSupervise:head"/>
+<link href="__ROOT__/Application/ESAdmin/Public/css/attachment.css?v=2" rel="stylesheet" />
+<style>
+    .mui-indexed-list-inner img {
+        width: .28rem;
+        height: .28rem;
+        margin-right: .2rem;
+    }
+    .mui-indexed-list-inner .company-select-item {
+        /*display: flex;*/
+        justify-content: flex-start;
+        align-items: center;
+        height: 1.6rem;
+        line-height: .8rem;
+        padding: 0 .2rem;
+        box-shadow: 0 1px 0 #eeeeee inset;
+        background-color: #ffffff;
+    }
+    .mui-indexed-list-inner {
+        border-radius: .1rem;
+    }
+
+    .icon-attachment {
+        width: .38rem;
+        height: .38rem;
+        background: url('/{$Think.APP_PATH}ESAdmin/Public/images/icon/attachment.png') no-repeat;
+        background-position: center;
+        background-size: .38rem .38rem;
+    }
+
+    .item-content{
+        width: 70%;
+        overflow: hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        margin: 1%;
+        color: #666666;
+        font-size: 16px;
+    }
+
+    .item-create{
+        display: flex;
+        width: 100%;
+        color: #cccccc;
+        margin-left: 1%;
+    }
+    .item-create .user{
+        overflow: hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        flex: .7;
+    }
+
+    input[name=company_name]{
+        border: none;
+        width: 85%;
+        overflow: hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+    }
+    .common-wrap::-webkit-scrollbar {
+        display: none; /*隐藏滚轮*/
+    }
+</style>
+<body>
+<include file="Index:header" />
+<section class="common-wrap fixed-page bg-none" style="overflow: auto">
+	<div class="mui-indexed-list-inner attachment-container"  style="margin: .8rem 0;height: 88%" id="wrkAttachment">
+        <div class="company-selected flex-1 mb15" style="border: 1px solid #c7c5c5;" onclick="selectCompany(this)">
+            <div id="company-text" style="color: #368BFE;font-weight: bold;">
+                <input name="company_name" value="{$model.name}" style="" readonly>
+            </div>
+            <div class="select-icon1" ></div>
+            <input type="hidden" />
+        </div>
+        <div class="basic-info">
+            <div class="title">沟通记录</div>
+        </div>
+        <div v-if="(historys != null) && (historys.length > 0)">
+            <div class="company-select-item" v-for="(item,index) in historys">
+                <span class="item-content gray-6">
+                    {{item.content}}
+                </span>
+                <div style="float: right;" v-if="item.images.length > 2">
+                    <span style="color: #0b95ff;float: right;position: relative" @click="toFileList(item)">
+                        <div class="icon-attachment" style="float: left;height: .89rem;margin-right: .1rem"></div>
+                    </span>
+                </div>
+                <div class="item-create" style="">
+                    <div class="" style="flex: 1.3;">创建时间：{{item.create_time_fmt}}</div>
+                    <div class="user" style="">创建人：{{item.user_name}}</div>
+                </div>
+            </div>
+        </div>
+        <div v-else>
+            <li class="empty-voucher">
+                <img src="/Application/EShop/Public/images/voucher/emptyPic.png" alt="" style="width: 110px;height: 75px">
+                <div style="text-align: center;color:#cccccc;line-height: 2.67rem;">
+                    列表是空的哦
+                </div>
+            </li>
+        </div>
+	</div>
+    <button class="save-edited mt30 bg-368bfe" id="save" style="bottom: 10px;position: fixed;width: 7.2rem" onclick="toAddCommunication()">新增记录</button>
+</section>
+<include file="UserSupervise:foot_access_file"/>
+</body>
+</html>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+<script type="text/javascript">
+    var wrkAttachmentVue = new Vue({
+        el:"#wrkAttachment",
+        data:{
+            title:"",
+            attachments:[],
+            tabs:[],
+            historys:[],
+            current:0,
+            content: "",
+            callback:null,
+            layer_index:0,
+            attach_group:"{$model.attach_group}",
+            company_name:"{$model.name}",
+            company_id:"{$model.id}"
+        },
+        methods:{
+            toFileList:function(){
+                openWrkAttachmentForm("附件", [{attach_group:"{$model.attach_group}"}]);
+            }
+        }
+    });
+
+    function getAttachmentInfos(index){
+        wrkAttachmentVue.current = index;
+        var attach_group = wrkAttachmentVue.attach_group;
+        $.post("/ComAttachment/list", {"group": attach_group}, function(result){
+            for(var i = 0;i<result.rows.length;i++){
+                if(result.rows[i].staff_name != "" && result.rows[i].staff_name != null){
+                    result.rows[i].user_name = result.rows[i].staff_name;
+                }
+                if($.trim(result.rows[i].content) == ""){
+                    result.rows[i].content = "-";
+                }
+                wrkAttachmentVue.historys.push(result.rows[i]);
+            }
+        },"json");
+    }
+
+    $(function(){
+        getAttachmentInfos(1);
+    });
+
+    function selectCompany(){
+        layer.open({
+            type:2,
+            title:"选择公司",
+            closeBtn:1,
+            area:['100%',"100%"],
+            content:"/ComCompany/selectCompany"
+        })
+    }
+
+    function toAddCommunication(){
+        openAttachmentForm("新增记录", [{attach_group:"{$model.attach_group}"}]);
+    }
+
+    function refreshCommunication(){
+        window.location.reload();
+    }
+
+</script>

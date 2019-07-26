@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes" />    
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="format-detection" content="telephone=yes"/>
+        <meta name="msapplication-tap-highlight" content="no" />
+        <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+        <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+        <title>微信安全支付</title>
+        <script type="text/javascript">
+            function onBridgeReady(){
+                var jsApiParamters = $.parseJSON('{$jsApiParameters}');
+                WeixinJSBridge.invoke(
+                    'getBrandWCPayRequest',
+                    jsApiParamters,
+                    function(res){
+                        if (res.err_msg == "get_brand_wcpay_request:ok") {
+                            window.location.href = "/WrkReceivables/customer/id/{$id}";
+                        } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                            var btnArray 	=	['稍后付款','重新付款'];
+                            mui.confirm('付款未完成?',"提示",btnArray,function(e){
+                                if(e.index	==	0){
+                                    window.location.href = "/WrkReceivables/customer/id/{$id}";
+                                }else{
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            var btnArray 	=	['稍后付款','重新付款'];
+                            mui.confirm('付款未完成?',"提示",btnArray,function(e){
+                                if(e.index	==	0){
+                                    window.location.href = "/WrkReceivables/customer/id/{$id}";
+                                }else{
+                                    location.reload();
+                                }
+                            });
+                        }
+                    });
+            }
+            if (typeof WeixinJSBridge == "undefined"){
+                if( document.addEventListener ){
+                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                }else if (document.attachEvent){
+                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                }
+            }else{
+                onBridgeReady();
+            }
+        </script>
+    </head>
+
+    <!--<body onload="callpay()">-->
+    <body>
+        <style>
+            *{ padding:0px; margin:0px; line-height:240%;}
+            dl {width:100%;
+                float:left;}
+
+            dl dt{
+                float:left;padding-left:15px;}
+            dl dd{ float:right;padding-right:15px;}
+
+            .lines {
+                border-bottom:1px #CCC solid;}
+
+            #round {
+                width:98%;
+                background:#31cd00;
+                padding:0px 10px; height:50px;
+                border: 5px solid #31cd00;
+                -moz-border-radius: 10px;      /* Gecko browsers */
+                -webkit-border-radius: 10px;   /* Webkit browsers */
+                border-radius:10px;            /* W3C syntax */
+                cursor: pointer;  color:white; 
+            }
+        </style>
+        <dl class="lines">
+            <dt>订单编号</dt>
+            <dd>{$orderid}</dd>
+        </dl>
+
+        <dl class="lines"  style="margin-bottom:15px;">
+            <dt>支付金额</dt>
+            <dd style="color:#ff7820">{$price} 元</dd>
+        </dl>
+
+
+        <div align="center" style="margin-top:10px;">
+            <!--<button id="round" type="button" onclick="callpay()" >立即支付</button>-->
+        </div>
+    </body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.css" rel="stylesheet"/>
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.dtpicker.css" rel="stylesheet"/>
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <title>Title</title>
+</head>
+<style>
+    .button-group{
+        /*position: absolute;*/
+        /*bottom: .5rem;*/
+        margin-top: .5rem;
+        padding: .18rem .2rem;
+        display: flex;
+        width: 100%;
+    }
+    .custom-info-wrap::-webkit-scrollbar{
+        display: none;
+    }
+    .button-group a{
+        flex: 1;
+        text-align: center;
+        background-color: rgb(69,145,254);
+        color: #fff;
+        border-radius: .1rem;
+        padding: .1rem;
+        margin: 0 .1rem;
+    }
+    input   {
+        color:rgb(153,153,153)
+    }
+</style>
+<body>
+<div class="custom-info-wrap common-wrap bg-none" style="background-color: #EFEFF4;height:100%;overflow-y: scroll;">
+    <form style="background-color: #fff;" id="RechargeForm" onsubmit="return false;">
+        <div class="basic-info" style="background-color: #FFFFFF;">
+            <input name="id"  type="hidden"  value="{$model.id}">
+            <input name="attach_group"  type="hidden"  value="{$model.attach_group}">
+            <div class="title">充值确认</div>
+            <div class="info-line " data-pay="0" style="padding: .3rem .2rem .2rem .2rem">
+                <div class="info-title">资金账户<i></i></div>
+                <empty name="model.id">
+                    <input type="text" name="capital_account"  onclick="blur();searchAccount(this)"  placeholder="点击选择资金账户" />
+                    <else/>
+                    <input type="text"  name="capital_account" disabled value="{$model['capital_account']}" placeholder="" />
+                </empty>
+                <input type="hidden" name="capital_account_id" value="{$model['capital_account_id']}">
+            </div>
+            <div class="info-line " data-pay="0" style="padding: .3rem .2rem .2rem .2rem" >
+                <div class="info-title">充值日期<i></i></div>
+                <input type="hidden" name="pay_time" value="{$pay_time}">
+                <input type="text" id="recharge_date"  onclick="blur();showCooTimePicker(this);"  value="{$pay_time}"  style="color: #368bfe;"/>
+            </div>
+            <div class="info-line " data-pay="0" style="padding: .3rem .2rem .2rem .2rem">
+                <div class="info-title">充值金额<i></i></div>
+                <empty name="model.id">
+                    <input type="number" name="account" oninput="this.value=this.value.replace(/[^0-9.]+/,'');$('body').height($('body')[0].clientHeight);" placeholder="输入充值金额" />
+                    <else/>
+                    <input type="number" name="account" disabled value="{$model['account']}" placeholder="" />
+                </empty>
+            </div>
+            <div class="info-line " data-pay="0" style="padding: .3rem .2rem .2rem .2rem">
+                <div class="info-title">收款账户<i></i></div>
+                <div onclick="blur();" style="flex: 1;display: flex;align-items: center;overflow: hidden;color: #368bfe;">
+                    <input type="text" style="color: #368bfe;margin-right: 0;line-height: 1rem;" id="receivables_account" placeholder="" />
+                    <input type="hidden" name="origin" value="" placeholder="" />
+                    <span class="mui-icon mui-icon-arrowright"></span>
+                </div>
+            </div>
+            <div class="info-line " data-pay="0" style="padding: .3rem .2rem .2rem .2rem">
+                <div class="info-title">手续费<i></i></div>
+                <!--<input name="third_fee" type="number" oninput="this.value=this.value.replace(/[^0-9.]+/,'');" placeholder="" value="0.00" style="color: #368bfe;"/>-->
+                <input name="third_fee" type="number" onfocus="if(this.value==0){value=''}" onblur="if(this.value==''){value='0.00'};recharge_change()" oninput="this.value=this.value.replace(/[^0-9.]+/,'');" placeholder="" value="0.00" style="color: #368bfe;"/>
+            </div>
+            <div class="info-line " data-pay="0" style="padding: .3rem .2rem .2rem .2rem">
+                <div class="info-title">实收金额<i></i></div>
+                <input type="number" id="actual_money"  value="0.00" disabled />
+            </div>
+
+        </div>
+    </form>
+    <div class="button-group" >
+        <a href="javascript:;" onclick="actionCapitalFolder()">充值备注</a>
+        <notempty name="model.id">
+            <if condition="$is_leader && (( $menuList['ComRecharge']['menu_actions']['rechargeRefuse'] eq 1 and $menuList['ComRecharge']['allow'] eq 1  ) or $permissions['_IS_Manager_'] eq 1)">
+                <a href="javascript:;" onclick="operateRefuse()">充值失败</a>
+            </if>
+            <if condition="$is_leader && (( $menuList['ComRecharge']['menu_actions']['rechargeAdopt'] eq 1 and $menuList['ComRecharge']['allow'] eq 1  ) or $permissions['_IS_Manager_'] eq 1)">
+                <a href="javascript:;" onclick="operateAdopt()">确认</a>
+            </if>
+            <else/>
+            <if condition="(( $menuList['ComRecharge']['menu_actions']['rechargeAdopt'] eq 1 and $menuList['ComRecharge']['allow'] eq 1  ) or $permissions['_IS_Manager_'] eq 1)">
+                <a href="javascript:;" onclick="operateAdopt()">确认</a>
+            </if>
+        </notempty>
+        <a href="javascript:;" onclick="closeBtn()" >取消</a>
+    </div>
+</div>
+
+</body>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.dtpicker.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+<script src="__ROOT__/Application/Public/lhgdialog/lhgdialog.js?skin=idialog"></script>
+<script src="/{$Think.MODULE_PATH}Public/js/common.js"></script>
+
+<script>
+    var u = navigator.userAgent;
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    if (isiOS) {
+        $('input,textarea').blur(function(){
+            top.document.body.scrollTop = 0;
+        })
+    }
+    var button_toggle = 1;
+    function closeBtn() {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    }
+    //时间选择
+    function showCooTimePicker(obj) {
+        var dtpicker = new mui.DtPicker({
+            type: "date",
+            labels: ['年', '月', '日'],//设置默认标签区域提示语
+        })
+        dtpicker.show(function (selectItems) {
+            $('#recharge_date').val(selectItems.y.text+'年'+selectItems.m.text+'月'+selectItems.d.text+'日');
+            $('input[name=pay_time]').val(selectItems.y.value+'-'+selectItems.m.value+'-'+selectItems.d.value);
+        })
+    }
+    recharge_change()
+    $("input[name=third_fee],input[name=account]").change(function(){
+        recharge_change()
+    })
+    function searchAccount(obj)
+    {
+        var body;
+        var url = '/ComBranchCapital/searchAccount/various/r';
+        top.layer.open({
+            type: 2,
+            title: '新增确认单',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['100%', '100%'],
+            content: url,
+            success: function (layero, index) {
+                var iframeWin = top[layero.find('iframe')[0]['name']];
+            },
+            end: function () {
+                // console.log(body.html())
+                console.log($('#handle_status').val())
+            }
+        });
+    }
+    function getAccount(value,text) {
+        $("input[name=capital_account]").val(text);
+        $("input[name=capital_account_id]").val(value);
+    }
+    //数据处理
+    function recharge_change() {
+        var recharge = $('input[name=account]').val();
+        var recharge_fee = $("input[name=third_fee]").val();
+        if (recharge == '' || recharge == NaN) {
+            remain = 0;
+            $('#actual_money').html(remain.toFixed(2)+'元');
+            return false;
+        };
+        recharge 	=	parseFloat(recharge);
+        recharge_fee = parseFloat(recharge_fee);
+        var remain = recharge - recharge_fee;
+        if (remain > 0) {
+            $('#actual_money').val(remain.toFixed(2));
+        } else {
+            $('#actual_money').val(recharge.toFixed(2));
+            $("input[name=third_fee]").val('0.00');
+            layer.msg('充值手续费不能大于充值金额');
+        }
+    }
+    //确定充值
+    function operateAdopt()
+    {
+        if (button_toggle === 1) {
+            button_toggle = 0;
+            recharge_change();
+            var url = '/ComBranchCapital/recharge_examine';
+            var id = $('input[name=id]').val();
+            var actual = $('input[name=capital_account_id]').val();
+            if ($('#actual_money').val() > 0 && (actual || id > 0)) {
+                mui.confirm('是否确认该条记录充值成功','充值确认',['取消','确定'],function(e){
+                    if(e.index == 1) {
+                        $.post(url,$('#RechargeForm').serialize()+'&examine_type=adopt',function(result){
+                            if(result.code == 0){
+                                layer.msg('充值确认成功');
+                                parent.loadData();
+                                setTimeout(function(){
+                                    var index = parent.layer.getFrameIndex(window.name);
+                                    parent.layer.close(index);
+                                },1000)
+                            } else {
+                                layer.msg(result.message);
+                                button_toggle = 1;
+                            }
+                        },'json')
+                    } else {
+                        button_toggle = 1;
+                    }
+                })
+            } else {
+                button_toggle = 1;
+                if (!actual && !id) {
+                    layer.msg('资金账户不能为空');
+                    return false;
+                } else {
+                    layer.msg('充值实收金额不能小于0');
+                    return false;
+                }
+            }
+        }
+    }
+    //充值拒绝
+    function operateRefuse()
+    {
+        if (button_toggle === 1) {
+            button_toggle = 0;
+            var url = '/ComBranchCapital/recharge_examine';
+            var id = $('input[name=id]').val();
+            if (id > 0) {
+                mui.confirm('是否拒绝该充值申请','拒绝充值确认',['取消','确定'],function(e){
+                    if(e.index == 1) {
+                        $.post(url,{id:id,examine_type:'refuse'},function(result){
+                            if(result.code == 0){
+                                layer.msg('充值拒绝成功');
+                                parent.loadData();
+                                setTimeout(function(){
+                                    var index = parent.layer.getFrameIndex(window.name);
+                                    parent.layer.close(index);
+                                },1000)
+                            } else {
+                                layer.msg(result.message);
+                                button_toggle = 1;
+                            }
+                        },'json')
+                    } else {
+                        button_toggle = 1;
+                    }
+                })
+            } else {
+                layer.msg('操作失败');
+                button_toggle = 1;
+                return false;
+            }
+        }
+    }
+    //mui 弹出窗
+    var picker = new mui.PopPicker();
+    var receivables_account = {$receivables_account} || {};
+    if (receivables_account.length > 0) {
+        $("#receivables_account").val(receivables_account[0].text);
+        $("input[name=origin]").val(receivables_account[0].value);
+    }
+    picker.setData(receivables_account);
+    document.getElementById('receivables_account').addEventListener('tap', function (event) {
+        picker.show(function(SelectedItem) {
+            $("#receivables_account").val(SelectedItem[0].text);
+            $("input[name=origin]").val(SelectedItem[0].value);
+        })
+    })
+    function actionCapitalFolder() {
+        var attach_group = $("input[name='attach_group']").val();
+        openAttachmentForm("资金附件", [{text:"类型1",attach_group:attach_group}],function(id){
+            //alert(id);
+        });
+    }
+</script>
+</html>

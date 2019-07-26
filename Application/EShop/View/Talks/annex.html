@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet"/>
+    <link href="/{$Think.APP_PATH}Public/vender/layer/skin/layer.css?v={$version}" rel="stylesheet"/>
+    <link href="__ROOT__/Application/EShop/Public/css/attachment.css?v=2" rel="stylesheet"/>
+    <style>
+        #attachment {
+            padding: 0 0.38rem;
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .file-line {
+            padding: 0.26rem 0.56rem;
+            margin: 0.36rem 0;
+            background-color: #f6f7fb;
+            display: flex;
+        }
+
+        .img-wrap {
+            position: relative;
+        }
+
+        .img-wrap img {
+            height: 3.8rem;
+            width: 3.8rem;
+            text-align: center;
+        }
+
+        .file-line-info {
+            color: #666;
+            white-space: nowrap;
+            font-size: 0.8rem
+        }
+        .attachment-container .attachment-icon {
+            height: 3.8rem;
+            width: 3.8rem;
+        }
+        .attachment-container .empty-proxy{
+            height: 100vh;
+        }
+        .attachment-container .empty-proxy span {
+            font-size: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+<div class="attachment-container" id="annex" hidden>
+    <div style="display: none" class="empty-proxy" v-show="list.length == 0">
+        <span>附件记录为空</span>
+    </div>
+    <div id="attachment" v-show="list.length > 0">
+
+        <div class="file-line" v-for="item in list">
+            <div class="img-wrap"  v-if="item.type == 'jpg' || item.type == 'jpeg' || item.type == 'png' || item.type == 'gif'">
+                <img :src="item.url"/>
+            </div>
+
+            <div :class="'img-wrap attachment-icon attachment-icon-'+item.type" v-else></div>
+            <div style="margin-left: 0.6rem">
+                <div class="file-line-info">附件名称：{{item.name}}</div>
+                <div class="file-line-info">创建时间：{{item.create_time}}</div>
+                <div class="file-line-info">
+                    <span @click="PreviewImage(item.url)" style="color: #368BFE;" v-if="item.type == 'jpg' || item.type == 'jpeg' || item.type == 'png' || item.type == 'gif'">预览</span>
+                    <a style="color: #368cfd;margin: 0 0.2rem;" :href="item.url" :download="item.name" mce_href="#" v-else>下载</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/{$Think.APP_PATH}Public/jquery/jquery.min.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script>
+</script>
+
+
+<script>
+    (function () {
+        $("#annex").show();
+        var group = new Vue({
+            el: "#annex",
+            data: {
+                list: {$list}
+            },
+            mounted() {
+
+            },
+            methods: {
+                PreviewImage(url) {
+                    top.layer.open({
+                        type: 1,
+                        title: '图片预览',
+                        shade: 0.8,
+                        closeBtn: 1,
+                        area: ["100%", "100%"],
+                        content: `<div style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
+                    <img style="width: 100%;" src="${url}" alt="">
+                </div>`
+                    });
+                }
+            }
+        })
+    })(window)
+</script>
+</body>
+
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/vender/layer/skin/layer.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Application/EShop/Public/css/Organization/index.css?v={$vesion}">
+    <title>绑定管理人员</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+<section class="verification-wrap">
+    <form onsubmit="return false;">
+        <div class="bound-leader-top"></div>
+        <input name="code" value="" type="hidden">
+        <div class="verification-form">
+            <div class="verification-input-wrap">
+                <div class="verification-input">
+                    <span class="verification-tel"></span>
+                    <input id="mobile" name="mobile" type="text" placeholder="请输入手机号码"/>
+                </div>
+                <div class="verification-input">
+                    <span class="verification-vercode"></span>
+                    <input name="phone_code" type="text" placeholder="请输入短信验证码"/>
+                    <button id="getCode" onclick="getSMS(this)">获取验证码</button>
+                </div>
+            </div>
+            <button type="submit" class="verification-btn" style="position: fixed;bottom: 20px;width: 90%;background-color:#0077f4;height: 40px">立即绑定</button>
+        </div>
+    </form>
+</section>
+</body>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+<script>
+    function getSMS(obj){
+        if(!(/^\d{8,15}$/.test($('#mobile').val()))){
+            layer.msg("请输入正确的手机号码！");
+        }else{
+            $.post("/SysBranch/getCodeForBoundLeader",{mobile:$('#mobile').val()},function(result){
+                if(result.error == 0){
+                    setTime(obj);
+                    $("input[name='code']").val(result.code);
+                }
+                layer.msg(result.message);
+            },'json')
+        }
+    }
+
+    var countdown = 60;
+    function setTime(obj){
+        if(countdown == 0){
+            $(obj).removeAttr("disabled").css("color","#fff").text("获取验证码");
+            countdown = 60;
+            return;
+        }else{
+            $(obj).attr("disabled",true).css("color","#e4e4e4").text("重新获取("+countdown+")");
+            countdown -- ;
+        }
+        setTimeout(function(){
+            setTime(obj);
+        },1000)
+    }
+
+    $(".verification-btn").on("click",function(){
+        var code = $("input[name='code']").val();
+        var phone_code = $("input[name='phone_code']").val();
+        if(code != phone_code){
+            layer.msg("验证码错误！");
+            return false;
+        }else if(code == ""){
+            layer.msg("请先获取验证码！");
+            return false;
+        }else if(phone_code == ""){
+            layer.msg("请输入验证码！");
+            return false;
+        }
+        var url = '__SELF__';
+        $.post(url, {mobile:$('#mobile').val()}, function(result){
+            if(result.code != 1){
+                boundSuccess();
+            }else{
+                mui.toast(result.message);
+            }
+        },"json");
+    });
+
+    function boundSuccess(){
+        layer.open({
+            title: '绑定成功',
+            type: 1,
+            area: ['90%', '200px'],
+            shadeClose: true, //点击遮罩关闭
+            content: `<div class="labelBox" style="text-align:center;padding-top:30px;">
+                        绑定成功，您现在可以直接使用微信登陆财穗加系统
+                    </div>`,
+            btn: ['进入系统', '关闭当前页面'],
+            yes: function () {
+                location.href="__MODULE__/Index";
+            },
+            btn2: function(){
+                window.history.back();
+            }
+        });
+    }
+</script>
+</html>

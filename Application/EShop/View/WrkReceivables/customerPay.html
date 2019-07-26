@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    html,body{
+        height: auto;
+    }
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+   
+    #current-billing-plan .info-title{
+        width: 2.35rem;
+    }
+    .basic-info .info-title{
+        width: 2.05rem;
+    }
+    .basic-info input[type=radio]{
+       display: none;
+    }
+    .info-upset{
+        flex: 1;
+        font-size: 0.28rem;
+        color: #368bfe;
+        text-align: right;
+        margin: .1rem 0.21rem;
+        padding: .1rem 0rem;
+        line-height: .6rem;
+        height: .8rem;
+    }
+    input[type=radio].css-checkbox:checked + label.css-label {
+        background-position: 0 -20px;
+    }
+
+    input[type=radio].css-checkbox + label.css-label {
+        padding-left: 25px;
+        height: 20px;
+        display: inline-block;
+        line-height: 20px;
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        font-size: 14px;
+        vertical-align: middle;
+        cursor: pointer;
+        background-image: url("/{$Think.MODULE_PATH}Public/images/icon/css_radio.png");
+    }
+</style>
+
+<body>
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <form id="customerForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title">合同信息</div>
+                <div class="info-line important-input">
+                    <div class="info-title">公司名称<i></i></div>
+                    <input type="text" name="" value="{$model.company_name}"  readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">合同名称<i></i></div>
+                    <input type="text" name="" value="{$model.agreement_name}"  readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">缴费金额<i></i></div>
+                    <input type="text" name="pay_amount" value="{$model.pay_amount}"  readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title" style="position:relative;">使用优惠卷<i></i></div>
+                    <if condition="$ticketCount gt 0">
+                         <div class="info-title" style="color:rgb(253, 192, 99);">{$ticketCount}个可用</div>
+                        <input style="padding-right: 0.2rem;" type="text" name="reduce_cost" v-model="model.reduce_cost" id="reduce_cost" placeholder="请选择优惠卷" readonly onclick="ticketList()" />
+                        <span style="line-height:1rem;position:absolute;right:0.2rem;color: #ccc;" class="mui-icon mui-icon-arrowright"></span>
+                    <else/>
+                        <input type="text" name="reduce_cost" v-model="model.reduce_cost" id="reduce_cost" placeholder="无可用" readonly />
+                    </if>
+                    <input type="hidden" name="company_id" value="{$model.company_id}" />
+                    <input type="hidden" name="order_sn" value="{$model.order_sn}" />
+                    <input type="hidden" id="sp_ticket_stock_id" name="sp_ticket_stock_id" />
+                    <input type="hidden" name="attach_group" value="{$model.attach_group}" />
+                </div>
+                <if condition="$model.balance_amount neq 0">
+
+                    <div class="info-line">
+                        <div class="info-title">使用账户余额<i></i></div>
+                        <div class="info-title" style="color:rgb(253, 192, 99);">可用:{$model.balance_amount}</div>
+                        <input type="text" id="balance_amount" name="balance_amount" v-model='model.balance_amount' placeholder="请输入账户余额" />
+                    </div>
+                <else/>
+                    <div class="info-line">
+                        <div class="info-title">使用账户余额<i></i></div>
+                        <input type="text" id="balance_amount" name="balance_amount" placeholder="暂无可用余额" readonly />
+                    </div>
+                </if>
+                <div class="info-line">
+                    <div class="info-title">还需缴费金额<i></i></div>
+                    <input type="text" v-model='model.actual_amount' name="actual_amount"  readonly/>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info" id="pay-mode">
+                <div class="title">选择付款方式</div>
+                <if condition="$model.wxpay_open neq 30">
+                    <div class="info-line" style="align-items: center;justify-content: space-between;">
+                    <div class="info-title"><img style="height: 0.8rem;margin: 0.1rem;" src="/{$Think.MODULE_PATH}Public/images/icon/icon-wx-uncheck.png" alt=""></div>
+                    <span style="margin-right:0.3rem;">
+                        <input class="css-checkbox" type="radio" id="pay-wx" name="type" value="1" <if condition="$model.wxpay_open eq 10 || $model.pay_status eq 30">checked</if> onclick="hideBankInfo()" />
+                        <label style="width:3rem;background-position-x: right;" class="css-label" for="pay-wx"></label>
+                    </span>
+                </div>
+                </if>
+                <if condition="$model.pay_status neq 30">
+                <div class="info-line" style="align-items: center;justify-content: space-between;">
+                    <div class="info-title"><img style="height: 0.8rem;margin: 0.1rem;" src="/{$Think.MODULE_PATH}Public/images/icon/icon-offline.png" alt=""></div>
+                    <span style="margin-right:0.3rem;">
+                        <input class="css-checkbox" type="radio" id="pay-offline" name="type" value="2" <if condition="$model.wxpay_open neq 10">checked</if>  onclick="showBankInfo()" />
+                        <label style="width:3rem;background-position-x: right;" class="css-label" for="pay-offline"></label>
+                    </span>
+                </div>
+                </if>
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info" id="bank-information" <if condition="$model.wxpay_open eq 10">style="display:none;"</if>>
+                <div class="title">银行账户信息</div>
+                <div class="info-line">
+                    <div class="info-title">收款人<i></i></div>
+                    <input type="text" name="" value="{$model.unline_payee}"  readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">开户行<i></i></div>
+                    <input type="text" name="" value="{$model.unline_bank_account}"  readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">卡号<i></i></div>
+                    <input type="text" name="" value="{$model.unline_card_number}"  readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">转账凭证</div>
+                    <span class="info-upset" onclick="openAttachment()">
+                        点击上传汇款凭证<span class="mui-icon mui-icon-arrowright"></span>
+                    </span>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div style="margin-bottom: 0.95rem"></div>
+            <div class="basic-info" style="width:100%;position:fixed;bottom:0;left: 0;">
+                <div class="info-line">
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="payAction()">确认付款</button>
+                </div>
+
+                <!-- <div class="info-line">
+
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="backToDetail()">返回缴费详情</button>
+                </div> -->
+            </div>
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+
+        var  paymentVue = new Vue({
+            el:"#customerForm",
+            data:{
+                model:{
+                    pay_amount:0,
+                    actual_amount:0,
+                    balance_amount:null,
+                    balance_max:0,
+                    reduce_cost:null
+                }
+            }
+        });
+
+        $(function(){
+            getData();
+        });
+        //初始化数据
+        function getData(){
+            paymentVue.model.pay_amount = '{$model.pay_amount}';
+            paymentVue.model.actual_amount = '{$model.pay_amount}';
+            paymentVue.model.balance_max = '{$model.balance_max}';
+        }
+        $("input[name='balance_amount']").on("keyup",function(){
+            paymentVue.$nextTick(function() {
+                changeAmount();
+            });
+        });
+
+        function openAttachment(){
+            openAttachmentForm("附件", [{attach_group:"{$model.attach_group}"}]);
+        }
+        function changeAmount(){
+            var balance_max = '{$model.balance_max}';
+            var reduce_cost = paymentVue.model.reduce_cost;
+            var balance_amount = $("input[name='balance_amount']").val();
+            if( parseFloat(balance_amount) > parseFloat(mathSub(balance_max,reduce_cost)) ){
+                paymentVue.model.balance_amount = mathSub(balance_max,reduce_cost);
+            }else{
+                paymentVue.model.balance_amount = balance_amount;
+            }
+
+            var sum = '{$model.pay_amount}';
+            balance_amount = paymentVue.model.balance_amount;
+            sum = mathSub(sum,reduce_cost);
+            sum = mathSub(sum,balance_amount);
+            paymentVue.model.actual_amount = sum;   
+
+            if (sum == 0) {
+                $("#pay-mode").hide();
+                $("#bank-information").hide();
+            }else{
+                $("#pay-mode").show();
+                $("#bank-information").show();
+            }
+        }
+        //减法
+        function mathSub(a,b) {
+           var sum = (a*100 - b*100)/100;
+           return sum.toFixed(2);
+        }
+        //加法
+        function mathAdd(a,b) {
+           var sum = (a*100 + b*100)/100;
+           return sum.toFixed(2);
+        }
+
+        //银行信息显示隐藏
+        function hideBankInfo(){
+            $("#bank-information").hide();
+        }
+        function showBankInfo(){
+            $("#bank-information").show();
+        }
+
+        //确认付款
+        function payAction(){
+            var company_id = $("input[name='company_id']").val();
+            var pay_amount = $("input[name='pay_amount']").val();
+            var order_sn = $("input[name='order_sn']").val();
+            var attach_group = $("input[name='attach_group']").val();
+            var balance_amount = $("input[name='balance_amount']").val();
+            var actual_amount = $("input[name='actual_amount']").val();
+            var sp_ticket_stock_id = $("#sp_ticket_stock_id").val();
+            var reduce_cost = $("#reduce_cost").val();
+            var type = $("input[name='type']:checked").val();
+            var total = mathAdd(balance_amount,reduce_cost);
+            if (type != '1' || total == pay_amount) {
+                $.post("/WrkReceivables/customerPay/id/{$model.id}",
+                    {
+                        company_id:company_id,
+                        pay_amount:pay_amount,
+                        order_sn:order_sn,attach_group:attach_group,
+                        balance_amount:balance_amount,
+                        sp_ticket_stock_id:sp_ticket_stock_id,
+                        reduce_cost:reduce_cost,
+                    },function(result) {
+                    layer.msg(result.message);
+                    setTimeout(function() {
+                        window.location.href="__MODULE__/WrkReceivables/customer/id/{$id}";
+                    }, 1500);
+                }, "json");
+            } else {
+                //mui.alert('微信支付维护中，请选择其余付款方式或稍后再试！');
+                //return false;
+                //var url = "__MODULE__/WrkReceivables/wechatPay/id/{$id}/order_sn/"+order_sn+"/total_fee/"+actual_amount;
+                var url = "__MODULE__/WeChatPay/receivablesPay/id/{$id}/order_sn/"+order_sn+"/total_fee/"+actual_amount;
+                if (balance_amount != null && balance_amount != "" && balance_amount > 0) {
+                   url = url +"/balance_amount/"+balance_amount;
+                }
+                if (sp_ticket_stock_id != null && sp_ticket_stock_id != "" ) {
+                   url = url +"/reduce_cost/"+reduce_cost+/sp_ticket_stock_id/+sp_ticket_stock_id;
+                }
+                window.location.href = url;
+            }
+        }
+
+        function ticketList(){
+            var toTicket = layer.open({
+                type:2,
+                title:"优惠券列表",
+                shadeClose:true,
+                shade:0.8,
+                area:['100%','100%'],
+                content:"__MODULE__/WrkReceivables/ticketList/least_cost/{$model.pay_amount}",
+                closeBtn:1,
+                success: function(layero, index) {},
+                end: function() {}
+            })
+        }
+
+        function setCoupon(sp_ticket_stock_id,reduce_cost){
+            paymentVue.model.reduce_cost = reduce_cost;
+            $("#sp_ticket_stock_id").val(sp_ticket_stock_id);
+            paymentVue.$nextTick(function() {
+            changeAmount();
+            });
+        }
+
+        function backToDetail(){
+            window.location.href="__MODULE__/WrkReceivables/customer/id/{$id}"
+        }
+
+    </script>
+</body>
+
+</html>

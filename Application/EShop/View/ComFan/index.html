@@ -1,0 +1,910 @@
+<include file="UserSupervise:head" />
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/css/comm.css">
+    <style>
+    .item-wrap {
+        height: 100%;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-bottom: 150px;
+    }
+	.item-wrap::-webkit-scrollbar {
+		display: none;
+	}
+    .item-container {
+        width: 100%
+    }
+
+    .item-container li {
+        width: 100%;
+    }
+
+    .item-container li .item {
+
+        position: relative;
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 5px;
+        background: #fff
+    }
+    .beside-selector::-webkit-scrollbar {
+    	display: none;
+    }
+    </style>
+    <title></title>
+</head>
+
+<body>
+    <include file="Index:header" />
+    <section class="custom-wrap mt85" style="overflow: hidden;">
+        <ul class="con-tab pr">
+            <li id="list" class="cons">
+                <ul class="mui-main-tab">
+                    <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['ComPotential']['menu_actions']['list'] eq 1 and $menuList['ComPotential']['allow'] eq 1)">
+                        <li onclick="window.location.href = '/ComPotential/index.html'">会员</li>
+                        <else/>
+                        <li onclick="mui.alert('无此功能操作权限')">会员</li>
+                    </if>
+                    <li class="active">粉丝</li>
+                    <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['ComGuest']['menu_actions']['list'] eq 1 and $menuList['ComGuest']['allow'] eq 1)">
+                        <li onclick="window.location.href = '/ComGuest/index.html'">游客</li>
+                        <else/>
+                        <li onclick="mui.alert('无此功能操作权限')">游客</li>
+                    </if>
+                </ul>
+                <div class="mui-search-area">
+                    <input id="name" class="mui-search-area-input mui-input-clear" type="text" placeholder="请输入用户名进行搜索" />
+                    <button onclick="queryData()"></button>
+                </div>
+                <div class="match-check">
+                    <div class="blue-checkbox flex-center blue-4591fe">
+                        <input type="checkbox" id="checkAll" />
+                        <label for="checkAll">全选/取消全选</label>
+                    </div>
+                    <div class="select-match flex-center blue-4591fe">筛选<span class="ml10"></span></div>
+                </div>
+                <div class="mui-indexed-list-bar" style="display: none;">
+                    <a>A</a>
+                    <a>B</a>
+                    <a>C</a>
+                    <a>D</a>
+                    <a>E</a>
+                    <a>F</a>
+                    <a>G</a>
+                    <a>H</a>
+                    <a>I</a>
+                    <a>J</a>
+                    <a>K</a>
+                    <a>L</a>
+                    <a>M</a>
+                    <a>N</a>
+                    <a>O</a>
+                    <a>P</a>
+                    <a>Q</a>
+                    <a>R</a>
+                    <a>S</a>
+                    <a>T</a>
+                    <a>U</a>
+                    <a>V</a>
+                    <a>W</a>
+                    <a>X</a>
+                    <a>Y</a>
+                    <a>Z</a>
+                </div>
+                <div class="mui-indexed-list-alert"></div>
+                <div class="mui-indexed-list-inner pr" id="main-content" v-cloak>
+                    <div class="mui-indexed-list-empty-alert">没有数据</div>
+                    <div class="item-wrap groups customer bg-none" >
+                        <ul class="item-container mui-table-view bg-none" id="customer_lists">
+                            <li v-for="(item,index) in item_list" @tap="onItemTap(item)" :id="item.item_id" class="plr20 bg-white mb20">
+                                <div class="flex-between border-b">
+                                    <div class="check-div" style="margin-right: 0">
+                                        <input name="user_id" type="checkbox" :value="item.id">
+                                        <img :src="item.head_pic" alt="" onclick="toDetail(this)" :data-id="item.id">
+                                        <span class="nickname" onclick="toDetail(this)" :data-id="item.id">{{item.name}}</span>
+                                        <span class="tel" onclick="toDetail(this)" :data-id="item.id">{{item.mobile}}</span>
+                                    </div>
+                                    <div style="overflow: hidden;width: 100%;height: 45px;margin: 0" onclick="toDetail(this)" :data-id="item.id" ></div>
+                                    <div class="eidt-user" onclick='toEdit(this)' :data-id="item.id" style="padding-right: 5%"></div>
+                                </div>
+                                <div class="ptb15" onclick='toDetail(this)' :data-id="item.id">
+                                    <div class="flex-between line50 gray-9">
+                                        <div>{{item.branch_name}}</div>
+                                        <div>{{item.contact}}</div>
+                                    </div>
+                                    <div class="flex-between line50">
+                                        <div class="blue-4591fe dis-flex word-keep">
+                                            分组：<span class="icon-mark">{{item.group_name}}</span>
+                                        </div>
+                                        <div class="blue-4591fe dis-flex word-keep">
+                                            标签：<Tempalte v-for="(tag,tagIndex) in item.tags">
+                                            	<span class="icon-mark" v-if="tagIndex < 2">
+												  {{tag.value}}
+												</span>
+                                                <span v-else-if="tagIndex == 2">
+                                                  ……
+                                                </span>
+                                            </Tempalte>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mui-bottom-check-commit">
+                    <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['ComFans']['menu_actions']['targetUpdates'] eq 1 and $menuList['ComFans']['allow'] eq 1)">
+                        <button class="mr10 tag-group">分组标签</button>
+                        <else/>
+                        <button class="mr10 " onclick="mui.alert('无此功能操作权限')">分组标签</button>
+                    </if>
+                    <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['ComFans']['menu_actions']['indexesCompany'] eq 1 and $menuList['ComFans']['allow'] eq 1)">
+                        <button class="bindCompany">关联公司</button>
+                        <else/>
+                        <button class="" onclick="mui.alert('无此功能操作权限')">关联公司</button>
+                    </if>
+                    <if condition="$permissions['_IS_Manager_'] eq 1 or ($menuList['ComFans']['menu_actions']['bindNotice'] eq 1 and $menuList['ComFans']['allow'] eq 1)">
+                        <button class="ml10 notifyUser">绑定通知</button>
+                        <else/>
+                        <button class="ml10 " onclick="mui.alert('无此功能操作权限')">绑定通知</button>
+                    </if>
+                </div>
+            </li>
+        </ul>
+    </section>
+    <div class="slide-match-wrap flex-end">
+        <div id="select-wrap" class="mui-select-wrap slideInRight animated pr">
+            <div class="groups tag">
+                <div class="title gray-9">
+                    <span>分组选择</span>
+                    <div class="flex-between">
+                        <span id="group-tip" class="question-mark" data-modal="groupModal"></span>
+                    </div>
+                </div>
+                <notempty name="data.groups">
+                    <div id="group-list" class="select-item beside-selector" style="overflow: auto;max-height: 200px;">
+                    	<span v-for="(item,index) in group_list" :data-id="item.id">{{item.value}}({{item.user_count}})</span>
+                    </div>
+                    <else/>
+                    <div class="no-create tc">
+                        <div class="gray-9c">您尚未创建任何分组</div>
+                        <div>
+                            <a class="blue-4591fe" href="/UserSupervise/customer_groups.html">点击创建分组</a>
+                        </div>
+                    </div>
+                </notempty>
+            </div>
+            <div class="groups tag" id="tag-wrap">
+                <div class="title gray-9">
+                    <span>标签</span>
+                    <div class="flex-between">
+                        <!--<span class="filter-level blue-4591fe addBtn"></span>-->
+                        <!--<span class="filter-level blue-4591fe delBtn"></span>-->
+                    </div>
+                    <div class="flex-between">
+                        <span id="tag-tip" class="question-mark" data-modal="tagModal"></span>
+                    </div>
+                </div>
+                <notempty name="data.tags">
+                    <div id="select-part" class="beside-selector" style="overflow: auto;max-height: 200px;">
+                        <div class="select-element">
+                            <div class="tag-title gray-9c">一级标签</div>
+                            <ul class="more-tag select-item">
+                                <span v-for="(item,index) in tag_list" :data-id="item.id">{{item.value}}({{item.user_count}})</span>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="add-select-item flex-center mt15 mb15">
+                        <button class="confirm-match">确定</button>
+                        <button class="add-level-tag">添加下级标签</button>
+                    </div>
+                    <else/>
+                    <div class="no-create tc">
+                        <div class="gray-9c">您尚未创建任何标签</div>
+                        <div>
+                            <a class="blue-4591fe" href="/UserSupervise/customer_tags.html">点击添加标签</a>
+                        </div>
+                    </div>
+                </notempty>
+            </div>
+            <div class="groups tag" style="height: 200px;">
+                <div class="title gray-9">
+                    <span>选择公司</span>
+                </div>
+                <div class="pd1525">
+                	<div class="company-selected flex-1 mb15">
+						<div id="company-text">选择公司</div>
+						<div onclick="selectCompany(this)" class="select-icon1"></div>
+					</div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="wrap-modal" id="groupModal" style="display: none;">
+            <div class="modal-common-wrap modal" style="width: 90%;">
+                <div class="modal-title bg-e gray-9">分组提示
+                    <!--<span class="close-popup">×</span>--></div>
+                <div class="modal-content-text tc">选择分组时只可选择一个分组，
+                    <br>未选择时默认为未分组</div>
+                <div class="modal-btn">
+                    <button class="popup-close">取消</button>
+                    <button class="blue popup-complete">确认</button>
+                </div>
+            </div>
+        </div>
+        <div class="wrap-modal" id="tagModal" style="display: none;">
+            <div class="modal-common-wrap modal" style="width: 90%;">
+                <div class="modal-title bg-e gray-9">标签提示
+                    <!--<span class="close-popup">×</span>--></div>
+                <div class="modal-content-text tc">对用户进行标签分类，可选择多级标签
+                    <br>对用户进行快速筛选</div>
+                <div class="modal-btn">
+                    <button class="popup-close">取消</button>
+                    <button class="blue popup-complete">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="wrap-modal" id="divider-Modal" style="display: none;">
+        <div class="modal-common-wrap modal" style="width: 90%;">
+            <div class="modal-title bg-e gray-9">分组标签<span class="close-popup">×</span></div>
+            <div class="modal-content">
+                <div class="dis-flex mb15">
+                <div class="wd25 tr">已选用户：</div>
+                <!-- <div style="flex: 0.1" class="append-users-shrink"></div> -->
+                    <div style="width:225px;overflow: hidden;">
+                    <div class="flex-1 operate-user" style="max-height:200px;width:242px;overflow-y: auto;">
+
+                    </div>
+                    </div>
+                </div>
+                <div class="flex-start mb15">
+                    <div class="wd25 tr">更换分组：</div>
+                    <div class="flex-1 flex-start">
+                        <div class="company-selected wd70">
+                            <div>请选择分组</div>
+                            <div id="group_id-button" class="select-icon1" onclick="groupList(this)"></div>
+                            <input type="hidden" name="group_id">
+                        </div>
+                        <div onclick="newGroup()" class="new-group-tag blue-4591fe">添加新分组</div>
+                    </div>
+                </div>
+                <div id="newGroup" class="flex-direction-start mb15" style="padding-left: 25%;display:none">
+                    <input id="newGroupName" style="width: 65%;border: 1px solid #e9e9e9;" type="text" placeholder="请输入新分组名称" onkeyup="this.value=this.value.replace(/^ +| +$/g,'')" />
+                    <button onclick="addGroup()" class="confirm-btn ml10 blue-4591fe">确定</button>
+                    <button class="confirm-btn new-group-tag-close red-e91835">取消</button>
+                </div>
+                <div class="flex-start mb15">
+                    <div class="wd25 tr">添加标签：</div>
+                    <div class="flex-1 flex-start">
+                        <div class="company-selected wd70">
+                            <div>请选择标签</div>
+                            <div class="select-icon1" onclick="tagList(this)"></div>
+                        </div>
+                        <div onclick="newTag()" class="new-group-tag blue-4591fe">添加新标签</div>
+                    </div>
+                </div>
+                <div id="newTag" class="flex-direction-start mb15" style="padding-left: 25%;display:none">
+                    <input id="newTagName" style="width: 65%;border: 1px solid #e9e9e9;" type="text" placeholder="请输入新标签名称" onkeyup="this.value=this.value.replace(/^ +| +$/g,'')"  />
+                    <button onclick="addTag()" class="confirm-btn ml10 blue-4591fe">确定</button>
+                    <button class="confirm-btn new-group-tag-close red-e91835">取消</button>
+                </div>
+                <div class="flex-1 tag-chosen">
+	    		</div>
+            </div>
+            <div class="modal-btn">
+                <button class="popup-close red-e91835">关闭</button>
+                <button onclick="editTagGroup()" class="blue popup-complete">确认</button>
+            </div>
+        </div>
+    </div>
+    <div class="wrap-modal" id="userModal" style="display: none;">
+        <div class="modal-common-wrap modal" style="width: 90%;">
+            <div class="modal-title bg-e gray-9">修改用户类型</div>
+            <div class="modal-content-text">
+            	<div class="pd1525 flex-1">
+                	<div class="company-selected">
+						<div>选择用户类型</div>
+						<div class="select-icon1" onclick="userTypeList(this)"></div>
+						<input type="hidden" value="" name="user_type">
+					</div>
+                </div>
+            </div>
+            <div class="modal-btn">
+                <button class="popup-close">取消</button>
+                <button onclick="editUserType(this)" class="blue">确认</button>
+            </div>
+        </div>
+    </div>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.APP_PATH}Public/js/jquery.min.js"></script>
+    <script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+    <script src="/{$Think.MODULE_PATH}Public/js/common.js"></script>
+    <script src="{$Think.const.JS_URL}/mui/mui.indexedlist.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script type="text/javascript">
+    	mui.init();
+    //下拉加载
+    var vue = new Vue({
+        el: "#main-content",
+        data: {
+            item_list: []
+        },
+        methods: {
+            onItemTap: function(item) {}
+        }
+    });
+    var name = "";
+    var groupIds = [];
+    var tagIds = [];
+    var branchId = "";
+    // pullRefresh(".item-wrap", ".item-container", function($target, current_page) {
+    //     $.post("/ComFan/search", { page: current_page, name: name, groupIds: groupIds, tagIds: tagIds, branchId: branchId}, function(result) {
+    //         vue.item_list = vue.item_list.concat(result);
+    //         $target.data("loading", false);
+    //     }, "json");
+    // }, calculateH());
+    queryData();
+    function calculateH(){
+        var winH = $(document).height();
+        var searchH = $('.mui-search-area').height();
+        var btnH = $('.con-tab').height();
+        var rst = winH - searchH - btnH - 80;
+        return rst;
+    }
+
+    function queryData() {
+        name = $("#name").val();
+        $.post("/ComFan/search", { page: 1, name: name, groupIds: groupIds, tagIds: tagIds, branchId: branchId}, function(result) {
+            vue.item_list = result;
+            $(".item-wrap").scrollTop(0);
+            $(".item-wrap").data("loading", false);
+        }, "json");
+    }
+
+    $(".slide-match-wrap").mouseup(function(e) {
+        var _con = $('#select-wrap,#groupModal,#tagModal'); // 设置目标区域
+        if (!_con.is(e.target) && _con.has(e.target).length === 0) { // Mark 1
+            $(".slide-match-wrap").removeClass('active');
+            $('.wrap-modal').hide();
+        }
+    });
+
+    $('.confirm-match').on('click', function() {
+        $(this).parents('.slide-match-wrap').removeClass('active');
+        handlerCustomerLists();
+    })
+
+    function handlerCustomerLists() {
+        var groupDom = $('#select-wrap').find('div:first > .select-item > .active');
+        var tagSingleDom = $('#select-wrap').find('#tag-wrap > #select-part > .select-element');
+        var tagDom = tagSingleDom.find('.select-item > .active');
+        groupIds = [];
+        tagIds = [];
+        if (groupDom.length > 0) {
+            groupIds = groupDom.map(function() {
+                return $(this).data('id')
+            }).get();
+        }
+        if (tagDom.length > 0) {
+            tagSingleDom.map(function() {
+                var tagSingleIds = $(this).find('.select-item > .active');
+                if (tagSingleIds.length > 0) {
+                    var template = tagSingleIds.map(function() {
+                        return $(this).data('id')
+                    }).get();
+                    tagIds.push(template);
+                }
+            });
+        }
+        queryData();
+    }
+
+    $("#checkAll").click(function() {
+        if (this.checked) {
+            $("input[name='user_id']:checkbox").each(function() {
+                $(this).prop("checked", true);
+            });
+        } else {
+            $("input[name='user_id']:checkbox").each(function() {
+                $(this).prop("checked", false);
+            });
+        }
+    });
+
+    // var dividerhtml = $("#divider-Modal").html();
+    $('.tag-group').on('click', function() {
+        // $("#newGroup").hide();
+        // $("#newTag").hide();
+        // $("#newGroupName").val("");
+        // $("#newTagName").val("");
+        // $(".tag-group-tag_id").remove();
+        // $("#group_id-button").prev("div").html("请选择分组");
+        // $("#group_id-button").next("input").val("");
+        // $("#divider-Modal").html(dividerhtml);
+        var user_ids ="";
+        $("input[name='user_id']:checkbox:checked").each(function() {
+            if (user_ids=="") {
+                user_ids = "?user_ids[]="+$(this).attr("value");
+            } else {
+                user_ids += "&user_ids[]="+$(this).attr("value");
+            }
+        });
+        if (user_ids!="") {
+    	var html = "";
+        $("input[name='user_id']:checkbox:checked").each(function() {
+        	html += "<span class='tag-group-user_id' value='"+$(this).val()+
+            "'onclick='removeself(this)' >"+$(this).nextAll("span.nickname").html()+"</span>";
+        });
+        $(".operate-user").html(html);
+        $('#divider-Modal').show();
+        }else{
+            alert("请至少勾选一位用户");
+        }
+
+
+    })
+
+    $('.bindCompany').on('click', function() {
+    	var user_ids ="";
+        $("input[name='user_id']:checkbox:checked").each(function() {
+        	if (user_ids=="") {
+        		user_ids = "?user_ids[]="+$(this).attr("value");
+        	} else {
+        		user_ids += "&user_ids[]="+$(this).attr("value");
+        	}
+        });
+        if (user_ids!="") {
+	        var url = '__MODULE__/ComFan/bindCompany'+user_ids;
+	        layer.open({
+	            type: 2,
+	            title: '关联公司',
+	            shadeClose: true,
+	            shade: 0.8,
+	            area: ['100%', '100%'],
+	            content: url, //iframe的url
+	            success: function (layero, index) {
+	            },
+	            end: function () {
+	            }
+	        });
+		}else{
+    		alert("请至少勾选一位用户");
+    	}
+    })
+
+    var tag = new Vue({
+    	el: "#select-part",
+        data: {
+            tag_list: {$data.tags}
+        }
+    });
+
+    var tagPick = new mui.PopPicker();
+    tagPick.setData({$data.json_tags});
+
+    function tagList(e) {
+        tagPick.show(function(item) {
+            var itemCallback = tagPick.getSelectedItems();
+            if ($("span[value='"+itemCallback[0].value+"']").length == 0) {
+            	// console.info("span[value='"+itemCallback[0].value+"']");
+	            var html = $(".tag-chosen").html();
+	            var str = "";
+	        	str = "<span class='tag-group-tag_id' value='"+itemCallback[0].value+"' onclick='removeself(this)' >"+
+	        	itemCallback[0].text+"</span>";
+	        	$(".tag-chosen").html(html+str);
+            }
+        });
+    }
+
+    var group = new Vue({
+    	el: "#group-list",
+        data: {
+            group_list: {$data.groups}
+        }
+    });
+
+    var groupPick = new mui.PopPicker();
+    groupPick.setData({$data.json_groups});
+
+    function groupList(e) {
+        groupPick.show(function(item) {
+            var itemCallback = groupPick.getSelectedItems();
+            $(e).prev("div").html(itemCallback[0].text);
+            $(e).next("input").val(itemCallback[0].value);
+        });
+    }
+
+    function newGroup() {
+		$("#newGroup").show();
+    }
+
+    function newTag() {
+		$("#newTag").show();
+    }
+
+    $('.new-group-tag-close').on('click', function() {
+        $(this).parent().hide();
+    })
+
+    function removeself(e) {
+        $(e).remove();
+    }
+
+    function addGroup() {
+    	var name = $("#newGroupName").val();
+        if(name=='') {
+         alert('必须输入群组名称');
+         return false;
+        }
+
+        $.post("/ComFan/addGroup", {name: name}, function(result) {
+        	if (result.code==0) {
+            	group.group_list = result.groups;
+            	groupPick.setData(result.json_groups);
+            	$("#newGroup").hide();
+        		layer.msg('添加成功');
+        	}else{
+        		layer.msg(result.message);
+        	}
+        }, "json");
+        
+    }
+
+    function addTag() {
+    	var name = $("#newTagName").val();
+        if(name=='') {
+         alert('必须输入标签名称');
+         return false;
+        }
+        $.post("/ComFan/addTag", {name: name}, function(result) {
+        	if (result.code==0) {
+            	tag.tag_list = result.tags;
+            	tagPick.setData(result.json_tags);
+            	$("#newTag").hide();
+				filterDel($('.delBtn'));
+        		layer.msg('添加成功');
+        	}else{
+        		layer.msg(result.message);
+        	}
+        }, "json");
+    }
+
+    function editTagGroup() {
+    	var group_id = $("input[name='group_id']").val();
+    	// console.info(group_id);
+    	var tag_ids = [];
+        $("span.tag-group-tag_id").each(function() {
+        	tag_ids.push($(this).attr("value"));
+        });
+        // console.info(tag_ids);
+        var user_ids = [];
+        $("span.tag-group-user_id").each(function() {
+            user_ids.push($(this).attr("value"));
+        });
+    	if (user_ids.length > 0) {
+        $.post("/ComFan/editTagGroup", {group_id: group_id,tag_ids: tag_ids,user_ids: user_ids}, function(result) {
+        	if (result.code==0) {
+        		layer.msg('添加成功');
+        		  window.location.href = '/ComFan/index.html';
+        	}else{
+        		layer.msg('添加失败');
+        	}
+        }, "json");
+    	}else{
+    		alert("请至少勾选一位用户");
+    	}
+    }
+
+    function selectCompany(e) {
+        var url = '__MODULE__/ComFan/selectCompany';
+        layer.open({
+            type: 2,
+            title: '选择公司',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['100%', '100%'],
+            content: url, //iframe的url
+            success: function (layero, index) {
+            },
+            end: function () {
+            }
+        });
+    }
+    function getCompany(value,text) {
+        $("#company-text").text(text);
+        branchId = value;
+    }
+
+    $('.notifyUser').on('click', function() {
+    	var user_ids ="";
+        $("input[name='user_id']:checkbox:checked").each(function() {
+        	if (user_ids=="") {
+        		user_ids = "?user_ids[]="+$(this).attr("value");
+        	} else {
+        		user_ids += "&user_ids[]="+$(this).attr("value");
+        	}
+        });
+        if (user_ids!="") {
+	        var url = '__MODULE__/ComFan/notifyUser'+user_ids;
+	        layer.open({
+	            type: 2,
+	            title: '绑定通知',
+	            shadeClose: true,
+	            shade: 0.8,
+	            area: ['100%', '100%'],
+	            content: url, //iframe的url
+	            success: function (layero, index) {
+	            },
+	            end: function () {
+	            }
+	        });
+		}else{
+    		alert("请至少勾选一位用户");
+    	}
+    })
+
+    $('.userType').on('click', function() {
+        var user_ids = [];
+        $("input[name='user_id']:checkbox:checked").each(function() {
+            user_ids.push($(this).attr("value"));
+        });
+    	if (user_ids.length!=0) {
+	        $('#userModal').show();
+    	}else{
+    		alert("请至少勾选一位用户");
+    	}
+    })
+
+    var userTypePick = new mui.PopPicker();
+    userTypePick.setData([
+    {value:"{$Think.const.USER_TYPE_COMPANY_MANAGER}",text:"员工"},
+    {value:"{$Think.const.USER_TYPE_CUSTOMER}",text:"成交客户"},
+    {value:"{$Think.const.USER_TYPE_PROSPECTIVE}",text:"意向客户"}
+    ]);
+
+    function userTypeList(e) {
+        userTypePick.show(function(item) {
+            var itemCallback = userTypePick.getSelectedItems();
+            $(e).prev("div").html(itemCallback[0].text);
+            $(e).next("input").val(itemCallback[0].value);
+        });
+    }
+
+    function editUserType() {
+        var user_type = $("input[name='user_type']").val();
+        var user_ids = [];
+        $("input[name='user_id']:checkbox:checked").each(function() {
+            user_ids.push($(this).attr("value"));
+        });
+        if (user_ids.length > 0) {
+            $.post("/ComFan/editUserType", { user_type: user_type, user_ids: user_ids }, function(result) {
+                if (result.code == 0) {
+                    layer.msg('修改成功');
+                    setTimeout(function() {
+                        window.location.href = "__MODULE__/ComFan/index"
+                    }, 1500);
+                } else {
+                    layer.msg('修改失败');
+                }
+            }, "json");
+        }
+    }
+
+    $('.select-match').on('click', function() {
+        $('.slide-match-wrap').addClass('active');
+    })
+
+    $('#tag-tip').on('click', function() {
+        $('#tagModal').show();
+    })
+
+    $('#group-tip').on('click', function() {
+        $('#groupModal').show();
+    })
+
+    $('.popup-close,.close-popup,.popup-complete').on('click', function() {
+        $(this).parents('.wrap-modal').hide();
+    })
+
+    //定义last变量，记录第几次筛选
+    var bufferTime = 1000;
+    var last = 0;
+    var levelArray = ['一级标签', '二级标签', '三级标签', '四级标签', '五级标签', '六级标签', '七级标签', '八级标签', '九级标签', '十级标签'];
+    $('.more-tag span').addClass('select' + last);
+    //被点击的li新增标记active类名
+    $('.select-item span').on('click', function() {
+        $(this).toggleClass('active');
+        if (bufferTime == 1000) {
+            timer();
+        } else {
+            bufferTime = 1000
+        }
+    })
+    $('#customer_lists').on('click', 'li', function() {
+        var url = $(this).data('url');
+        if (url) {
+            window.location.href = url;
+        }
+    })
+
+    function timer() {
+        setTimeout(function() {
+            bufferTime = bufferTime - 100;
+            //          console.log(bufferTime)
+            if (bufferTime == 0) {
+                bufferTime = 1000;
+                //              handlerCustomerLists();
+            } else {
+                timer()
+            }
+        }, 100)
+    }
+    //为第一个按钮注册事件
+    $('.add-level-tag').on('click', function() {
+        var self = $(this);
+        filterLi(self);
+    })
+
+    function parseTemplate(target, jsobject) {
+        var tpl = $('#' + target).prop("outerHTML").replace("display:none", "").replace("id=\"" + target + "\"", "");
+        var reg = new RegExp("\{%([^%}]*)?%\}", "g");
+        var matchs = tpl.match(reg);
+        if (matchs != null) {
+            for (var i = 0; i < matchs.length; i++) {
+                var key = matchs[i].replace("{%", "").replace("%}", "");
+                var val = $.isEmptyObject(jsobject[key]) ? "" : jsobject[key];
+                tpl = tpl.replace(matchs[i], val);
+            }
+            return tpl;
+        }
+        return "";
+    }
+
+    function filterLi(self) {
+        last = last + 1;
+        var ulClass = 'ul' + last;
+        //获取没有被选中的同级li
+        var child = self.parent('.add-select-item').siblings().find('.active').siblings('span').not('.active');
+        //判断剩下的元素个数是否有筛选必要
+        if (child.size() <= 0) {
+            alert('至少选择一个标签！');
+            last = last - 1;
+            return;
+        }
+
+        $("#select-part").append('<div class="select-element">' +
+            '<div class="tag-title gray-9c">' +
+            levelArray[last] +
+            '</div><ul class="more-tag select-item ' +
+            ulClass +
+            '"><div class="filter-level blue-4591fe delBtn"></div>' +
+            '</ul></div>'
+        );
+        child.appendTo('.' + ulClass);
+        //上一个按钮已经筛选过，防止他第二次点击，解绑事件
+        //self.off();
+
+
+        //用js新增加的按钮没有绑定事件，在这里绑定
+        //      $('.addBtn').last().on('click',function(){
+        //          var self = $(this);
+        //          filterLi(self);
+        //      })
+        //		self.parents('.groups').find('.show-icon').off();
+        //		$('.show-icon').last().on('click',function(){
+        //          var self = $(this);
+        //          self.toggleClass('hide-icon').parent('.more-tag').toggleClass('active');
+        //      })
+        $('.delBtn').off();
+        $('.delBtn').last().on('click', function() {
+            var self = $(this);
+            filterDel(self);
+        })
+        if (last >= 9) {
+            $('.add-level-tag').prop('disabled', true);
+        } else {
+            $('.add-level-tag').prop('disabled', false);
+        }
+    }
+
+    $('.delBtn').on('click', function() {
+        var self = $(this);
+        filterDel(self);
+    })
+
+    function filterDel(self) {
+        last = last - 1;
+        console.log(last);
+        var pre = last - 1;
+        var preUlClass = 'ul' + pre;
+        var child = self.siblings().removeClass('active');
+        child.appendTo(self.parents('.select-element').prev().children('.more-tag'));
+        $('.delBtn').off();
+        self.off();
+        self.parents('.select-element').remove();
+        $('.delBtn').last().on('click', function() {
+            var self = $(this);
+            filterDel(self);
+        })
+        // handlerCustomerLists();
+        //  	$('.addBtn').last().on('click',function(){
+        //          var self = $(this);
+        //          filterLi(self);
+        //    	})
+        //  	self.find('.show-icon').off();
+        //  	$('.show-icon').last().on('click',function(){
+        //          var self = $(this);
+        //          self.toggleClass('hide-icon').parent('.more-tag').toggleClass('active');
+        //      })
+        if (last > 9) {
+            $('.add-level-tag').prop('disabled', true);
+        } else {
+            $('.add-level-tag').prop('disabled', false);
+        }
+    }
+    </script>
+    <script type="text/javascript">
+    mui.init();
+    mui.ready(function() {
+        var list = document.getElementById('list');
+
+        //create
+        window.indexedList = new mui.IndexedList(list);
+
+    });
+
+    $('.show-icon').last().on('click', function() {
+        var self = $(this);
+        self.toggleClass('hide-icon').parent('.more-tag').toggleClass('active');
+    })
+
+    // $('#edit-group').on('click', function() {
+    //     $('#creat-group').toggleClass('hide');
+    //     $(this).parents('.edit-groups').toggleClass('active');
+    // })
+
+    // $('#edit-tag').on('click', function() {
+    //     $('#creat-tag').toggleClass('hide');
+    //     $(this).parents('.edit-groups').toggleClass('active');
+    // })
+
+    // $(".main-tab li").click(function(){
+    // 	$(this).addClass('active').siblings().removeClass('active');
+    //     var num = $(".main-tab li").index(this);
+    //     $(".con-tab .cons").eq(num).removeClass('hide').siblings().addClass('hide');
+    // })
+    function toDetail(obj){
+        var isManager = "{$permissions['_IS_Manager_']}";
+        var isDetail = "{$menuList['ComFans']['menu_actions']['detail']}";
+        var isAllow = "{$menuList['ComFans']['allow']}";
+        if (isManager == '1' || (isDetail == '1' && isAllow == '1'))
+        {
+            window.open("/ComPotential/user_detail/type/fans/id/"+obj.getAttribute("data-id"),"_self");
+        } else {
+            mui.alert('无此功能操作权限');
+        }
+    }
+    function toEdit(obj){
+        var isManager = "{$permissions['_IS_Manager_']}";
+        var isDetail = "{$menuList['ComFans']['menu_actions']['update']}";
+        var isAllow = "{$menuList['ComFans']['allow']}";
+        if (isManager == '1' || (isDetail == '1' && isAllow == '1'))
+        {
+            event.stopPropagation();
+            window.open("/ComPotential/user_edit/type/fans/id/"+obj.getAttribute("data-id"),"_self")
+        } else {
+            mui.alert('无此功能操作权限');
+        }
+    }
+    </script>
+</body>
+
+</html>

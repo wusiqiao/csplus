@@ -1,0 +1,83 @@
+ <!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	    <meta name="apple-mobile-web-app-capable" content="yes" />
+	    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+	    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}style.css?v=2" rel="stylesheet" />
+		<title></title>
+	</head>
+	<body>
+		<div class="tool-search-detail">
+			<div class="search-detail-wrap">
+				<div class="detail-wrap-input">
+					<label for="">查询类型:</label>
+                    <p>{$tool.type_name}</p>
+				</div>
+				<div class="detail-wrap-input">
+					<label for="">手机号码:</label>
+                    <p>{$tool.mobile}</p>
+				</div>
+				<div class="detail-wrap-input">
+					<label for="">用户名称:</label>
+                    <p>{$tool.nickname}</p>
+				</div>
+				<div class="detail-wrap-input">
+					<label for="">查询时间:</label>
+                    <p>{$tool.time}</p>
+				</div>
+				<div class="detail-wrap-textarea">
+					<label for="">查询内容:</label>
+					<div >
+						<volist name="tool.body" id="vo">
+							{$vo}<br>
+						</volist>
+					</div>
+				</div>
+                <eq name="tool.is_process" value="1">
+                    <div class="detail-wrap-input">
+                        <label for="">处理时间:</label>
+                        <p>{$tool.processed}</p>
+                    </div>
+                    <else/>
+                    <div class="detail-wrap-input">
+                        <label for="">处理标记:</label>
+                        <p><button onclick="handlerToolManage(this)" data-id="{$tool.id}">我已处理完成</button></p>
+                    </div>
+                </eq>
+
+			</div>
+
+			<div class="tool-search-detail-btn">
+				<a href='tel:{$tool.mobile}'>电话回复</a>
+			</div>
+			
+		</div>
+	</body>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script>
+        function handlerToolManage(obj)
+        {
+            var toolId = $(obj).data('id');
+            $.post('__MODULE__/Tool/handlerToolManage',{id:toolId},function(data){
+                if(data.error == 1){
+                    layer.msg(data.msg);
+                    setTimeout(function(){
+                        window.location.href = '/';
+                    },1000)
+                }else{
+                    layer.msg(data.msg);
+                    setTimeout(function(){
+                        window.location.reload();
+                    },1000)
+                }
+
+            },'json');
+        }
+    </script>
+</html>

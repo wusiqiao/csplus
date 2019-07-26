@@ -1,0 +1,43 @@
+<section class="modal-city-wrap wrap-container" style="display: none;">
+	<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+		<h1 class="mui-title">选择城市</h1>
+		<button class="mui-btn mui-btn-link mui-btn-nav mui-pull-left come-back" style="color: #444444 !important;padding: 0 !important;">
+			<span class="mui-icon mui-icon-arrowleft">
+			</span>返回
+		</button>
+	</header>
+	<div class="search-city-wrap">
+		<form action="">
+			<div class="search-city">
+				<input type="text" placeholder="请输入关键字搜索"/>
+				<div class="search-icon"></div>
+			</div>
+			<div class="search-city-result" style="display: none;">
+				<div>搜索结果</div>
+				<ul>
+					<li>厦门市</li>
+					<li>西安市</li>
+				</ul>
+			</div>
+			<div class="search-hot-city" style="display: block;">
+				<div>热门城市</div>
+				<ul>
+					<li>厦门市</li>
+					<li>福州市</li>
+					<li>泉州市</li>
+					<li>漳州市</li>
+					<li>三明市</li>
+					<li>莆田市</li>
+					<li>龙岩市</li>
+					<li>南平市</li>
+					<li>宁德市</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</section>
+<script>
+	$('.come-back').on('click',function(){
+		$(this).parents('.wrap-container').hide();
+	})	
+</script>

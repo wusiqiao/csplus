@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{$title}</title>
+    <link href="/{$Think.APP_PATH}Public/vender/layer/skin/layer.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Application/EShop/Public/css/Organization/index.css?v={$vesion}">
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+    <link href="{$Think.const.CSS_URL}common.css?v={$vesion}" rel="stylesheet" />
+    <script>
+        /*window.addEventListener('resize',remChange());
+        function remChange() {
+            var html = document.querySelector('html');
+            var width = html.getBoundingClientRect().width;
+            if( width >= 750 ){
+                width = 750;
+            }
+            html.style.fontSize = width / 10 + 'px';
+            return remChange;
+        }*/
+    </script>
+</head>
+<body class="sigleLayer">
+<include file="Index:header" />
+    <div class="wrap" style="overflow-y: scroll">
+        <div class="content bg-transparent">
+            <p class="headTittle flex" style="margin-top: 30px;height: 30px">
+                <span style="color:grey;">账号列表</span>
+                <input name="id" value="{$id}" type="hidden">
+                <a class="mainColor" onclick="addStaff()">+ 新增员工账户</a>
+            </p>
+            <div class="ulBox" id="ulBox">
+                <list :aaa="userList"></list>
+            </div>
+        </div>
+    </div>
+    <script src="__ROOT__/{$Think.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/jquery/jquery.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+    <script>
+        Vue.component('list', {
+            name:"list",
+            props:["aaa"],
+            template:`<ul>
+                        <li v-for="item in aaa" style="margin: 8px 0;">
+                        	<div class="flex" style="height: 60px">
+                        	    <div class="userInfo" style="width: 65%;">
+                                    <span style="width :90%;font-size: 15px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.staff_name}}</span>
+                                    <template v-if="item.role_name != null"><p style="width :90%;color:grey;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.deptment_name}}-{{item.role_name}}</p></template>
+                                    <template v-else><p style="color:grey;">{{item.deptment_name}}</p></template>
+
+                                </div>
+                                <div class="flex operation mainColor">
+                                    <a class="editBox" :data-id="item.id" onclick="editStaff(this)" style="margin-right: 10px">
+                                        <span class="map edit"></span>
+                                        <span style="color:#368bfe;font-size: 14px">编辑</span>
+                                    </a>
+                                    <template v-if="item.role_ids != 2">
+                                        <p @click="tabBool(item)">
+                                            <span class="map" :class="item.is_valid == 1?'disable':'useAble'"></span>
+                                            <span style="color:#368bfe">{{item.is_valid == 1?'禁用':'启用'}}</span>
+                                        </p>
+                                    </template>
+                                    <template v-else>
+                                    <p  >
+                                        <span class="" :class="item.is_valid == 1?'disable':'useAble'"></span>
+                                        <span style="color:#368bfe"></span>
+                                    </p>
+                                    </template>
+                                </div>
+                            </div>
+                        </li>
+                        <li v-if="aaa == ''" style="text-align: center;color: grey;padding: 50px 0;display: none" id="staff-none">
+                            <span style="font-size: 20px">无人员存在！请先添加员工</span>
+                        </li>
+                    </ul>`,
+            methods:{
+                /*goTO (){
+                    window.location.href="http://eshop34.localhost/Organization/department.html"
+                },*/
+                tabBool (item){
+                    $.post("/Organization/disableStaff",{id:item.id,type:item.is_valid},function(result){
+                        if(result.error == 0){
+                            getStaff();
+                            var str="";
+                            str=item.is_valid == 1?`
+                        <p class="p1" style="margin-top:10px;">禁用账号成功！</p>
+                        <p class="p2" style="margin-top:10px;">被禁用的账号可在“已禁用账户”中重新启用</p>
+                    `:`
+                        <p class="p1">启用账号成功！</p>
+                    `;
+                            var me=layer.open({
+                                title:'提示',
+                                type:1,
+                                area: ['90%', item.is_valid == 1?'190px':'160px'],
+                                shadeClose: true, //点击遮罩关闭
+                                content: `\<\div style="text-align:center;padding-top:20px;">
+                            ${str}
+                        \<\/div>`,
+                                btn: ['好的，了解了'],
+                                yes:function(){
+                                    layer.close(me);
+                                }
+                            });
+                        }else{
+                            layer.msg(result.message);
+                        }
+                    },'json');
+
+                    //item.bool=!item.bool
+                }
+            }
+        });
+        var app = new Vue({
+            el:"#ulBox",
+            data:{
+                userList:[
+                    /*{id:1,name:"战士",bool:true,dept_id:1,dept_name:"研发部门"},
+                    {id:2,name:"丽水",bool:false,dept_id:2,dept_name:"运营部门"}*/
+                ]
+            }
+        });
+
+        $(function(){
+            getStaff()
+        });
+
+        function getStaff(){
+            var id = $("input[name='id']").val();
+            if(id){
+                $.post("/Organization/staffList",{dept_id:id},function(result){
+                    app.userList = result;
+                    if(result.length==0){
+                        $("#staff-none").show();
+                    }
+                },'json')
+            }
+        }
+
+        function addStaff(){
+            window.location.href = "/Organization/addEmployees/";
+        }
+
+        function editStaff(obj){
+            var id = $(obj).data("id");
+            window.location.href = "/Organization/addEmployees/id/"+id;
+        }
+
+    </script>
+</body>
+</html>

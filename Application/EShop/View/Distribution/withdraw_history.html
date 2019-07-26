@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" href="/Public/new_ui/css/reset.css">
+        <link rel="stylesheet" href="/Public/new_ui/css/phoenix.css">
+        <link href="{$Think.const.CSS_URL}/css-new/style.css?v=22" rel="stylesheet" />
+        <link rel="stylesheet" href="/Public/mui/css/mui.min.css">
+        <script src="/Public/mui/js/mui.min.js"></script>
+        <title>{$title}</title>
+    </head>
+    <body>
+        <div class="fund-box">
+            <div class="fund-top">
+                <h2>{$user['company_name']}</h2>
+                <p>
+                    <button onclick="javascript:location.href = '/index.php/Money/recharge/type/deposit.html'">支付保证金</button>
+                    <a href="__MODULE__/Money/bank.html"><img src="/Public/new_ui/images/icon-card.png" alt=""></a>
+                </p>
+            </div>
+            <ul class="account-money">
+                <li>
+                    <h3>{$user['user_money']}</h3>
+                    <p>业务账户余额</p>
+                </li>
+                <li>
+                    <h3>{$user['deposit_money']}</h3>
+                    <p>保证金账户余额<img src="/Public/new_ui/images/icon-ask.png" onclick="javascript:wenhmui()"></p>			
+                </li>
+            </ul>
+            <div class="fund-btn-box">
+                <a href="__MODULE__/Money/recharge.html" class="btn-recharge">充值</a>
+                <a href="__MODULE__/Money/withdrawals.html" class="btn-cash">提现</a>
+            </div>
+        </div>
+
+    <div class="account-box">
+        <h2 class="account-h2"><img src="/Public/new_ui/images/icon-account.png" alt="">业务账户明细</h2>
+
+    </div>
+    <script src="/Public/new_ui/js/jquery-2.1.3.min.js"></script>
+    <!--底部 start-->
+    <include file="Public:user_footer" />	
+    <!--end 底部-->
+</body>
+</html>

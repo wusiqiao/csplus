@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.min.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .select-value{
+        flex: 1;
+        text-indent: 0.2rem;
+    }
+    .red-important{
+        color: #e91835;
+    }
+    .info-upset{
+        flex: 1;
+        font-size: 0.28rem;
+        text-indent: 0.2rem;
+        color: #368bfe;
+        line-height: 0.95rem;
+        position:relative;
+    }
+    .info-upset input{
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        padding: 0;
+        margin: 0;
+        z-index: 8;
+        outline: none;
+    }
+</style>
+
+<body>
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section" style="margin-top: 0;">
+        <form id="newInvoice" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title">开票内容<span class="red-important">*必填</span></div>
+                <div class="info-line">
+                    <div class="info-title"><span class="red-important">*</span>开票日期</div>
+                    <div class="select-value" id="showDatePicker">
+                        <span class="date_value" style="line-height: 0.95rem;">{$invoice_day_fmt}</span>
+                        <div class="select-icon" style="position: relative;float: right"></div>
+                    </div>
+                    <input type="hidden" name="invoice_day" value="{$invoice_day}" required readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title"><span class="red-important">*</span>发票类型</div>
+                    <div class="select-value" id="showTypePicker">
+                        <span class="type_value" style="line-height: 0.95rem;">普通发票</span>
+                        <div class="select-icon" style="position: relative;float: right"></div>
+                    </div>
+                    <input type="hidden" name="invoice_type" value="0" required readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title"><span class="red-important">*</span>发票编号</div>
+                    <input type="text" name="invoice_id" placeholder="请输入发票编号"  required maxlength="8" oninput="value=value.replace(/[^\d]/g,'')"/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title"><span class="red-important">*</span>发票金额</div>
+                    <input type="number" name="invoice_sum"  required placeholder="请输入发票金额"/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">发票附件</div>
+                    <div style="text-align:right;padding: 0 0.21rem;" class="info-upset" onclick="openAttachment()">点击上传附件<span class="mui-icon mui-icon-arrowright"></span><!--<input type="file" name=""/>--></div>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info">
+                <div class="title">快递信息</div>
+                <div class="info-line">
+                    <div class="info-title">快递公司</div>
+                    <input type="text" name="express_name" placeholder="请输入快递公司"/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">快递编号</div>
+                    <input type="text" name="express_id" placeholder="请输入快递编号"/>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info">
+                <div class="info-line">
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="addInvoice(this)">确定开票</button>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.min.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+
+        function addInvoice(obj){
+            $(obj).attr("disabled","disabled");
+            var data = $("#newInvoice").serializeArray();
+            for(var i = 0;i<4;i++){
+                if(data[i]['value'] == ""){
+                    $(obj).removeAttr("disabled");
+                    layer.msg("请输入必填项！");
+                    return false;
+                }
+            }
+            if($("input[name='invoice_sum']").val() <= 0){
+                layer.msg("请输入正确的发票金额！");
+                $(obj).removeAttr("disabled");
+                return false;
+            }
+            $.post("/WrkInvoicePlan/invoice",{plan_id:"{$plan.id}",data:data},function(result){
+                setTimeout(function(){
+                    $(obj).removeAttr("disabled");
+                },500);
+                if(result.error == 0){
+                    mui.confirm("是否继续开票","开票成功",["是","否"],function(e){
+                        if(typeof(parent.getDetail) == "function"){
+                            parent.getDetail();
+                        }
+                        if(e.index == 0){
+                            $("input[name='invoice_id']").val("");
+                            $("input[name='invoice_sum']").val("");
+                        }else{
+                            var name = window.frameElement.getAttribute('name');
+                            var index = parent.layer.getFrameIndex(name);
+                            parent.layer.close(index);
+                        }
+                    });
+                }else{
+                    layer.msg(result.message);
+                }
+            },'json')
+        }
+
+        var typePicker = new mui.PopPicker();
+        typePicker.setData([
+            {value:"0",text:"普通发票"},
+            {value:"1",text:"专用发票"}
+        ]);
+
+        $("#showTypePicker").on("click",function(){
+            typePicker.show(function(item){
+                $(".type_value").html(item[0].text);
+                $("input[name='invoice_type']").val(item[0].value);
+            });
+        });
+
+        var datePicker = new mui.DtPicker({"type":"date"});
+        $("#showDatePicker").on("click",function(){
+            datePicker.show(function(item){
+                $(".date_value").text(item.value);
+                $("input[name='invoice_day']").val(new Date(item.value + " 00:00:00:000").getTime()/1000);
+            });
+        });
+
+        function openAttachment(){
+            openAttachmentForm("附件", [{attach_group:"{$plan.attach_group}"}]);
+        }
+
+        $(function(){
+            $("input[name=invoice_sum]").val(parent.invoiceDetailVue.model.plan_money_balance);
+        })
+    </script>
+</body>
+
+</html>

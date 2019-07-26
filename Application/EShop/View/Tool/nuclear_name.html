@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <title>免费核名</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <style type="text/css">
+    	html,body {
+    		width: 100% !important;
+    	}
+    </style>
+</head>
+<body>
+<include file="Index:header" />
+	<section class="nuclear-wrap" style="margin-top: .85rem">
+		<div class="nuclear-top">
+			<div>累计核名<span>{$count}</span>次</div>
+		</div>
+		<form  onsubmit="return false;" id="nuclear">
+			<div class="nuclear-form">
+				<div class="nuclear-input-wrap">
+					<div class="nuclear-input">
+						<span class="nuclear-locate"></span>
+						<input  name="city" type="text" placeholder="请输入城市 如北京"/>
+					</div>
+					<div class="nuclear-input" >
+						<span class="nuclear-font"></span>
+						<input name="firm" type="text" placeholder="请输入字号 如阿里巴巴"/>
+					</div>
+					<div class="nuclear-input popups">
+						<span class="nuclear-trademark"></span>
+						<input name="trade" type="text" v-bind="trade" onfocus="this.blur()"  readonly placeholder="请选择行业"/>
+					</div>
+					<div class="nuclear-input popups">
+						<span class="nuclear-cate"></span>
+						<input name="form" type="text" v-bind="form" onfocus="this.blur()"  readonly placeholder="请选择类型"/>
+					</div>
+				</div>
+				<div class="bg-white">
+					<div class="nuclear-good">
+						<img src="/{$Think.MODULE_PATH}Public/images/tool/picture1.png" alt="" />
+						<div>
+							<span>免费查询</span>
+							<p>轻轻一点即可知晓查询结果，不产生费用</p>
+						</div>
+					</div>
+					<div class="nuclear-good">
+						<img src="/{$Think.MODULE_PATH}Public/images/tool/picture2.png" alt="" />
+						<div>
+							<span>人工查询</span>
+							<p>结果更精准、注册成功率更高</p>
+						</div>
+					</div>
+					<div class="nuclear-good">
+						<img src="/{$Think.MODULE_PATH}Public/images/tool/picture3.png" alt="" />
+						<div>
+							<span>急速响应</span>
+							<p>提交申请后30分钟内告知查询结果</p>
+						</div>
+					</div>
+				</div>
+				<button type="submit" id="submit_button" class="">核一下</button>
+			</div>
+		</form>
+		
+		
+	</section>
+	<include file="Tool:modal_select_city" />
+	<include file="Tool:modal_select_comtype" />
+	<include file="Tool:modal_select_industry" />
+</body>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script>
+    window.localStorage.clear();
+	$('.popups > input').on('click',function(){
+	    var popupBind = $(this).attr('v-bind');
+        $('section[bind='+popupBind+']').show();
+	})
+    $('.search-hot-city > ul > li').on('click',function(){
+        var value = $(this).text();
+        var bind = $(this).parents('section').attr('bind');
+        $('input[v-bind='+bind+']').val(value);
+        $(this).parents('section').hide();
+    })
+    $('.come-back').on('click',function(){
+        $(this).parents('section').hide();
+    })
+    $("#submit_button").on('click',function(){
+        var city = $("input[name=city]").val();//城市
+        var firm = $("input[name=firm]").val();//字号
+        var trade = $("input[name=trade]").val();//行业
+        var form = $("input[name=form]").val();//服务要求
+        if($.trim(city) == ''){
+            layer.msg("请填写城市!!");
+            return false;
+        }
+        if($.trim(firm) == ''){
+            layer.msg("请填写字号!!");
+            return false;
+        }
+        if($.trim(trade) == ''){
+            layer.msg("请选择行业!!");
+            return false;
+        }
+        if($.trim(form) == ''){
+            layer.msg("请选择服务要求!!");
+            return false;
+        }
+        var data = {
+            city:city,
+            firm:firm,
+            trade:trade,
+            form:form
+        }
+        setLocalStorage(data,'nuclear');
+        window.location.href = '__MODULE__/Tool/verification/t/nuclear.html';
+    })
+    //设置localStorage
+    function setLocalStorage(data,itemValue){
+        data = $.isArray(data) || $.type(data) == 'object' ? JSON.stringify(data):data ;
+        localStorage.setItem(itemValue,data);
+    }
+</script>
+</html>

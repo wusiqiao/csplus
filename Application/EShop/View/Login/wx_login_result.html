@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>微信扫码登录</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<style>
+    .wx_login_png{
+        text-align: center;
+        margin-top: 2rem;
+    }
+    .wx_login_png img{
+        width: 64px;
+    }
+    .wx_login_msg{
+        text-align: center;
+        margin-top: 1rem;
+        color:#464646;
+    }
+    html,body{
+        background-color: #fff !important;
+    }
+</style>
+<body>
+<div>
+    <div class="wx_login_png">
+        <eq name="result.error" value="0">
+            <img src="{$Think.const.IMG_URL}/login/wx_login_success.png" alt="">
+            <else/>
+            <img src="{$Think.const.IMG_URL}/login/wx_login_fail.png" alt="">
+        </eq>
+
+    </div>
+    <div class="wx_login_msg">
+        <p>{$result.message}</p>
+    </div>
+</div>
+<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+</body>
+</html>

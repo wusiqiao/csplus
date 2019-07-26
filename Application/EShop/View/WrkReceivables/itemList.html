@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    html,body{
+        height: auto;
+    }
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+   
+    #current-billing-plan .info-title{
+        width: 2.35rem;
+    }
+    .info-upset{
+        flex: 1;
+        font-size: 0.28rem;
+        text-indent: 0.2rem;
+        color: #368bfe;
+        line-height: 0.95rem;
+    }
+</style>
+
+<body>
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <form id="customerForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title">合同信息</div>
+                <div class="info-line important-input">
+                    <div class="info-title">公司名称<i></i></div>
+                    <input type="text" name="" v-model="model.wrkAgreement.company_name" readonly/>
+                    <input type="hidden" name="id" value="{$id}" readonly/>
+                    <input type="hidden" name="notice_id" value="{$notice_id}" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同名称<i></i></div>
+                    <input type="text" name="" v-model="model.wrkAgreement.name" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同金额<i></i></div>
+                    <input type="text" class="money_input" name="" v-model="'￥'+model.wrkAgreement.agreement_money" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">已收款金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+model.wrkReceivables.actual_amount" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">未收款金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+model.wrkReceivables.unpaid_amount" readonly/>
+                </div>
+                <div class="info-line important-input" v-if="model.wrkReceivables.status == 2">
+                    <div class="info-title">坏账金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+model.wrkReceivables.bad_dept_amount" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">收款计划期数<i></i></div>
+                    <input type="text" name="" v-model="model.wrkReceivables.detail_count" readonly/>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <template v-for="(item,index) in items">
+            <div  class="basic-info" >
+                <div class="title">收款计划{{index+1}}</div>
+                <div class="info-line important-input">
+                    <div class="info-title">付款状态<i></i></div>
+                    <input type="text" name="" v-model="item.show_costmer_status" style="color: red" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">付款日期<i></i></div>
+                    <input type="text" name="" v-model="item.show_actual_date" placeholder="" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">付款金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+item.actual_amount" placeholder="" readonly/>
+<!--                     <span style="line-height:0.95rem;color: #4591fe;flex:1" onclick="toggleShow(this)" :data-value="index" data-flag="0">查看明细</span> -->
+                </div>
+                <div :class="'pay-detail-'+index" >
+                <div class="info-line"  v-if="item.offline_amount > 0">
+                    <div class="info-title">线下付款<i></i></div>
+                    <input type="text" name="" v-model="'￥'+item.offline_amount" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input"  v-if="item.balance_amount > 0">
+                    <div class="info-title">余额付款<i></i></div>
+                    <input type="text" name="" v-model="'￥'+item.balance_amount" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input" v-if="item.wechat_amount > 0">
+                    <div class="info-title">微信付款<i></i></div>
+                    <input type="text" name="" v-model="'￥'+item.wechat_amount" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input" v-if="item.coupon_amount > 0">
+                    <div class="info-title">优惠卷抵扣<i></i></div>
+                    <input type="text" name="" v-model="'￥'+item.coupon_amount" placeholder="" readonly/>
+                </div>
+                </div>
+                    <div class="info-line important-input">
+                        <div class="info-title">附件<i></i></div>
+                        <!-- <input style="color: #4591fe;" type="text" name="" onclick="attachment()" value="点击查看附件" readonly/> -->
+                        <div style="text-align:right;padding: 0 0.21rem;" class="info-upset" onclick="attachment()">
+                            点击查看附件<span class="mui-icon mui-icon-arrowright"></span>
+                        </div>
+                    </div>
+            </div>
+            <div style="margin: 10px"></div>
+            </template>
+
+            <div class="basic-info" v-if="items.length == 0">
+                <div class="title">收款计划</div>
+                <div class="" style="padding: 5px;text-align: center">
+                    无收款计划
+                </div>
+            </div>
+
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+
+        var itemDetailVue = new Vue({
+            el:"#customerForm",
+            data:{
+                model:[],
+                items:[]
+            }
+        });
+
+        $(function(){
+            getDetail();
+            getItems();
+        });
+        //获取合同以及收款信息
+        function getDetail(){
+            $.post("/WrkReceivables/detail/id/{$id}"
+            ,function(result){
+                itemDetailVue.model = result;
+            },'json')
+        }
+
+        //查看附件
+        function attachment(){
+            var attach_group = itemDetailVue.model.wrkReceivables.attach_group;
+            openWrkAttachmentForm("附件", [{attach_group:attach_group}]);
+        }
+        //获得收款计划
+        function getItems(){
+            $.post("/WrkReceivables/getItem/id/{$id}"
+            ,function(result){
+                itemDetailVue.items = result;
+            },'json')
+        }
+        function toggleShow(e){
+            var index = $(e).attr("data-value");
+            var flag = $(e).attr("data-flag");
+            if (flag==0) {
+                $(e).attr("data-flag",1);
+                $(e).text("收起");
+            }else{
+                $(e).attr("data-flag",0);
+                $(e).text("查看明细");
+            }
+
+            var cl = '.pay-detail-'+index;
+            $(cl).toggle();
+        }
+
+    </script>
+</body>
+
+</html>

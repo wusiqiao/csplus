@@ -1,0 +1,23 @@
+<!-- Modal -->
+<eq name="redpacket" value="show">
+<div class="modal-particular modal" id="particular">
+	<div class="particular-content">
+		<div class="close-particular"></div>
+		<div class="particular-top">
+			<div class="title">恭喜您！</div>
+			<div class="">获得优惠券</div>
+		</div>
+		<div class="particular-ticket">
+			<div class="sum">{$user_receive.reduce_cost}</div>
+			<div class="spark">
+				<div>元</div>
+				<span>满{$user_receive.least_cost}元可使用</span>
+			</div>
+		</div>
+		<div class="use-to">仅限定服务可用</div>
+		<div class="particular-button">
+			<button id="ticket_receive" onclick="ticket_receive(this);" data-id="{$user_receive.id}">点击领取</button>
+		</div>
+	</div>
+</div>
+</eq>

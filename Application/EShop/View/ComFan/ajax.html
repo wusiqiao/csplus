@@ -1,0 +1,70 @@
+
+            <div class="groups tag">
+                <div class="title gray-9">
+                    <span>分组选择</span>
+                    <div class="flex-between">
+                        <span id="group-tip" class="question-mark" data-modal="groupModal"></span>
+                    </div>
+                </div>
+                <notempty name="data.groups">
+                    <div class="select-item beside-selector" style="overflow: auto">
+                        <volist name="data.groups" id="vo">
+                            <span data-id="{$vo.id}">{$vo.value}({$vo.user_count})</span>
+                        </volist>
+                    </div>
+                    <else/>
+                    <div class="no-create tc">
+                        <div class="gray-9c">您尚未创建任何分组</div>
+                        <div>
+                            <a class="blue-4591fe" href="/UserSupervise/customer_groups.html">点击创建分组</a>
+                        </div>
+                    </div>
+                </notempty>
+            </div>
+            <div class="groups tag" id="tag-wrap">
+                <div class="title gray-9">
+                    <span>标签</span>
+                    <div class="flex-between">
+                        <!--<span class="filter-level blue-4591fe addBtn"></span>-->
+                        <!--<span class="filter-level blue-4591fe delBtn"></span>-->
+                    </div>
+                    <div class="flex-between">
+                        <span id="tag-tip" class="question-mark" data-modal="tagModal"></span>
+                    </div>
+                </div>
+                <notempty name="data.tags">
+                    <div id="select-part" class="beside-selector" style="overflow: auto;height: 280px;">
+                        <div class="select-element">
+                            <div class="tag-title gray-9c">一级标签</div>
+                            <ul class="more-tag select-item">
+                                <volist name="data.tags" id="vo">
+                                    <span data-id="{$vo.id}">{$vo.value}({$vo.user_count})</span>
+                                </volist>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="add-select-item flex-center mt15 mb15">
+                        <button class="confirm-match">确定</button>
+                        <button class="add-level-tag">添加下级标签</button>
+                    </div>
+                    <else/>
+                    <div class="no-create tc">
+                        <div class="gray-9c">您尚未创建任何标签</div>
+                        <div>
+                            <a class="blue-4591fe" href="/UserSupervise/customer_tags.html">点击添加标签</a>
+                        </div>
+                    </div>
+                </notempty>
+            </div>
+            <div class="groups tag">
+                <div class="title gray-9">
+                    <span>选择公司</span>
+                </div>
+                <div class="pd1525">
+                	<div class="company-selected flex-1 mb15">
+						<div>选择公司</div>
+						<div class="select-icon1"></div>
+					</div>
+                </div>
+                
+            </div>

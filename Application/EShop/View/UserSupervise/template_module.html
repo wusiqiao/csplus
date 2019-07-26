@@ -1,0 +1,372 @@
+<include file="UserSupervise:head"/>
+<body>
+<section class="group-addition-wrap custom-wrap" style="overflow: hidden;">
+    <ul class="con-tab pr">
+        <li id="list" class="cons">
+            <div class="mui-search-area">
+                <input class="mui-search-area-input mui-input-clear" type="text" placeholder="请输入用户姓名"/>
+                <button></button>
+            </div>
+            <div class="mui-indexed-list-bar">
+				<a>A</a>
+				<a>B</a>
+				<a>C</a>
+				<a>D</a>
+				<a>E</a>
+				<a>F</a>
+				<a>G</a>
+				<a>H</a>
+				<a>I</a>
+				<a>J</a>
+				<a>K</a>
+				<a>L</a>
+				<a>M</a>
+				<a>N</a>
+				<a>O</a>
+				<a>P</a>
+				<a>Q</a>
+				<a>R</a>
+				<a>S</a>
+				<a>T</a>
+				<a>U</a>
+				<a>V</a>
+				<a>W</a>
+				<a>X</a>
+				<a>Y</a>
+				<a>Z</a>
+			</div>
+            
+			<div class="mui-indexed-list-alert"></div>
+			<div class="mui-indexed-list-inner">
+
+				<div id="select-wrap" class="mui-select-wrap">
+	            	<div class="groups tag" >
+	                	<div class="title gray-9">用户分组</div>
+	                    <div class="select-item">
+							<volist name="groups" id="vo">
+								<span data-id="{$vo.id}">{$vo.value}</span>
+							</volist>
+	                    </div>
+	                </div>
+	                <div class="groups tag">
+	                    <div class="title gray-9">
+	                    	<span>标签</span>
+	                    	<div class="flex-between">
+	                    		<span class="filter-level blue-4591fe addBtn"></span>
+	                    		<!--<span class="filter-level blue-4591fe delBtn"></span>-->
+	                    	</div>
+	                        
+	                    </div>
+	                    <ul class="more-tag select-item">
+	                        <div class="show-icon"></div>
+							<volist name="tags" id="vo">
+								<span data-id="{$vo.id}">{$vo.value}</span>
+							</volist>
+	                    </ul>
+	                </div>
+	          	</div>
+				<div class="mui-indexed-list-empty-alert">没有数据</div>
+                <div class="groups customer">
+                    <ul class="mui-table-view" id="customer_lists">
+                        <foreach name="users" key="key" item="vos">
+                            <li class="title" data-group="{$key}">{$key}</li>
+                            <foreach name="vos.items" key="k" item="vo">
+                                <li data-value="{$vo.pinyin}" data-tags="{$vo.pinyin}" data-url="/UserSupervise/customer_detail/id/{$vo.id}">
+                                    <div class="check-div">
+                                    	<input type="checkbox" value="{$vo.id}">
+                                        <img src="{$vo.head_pic}" alt="">
+                                        <span class="nickname">{$vo.name}</span>
+                                    </div>
+                                    <div class="check-div blue-4591fe">
+                                        <span>{$vo.group_name}</span>
+                                        <span class="mui-icon mui-icon-arrowright"></span>
+                                    </div>
+                                </li>
+                            </foreach>
+                        </foreach>
+                    </ul>
+                </div>
+            </div>
+            <div class="mui-bottom-check-commit">
+				<div class="chose-all">
+					<div id="selectAll" class="gray-9">
+						<input type="checkbox">
+						<span>全选</span>
+					</div>
+					<div id="count" class="blue-4591fe">0人</div>
+				</div>
+				<button class="mui-disabled" id="done">选好了</button>
+			</div>
+        </li>
+    </ul>
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script src="{$Think.const.JS_URL}/mui/mui.indexedlist.js"></script>
+<script>
+    //定义last变量，记录第几次筛选
+    var bufferTime = 1000;
+    var last = 0;
+    $('.more-tag span').addClass('select'+ last);
+    //被点击的li新增标记active类名
+    $('.select-item span').on('click',function(){
+        $(this).toggleClass('active');
+        if ( bufferTime == 1000){
+            timer();
+        } else {
+            bufferTime = 1000
+        }
+    })
+    $('#customer_lists').on('click','li',function(){
+        var url = $(this).data('url');
+        if(url) {
+            window.location.href = url;
+        }
+    })
+    function timer(){
+        setTimeout(function(){
+            bufferTime = bufferTime - 100;
+            console.log(bufferTime)
+            if(bufferTime == 0){
+                bufferTime = 1000;
+                handlerCustomerLists();
+            } else {
+                timer()
+            }
+        },100)
+    }
+    //为第一个按钮注册事件
+    $('.addBtn').on('click',function(){
+        var self = $(this);
+        filterLi(self);
+    })
+    //处理用户列表
+    function handlerCustomerLists()
+    {
+        var groupDom = $('#select-wrap').find('div:first > .select-item > .active');
+        var tagSingleDom = $('#select-wrap').find('div:gt(0)');
+        var tagDom = tagSingleDom.find('.select-item > .active');
+        var groupIds = [];
+        var tagIds = [];
+        if (groupDom.length > 0 ) {
+            groupIds = groupDom.map(function(){
+                return $(this).data('id')
+            }).get();
+        }
+        if (tagDom.length > 0) {
+            tagSingleDom.map(function(){
+                var tagSingleIds = $(this).find('.select-item > .active');
+                if (tagSingleIds.length > 0) {
+                    var template = tagSingleIds.map(function(){
+                        return $(this).data('id')
+                    }).get();
+                    tagIds.push(template);
+                }
+            });
+        }
+        $.post('/UserSupervise/getCustomerLists',{groups:groupIds,tags:tagIds},function(data){
+            var html = '';
+            if(data) {
+                for (j in data) {
+                    html += '<li class="title" data-group="'+j+'">'+j+'</li>';
+                    for ( var i = 0 ; i < data[j]['items'].length; i ++) {
+                        html += parseTemplate('template-1', data[j]['items'][i]);
+                    }
+                }
+            }
+            $('#customer_lists').html(html);
+            console.log(html);
+            // for (var i = 0 ; i < data.length ; i++) {
+            //     var html += '<li class="title" data-group="{$key}">{$key}</li>';
+            //     var html = parseTemplate('.template-1', single);
+            // }
+            // var html = parseTemplate('.template-1', single);
+            // template-1"
+            // console.log(data)
+        },'json')
+    }
+    function parseTemplate(target, jsobject){
+        var tpl = $('#'+target).prop("outerHTML").replace("display:none","").replace("id=\""+target+"\"","");
+        var reg = new RegExp("\{%([^%}]*)?%\}", "g");
+        var matchs = tpl.match(reg);
+        if (matchs != null) {
+            for (var i = 0; i < matchs.length; i++) {
+                var key = matchs[i].replace("{%", "").replace("%}", "");
+                var val = $.isEmptyObject(jsobject[key]) ? "" : jsobject[key];
+                tpl = tpl.replace(matchs[i], val);
+            }
+            return tpl;
+        }
+        return "";
+    }
+    function filterLi(self){
+        last = last + 1;
+        var ulClass = 'ul' + last;
+        //获取没有被选中的同级li
+        var child = self.parents('.title').siblings().children('.active').siblings('span').not('.active');
+        //判断剩下的元素个数是否有筛选必要
+        if(child.size() <= 0){
+            alert('元素不足，无法继续筛选！');
+            return;
+        }
+        $("#select-wrap").append('<div class="groups tag">'
+        	+'<div class="title gray-9"><span>标签</span><div class="flex-between"><span class="filter-level blue-4591fe addBtn"'
+        	+ last 
+        	+'></span><span class="delBtn"></span></div></div><ul class="more-tag select-item ' 
+        	+ ulClass 
+        	+ '"><div class="show-icon"></div></ul></div>'
+        );
+        child.appendTo('.' + ulClass);
+        //上一个按钮已经筛选过，防止他第二次点击，解绑事件
+        self.off();
+
+        //用js新增加的按钮没有绑定事件，在这里绑定
+        $('.addBtn').last().on('click',function(){
+            var self = $(this);
+            filterLi(self);
+        })
+        $('.delBtn').on('click',function(){
+            var self = $(this);
+            filterDel(self);
+        })
+    }
+    
+    $('.delBtn').on('click',function(){
+    	var self = $(this);
+    	filterDel(self);
+    })
+    
+    function filterDel(self){
+    	var pre = last - 1;
+        var preUlClass = 'ul' + pre;
+    	var child = self.parents('.title').siblings().children('span').removeClass('active');
+    	child.appendTo(self.parents('.tag').prev().children('.more-tag'));
+		$('.delBtn').off();
+		self.off();
+		$('.delBtn').on('click',function(){
+	        var self = $(this);
+	        filterDel(self);
+	    })
+    	self.parents('.tag').remove();
+    	$('.addBtn').last().on('click',function(){
+            var self = $(this);
+            filterLi(self);
+      })
+    }
+</script>
+<script type="text/javascript">
+	
+	mui.init();
+    mui.ready(function() {
+    	function checkAll(arr){
+            for (var i = 0;i < arr.length; i++) {
+                arr[i].checked = true;
+            }
+        }
+        function uncheckAll(arr){
+            for (var i = 0;i < arr.length; i++) {
+                arr[i].checked = false;
+            }
+        }
+		var list = document.getElementById('list');
+		var done = document.getElementById('done');
+        var nCount = document.getElementById('count');
+        var allselector = document.getElementById('selectAll');
+        var nCheckBox = list.querySelectorAll('.mui-indexed-list-inner input[type="checkbox"]');
+        //create
+        window.indexedList = new mui.IndexedList(list);
+		//done event
+        done.addEventListener('tap', function() {
+            var checkboxArray = [].slice.call(list.querySelectorAll('input[type="checkbox"]'));
+            var checkedValues = [];
+            var checkedText = '';
+            checkboxArray.forEach(function(box) {
+                if (box.checked) {
+                    checkedText += $.trim(box.parentNode.innerText);
+                    checkedValues.push(box.value);
+                }
+            });
+            console.log(checkedValues);
+            if (checkedValues.length > 0) {
+                var message = checkedValues.length == 1 ? '是否添加该用户"'+checkedText+'"' : '是否添加所选择的'+checkedValues.length+'位用户';
+                mui.confirm(message,'用户添加',['取消','添加'],function(e){
+                    if(e.index == 1) {
+                        var users = checkedValues;
+                        var key = '{$key}';
+                        var id = '{$id}';
+                        var url = (key == 'group') ? '/UserSupervise/appendCustomerFromGroup' : '/UserSupervise/appendCustomerFromTag';
+                        $.post(url,{users:users,id:id},function(data){
+                            layer.msg(data.message);
+                            if(data.error == 0) {
+                                setTimeout(function(){
+                                    parent.$("#handle_status").val('1');
+                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                    parent.layer.close(index); //再执行关闭
+                                },1000)
+                            }
+                        },'JSON')
+                    }
+                })
+            } else {
+                mui.alert('你没选择任何用户');
+                return false;
+            }
+        }, false);
+        mui('.mui-indexed-list-inner').on('change', 'input', function() {
+            var count = list.querySelectorAll('input[type="checkbox"]:checked').length;
+            var value = count ? count + "人" : "0人";
+            nCount.innerHTML = value;
+            if (count) {
+                if (done.classList.contains("mui-disabled")) {
+                    done.classList.remove("mui-disabled");
+                }
+            } else {
+                if (!done.classList.contains("mui-disabled")) {
+                    done.classList.add("mui-disabled");
+                }
+            }
+        });
+        mui('.mui-bottom-check-commit').on('change', 'input', function() {
+            var nCheckAllBtn = list.querySelectorAll('#selectAll input[type="checkbox"]:checked').length;
+            if(nCheckAllBtn){
+                checkAll(nCheckBox);
+            } else {
+                uncheckAll(nCheckBox);
+            }
+            var count = list.querySelectorAll('.mui-indexed-list-inner input[type="checkbox"]:checked').length;
+            var value = count ? count + "人" : "0人";
+            nCount.innerHTML = value;
+            if (count) {
+                if (done.classList.contains("mui-disabled")) {
+                    done.classList.remove("mui-disabled");
+                }
+            } else {
+                if (!done.classList.contains("mui-disabled")) {
+                    done.classList.add("mui-disabled");
+                }
+            }
+        });
+    });
+	
+
+    $('.show-icon').on('click',function(){
+        $(this).toggleClass('hide-icon').parents('.more-tag').toggleClass('active');
+    })
+
+    $('#edit-group').on('click',function(){
+        $('#creat-group').toggleClass('hide');
+        $(this).parents('.edit-groups').toggleClass('active');
+    })
+
+    $('#edit-tag').on('click',function(){
+        $('#creat-tag').toggleClass('hide');
+        $(this).parents('.edit-groups').toggleClass('active');
+    })
+
+    // $(".main-tab li").click(function(){
+    // 	$(this).addClass('active').siblings().removeClass('active');
+    //     var num = $(".main-tab li").index(this);
+    //     $(".con-tab .cons").eq(num).removeClass('hide').siblings().addClass('hide');
+    // })
+</script>
+</body>
+</html>

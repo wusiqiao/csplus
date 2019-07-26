@@ -1,0 +1,408 @@
+@rem:750/10rem;
+//通用样式
+body,h1,h2,h3,h4,h5,h6,p,dd{margin:0;-webkit-tap-highlight-color: transparent;}
+ul,ol,dl{margin:0;padding:0;list-style:none;-webkit-tap-highlight-color: transparent;}
+img{border:none;vertical-align:middle;-webkit-tap-highlight-color: transparent;}
+a{text-decoration:none;color:inherit;outline:none;-webkit-tap-highlight-color: transparent;}
+input{
+  border-radius: 5/@rem;
+  border:1px solid #ccc;
+  outline:none;
+}
+li{
+  list-style: none;
+}
+body{
+  font-size:30/@rem;
+}
+.lef{
+  float:left;
+}
+.rig{
+  float:right;
+}
+.flex{
+  display: flex;
+  justify-content: space-between;
+}
+.mainColor{
+  color:#368bfe;
+}
+.clearfix::after{
+  display: block;
+  content: '';
+  clear:both;
+}
+.star::before{
+  content: '*';
+  color:red;
+}
+.Star::before{
+  position: absolute;
+  left:-15/@rem;
+  content: '*';
+  color:red;
+}
+/* 修正layer弹窗框*/
+.layui-layer{
+  overflow: hidden;
+  border-radius: 20/@rem !important;
+}
+.layui-layer-title{
+  padding:0 !important;
+  text-align: center;
+}
+.layui-layer-btn{
+  border-top:1px solid #ccc;
+  padding:0 !important;
+}
+.layui-layer-btn a{
+  position: relative;
+  width:50%;
+  height:90/@rem !important;
+  line-height:90/@rem !important;
+  border:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  border-radius:0 !important;
+  background: transparent !important;
+  color:#368bfe !important;
+}
+.layui-layer-btn0::after{
+  position: absolute;
+  content: '';
+  top:0;
+  right:0;
+  width: 1px;
+  height:100%;
+  background:#ccc;
+}
+.sigleLayer .layui-layer-btn a{
+  width:100%;
+}
+.sigleLayer .layui-layer-btn0::after{
+  width: 0;
+}
+
+
+
+html,body{
+  height:100%;
+}
+.wrap{
+  overflow: hidden;
+  height:100%;
+  background: #eee;
+}
+.content{
+  overflow: hidden;
+  margin: 3%;
+  background: #fff;
+  border-radius:20/@rem;
+}
+.content .directory{
+  height:60/@rem;
+  background: #eff8fd;
+  line-height:60/@rem;
+  font-size:34/@rem;
+  color:#4591fe;
+  text-indent: 20/@rem;
+}
+.dataBox ul{
+  padding-left:40/@rem;
+}
+.dataBox .list{
+  height:80/@rem;
+  line-height:80/@rem;
+}
+.dataBox .line{
+  position: absolute;
+  left: 5%;
+  width: 90%;
+  height: 1px;
+  background:#ccc;
+}
+/*.dataBox .list::after{
+  width: 100%;
+  height:1px;
+  content: '';
+  background: red;
+}*/
+.dataBox .edit{
+  padding-right:20/@rem;
+  color:#368bfe;
+}
+.more{
+  display: inline-block;
+  margin-right:8/@rem;
+  width: 26/@rem;
+  height: 16/@rem;
+  background-image:url('../../images/Organization/allIcon.png');
+  background-position:-14/@rem -25/@rem;
+  background-size:226/@rem 167/@rem;
+}
+.end{
+  display: inline-block;
+  position: relative;
+  top:5/@rem;
+  margin-right:8/@rem;
+  width: 27/@rem;
+  height: 31/@rem;
+  background-image:url('../../images/Organization/allIcon.png');
+  background-position:-62/@rem -60/@rem;
+  background-size:226/@rem 167/@rem;
+}
+// 弹窗
+.labelBox{
+  padding-top:15px;
+}
+.labelBox p{
+  margin:30/@rem auto;
+  width:600/@rem;
+}
+.labelBox p label{
+  display: flex;
+  justify-content: space-between;
+}
+.labelBox span{
+  width:170/@rem;
+  line-height:60/@rem;
+}
+.labelBox input{
+  width:430/@rem;
+  height:60/@rem;
+  border: 1px solid #ccc;
+  text-indent: 10/@rem;
+}
+
+.bg-transparent{
+  background: transparent;
+  border-radius:0;
+}
+.ulBox li{
+  background: #fff;
+}
+.headTittle{
+  height:74/@rem;
+  line-height:74/@rem;
+}
+.ulBox li{
+  padding:25/@rem;
+  border-radius: 5/@rem;
+  line-height:50/@rem;
+  background: #fff;
+}
+.ulBox li + li{
+  margin-top: 30/@rem;
+}
+.ulBox .userInfo span,.ulBox .operation span{
+  display: block;
+}
+.ulBox .map{
+  margin: auto;
+  width:50/@rem;
+  height:50/@rem;
+  background-image:url('../../images/Organization/allIcon.png');
+  background-size:226/@rem 167/@rem;
+}
+.ulBox .edit{
+  background-position:-11/@rem -105/@rem;
+}
+.ulBox .disable{
+  background-position:-152/@rem -108/@rem;
+}
+.ulBox .useAble{
+  background-position:-79/@rem -108/@rem;
+}
+.ulBox .editBox{
+  display: block;
+  margin-right:50/@rem;
+  width:70/@rem;
+  text-align: center;
+}
+.ulBox .operation p{
+  width:70/@rem;
+  text-align: center;
+}
+.row{
+  position: relative;
+  display:flex;
+  height: 95/@rem;
+  padding: 0 25/@rem;
+}
+.row .title{
+  position: relative;
+  line-height:62/@rem;
+}
+.row .title .txt{
+  display: inline-block;
+  width:130/@rem;
+  text-align:justify;
+}
+.row .title .txt span{
+  display: inline-block;
+  padding-left: 100%;
+}
+.row input{
+  margin: 0 20/@rem;
+  width:340/@rem;
+  border:1px solid #ccc;
+  height:60/@rem;
+  text-indent: 15/@rem;
+}
+.row input.on{
+  width:200/@rem;
+}
+.row .spanBtn{
+  width: 150/@rem;
+  height:64/@rem;
+  line-height:64/@rem;
+  border:1px solid #368bfe;
+  border-radius: 5/@rem;
+  text-align: center;
+}
+.tip{
+  display: flex;
+  position: relative;
+  padding: 0 25/@rem;
+  font-size:27/@rem;
+  line-height:45/@rem;
+  color:#999;
+}
+.iWrap{
+  width:36/@rem;
+}
+.danger{
+  position: absolute;
+  top:4/@rem;
+  left:12/@rem;
+  width:36/@rem;
+  height:36/@rem;
+  background-image:url('../../images/Organization/allIcon.png');
+  background-size:226/@rem 167/@rem;
+  background-position:-10/@rem -56/@rem;
+}
+.margin60{
+  margin-top: 60/@rem;
+}
+.selectBox{
+  display: flex;
+  margin: 0 20/@rem;
+  width:340/@rem;
+  height:60/@rem;
+  border: 1px solid #ccc;
+}
+.selectBox input{
+  margin: 0;
+  width:280/@rem;
+  height:56/@rem;
+  border: none;
+}
+.selectBox span{
+  width: 60/@rem;
+  height: 60/@rem;
+  background-color:#f4f4f4;
+}
+.selectBox span i{
+  display: inline-block;
+  margin:22/@rem 18/@rem;
+  width:27/@rem;
+  height:16/@rem;
+  background-image:url('../../images/Organization/allIcon.png');
+  background-size:226/@rem 167/@rem;
+  background-position:-53/@rem -23/@rem;
+}
+.padding80{
+  padding: 20/@rem 0 55/@rem;
+  font-size:27/@rem;
+  text-align: center;
+  color:#999;
+}
+.fixedBtn{
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 0;
+  padding:0 3%;
+  width:94%;
+  height:140/@rem;
+}
+.fixedBtn span{
+  width:340/@rem;
+  height:100/@rem;
+  line-height:100/@rem;
+  text-align: center;
+  box-sizing: border-box;
+  border-radius: 10/@rem;
+}
+.fixedBtn span.save{
+  background: #398bfe;
+  color:#fff;
+}
+.fixedBtn span.cancel{
+  border:1px solid #398bfe;
+  color:#398bfe;
+}
+.row .bgGray{
+  display: none;
+  margin-right: 20/@rem;
+  width: 120/@rem;
+  height:66/@rem;
+  line-height:66/@rem;
+  background:#c2c2c2;
+  border: none;
+  color:#fff;
+}
+.singleLabelBox{
+
+}
+.singleLabelBox .p1{
+  margin-bottom: 20/@rem;
+  font-size: 36/@rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

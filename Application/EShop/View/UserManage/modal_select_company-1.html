@@ -1,0 +1,109 @@
+<include file="UserSupervise:head"/>
+<style>
+	.mui-indexed-list-inner img {
+	    width: .28rem;
+	    height: .28rem;
+	    margin-right: .2rem;
+	}
+	.mui-indexed-list-inner .company-select-item {
+	    display: flex;
+	    justify-content: flex-start;
+	    align-items: center;
+		height: .9rem;
+		line-height: .9rem;
+	    padding: 0 .2rem;
+	    box-shadow: 0 1px 0 #eeeeee inset;
+	    background-color: #ffffff;
+	}
+	.mui-indexed-list-inner {
+		border-radius: .1rem;
+	}
+</style>
+<body>
+<section class="common-wrap fixed-page bg-none">
+	<div class="mui-search-area">
+		<input class="mui-search-area-input mui-input-clear" type="text" placeholder="请输入客户姓名搜索"/>
+		<button></button>
+	</div>
+	<div class="mui-indexed-list-inner blue-checkbox">
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+        <div class="company-select-item">
+            <input type="checkbox" name="" id="" value="" />
+            <span class="ml15 gray-6">厦门安迩科技有限公司</span>
+        </div>
+	</div>
+	<div class="bottom-btn">
+        <button id="" class="left-btn">取消</button>
+        <button id="cancel">绑定公司</button>
+
+    </div>
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script>
+	$(function () {
+		function calculateH(){
+			var winH = $(document).height();
+			var searchH = $('.mui-search-area').height();
+			var btnH = $('.bottom-btn').height();
+			$('.mui-indexed-list-inner').css('height',winH - searchH - btnH - 60);
+		}
+        calculateH();
+    })
+</script>
+</body>
+</html>

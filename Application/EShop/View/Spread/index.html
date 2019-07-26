@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	    <meta name="apple-mobile-web-app-capable" content="yes" />
+	    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+	    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+	    <title>{$title}</title>
+	    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	</head>
+	<body>
+		<section class="spread-wrap">
+			<div class="part1">
+				<div>
+					<img src="{$Think.const.IMG_URL}spread/part1.png" alt="" />
+					<a href="javascript:;">
+						<div class="share-btn share" id="share-it">
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class="part2">
+				<div>
+					<img src="{$Think.const.IMG_URL}spread/part2.png" alt="" />
+					<a href="__MODULE__/spread/tweets_list.html">
+						<div class="share-btn hot">
+						</div>
+					</a>
+				</div>
+			</div>
+			<div style="height: .8rem;"></div>
+			<include file="Public:footer" />
+			<include file="Public:modal_share" />
+		</section>
+		<script>select_menu("spread");</script>
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+		<script type="text/javascript">
+            wx.config({
+                debug: false,
+                appId: '{$signPackage.appId}',
+                timestamp: '{$signPackage.timestamp}',
+                nonceStr: '{$signPackage.nonceStr}',
+                signature: '{$signPackage.signature}',
+                jsApiList: [
+                    // 所有要调用的 API 都要加到这个列表中
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage'
+                ]
+            });
+
+            wx.ready(function () {
+                //发送给朋友
+                wx.onMenuShareAppMessage({
+                    title: '{$share_data.title}',
+                    desc: '{$share_data.desc}',
+                    link: '{$share_data.link}',
+                    imgUrl: '{$share_data.imgUrl}',
+                    success:function(){
+                        var isLogin = '{$is_login}';
+                        if(isLogin == '0'){
+                            $.post('__MODULE__/Index/HandlerUserRegion',function(){
+
+                            })
+                        }
+                    }
+                });
+                //分享到朋友圈
+                wx.onMenuShareTimeline({
+                    title: '{$share_data.title}',
+                    desc: '{$share_data.desc}',
+                    link: '{$share_data.link}',
+                    imgUrl: '{$share_data.imgUrl}',
+                    success:function(){
+                        var isLogin = '{$is_login}';
+                        if(isLogin == '0'){
+                            $.post('__MODULE__/Index/HandlerUserRegion',function(){
+
+                            })
+                        }
+                    }
+                });
+                wx.error(function(res){
+                    //            alert(res);
+                });
+            });
+		</script>
+		<script>
+            $('.classification-back').on('click',function(){
+                window.history.back();
+            })
+            $('#share-it').on('click',function(){
+                $("#share-wrap").show();
+            })
+		</script>
+	</body>
+</html>

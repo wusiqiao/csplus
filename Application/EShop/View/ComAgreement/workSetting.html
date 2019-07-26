@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .basic-info{
+        margin-bottom: 0.2rem;
+    }
+    .basic-info .info-title {
+        width: 1.96rem;
+        color: #333333;
+        text-align: left;
+        padding: 0;
+        padding-left: .25rem;
+        color: #999999;
+    }
+
+    .basic-info input[type=text]{
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        text-align: left!important;
+    }
+
+</style>
+
+<body style="height: 93%">
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <form id="workSetting" onsubmit="return false;">
+            <div class="basic-info user_head" style="height: auto">
+                <div style="color: red;margin: 10px 15px">
+                    提示：<span >1.未设置通知人员则默认通知管理员</span>
+                    <span style="display: block;margin-left: 40px">2.仅公司管理员可进行工作人员设置</span>
+                </div>
+            </div>
+            <div class="basic-info">
+                <div class="info-line important-input">
+                    <div class="info-title">资金负责人<i></i></div>
+                    <input type="text" :value="customercapital.leader" readonly/>
+                    <span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="toSetModuleUser(this)" data-module="customercapital" data-pv="8">
+                        查看详情
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </span>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">资金可见人<i></i></div>
+                    <input type="text" :value="customercapital.visiblers" readonly/>
+                    <span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="toSetModuleUser(this)" data-module="customercapital" data-pv="4">
+                        查看详情
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="basic-info">
+                <!--<div class="title">合同状态</div>-->
+                <div class="info-line important-input">
+                    <div class="info-title">服务通知人<i></i></div>
+                    <input type="text" :value="WrkTaskPlan" readonly/>
+                    <span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="toSetModuleUser(this)" data-module="WrkTaskPlan">
+                        查看详情
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </span>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">清卡通知人<i></i></div>
+                    <input type="text" :value="WxOperateTemplate" readonly/>
+                    <span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="toSetModuleUser(this)" data-module="WxOperateTemplate">
+                        查看详情
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </span>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">社保通知人<i></i></div>
+                    <input type="text" :value="SocialSecurityNotice" readonly/>
+                    <span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="toSetModuleUser(this)" data-module="SocialSecurityNotice">
+                        查看详情
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </span>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">合同通知人<i></i></div>
+                    <input type="text" :value="WrkAgreement" readonly/>
+                    <span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="toSetModuleUser(this)" data-module="WrkAgreement">
+                        查看详情
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </span>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">缴费通知人<i></i></div>
+                    <input type="text" :value="WrkReceivables" readonly/>
+                    <span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="toSetModuleUser(this)" data-module="WrkReceivables">
+                        查看详情
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </span>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">发票通知人<i></i></div>
+                    <input type="text" :value="WrkInvoicePlan" readonly/>
+                    <span style="margin-right: 0.21rem;color: #0b95ff;line-height: 1rem;" onclick="toSetModuleUser(this)" data-module="WrkInvoicePlan">
+                        查看详情
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </span>
+                </div>
+            </div>
+            <if condition="$isLeader">
+                <button class="save-edited mt30 bg-368bfe" style="width: 95%;position: absolute;bottom: .2rem" onclick="resetWorkSetting()">恢复默认</button>
+            </if>
+        </form>
+    </section>
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+        var vue = new Vue({
+           el:"#workSetting" ,
+            data:{
+                WrkAgreement:"",
+                WrkInvoicePlan:"",
+                WrkReceivables:"",
+                WxOperateTemplate:"",
+                SocialSecurityNotice:"",
+                WrkTaskPlan:"",
+                customercapital:{
+                    leader:"",
+                    visiblers:""
+                }
+            }
+        });
+
+        function resetWorkSetting(){
+            mui.confirm("恢复默认将所有人员替换为管理员","是否确认恢复默认",["确定","取消"],function(e){
+                if(e.index == 0){
+                    $.post("/ComAgreement/resetWorkSetting",{},function(result){
+                        layer.msg(result.message);
+                        if(result.error == 0){
+                            $(".basic-info input").val(result.name);
+                        }
+                    },'json')
+                }
+            });
+        }
+
+        function getInfo(){
+            $.post("/ComAgreement/getWorkUser",{},function(result){
+                for(var i in result){
+                    if(i == "customercapital"){
+                        if(result[i].leader != undefined && result[i].leader.length > 0){
+                            var staff_name = result[i].leader[0].staff_name;
+                            var name = result[i].leader[0].name;
+                            vue[i]['leader'] = (staff_name == "" || staff_name == null) ? name:staff_name;
+                        }
+                        if(result[i].visiblers != undefined && result[i].visiblers.length > 0){
+                            var staff_name = result[i].visiblers[0].staff_name;
+                            var name = result[i].visiblers[0].name;
+                            for(var j = 0;j<result[i].visiblers.length;j++){
+                                if(result[i].visiblers[j].customer_leader_id == result[i].visiblers[j].user_id){
+                                    staff_name = result[i].visiblers[j].staff_name;
+                                    name = result[i].visiblers[j].name;
+                                }
+                            }
+                            vue[i]['visiblers'] = (staff_name == "" || staff_name== null) ? name:staff_name;
+                            if(result[i].visiblers.length > 1){
+                                vue[i]['visiblers'] += ", ···";
+                            }
+                        }
+                        continue;
+                    }
+                    for(var j = 0;j<result[i].length;j++){
+                        if(result[i][j].staff_name == "" || result[i][j].staff_name == null){
+                            result[i][j].staff_name = result[i][j].name;
+                        }
+                        if(result[i][j].customer_leader_id == result[i][j].user_id){
+                            staff_name = result[i][j].staff_name;
+                            break;
+                        }else{
+                            staff_name = result[i][0].staff_name;
+                        }
+                    }
+                    if(result[i].length > 1){
+                        vue[i] = staff_name + " , ···";
+                    }else if(result[i].length == 1){
+                        vue[i] = staff_name;
+                    }
+                }
+            },'json')
+        }
+
+        $(function(){
+            getInfo();
+        });
+
+        function toSetModuleUser(obj){
+            var module = $(obj).data("module");
+            var pv = $(obj).data("pv");
+            pv = (pv == undefined) ? 1 : pv;//权限值
+            layer.open({
+                type:2,
+                title:"选择员工",
+                area:["100%","100%"],
+                closeBtn:1,
+                content:"/ComAgreement/setModuleUser/module/"+module+"/pv/"+pv
+            })
+        }
+    </script>
+</body>
+
+</html>

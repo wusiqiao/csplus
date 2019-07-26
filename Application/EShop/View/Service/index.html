@@ -1,0 +1,156 @@
+<include file="UserSupervise:head"/>
+<body>
+<section class="common-wrap bg-none mt85">
+	<include file="Index:header" />
+    <ul class="main-tab">
+        <li class="active">内部借用</li>
+        <li onclick="window.location.href = '/Service/borrow.html'">客户借还</li>
+        <li onclick="window.location.href = '/Service/manage.html'">物品管理</li>
+    </ul>
+    <section>
+    	<div class="chose-company mb20">
+    		<div class="company-selected flex-1">
+    			<div>选择公司</div>
+    			<div class="select-icon1"></div>
+    		</div>
+    		<button class="ml15 mui-disabled" id="transfer">物品转交</button>
+    		<input type="hidden" />
+    	</div>
+    	<div>
+    		<div class="item-titles mb20">
+    			<div>物品名称</div>
+    			<div>在手员工</div>
+    			<div>物品编号</div>
+    			<div>存放库号</div>
+    		</div>
+    		<ul class="">
+    			<li class="transfer-list blue-checkbox">
+    				<input type="checkbox" />
+    				<div class="con">
+    					<div class="word-hidden">身份证-王大大</div>
+	    				<div class="word-hidden">王海</div>
+	    				<div class="word-hidden">HS003</div>
+	    				<div class="word-hidden">A011001</div>
+    				</div>
+    			</li>
+    			<li class="transfer-list blue-checkbox">
+    				<input type="checkbox" />
+    				<div class="con">
+    					<div class="word-hidden">身份证-王大大</div>
+	    				<div class="word-hidden">王海</div>
+	    				<div class="word-hidden">HS003</div>
+	    				<div class="word-hidden">A011001</div>
+    				</div>
+    			</li><li class="transfer-list blue-checkbox">
+    				<input type="checkbox" />
+    				<div class="con">
+    					<div class="word-hidden">身份证-王大大</div>
+	    				<div class="word-hidden">王海</div>
+	    				<div class="word-hidden">HS003</div>
+	    				<div class="word-hidden">A011001</div>
+    				</div>
+    			</li>
+    		</ul>
+    	</div>
+    	<div class="progress-line pd-t-40 bg-white">
+			<div class="process-list clearfix">
+				<!--结束-->
+				<div class="process-des left font24">
+					<span>签收物品</span>
+					<span>身份证-王二二、公章</span>
+					<span>天王&nbsp;2018.08.13 11:45</span>
+					<button class="operation-sign">物品操作</button>
+				</div>
+				
+			</div>
+			<div class="process-list clearfix">
+				<!--当前状态-->
+				<div class="process-des right avtive font24">
+					<span>财穗加同意结束订单</span>
+					<span>签收物品</span>
+					<span>2018.08.13 11:45</span>
+					<button class="operation-sign">物品操作</button>
+				</div>
+			</div>
+			<div class="process-list clearfix">
+				<div class="process-des right over font24">
+					<span>财穗加同意结束订单</span>
+					<span>签收物品</span>
+					<span>2018.08.13 11:45</span>
+					<button class="operation-sign">物品操作</button>
+				</div>
+			</div>
+			
+		</div>
+    </section>
+    <div class="wrap-modal" style="display: none;">
+        <div class="modal-common-wrap modal">
+        	<div class="modal-title bg-e gray-9">转交通知</div>
+            <div class="modal-content">
+            	<div class="mb15 gray-9">
+            		<div>公司：厦门回升软件科技有限公司</div>
+                	<div>借用物品：身份证、公章</div>
+            	</div>
+                <div>
+                	<div class="flex-start mb15">
+                		<div>物品签收人：</div>
+                		<div class="company-selected wd50">
+			    			<div>王天</div>
+			    			<div class="select-icon1"></div>
+			    		</div>
+		    		</div>
+		    		<div class="flex-start mb15">
+		    			<div>公司抄送人：</div>
+			    		<div class="company-selected wd50">
+			    			<div>王总</div>
+			    			<div class="select-icon1"></div>
+			    		</div>
+			    		<div class="add-sent-name"></div>
+                	</div>
+                	<div class="flex-start">
+		    			<div>公司抄送人：</div>
+			    		<div class="company-selected wd50">
+			    			<div>王总</div>
+			    			<div class="select-icon1"></div>
+			    		</div>
+			    		<div class="minus-sent-name"></div>
+                	</div>
+                </div>
+            </div>
+            <div class="modal-btn">
+                <button id="popup-close" class="popup-close">取消</button>
+                <button class="blue" id="popup-complete">确定</button>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script type="text/javascript">
+	mui.init();
+    mui.ready(function() {
+    	mui('.transfer-list').on('change', 'input', function() {
+            var nCheckBox = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            var transferBtn = document.getElementById('transfer');
+            if(nCheckBox){
+                if (transferBtn.classList.contains("mui-disabled")) {
+                    transferBtn.classList.remove("mui-disabled");
+                }
+            } else {
+                if (!transferBtn.classList.contains("mui-disabled")) {
+                    transferBtn.classList.add("mui-disabled");
+                }
+            }
+        });
+	});
+
+	$('#transfer').on('click',function(){
+        $('.wrap-modal').show();
+    })
+    $('.popup-close,#popup-complete').on('click',function(){
+        $(this).parents('.wrap-modal').hide();
+    })
+</script>
+</body>
+</html>

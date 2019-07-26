@@ -1,0 +1,110 @@
+<include file="UserSupervise:head" />
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/css/comm.css">
+    <style>
+    .item-wrap {
+        height: 100%;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+    .item-wrap::-webkit-scrollbar {
+        display: none;
+    }
+    .item-container {
+        width: 100%
+    }
+
+    .item-container li {
+        width: 100%;
+    }
+
+    .item-container li .item {
+        height: auto;
+        position: relative;
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 5px;
+        background: #fff
+    }
+    .mui-indexed-list-inner img {
+        width: .28rem;
+        height: .28rem;
+        margin-right: .2rem;
+    }
+    .mui-indexed-list-inner .service_leader-item {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        height: .75rem;
+        line-height: .75rem;
+        padding: 0 .2rem;
+        box-shadow: 0 1px 0 #eeeeee inset;
+        background-color: #ffffff;
+    }
+    .mui-indexed-list-inner {
+        border-radius: .1rem;
+    }
+    </style>
+    <title></title>
+</head>
+<if condition="$init eq 0">
+<body>
+    <section class="" style="overflow: hidden;" >
+        <ul class="con-tab pr" style="padding-top: 10px">
+            <li id="list" class="cons">
+                <div class="mui-search-area">
+                    <input id="service_leader-name" class="mui-search-area-input mui-input-clear" type="text" placeholder="请输入名称搜索"/>
+                    <button></button>
+                    <input id="value" type="hidden" />
+                    <input id="text" type="hidden" />
+                </div>
+                <div class="mui-indexed-list-inner pr" id="main-content" v-cloak>
+                    <div class="item-wrap groups customer bg-none">
+                        <ul class="item-container mui-table-view bg-none" id="customer_lists" style="padding-bottom: 0px">
+                            <foreach name="service_leader" item="v">
+                                <div class="service_leader-item" onclick="closeSelect('{$v.value}','{$v.text}')">
+                                    <!--&lt;!&ndash; <input name="company_id" type="radio" value="{$v.value}" /> &ndash;&gt;-->
+                                    <img src="{$Think.const.IMG_URL}/img/icon-company.png" alt="">
+                                    <span class="gray-6">{$v.text}</span>
+                                </div>
+                            </foreach>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mui-bottom-check-commit" style="height: 1px"></div>
+            </li>
+        </ul>
+    </section>
+</body>
+
+</html>
+<script type="text/javascript">
+    $('#service_leader-name').on('change',function(){
+        $(".mui-indexed-list-inner").load("__MODULE__/ComPotential/select_service_leader/init/1/name/" + $('#service_leader-name').val());
+    })
+
+    function closeSelect(value,text) {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.getService_leader(value,text);
+
+        parent.layer.close(index);
+        // layer.close(layer.index);
+    }
+
+</script>
+
+<else/>
+<foreach name="service_leader" item="v">
+    <div class="service_leader-item" onclick="closeSelect('{$v.value}','{$v.text}')">
+        <!-- <input name="company_id" type="hidden" value="" /> -->
+        <img src="{$Think.const.IMG_URL}/img/icon-company.png" alt="">
+        <span class="gray-6">{$v.text}</span>
+    </div>
+</foreach>
+</if>

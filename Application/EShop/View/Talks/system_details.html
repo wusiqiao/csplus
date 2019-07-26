@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta name="renderer" content="webkit">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <link rel="stylesheet" href="{$Think.const.JS_URL}load/dropload.css" />
+    <link rel="stylesheet" href="{$Think.const.CSS_URL}mui/mui.css">
+    <link rel="stylesheet" href="{$Think.const.CSS_URL}liuyan/liuyan.css">
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <title>{$title}</title>
+    <style>
+        .mui-content-item {
+            text-align: center;
+        }
+
+        .mui-content-item time {
+            display: inline-block;
+            margin: 0.2rem auto;
+            padding: 0.1rem 0.1rem;
+            border-radius: 3px;
+            background-color: rgba(0, 0, 0, .2);
+            color: #fff;
+        }
+
+        .msg-content {
+            display: flex;
+            justify-content: flex-start;
+            flex-flow: row nowrap;
+            align-items: flex-start;
+        }
+
+        .header-pic {
+            width: 0.9rem;
+            height: 0.9rem;
+            border-radius: 50%;
+        }
+
+        .left-text {
+            color: #353535;
+            border-radius: 3px;
+            background-color: #fff;
+            margin-left: 0.3rem;
+            margin-bottom: 0.2rem;
+            position: relative;
+            line-height: 0.46rem;
+            text-align: left;
+            padding: 0.2rem;
+        }
+
+        .left-arrow {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 8px 12px 8px 0;
+            border-color: transparent #fff transparent transparent;
+            position: absolute;
+            left: -0.2rem;
+            top: 0.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <include file="Index:header" />
+    <div id="main-content" class="liuyan-wrap pb70" style="margin-bottom: 66px;margin-top: 0.85rem;" hidden>
+        <section class="common-wrap bg-none">
+            <div class="mui-content">
+                <div class="dialog-box">
+                    <div v-for="item in list" class="mui-content-item">
+                        <time>{{item.send_time | formatterCreateTime}}</time>
+                        <div class="msg-content">
+                            <input type="hidden" name="left-time" value="1563428529">
+                            <img class="header-pic" alt=""
+                                src="https://tshop34.caisuikx.com//Application/ESAdmin/Upload/default_images/d41d8cd98f00b204e9800998ecf8427e/20190628/1561710033646069.jpg">
+                            <p class="left-text">
+                                <span class="left-arrow"></span>
+                                <span>{{item.content}}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/jquery/jquery.min.js"></script>
+<script>
+    (function () {
+        $("#main-content").show();
+        var vm = new Vue({
+            el: '#main-content',
+            data: {
+                list: {$list}
+            },
+            filters: {
+                formatterCreateTime(val) {
+                    val = parseInt(val) * 1000;
+                    var date = new Date(val);
+                    var Y = date.getFullYear() + '-';
+                    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+                    var D = date.getDate() < 10 ? '0' + date.getDate() + ' ' : date.getDate() + ' ';
+                    var h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
+                    var m = date.getMinutes() < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
+                    var s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+                    return Y + M + D + h + m + s;
+                }
+            }
+        })
+        // console.log(vm.list)
+    })(window)
+</script>

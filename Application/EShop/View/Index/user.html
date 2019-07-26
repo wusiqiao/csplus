@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <title>{$title}</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <style>
+        .company-selected {
+            border-radius: .06rem;
+            height: 0.65rem;
+            line-height: 0.65rem;
+            margin-top: 0.2rem;
+        }
+        .select-icon1 {
+            width: .65rem;
+            height: .65rem;
+        }
+    </style>
+</head>
+<body>
+    <section class="my-wrap" style="overflow: hidden;">
+            <div class="my-wrap-top my-wrap-top-img top-drilling-blue" style="margin-bottom: -.85rem;" >
+               <!-- <a href="__MODULE__/User/user_header.html"><img class="center" src="{$head_pic}?v={$versions}" alt="" /></a>-->
+                <img class="center" src="{$head_pic}?v={$versions}" alt="" />
+                <div class="my-name-decoration" style="font-size: 0.38rem">{$name}</div>
+                <div class="set-card-style font24" style="display: block;margin-top: 10px;">
+                    <a href="/User/businessCard.html" style="color: white;width: 200px;height: 50px;font-size: 0.30rem">
+                        我的二维码
+                    </a>
+                </div>
+            </div>
+            <!--top-purplish-blue top-drilling-blue top-crimson top-black-gold-->
+            <!--<div class="my-wrap-top top-drilling-blue">
+                <div class="icon-card-tel"><span></span><a href="18950060082">18950060082</a></div>
+                <div class="business-card-info">
+                    <img src="{$head_pic}?v={$versions}" alt="" />
+                    <div class="content">
+                        <span class="name">{$name}</span>
+                        <span class="position">职务：总经理</span>
+                        <span class="company-name">厦门红鞋子信息科技有限公司</span>
+                        <div class="set-card-style font24" style="display: block;margin-top: 20px">
+                            <a href="/User/businessCard.html">我的电子名片</a>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+        <neq name="manager" value="1">
+	        <div class="my-wrap-center" style="height: 3.8rem">
+                <div class="center-title">
+                    <i><img src="{$Think.const.IMG_URL}/distribution/center.png" alt="" /></i>
+                    <span>用户中心</span>
+                </div>
+                <div class="nav-default">
+                    <a href="__MODULE__/User/index.html">
+                        <img class="manage" src="{$Think.const.IMG_URL}/distribution/manage.png"/>
+                        <span>账户管理</span>
+                    </a>
+                    <a href="__MODULE__/Money.html">
+                        <img class="red-money" src="{$Think.const.IMG_URL}/distribution/red-money.png" alt="" />
+                        <span>个人资金</span>
+                    </a>
+                    <a href="__MODULE__/Liuyan.html">
+                        <img class="message" src="{$Think.const.IMG_URL}/distribution/message.png" alt="" />
+                        <span>消息中心</span>
+                    </a>
+                        <a href="__MODULE__/Order.html">
+                        <img class="message" src="{$Think.const.IMG_URL}/distribution/order.png" alt="" />
+                        <span>订单管理</span>
+                    </a>
+                </div>
+                <div class="nav-default">
+                    <a href="__MODULE__/Distribution/index.html">
+                        <img class="message" src="{$Think.const.IMG_URL}/distribution/active.png" alt="" />
+                        <span>分销中心</span>
+                    </a>
+                    <a href="__MODULE__/user/myVoucher.html">
+                        <img class="message" src="{$Think.const.IMG_URL}/distribution/voucher.png" alt="" />
+                        <span>优惠券</span>
+                    </a>
+                    <a></a>
+                    <a></a>
+                </div>
+            </div>
+            
+            <div class="my-wrap-center" style="height: 5.9rem;margin-bottom: 1.2rem;">
+                <div class="center-title">
+                    <i><img src="/{$Think.MODULE_PATH}Public/images/icon/icon-company.png" alt="" /></i>
+                    <span>公司管理</span>
+                </div>
+                <eq name="has_company" value="1">
+                        <div class="company-selected flex-1" style="border: 1px solid #c7c5c5;width: 95%;margin-left: 10px" onclick="selectCompany(this)">
+                            <div id="company-text" style="color: #368BFE;font-weight: bold;">
+                                <input name="company_name" value="{$company_name}" style="width: 88%;border: none;" readonly>
+                            </div>
+                            <div class="select-icon1"></div>
+                            <input type="hidden" />
+                        </div>
+                        <div class="nav-default">
+                            <if condition="$menuList['ComAgreement']['menu_actions']['list'] eq 1 and $menuList['ComAgreement']['allow'] eq 1">
+                                <a onclick="entrance(this)" href="javascript:;" data-url="__MODULE__/ComAgreement/index.html">
+                                    <img class="message" src="{$Think.const.IMG_URL}/distribution/order.png" alt="" />
+                                    <span>合同管理</span>
+                                </a>
+                                <a onclick="entrance(this)" href="javascript:;" data-url="__MODULE__/ComAgreement/invoiceList">
+                                    <img class="message" src="/{$Think.MODULE_PATH}Public/images/icon/icon-planned.png" alt="" />
+                                    <span>发票管理</span>
+                                </a>
+                                <a onclick="entrance(this)" href="javascript:;" data-url="__MODULE__/WrkReceivables/customerList.html">
+                                    <img class="message" src="/{$Think.MODULE_PATH}Public/images/icon/icon-recharge-manager.png" alt="" />
+                                    <span>缴费通知</span>
+                                </a>
+                            <else/>
+                                <a onclick="mui.alert('无此功能操作权限！')" href="javascript:;" data-url="__MODULE__/Order.html">
+                                    <img class="message" src="{$Think.const.IMG_URL}/distribution/order.png" alt="" />
+                                    <span>合同管理</span>
+                                </a>
+                                <a onclick="mui.alert('无此功能操作权限！')" href="javascript:;" data-url="__MODULE__/ComAgreement/invoiceList">
+                                    <img class="message" src="/{$Think.MODULE_PATH}Public/images/icon/icon-planned.png" alt="" />
+                                    <span>发票管理</span>
+                                </a>
+                                <a onclick="mui.alert('无此功能操作权限！')" href="javascript:;" data-url="__MODULE__/WrkReceivables/customerList.html">
+                                    <img class="message" src="/{$Think.MODULE_PATH}Public/images/icon/icon-recharge-manager.png" alt="" />
+                                    <span>缴费通知</span>
+                                </a>
+                            </if>
+                            <a onclick="entrance(this)" href="javascript:;" data-url="__MODULE__/ComWxOperateTemplate/index.html">
+                                <img class="message" src="/{$Think.MODULE_PATH}Public/images/icon/icon-SocialSecurityNotice.png" alt="" />
+                                <span>清卡通知</span>
+                            </a>
+                        </div>
+                        <div class="nav-default">
+                            <a onclick="entrance(this)" href="javascript:;" data-url="__MODULE__/ComSocialSecurityNotice/index.html">
+                                <img class="message" src="/{$Think.MODULE_PATH}Public/images/icon/icon-items.png" alt="" />
+                                <span>社保通知</span>
+                            </a>
+                            <a onclick="entrance(this)" href="javascript:;" data-url="__MODULE__/ComWrkTaskPlan/index.html">
+                                <img class="message" src="/{$Think.MODULE_PATH}Public/images/icon/icon-service.png" alt="" />
+                                <span>服务通知</span>
+                            </a>
+                            <a onclick="entrance(this)" id="SysDocument" href="javascript:;" data-url="__MODULE__/SysDocument/index/id/{$company_id}">
+                                <img class="message" src="{$Think.const.IMG_URL}/work/icon-file.png" alt="" />
+                                <span>文件管理</span>
+                            </a>
+                            <a onclick="entrance(this)" href="javascript:;" data-url="__MODULE__/ComAgreement/userManage.html">
+                                <img class="message" src="/{$Think.MODULE_PATH}Public/images/work/icon-custom.png" alt="" />
+                                <span>人员管理</span>
+                            </a>
+                        </div>
+                        <div class="nav-default">
+                            <a onclick="entrance(this)" href="javascript:;" data-url="__MODULE__/ComAgreement/workSetting">
+                                <img class="message" src="/{$Think.MODULE_PATH}Public/images/icon/all-company.png" alt="" />
+                                <span>工作设置</span>
+                            </a>
+                            <a onclick="entrance(this)" href="javascript:;" data-url="__MODULE__/ComAgreement/invoiceInfo">
+                                <img class="message" src="/{$Think.MODULE_PATH}Public/images/icon/icon-withdrawal-manager.png" alt="" />
+                                <span>开票资料</span>
+                            </a>
+                            <if condition="$show_money eq 1">
+                                <a href="__MODULE__/Money/company">
+                                <!--<a id="money-company" href="__MODULE__/Money/company/id/{$company_id}">-->
+                                    <img class="red-money" src="{$Think.const.IMG_URL}/distribution/companyzj-icon.png" alt="" />
+                                    <span>公司资金</span>
+                                </a>
+                            <else/>
+                                <a></a>
+                            </if>   
+                            <a></a>
+                        </div>
+                    <else/>
+                    <div class="nav-default">
+                        <span style="padding: 1.5rem 1.9rem">暂无绑定公司，无数据展示。</span>
+                    </div>
+                </eq>
+            </div>
+            
+            <!-- <div class="my-wrap-order">
+                <a class="my-wrap-link" href="__MODULE__/Order.html">
+                    <div class="order-img">
+                        <img src="{$Think.const.IMG_URL}/distribution/order.png" alt="" />
+                        <span>订单管理</span>
+                    </div>
+                    <span class="mui-icon mui-icon-arrowright"></span>
+                </a>
+                <a class="my-wrap-link" href="__MODULE__/Distribution/index.html">
+                    <div class="active-img">
+                        <img src="{$Think.const.IMG_URL}/distribution/active.png" alt="" />
+                        <span>分销中心</span>
+                    </div>
+                    <span class="mui-icon mui-icon-arrowright"></span>
+                </a>
+                <a class="my-wrap-link" href="__MODULE__/user/myVoucher.html">
+                    <div class="voucher-img">
+                        <img src="{$Think.const.IMG_URL}/distribution/voucher.png" alt="" />
+                        <span>我的优惠券</span>
+                    </div>
+                    <span class="mui-icon mui-icon-arrowright"></span>
+                </a>
+                <a class="my-wrap-link" onclick="entrance(this)" href="javascript:;" data-url="__MODULE__/SysDocument/entrance.html">
+                    <div class="voucher-img">
+                        <img src="{$Think.const.IMG_URL}/work/icon-file.png" alt="" />
+                        <span>我的文件</span>
+                    </div>
+                    <span class="mui-icon mui-icon-arrowright"></span>
+                </a>
+            </div> -->
+        <else/>
+            <div class="my-wrap-center my-wrap-card" style="display: none;">
+                <div class="nav-default">
+                    <a href="__MODULE__/User/businessCard.html">
+                        <img class="business-card" src="{$Think.const.IMG_URL}/my/nav-code.png"/>
+                        <span>二维码名片</span>
+                    </a>
+                    <a href="__MODULE__/User/businessCard.html">
+                        <img class="program-card" src="{$Think.const.IMG_URL}/my/nav-program.png" alt="" />
+                        <span>小程序名片</span>
+                    </a>
+                    <a href="__MODULE__/User/businessCard.html">
+                        <img class="edit-info" src="{$Think.const.IMG_URL}/nav-edit.png" alt="" />
+                        <span>编辑资料</span>
+                    </a>
+                </div>
+        	</div>
+            <div class="my-wrap-center" style="height: 2.4rem">
+	            <div class="my-wrap-center" style="height: 2.4rem">
+	                <div class="center-title">
+	                    <i><img src="{$Think.const.IMG_URL}/distribution/center.png" alt="" /></i>
+	                    <span>用户中心</span>
+	                </div>
+	                <div class="nav-default">
+	                    <a href="__MODULE__/User/index.html">
+	                        <img class="manage" src="{$Think.const.IMG_URL}/distribution/manage.png"/>
+	                        <span>账户管理</span>
+	                    </a>
+	                    <a href="__MODULE__/Distribution/index.html">
+	                        <img class="manage" src="{$Think.const.IMG_URL}/distribution/active.png" alt="" />
+	                        <span>分销管理</span>
+                        </a>
+                        <a href="__MODULE__/Money.html">
+                            <img class="red-money" src="{$Think.const.IMG_URL}/distribution/red-money.png" alt="" />
+                            <span>个人资金</span>
+                        </a>
+                        <if condition="$menuList['ComTweetsAdditional']['menu_actions']['list'] eq 1 and $menuList['ComTweetsAdditional']['allow'] eq 1  or $permissions['_IS_Manager_'] eq 1">
+                            <a href="__MODULE__/Spread/tweets_additional.html">
+                                <img class="manage" src="{$Think.const.IMG_URL}/my/icon-ad.png" alt="" />
+                                <span>广告管理</span>
+                            </a>
+                        <else/>
+                            <a></a>
+                        </if>
+	                </div>
+                    <!-- <div class="nav-default">
+                        <a></a>
+                        <a></a>
+                        <a></a>
+                        <a></a>
+                    </div> -->
+	            </div>
+            </div>    
+
+      
+	    	<!-- <div class="my-wrap-order"> -->
+	            <!--<a class="my-wrap-link" href="__MODULE__/User/user_list.html">
+	        		<div class="custom-img">
+	        			<img src="{$Think.const.IMG_URL}/my/icon-custom.png" alt="" />
+		        		<span>客户列表</span>
+	        		</div>
+	        		<span class="mui-icon mui-icon-arrowright"></span>
+	        	</a>-->
+	        	<!--<a class="my-wrap-link" href="__MODULE__/ComPotential/index">-->
+	        		<!--<div class="custom-img">-->
+	        			<!--<img src="{$Think.const.IMG_URL}/my/icon-custom.png" alt="" />-->
+		        		<!--<span>用户管理</span>-->
+	        		<!--</div>-->
+	        		<!--<span class="mui-icon mui-icon-arrowright"></span>-->
+	        	<!--</a>-->
+	            <!-- <a class="my-wrap-link" href="__MODULE__/User/index.html">
+	        		<div class="account-img">
+	        			<img src="{$Think.const.IMG_URL}/my/icon-account.png" alt="" />
+	        			<span>账户管理</span>
+	        		</div>
+	        		
+	        		<span class="mui-icon mui-icon-arrowright"></span>
+	        	</a>
+	            <a class="my-wrap-link" href="__MODULE__/Distribution/index.html">
+	                <div class="active-img">
+	                    <img src="{$Think.const.IMG_URL}/distribution/active.png" alt="" />
+	                    <span>分销中心</span>
+	                </div>
+	
+	                <span class="mui-icon mui-icon-arrowright"></span>
+	            </a> -->
+	        	<!--<a class="my-wrap-link" href="__MODULE__/Money.html">-->
+	        		<!--<div class="fund-img">-->
+	        			<!--<img src="{$Think.const.IMG_URL}/my/icon-funds.png" alt="" />-->
+	        			<!--<span>资金管理</span>-->
+	        		<!--</div>-->
+	        		<!---->
+	        		<!--<span class="mui-icon mui-icon-arrowright"></span>-->
+	        	<!--</a>-->
+                <!-- <if condition=" $menuList['ComTweetsAdditional']['menu_actions']['list'] eq 1 and $menuList['ComTweetsAdditional']['allow'] eq 1  or $permissions['_IS_Manager_'] eq 1">
+                    <a class="my-wrap-link" href="__MODULE__/Spread/tweets_additional.html">
+                        <div class="ad-img">
+                            <img src="{$Think.const.IMG_URL}/my/icon-ad.png" alt="" />
+                            <span>广告管理</span>
+                        </div>
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </a>
+                </if> -->
+	        <!-- </div> -->
+        </neq>
+    </section>
+    <include file="Public:footer" />
+    <include file="Public:contact" />
+    <!--end 底部-->
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+    <script src="{$Think.const.JS_URL}mui/mui.min.js"></script>
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script>
+    	select_menu("my");
+        function entrance(obj){
+            var url = $(obj).data('url');
+            var hasAdmin = '{$isAdmin}';
+            var has_company = '{$has_company}';
+            if (has_company == 1) {
+                window.location.href = url;
+            } else if(hasAdmin == '1') {
+                mui.alert('暂无公司选择！<br>请先在客户档案中新增公司!');
+            } else {
+                mui.alert('未绑定任何公司!<br>请联系商家绑定公司!');
+            }
+        }
+        function selectCompany(obj){
+            layer.open({
+                type:2,
+                title:"选择公司",
+                closeBtn:1,
+                area:["100%","100%"],
+                content:"/ComAgreement/selectCompany/init/0/view_header/0"
+            })
+        }
+    </script>
+</body>
+</html>

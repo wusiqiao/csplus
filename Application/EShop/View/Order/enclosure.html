@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+		<link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}/css-new/icons.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}/css-new/pages.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}/css-new/components.css" rel="stylesheet" />
+		<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+        <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+		<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+		<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+		<title>{$title}</title>
+	</head>
+
+	<body>
+		<section class="secondary-wrap">
+			<include file="Index:header" />
+
+			<div class="basic-info mb15">
+				<div class="info-line">
+					<div class="info-title black-3">{$desc}</div>
+					<textarea class="dib col-6 form-textarea" style="" name="order_desc" rows="" cols="" placeholder="请填写{$desc1}"></textarea>
+				</div>
+			</div>
+			<div class="basic-info mb15">
+				<div class="">
+					<div class="info-line">
+						<div class="info-title black-3">上传图片</div>
+						<div class="flex-center">
+                            <span id="upload_pic">
+                        		<img pic-type="dont" src="{$Think.const.IMG_URL}voucher/pic.png">
+                            </span>
+                            <span class="blue" id="upload_pic_button">点击上传图片</span>
+						</div>
+					</div>
+                    <div class="border-b" id="">
+                        <ul id="ul_pics" data-am-widget="gallery"  data-am-gallery="{ pureview: true }"></ul>
+                    </div>
+					<input type="file" name="imgFile" id="imgFile" style="display: none;" />
+				</div>
+				<div>
+					<div class="info-line">
+						<div class="info-title black-3">上传附件</div>
+						<div class="flex-center">
+                            <span id="upload_enc">
+                        		<img style="width:.28rem;height:.28rem" pic-type="dont" src="{$Think.const.IMG_URL}voucher/file.png">
+                            </span>
+                            <span class="blue" id="upload_enc_button">点击上传附件</span>
+						</div>
+					</div>
+                    <div id="">
+                        <ul id="ul_encs" data-am-widget="gallery"  data-am-gallery="{ pureview: true }"></ul>
+                    </div>
+                    <input type="hidden" name="imp" value="{$imp}"/>
+					<input type="file" name="encFile" id="encFile" style="display: none;" />
+					<input type="hidden" name="order_id" value="{$order_id}"/>
+				</div>				
+			</div>
+			<notempty name="reports">
+				
+			</notempty>
+			<include file="Public:modal_img_show"/>
+			<div style="height: 1rem;"></div>
+			<div class="order-bottom-btn">
+	            <button class="bg-368bfe" id="step_button" disabled="disabled">提交</button>
+	        </div>
+	    </section>    
+	</body>
+	<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+	<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+	<script src="{$Think.const.JS_URL}ajaxfileupload.js" type="text/javascript"></script>
+	<script src="{$Think.const.JS_URL}uploadFile.js" type="text/javascript"></script>
+    <script>
+        var uploadImg = new Uploads();//加载上传类
+        uploadImg.setButtonId("upload_pic_button");//设置上传文件点击按钮
+        uploadImg.setFileId("imgFile");//设置inputid
+        uploadImg.setFileListsId("ul_pics");//设置文件显示列表Dom
+        uploadImg.setValidateType('img');//设置验证类型
+        uploadImg.setInputName('pic');//设置inputName
+        uploadImg.setAfterFunction(validate);
+        uploadImg.bindButtonClick();
+        uploadImg.bindFileChanre();
+        var uploadEnc = new Uploads();
+        uploadEnc.setButtonId("upload_enc_button");
+        uploadEnc.setUploadFileUrl('__MODULE__/Upload/scheduleUploads/t/0.html');
+        uploadEnc.setFileShowUrl('{$Think.const.IMG_URL}Index_img/');
+        uploadEnc.setFileId("encFile");
+        uploadEnc.setFileListsId("ul_encs");
+        uploadEnc.setAfterFunction(validate);
+        uploadEnc.setInputName('enc');
+        uploadEnc.setValidateType('enc');
+        uploadEnc.bindButtonClick();
+        uploadEnc.bindFileChanre();
+        function del_img(obj){
+            $(obj).parents('li').remove();
+            $("#imgFile").val("");
+            $("#encFile").val("");
+            validate();
+            return false;
+        }
+        function validate(){
+            var orderDesc	=	$("textarea[name='order_desc']").val();
+            var imp         =   $("input[name=imp]").val();
+            var imgFile		=	$("#ul_pics > li > div > input[name*=pic]").map(function() {
+//                  layer.msg("上传成功,最多可上传5个文件");
+                return $(this).val();
+            }).get();
+            var encFile		=	$("#ul_encs > li > div > input[name*=enc]").map(function() {
+//                  layer.msg("上传成功,最多可上传5个文件");
+                return $(this).val();
+            }).get();
+            if($.trim(orderDesc) || encFile.length != 0 || imgFile.length != 0){
+                $('#step_button').prop('disabled',false);
+            } else if(encFile.length == 0 && imgFile.length == 0 && imp == 0){
+                $('#step_button').prop('disabled',true);
+             }else if(encFile.length == 0 && imgFile.length == 0  && $.trim(orderDesc) == '' && imp != 0){
+                $('#step_button').prop('disabled',true);
+            } else {
+                $('#step_button').prop('disabled',false);
+            }
+        }
+        $('textarea').on('change',function(){
+            $('#step_button').prop('disabled',false);
+        })
+        document.querySelector('textarea[name="order_desc"]').addEventListener('input',function(){
+			$('#step_button').prop('disabled',false);
+		})
+        $("#step_button").on('click',function(){
+            var orderDesc	=	$("textarea[name='order_desc']").val();
+            var imp         =   $("input[name=imp]").val();
+            var imgFile		=	$("#ul_pics > li > div > input[name*=pic]").map(function() {
+                return $(this).val();
+            }).get();
+            var encFile		=	$("#ul_encs > li > div > input[name*=enc]").map(function() {
+                return $(this).val();
+            }).get();
+
+
+            var orderId		=	$("input[name=order_id]").val();
+            if(encFile.length == 0 && imgFile.length == 0 && $.trim(orderDesc) == ''){
+                layer.msg("至少填写或上传一项附件/图片!!");
+                return false;
+            }
+//          if(encFile.length == 0 && imgFile.length == 0 && imp == 0){
+//              layer.msg("至少上传一项附件/图片!!");
+//              return false;
+//          }
+            var  data = {
+                order_desc:orderDesc,
+                img_file:imgFile,
+                enc_file:encFile,
+                order_id:orderId,
+                imp:imp
+            }
+            $.ajax({
+                url: '__MODULE__/Order/enclosure.html',
+                type: "post",
+                dataType: "json",
+                data: data,
+                success: function (data) {
+                    console.info(data);
+                    if (data.error == 0) {
+                        layer.closeAll();
+                        layer.msg(data.msg);
+                        setTimeout(function () {
+                            if(data.imp == 3){
+                                location ='__MODULE__/Order/sellDetail/id/'+orderId+'.html';
+							}else{
+                                location ='__MODULE__/Order/serviceDetail/id/'+orderId+'.html';
+							}
+
+                        }, 10);
+                    } else {
+                        layer.closeAll();
+                        layer.msg(data.msg);
+                    }
+                },
+                error: function () {
+                    layer.msg('系统错误！');
+                },
+                beforeSend: function () {
+                    layer.closeAll();
+                    $('#step_button').prop('disabled',true);
+                    layer.msg('正在提交....');
+                }
+            });
+        })
+    </script>
+</html>

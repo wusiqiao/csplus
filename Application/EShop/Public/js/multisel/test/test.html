@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+
+    <title>设置区域</title>
+
+    <meta charset="UTF-8">
+
+    <script src="./vendor/jquery-1.11.3.min.js"></script>
+    <script src="./vendor/jquery-ui.min.js"></script>
+    <script src="../dist/jquery.tree-multiselect.js"></script>
+
+    <style>
+      * {
+
+      }
+    </style>
+    <link rel="stylesheet" href="../dist/jquery.tree-multiselect.min.css">
+  </head>
+
+  <body>
+    <select id="test-select" multiple="multiple">
+      <option value="blueberry">福建省</option>
+      <option value="strawberry">江西省</option>
+      <option value="peach">浙江省</option>
+	  <option value="passion fruit" data-section="广东省/深圳市" selected="selected">罗湖区</option>
+	  <option value="passion fruit" data-section="广东省/深圳市" selected="selected">龙岗区</option>
+      <option value="passion fruit" data-section="广东省" selected="selected">广州市</option>
+    </select>
+
+
+    <script type="text/javascript">
+      $("#test-select").treeMultiselect({ enableSelectAll: true, sortable: true });
+    </script>
+  </body>
+</html>

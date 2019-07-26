@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <style>
+        .money-input:after {
+            content: '元';
+            position: absolute;
+            top: .2rem;
+            right: 0;
+            width: .7rem;
+            height: .7rem;
+            line-height: .7rem;
+            text-align: center;
+            color: #e91835;
+            font-size: 0.4rem;
+        }
+        html{
+            height: initial;
+        }
+        .search-img{
+            flex:0.1;
+            line-height: 1.2rem;
+        }
+        .search-arrow{
+            flex:0.1;
+            line-height: 1.0rem;
+        }
+        .search-text{
+            padding-left: .2rem;
+            line-height: .5rem;
+            flex:1
+        }
+        .search-setbank{
+            flex: 1;
+            height: 1rem;
+            line-height: 1rem;
+            text-align: center;
+            color: rgb(164,158,159);
+        }
+        .button-class{
+            width: 6.9rem;
+            height: .75rem;
+            margin: 0 auto;
+            border: none;
+            border-radius: .1rem;
+            color: #ffffff;
+            background-color: rgb(54,139,254);
+        }
+    </style>
+</head>
+<include file="Index:header" />
+<div class="custom-info-wrap common-wrap bg-none mt85" style="background-color: #EFEFF4;">
+    <div class="basic-info" style="background-color: #FFFFFF;">
+        <form  id="MoneyForm" onsubmit="return false;">
+            <div class="info-line">
+                <div class="info-title">账户余额<i></i></div>
+                <input type="text" style="flex: .8;" disabled value="{$account['total_money']}" />
+                <span class="info-title">元</span>
+            </div>
+            <div class="info-line">
+                <div class="info-title">冻结金额<i></i></div>
+                <input type="text" style="flex: .8;" disabled value="{$account['user_money_auditing']}" />
+                <span class="info-title">元</span>
+            </div>
+            <div class="info-line">
+                <div class="info-title">可提金额<i></i></div>
+                <input type="text" style="flex: .8;" disabled value="{$account['money']}" />
+                <span class="info-title">元</span>
+            </div>
+            <div class="info-line">
+                <div class="info-title">提现金额<i></i></div>
+                <input type="text" style="flex: .8;" placeholder="请输入提现金额"   id="withdraw-cash" name="money" value="" onkeyup="value = value.replace(/[^\d.]/g, '');withdrawals_change();"  onblur="check_submit()"/>
+                <span class="info-title">元</span>
+                <input type="hidden" name="withdrawal_type" value="{$withdrawal_type}" />
+                <input type="hidden" id="user_money" value="{$account['money']}"  />
+                <gt name="company_id" value="0">
+                    <input name='company_id' value='{$company_id}' type='hidden' >
+                </gt>
+            </div>
+        </form>
+    </div>
+    <div style="height: .5rem"></div>
+    <div class="basic-info" style="background-color: #FFFFFF;">
+        <div class="title">提现银行卡</div>
+        <eq name="has_bank" value="1">
+        <div class="info-line search-line" data-pay="0" style="padding: .1rem .2rem 0rem .2rem" onclick="location.href = '__MODULE__/Money/bank_bind.html'">
+            <div class="search-img">
+                <img src="{$Think.const.IMG_URL}{$user['picurl']}" style="width: .5rem;height: 0.5rem;"  alt="" />
+            </div>
+            <div class="search-text">
+                <p>{$user['title']}</p>
+                <p>{$user['bank_account']}</p>
+            </div>
+            <div class="search-arrow">
+                <span class="mui-icon mui-icon-arrowright" style=""></span>
+            </div>
+        </div>
+            <else/>
+        <div class="info-line search-line" data-pay="0" style="padding: .1rem .2rem 0rem .2rem">
+            <div class="search-setbank" onclick="location.href = '__MODULE__/Money/bank_bind.html'">
+                + 请设置提现银行储蓄卡
+            </div>
+        </div>
+        </eq>
+    </div>
+    <div style="height: 1.5rem"></div>
+    <div>
+        <button type="button" class="button-class"  onclick="formSubmit('MoneyForm', '/Money/withdrawals.html')">提交提现</button>
+    </div>
+</div>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+<script>
+    $("#withdraw-cash").click(function(){
+        $("#withdraw-cash").focus();
+    });
+    $("#withdraw-cash").trigger('click');
+    function check_submit() {
+        if ($('.withdrawals').val() == ""){
+            return false;
+        }
+        var result = true;
+        var withdrawals = parseFloat($('#withdraw-cash').val());
+        var user_money = $("#user_money").val();
+        if (isNaN(withdrawals) || isNaN(user_money)) {
+            // layer.msg('数值格式错误！');
+            return false;
+        }
+        if (withdrawals > user_money) {
+            layer.msg('提现金额不能大于可提金额！');
+            result = false;
+        }
+        if (!result) {
+            $('#withdraw-cash').val('0');
+        }
+        return result;
+    }
+    function formSubmit(formid, form_url) {
+        if (!check_submit() || $("#withdraw-cash").val() <= 0) {
+            layer.msg("请填写正确的提现金额!!");
+            return false;
+        }
+        if ($("#withdraw-cash").val() < 100) {
+            layer.msg("提现金额不能少于100!!");
+            return false;
+        }
+        layer.confirm('确定提现？', {icon: 3, title: '提示确定'}, function (index) {
+            $.ajax({
+                url: form_url,
+                type: "post",
+                dataType: "json",
+                data: $('#' + formid).serialize(),
+                success: function (data) {
+                    if (data.error == 0) {
+                        layer.closeAll();
+                        layer.msg(data.msg);
+                        setTimeout(function () {
+                            window.location.href = data.url;
+                        }, 500);
+                    } else {
+                        layer.closeAll();
+                        layer.msg(data.msg);
+                    }
+
+                },
+                error: function (data) {
+                    layer.msg('系统错误！');
+                },
+                beforeSend: function () {
+                    layer.closeAll();
+                    layer.msg('正在提交....');
+                }
+            });
+        })
+    }
+</script>

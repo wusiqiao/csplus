@@ -1,0 +1,58 @@
+{
+  "name": "tree-multiselect",
+  "version": "2.1.3",
+  "description": "jQuery multiple select with nested options",
+  "browser": "dist/jquery.tree-multiselect.min.js",
+  "keywords": [
+    "tree",
+    "multiselect",
+    "select",
+    "jquery",
+    "options",
+    "checkbox"
+  ],
+  "scripts": {
+    "test": "grunt test-local --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patosai/tree-multiselect.git"
+  },
+  "author": "Patrick Tsai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/patosai/tree-multiselect/issues"
+  },
+  "homepage": "https://github.com/patosai/tree-multiselect#readme",
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-preset-es2015": "^6.18.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.1",
+    "browserify-istanbul": "^2.0.0",
+    "chai": "^3.5.0",
+    "eslint": "^3.10.2",
+    "eslint-config-google": "^0.7.0",
+    "grunt": "^1.0.1",
+    "grunt-banner": "^0.6.0",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-coveralls": "^1.0.1",
+    "grunt-eslint": "^19.0.0",
+    "grunt-karma": "^2.0.0",
+    "grunt-sass": "^2.0.0",
+    "isparta": "^4.0.0",
+    "karma": "^1.3.0",
+    "karma-browserify": "^5.1.0",
+    "karma-chai": "^0.1.0",
+    "karma-coverage": "^1.1.1",
+    "karma-mocha": "^1.2.0",
+    "karma-mocha-reporter": "^2.2.0",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "mocha": "^3.1.2",
+    "phantomjs-prebuilt": "^2.1.13"
+  },
+  "dependencies": {
+    "codecov": "^1.0.1"
+  }
+}

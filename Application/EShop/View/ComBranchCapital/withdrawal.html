@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css?v={$vesion}" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css?v={$vesion}" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css?v={$vesion}" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v={$vesion}" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<link rel="stylesheet" href="/{$Think.APP_PATH}Public/css/comm.css">
+<style>
+    header{
+        /*background-color: rgb(69,145,254);*/
+        background-color: #65a4fd;
+        color: #fff;
+        height: .85rem;
+    }
+    header ul li{
+        width: 50%;
+        text-align: center;
+        line-height: .85rem;
+        float: left;
+        height: .85rem;
+        position: relative;
+    }
+    header ul li.checked{
+        background-color: rgb(69,145,254);
+        /*background-color: #65a4fd;*/
+    }
+    /*.dividing-line-right {*/
+        /*border-right: 1px solid #fff;*/
+    /*}*/
+    .item-wrap ul li {
+        background-color: #fff;
+        padding: .2rem;
+        margin-bottom: .25rem;
+    }
+
+    .item-wrap::-webkit-scrollbar,
+    #main-content::-webkit-scrollbar{
+        display: none;
+    }
+    .complete-btn{
+        background-color: #368bfe;
+        border: 1px solid #368bfe;
+        color: #fff;
+    }
+    .add-complete-order {
+        height: .85rem;
+        position: relative;
+    }
+    .capital-div{
+        margin: .4rem .2rem;
+    }
+    .capital-view{
+        text-align: center;
+        color:rgb(47,45,45);
+        padding: .2rem;
+    }
+    .capital-button {
+        display: flex;
+    }
+    .capital-button  button{
+        border: 1px solid rgb(69,145,254);
+        color: rgb(69,145,254);
+        height: .62rem;
+        width: 1.62rem;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+    .capital-button  button.whole{
+        border: 1px solid rgb(54,139,254);
+        color: #fff;
+        height: .62rem;
+        width: 1.62rem;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgb(54,139,254);
+    }
+    .capital-bottom{
+        display: flex;
+        margin-top: .4rem;
+    }
+    .item-wrap{ overflow: auto; width: 100%!important;}
+    .item-container{float: left; margin: 0 auto; width:100%;overflow: auto;}
+    .item-container li{float:left;overflow: hidden; width:100%;}
+    .item-wrap::-webkit-scrollbar {/*隐藏滚轮*/
+        display: none;
+    }
+</style>
+<body>
+<include file="Index:header"/>
+<header class="mui-bar-nav" style="margin-top: 0.85rem;">
+    <ul>
+        <li class="dividing-line-right checked" data-status="0">未确认</li>
+        <li data-status="1">已确认</li>
+    </ul>
+</header>
+<div class="capital-div">
+    <div class="mui-content" id="main-content"  v-cloak>
+        <div class="item-wrap"  v-if="hasItem">
+            <ul class="item-container">
+                <li v-for="(item,index) in item_list"  :id="item.item_id">
+                    <div class="capital-view">
+                        <div>{{item.name}}</div>
+                    </div>
+                    <div class="capital-view" style="padding: .2rem 0 0 0;display: flex">
+                        <div style="color: rgb(164,158,159);flex: 1;">提现金额</div>
+                        <div style="color: rgb(164,158,159);flex: 1;" v-if="showType('invalid',item.status)" >充值状态</div>
+                    </div>
+                    <div class="capital-view" style="padding:0;display: flex">
+                        <div style="flex: 1;">￥ {{item.money}}</div>
+                        <div style="flex: 1;" v-if="showType('invalid',item.status)" >提现成功</div>
+                    </div>
+                    <div class="capital-view">
+                    </div>
+                    <div class="capital-view">
+                        <div class="capital-button">
+                            <button v-if="showType('confirm',item.status)" class="whole" @click="withdrawalAdopt(item.id)">提现确认</button>
+                            <!--<button v-if="showType('invalid',item.status)" class="complete-btn whole">提现成功</button>-->
+                            <button @click="actionFolder(index)">查看附件</button>
+                        </div>
+                    </div>
+                    <div class="capital-bottom">
+                        <div style="flex: 1;text-align: left;color:rgb(164,158,159);font-size: 11px;">充值时间:{{item.created_at}}</div>
+                        <div style="flex: .5;text-align: right;font-size: 12px;color: rgb(54,139,254)" @click="jumpUrl(item.account_id)">查看详情 > </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div v-if="!hasItem">
+            <div class="empty-voucher"><img src="{$Think.const.IMG_URL}/voucher/emptyPic.png" alt="" width="31%"><div style="text-align: center;color:#cccccc;line-height: 2.67rem;">列表是空的哦</div></div>
+        </div>
+    </div>
+</div>
+</body>
+<include file="UserSupervise:foot_access_file"/>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/js/common.js"></script>
+<script>
+    var vue = new Vue({
+        el: "#main-content",
+        data: {
+            item_list: [],
+            hasItem:true,
+            status:0,
+            actionHasManager:"{$permissions['_IS_Manager_']}",
+            actionAllow:"{$menuList['ComWithdrawals']['allow']}",
+            actionDetailDetail:"{$menuList['ComWithdrawals']['menu_actions']['detail']}",
+            actionCapitalDetailAllow:"{$menuList['ComCapitalDetails']['allow']}",
+            actionCapitalList:"{$menuList['ComCapitalDetails']['menu_actions']['list']}",
+        },
+        methods:{
+            showType(type,status){
+                if ((type == 'invalid' && status == 1) || (type == 'confirm' && status == 0) ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            withdrawalAdopt(id) {
+                if (this.actionHasManager == 1 || (this.actionAllow == 1 && this.actionDetailDetail == 1)) {
+                    var url = '/ComBranchCapital/withdrawal_examine/id/'+id;
+                    action(url)
+                } else {
+                    layer.msg('无此功能操作权限');
+                }
+
+            },
+            jumpUrl(account_id){
+                if (this.actionHasManager == 1 || (this.actionCapitalDetailAllow == 1 && this.actionCapitalList == 1)){
+                    window.location.href= '/ComBranchCapital/capitalDetails/id/'+account_id;
+                }
+            }
+        }
+    });
+    $(function(){
+        loadData();
+        $('.mui-bar-nav > ul > li').on('click',function(){
+            if (!$(this).hasClass('checked')) {
+                vue.status = $(this).data('status');
+                $(this).addClass('checked').siblings('li').removeClass('checked');
+                loadData()
+            }
+        })
+    })
+    var firstFrame ;
+    function action_add()
+    {
+        var url = '/ComBranchCapital/withdrawal_examine/id/0';
+        action(url)
+    }
+    function action(url)
+    {
+        layer.open({
+            type: 2,
+            title: '提现审核',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['100%', '100%'],
+            content: url, //iframe的url
+            success: function (layero, index) {
+                firstFrame = window[layero.find('iframe')[0]['name']];
+            },
+            end: function () {
+
+            }
+        });
+    }
+    function firstFrameAccount(value,text){
+        firstFrame.getAccount(value,text);
+    }
+    function loadData(){
+        vue.item_list = [];
+        var nWinHeight = $(window).height();
+        var matchHeight = $(".mui-bar-nav").height();
+        listHeight = nWinHeight - matchHeight  - 40;
+        $('#main-content').css({
+            "overflow-y":"scroll",
+            "height":listHeight,
+        });
+        pullRefresh(".item-wrap", ".item-container", function($target, current_page) {
+            $.post("/ComBranchCapital/getWithdrawalList", { page: current_page,status : vue.status}, function(result) {
+                vue.item_list = vue.item_list.concat(result.message);
+                if (vue.item_list.length > 0) {
+                    vue.hasItem = true;
+                } else {
+                    vue.hasItem = false;
+                }
+                $target.data("loading", false);
+            }, "json");
+        })
+    }
+    function actionFolder(index) {
+        // var attach_group = $("input[name='attach_group']").val();
+        var attach_group = vue.item_list[index]['attach_group'] ;
+        var id = vue.item_list[index]['id'] ;
+        openAttachmentForm("资金附件", [{text:"类型1",attach_group:attach_group}],function(result){
+            if (attach_group == '' || attach_group == null) {
+                $.post('/ComBranchCapital/setAttachGroup',{id:id,attach_group:result.group,operation:'withdrawal'},function(){
+
+                },'json')
+                vue.item_list[index]['attach_group'] = result.group;
+            }
+        });
+    }
+</script>

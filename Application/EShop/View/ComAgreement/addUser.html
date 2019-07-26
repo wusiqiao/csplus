@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .info-upset{
+        flex: 1;
+        font-size: 0.28rem;
+        text-indent: 0.2rem;
+        color: #368bfe;
+        line-height: 0.95rem;
+    }
+
+    .basic-info input[type=text]{
+        border: 1px solid rgba(0, 0, 0, .2) !important;
+        height: .7rem !important;
+        margin: .15rem .21rem !important;
+        text-align: left!important;
+        padding-left: 10px;
+    }
+    .basic-info .info-title{
+        text-align: justify!important;
+    }
+    .basic-info span{
+        vertical-align:top;
+        position: absolute;
+
+    }
+
+    .mui-search-area button {
+        position: absolute;
+        right: .2rem;
+        top: .18rem;
+        width: .8rem;
+        height: .65rem;
+        border: none;
+        background-position: center;
+        background-size: .37rem;
+    }
+
+    #listForm .disabled{
+        background-color: grey !important;
+    }
+
+    .user-none-tips{
+        text-align: center;
+        color: red;
+        width: 100%;
+        margin: 10px 0;
+        display:none
+    }
+
+    #user_list{
+        width: 100%;
+    }
+
+    #user_list .item{
+        width: 100%;
+        margin-left: .38rem;
+    }
+
+    .head_pic{
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+    }
+
+
+
+</style>
+
+<body style="height: 93%">
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <form id="listForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title" style="height: 1.2rem;color: red">提示：请确认您的员工已经关注了服务商公众号，并已绑定手机，否则可能查询不到该人员</div>
+                <div class="info-line" style="height: auto">
+                    <div class="info-title required">绑定手机<i></i></div>
+                    <div class="mui-search-area" style="width: calc(100% - 1.96rem);margin: 0 0;">
+                        <input class="mui-search-area-input mui-input-clear" name="keyword" type="text" placeholder="请输入绑定手机号搜索">
+                        <button onclick="addUserFunctions.queryUser()"></button>
+                    </div>
+                    <div id="tips" class="user-none-tips">查找不到该人员！</div>
+                    <div id="user_list" class="blue-checkbox" v-for="item in user_list" style="height: 50px">
+                        <div class="item">
+                            <input type="checkbox" :value="item.id" style="margin: .15rem .2rem!important;" v-if="item.is_add == 0" onclick="addUserFunctions.selectUser()">
+                            <img class="head_pic" :src="item.head_pic" onerror="this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                            <span style="padding: 10px 10px;white-space: nowrap" >
+                                {{item.name}}
+                                <span v-if="item.is_add != 0"  style="color: red;white-space: nowrap;">(当前用户已被添加为员工)</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-line staff_name" style="display:none">
+                    <div class="info-title">姓名<i></i></div>
+                    <input type="text" name="staff_name" />
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <button class="save-edited mt30 bg-368bfe disabled" style="width: 90%;margin: 5px 20px !important;" onclick="addUserFunctions.addUser()">确认添加</button>
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script type="text/javascript">
+        var userVue = new Vue({
+            el: "#listForm",
+            data: {
+                user_list: []
+            },
+            methods: {
+
+            }
+        });
+
+        var addUserFunctions = {
+            addUser:function(obj,id){
+                var ids = [];
+                $("input[type='checkbox']:checked").each(function(){
+                    ids.push($(this).val());
+                });
+                if(ids.length == 0){
+                    return false;
+                }
+                var staff_name = $("input[name='staff_name']").val();
+                if($.trim(staff_name) == ""){
+                    layer.msg("请输入员工姓名！");
+                    return false;
+                }
+                mui.confirm(`<div style="color: #3b3c3b;font-size: 0.26rem;text-align:center;">是否确认添加员工？</div>`,`<div style="color: #999999;font-size: 0.3rem;text-align:center;">温馨提示</div>`,['确认',`<span style="color: #c1c1c1;font-weight: normal;">取消</span>`],function(e){
+                    if(e.index == 0){
+                        $.post("/ComAgreement/addUser",{ids:ids,staff_name:staff_name},function(result){
+                            if(result.error == 0){
+                                window.location.href = "/ComAgreement/userManage";
+                            }
+                            layer.msg(result.message);
+                        },'json')
+                    }
+                });
+            },
+            queryUser:function(){
+                var mobile = $("input[name='keyword']").val();
+                if(!(/^1[3456789]\d{9}$/.test(mobile))){
+                    layer.msg("请输入正确的手机搜索！");
+                    return false;
+                }
+                $.post("/ComAgreement/queryUser",{mobile:mobile},function(result){
+                    if(result.length == 0){
+                        $("#tips").show();
+                    }else{
+                        $("#tips").hide();
+                    }
+                    $(".staff_name").hide();
+                    $(".save-edited").addClass("disabled");
+                    $("input[type=checkbox]").prop("checked",false);
+                    userVue.user_list = result;
+                },'json')
+            },
+            selectUser:function(){
+                var checked = $("input[type=checkbox]:checked").length;
+                if(checked == 0){
+                    $(".save-edited").addClass("disabled");
+                    $(".staff_name").hide();
+                }else{
+                    $(".save-edited").removeClass("disabled");
+                    $(".staff_name").show();
+                }
+            }
+        };
+
+    </script>
+</body>
+
+</html>

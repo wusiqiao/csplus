@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	    <meta name="apple-mobile-web-app-capable" content="yes" />
+	    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+	    <link href="{$Think.const.CSS_URL}mui/mui.css?v={$version}" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css?v={$version}" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}reset.css?v={$version}" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}common.css?v={$version}" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}style.css?v={$version}" rel="stylesheet" />
+	    <title>{$title}</title>
+	    <style type="text/css">
+	    	html, body {
+	    		background-color: #ffffff !important;
+	    	}
+	    </style>
+	</head>
+	<body>
+		<section class="edit-notify-wrap">
+			<div class="notify-to">
+				<div class="title">收信人：</div>
+				<div class="content">
+					<span>Dan</span><span>洪学智</span><span>空</span><span>立军</span>
+					<span>小林</span><span>欧阳夏丹</span><span>林蓉</span><span>禅</span>
+					<div>+</div>
+				</div>
+			</div>
+			<div class="notify-edit">
+				<div class="title">通知内容：</div>
+				<div class="content">
+					<textarea name="" rows="" cols="" placeholder="请输入..."></textarea>
+				</div>
+			</div>
+			<div class="file-upload">
+				<div class="title">上传附件</div>
+				<div class="content">
+					<img src="/{$Think.MODULE_PATH}Public/images/work/file.png" alt="" />
+					<span>点击上传</span>
+				</div>
+			</div>
+			<div style="height:1.45rem;"></div>
+			<div class="send-btn">立即发送</div>
+		</section>
+		<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+		<script>
+			$('.notify-to .content span').on('click',function(){
+				$(this).remove();
+			})
+		</script>
+	</body>
+</html>

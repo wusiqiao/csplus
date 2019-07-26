@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .basic-info{
+        margin-bottom: 0.2rem;
+    }
+    .basic-info .info-title {
+        width: 1.3rem;
+        text-align: right;
+        padding: 0 0 0 .25rem;
+        color: #999999;
+    }
+    .basic-info input {
+        color: #808080;
+        text-align: left!important;
+    }
+
+    .head_pic{
+        line-height: 1rem;
+        vertical-align: middle;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+    }
+
+    .user_type_span{
+        width: 1rem;
+        line-height: 1rem;
+        margin-right: .2rem;
+    }
+
+    .important-input:after{
+        content: none;
+    }
+</style>
+
+<body>
+    <!--<include file="Index:header" />-->
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section" style="margin-top: 0;">
+        <div class="basic-info user_head" style="height: auto">
+            <div style=";color: red;margin: 10px 15px">
+                提示：<span >1.未设置通知人员则默认通知管理员</span>
+                <span style="display: block;margin-left: 40px">2.仅公司管理员可进行工作人员设置</span>
+            </div>
+        </div>
+        <div class="basic-info">
+            <div class="title">公司人员</div>
+            <div class="info-line important-input" v-for="item in staff" v-if="staff.length > 0" @click="checkThis(item)">
+                <div class="info-title blue-checkbox" style="display: flex;align-items: center;justify-content: space-between;">
+                    <if condition="$permit_value eq 8">
+                        <input type="radio" name="staff" :checked="item.checked" :disabled="!isLeader" :value="item.id">
+                        <else/>
+                        <input type="checkbox" name="staff" :checked="item.checked" :disabled="!isLeader" :value="item.id">
+                    </if>
+                    <img class="head_pic" :src="item.head_pic" onerror="this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                </div>
+                <input type="text" :value="item.staff_name" readonly/>
+                <span v-if="item.id == item.customer_leader_id" style="color: red" class="user_type_span">管理员</span>
+                <span v-if="item.id != item.customer_leader_id" style="color: #cccccc;text-align: left" class="user_type_span">员工</span>
+            </div>
+            <div class="info-line important-input" v-if="staff.length == 0">
+                <div class="info-title"><i></i></div>
+                <input type="text" name="" value="暂无员工" placeholder="" readonly/>
+            </div>
+        </div>
+
+        <div class="order-reorder ptb15 plr25 footer" v-if="isLeader" >
+            <!--<button class="myorder bg-e" id="toggleChecked" style="width: 21%;margin: auto">全选</button>-->
+            <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="userManageFunctions.saveModuleUser()">保存</button>
+
+        </div>
+    </section>
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+        var userManageVue = new Vue({
+            el:"#body-section",
+            data:{
+                staff : []
+            },
+            computed:{
+                isLeader(){
+                    return "{$isLeader}" == 1 ? 1 : 0;
+                }
+            },
+            methods:{
+                checkThis:function(item){
+                    if("{$isLeader}" == 1 && "{$permit_value}" != 8){
+                        item.checked = item.checked == true ? false : true;
+                    }else if("{$permit_value}" == 8){
+                        var checked = item.checked == true ? false : true;
+                        for(var i = 0; i< this.staff.length ; i++){
+                            this.staff[i].checked = false;
+                        }
+                        item.checked = checked;
+                    }
+                }
+            }
+        });
+
+        $(function(){
+            userManageFunctions.getStaffList();
+        });
+
+        var userManageFunctions = {
+            getStaffList:function(){
+                $.post("/ComAgreement/getSelectedModuleUser",{module:"{$module}",permit_value:"{$permit_value}"},function(result){
+                    //var users = result.result;
+                    userManageVue.staff = [];
+                    for(var i in result){
+                        if(result[i].staff_name == ""){
+                            result[i].staff_name = result[i].name;
+                        }
+                        if(result[i].id == result[i].customer_leader_id){
+                            userManageVue.staff.unshift(result[i]);
+                        }else{
+                            userManageVue.staff.push(result[i]);
+                        }
+                    }
+                },'json')
+            },
+            saveModuleUser:function(){
+                var ids = [];
+                if("{$permit_value}" == 8){
+                    $("#body-section input[type=radio]:checked").each(function(){
+                        ids.push($(this).val());
+                    });
+                }else{
+                    $("#body-section input[type=checkbox]:checked").each(function(){
+                        ids.push($(this).val());
+                    });
+                }
+                if(ids.length == 0){
+                    layer.msg("请至少勾选一位用户！");
+                    return false;
+                }
+                $.post("/ComAgreement/setModuleUser",{ids:ids,module:"{$module}",permit_value:"{$permit_value}"},function(result){
+                    parent.layer.msg(result.message);
+                    if(result.error == 0){
+                        var index = parent.layer.getFrameIndex(window.name);
+                        if(typeof parent.getInfo == "function"){
+                            parent.getInfo();
+                        }
+                        parent.layer.close(index);
+                    }
+                },'json')
+            }
+        };
+
+        var checkedAll = 0;
+        $("#toggleChecked").click(function(){
+            var checkElements = document.getElementsByName("staff");
+            if(checkedAll == 0){
+                for(var i=0;i<checkElements.length;i++){
+                    var checkElement=checkElements[i];
+                    checkElement.checked="checked";
+                    $("#toggleChecked").html("反选");
+                    checkedAll=1;
+                }
+            }else{
+                for(var i=0;i<checkElements.length;i++){
+                    var checkElement=checkElements[i];
+                    checkElement.checked=null;
+                    $("#toggleChecked").html("全选");
+                    checkedAll = 0;
+                }
+            }
+        });
+
+
+
+    </script>
+</body>
+
+</html>

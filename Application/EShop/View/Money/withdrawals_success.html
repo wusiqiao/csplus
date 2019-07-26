@@ -1,0 +1,72 @@
+<!--头部 start-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>{$title}</title>
+	<link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+	<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	<style>
+		.container{
+			margin-top: 1rem;
+			padding: 1rem 0.2rem;
+		}
+		.container .text-padding{
+			padding: .2rem;
+		}
+		.reorder{
+			height: .75rem;
+			color: #fefeff;
+			border: none;
+			background-color: #368bfe;
+			width: 50%;
+		}
+	</style>
+</head>
+<body>
+<include file="Index:header" />
+<!--end 头部-->
+     <div class="container">
+		<div class="panel kx_list">
+			<div class="panel-body">
+				<div class="col-xs-12 text-center" style="    padding: 1rem;">
+					<img src="{$Think.const.IMG_URL}/login/yes.png" width="40" height="40"/>
+				</div>
+				<eq name="type" value="withdrawal">
+					<div class="col-xs-12 text-center" style="padding:10px 10px">
+						提现申请{$withdrawals['order_sn']}，提现申请提交成功<br/>
+						<p>正在提交银行处理……</p>
+					</div>
+					<div class="text-center text-padding">
+						预计3个工作日内到账。
+					</div>
+					<else/>
+					<div class="col-xs-12 text-center" style="padding:10px 10px">
+						转账申请{$withdrawals['order_sn']}，提交成功<br/>
+						<p>可进入公司资金进行查看……</p>
+					</div>
+				</eq>
+				<div class="text-center text-padding">
+					<eq name="withdrawals.withdrawal_type" value="-1">
+						<button onclick="location.href='__MODULE__/Money/company/id/{$withdrawals.company_id}.html'" class="reorder">知道了</button
+						<else/>
+						<button onclick="location.href='__MODULE__/Money.html'" class="reorder">知道了</button
+					</eq>
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--底部 start-->
+<include file="Public:footer" />
+<script>
+	select_menu('my');
+</script>
+
+<!--end 底部-->

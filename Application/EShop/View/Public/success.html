@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <title>成功页面</title>
+</head>
+<body>
+<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+    <h1 class="mui-title">成功页面</h1>
+    <button class="mui-btn mui-btn-link mui-btn-nav mui-pull-left" id="come-back" style="color: #444444 !important;padding: 0 !important;">
+		<span class="mui-icon mui-icon-arrowleft">
+		</span>返回
+    </button>
+</header>
+    <div style="margin-top: 30%;">
+        <div class="img"><img style="max-width: 100%" src="{$Think.const.IMG_URL}success.png" alt=""></div>
+        <div class="content" style="color: #706E6E;text-align: center;">
+            <p>{$message}</p>
+            <p><b id="wait">{$waitSecond}</b>秒后跳转至<a id="href" href="{$jumpUrl}">页面</a></p>
+        </div>
+    </div>
+</body>
+<script>
+    (function () {
+        var wait = document.getElementById('wait'), href = document.getElementById('href').href;
+        var interval = setInterval(function () {
+            var time = --wait.innerHTML;
+            if (time <= 0) {
+                location.href = href;
+                clearInterval(interval);
+            }
+            ;
+        }, 1000);
+    })();
+    $('#come-back').on('click',function(){
+        window.history.back();
+    })
+</script>
+</html>

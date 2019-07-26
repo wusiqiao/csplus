@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.min.css" rel="stylesheet" />
+</head>
+<style>
+    html,body{
+        height: auto;
+    }
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+   
+    #current-billing-plan .info-title{
+        width: 2.35rem;
+    }
+</style>
+
+<body>
+    <!-- <include file="Index:header" /> -->
+    <section class="custom-info-wrap common-wrap bg-none" id="body-section">
+        <form id="customerForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title">到款确认</div>
+                <input type="hidden" name="id" value="{$model.id}" readonly/>
+                <input type="hidden" name="notice_id" value="{$model.notice_id}" readonly/>
+                <input type="hidden" name="company_id" value="{$model.company_id}">
+                <input type="hidden" name="attach_group" value="{$model.attach_group}">
+                <div class="info-line">
+                    <div class="info-title">资金账户<i></i></div>
+                    <input type="text" name="" value="{$model.company_name}" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">收款日期<i></i></div>
+                    <input onclick="SelectTime(this)" type="text" name="pay_date" value="{$model.pay_date}" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title" >收款账户<i></i></div>
+                    <input type="text" name="account_name" onclick="accountList()" placeholder="请选择收款账户" readonly/>
+                    <input type="hidden" name="account_id" value="0" />
+
+                </div>
+                <notempty name="model.notice_id">
+                    <div class="info-line">
+                        <div class="info-title">收款金额<i></i></div>
+                        <input type="text" class="money_input" name="pay_amount" value="{$model.pay_amount}" readonly/>
+                    </div>
+                <else/>
+                    <div class="info-line">
+                        <div class="info-title">收款金额<i></i></div>
+                        <input type="text" class="money_input" name="pay_amount" value="{$model.pay_amount}" />
+                    </div>
+                </notempty>
+                <div class="info-line">
+                    <div class="info-title">收款手续费<i></i></div>
+                    <input type="text" name="poundage" value="{$model.poundage}" />
+                </div>
+                <input type="hidden" readonly="true" class="easyui-validatebox" name="net_amount" value="{$model.net_amount}"   onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')"  value="">
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info">
+                <div class="info-line" >
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="payConfirmSave()">到款确认</button>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+        var payconfirmVue = new Vue({
+            el:"#customerForm",
+            data:{
+
+            }
+        });
+
+        $("input[name=net_amount],input[name=poundage],input[name=pay_amount]").change(function(){
+            recharge_change()
+        })
+
+        function payConfirmSave() {
+            var data = $('#customerForm').serialize();
+            if ($("input[name=account_id]").val() == 0) {
+                layer.msg('请选择收款账户');
+            }
+            if (recharge_change()) {
+                $.post("/WrkReceivables/payConfirm/id/{$model.id}",data,function(result) {
+                    layer.msg(result.message);
+                    if (result.code == 0) {
+                        setTimeout(function() {
+                            parent.getDetail();
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        }, 1500);
+                    }
+                }, "json");
+            }
+        }
+
+        function recharge_change() {
+            var poundage = $("input[name=poundage]").val();
+            var pay_amount = $("input[name=pay_amount]").val();
+            if (pay_amount == '' || pay_amount == NaN) {
+                pay_amount = 0;
+            };
+            if (poundage == '' || poundage == NaN) {
+                poundage = 0;
+            };
+            pay_amount  =   parseFloat(pay_amount);
+            poundage = parseFloat(poundage);
+            var remain = pay_amount - poundage;
+            if (pay_amount > '{$model.unpaid_amount}') {
+                layer.msg('收款金额不能大于未付的合同金额,请先修改合同金额才能进行收款');
+                return false; 
+            }
+
+            if (remain > 0) {
+                $('input[name=net_amount]').val(remain.toFixed(2));
+            } else {
+                $('input[name=net_amount]').val(pay_amount.toFixed(2));
+                $("input[name=poundage]").val('0');
+                layer.msg('收款手续费不能大于收款金额');
+                return false; 
+            }
+            return true; 
+        }
+
+        mui.init();
+        var accountPick = new mui.PopPicker();
+        accountPick.setData( {$model.accountList} );
+
+        function accountList(e) {
+            accountPick.show(function(item) { //弹出列表并在里面写业务代码
+                var itemCallback = accountPick.getSelectedItems();
+                $("input[name=account_name]").val(itemCallback[0].text);
+                $("input[name=account_id]").val(itemCallback[0].value);
+            });
+        }
+
+        // 日期选择
+        var dtPicker = new mui.DtPicker({"type":"date"});
+        function SelectTime(e){
+            dtPicker.show(function (selectItems) {
+                $(e).val(selectItems.value);
+            })
+        }
+        // $(function(){
+        //     getDetail();
+        //     getItems();
+        // });
+
+        // function getDetail(){
+        //     $.post("/WrkReceivables/detail/id/{$id}"
+        //     ,function(result){
+        //         itemDetailVue.model = result;
+        //     },'json')
+        // }
+    </script>
+</body>
+
+</html>

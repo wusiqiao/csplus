@@ -1,0 +1,34 @@
+<section class="modal-city-wrap wrap-container" bind="form" style="display: none;">
+	<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+		<h1 class="mui-title">选择类型</h1>
+		<button class="mui-btn mui-btn-link mui-btn-nav mui-pull-left come-back" style="color: #444444 !important;padding: 0 !important;">
+			<span class="mui-icon mui-icon-arrowleft">
+			</span>返回
+		</button>
+	</header>
+	<div class="search-city-wrap" style="overflow-y: auto;padding: .15rem 0 0 .25rem;height: 100%">
+		<form action="">
+			<!--<div class="search-city">-->
+				<!--<input type="text" placeholder="请输入关键字搜索"/>-->
+				<!--<div class="search-icon"></div>-->
+			<!--</div>-->
+			<!--<div class="search-city-result" style="display: none;">-->
+				<!--<div>搜索结果</div>-->
+				<!--<ul>-->
+					<!--<li>金号财务有限公司</li>-->
+				<!--</ul>-->
+			<!--</div>-->
+			<volist name="trades" id="trade">
+				<div class="search-hot-city" style="display: block;">
+					<div>{$trade.name}</div>
+					<ul>
+						<volist name="trade.children" id="vo">
+							<li>{$vo.name}</li>
+						</volist>
+					</ul>
+				</div>
+			</volist>
+		</form>
+	</div>
+</section>
+

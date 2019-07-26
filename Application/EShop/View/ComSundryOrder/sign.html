@@ -1,0 +1,72 @@
+<div class="modal-common-wrap modal" style="width: 90%;">
+    <div class="modal-title bg-e gray-9">借用签收</div>
+    <div class="modal-content">
+        <div class="custom-item-titles mb20">
+            <div>物品名称</div>
+            <div>物品状态</div>
+        </div>
+        <ul class="">
+            <form id="process-from">
+                <foreach name="model.items" item="v">
+                    <li class="borrow-list blue-checkbox">
+                        <!-- <input name="sundry_ids[]" sundry_name="{$v.name}" type="checkbox" value="{$v.id}" /> -->
+                        <input name="item_ids[]" type="checkbox" value="{$v.id}" />
+                        <div class="con">
+                            <div class="word-hidden">{$v.name}</div>
+                            <div class="word-hidden">{$v.show_status}</div>
+                        </div>
+                    </li>
+                </foreach>
+            </form>
+        </ul>
+    </div>
+    <div class="modal-btn">
+        <button id="popup-close" class="popup-close">取消</button>
+        <button id="popup-complete" class="popup-complete blue">确定</button>
+        <!-- <button id="borrow" class="blue popup-complete">确定</button> -->
+    </div>
+</div>
+<script type="text/javascript">
+$('.popup-close').on('click', function() {
+    $(this).parents('.wrap-modal').hide();
+})
+
+$('.popup-complete').on('click', function() {
+    formid = "process-from";
+    form_url = "__MODULE__/ComSundryOrder/sign/record_id/{$model.record.id}";
+    var data = $('#' + formid).serialize();
+
+    $.ajax({
+        url: form_url,
+        type: "post",
+        dataType: "json",
+        data: data,
+
+        success: function(data) {
+            console.info(data);
+            if (data.error == 0) {
+                layer.closeAll();
+                layer.msg(data.msg);
+                setTimeout(function() {
+                    window.location.href = "__MODULE__/ComSundryOrder/index"
+                }, 500);
+            } else {
+                console.log("!!!"+data.error);
+                layer.closeAll();
+                layer.msg(data.msg);
+            }
+        },
+        error: function() {
+            layer.msg('系统故障！请重试！');
+            setTimeout(function() {
+                // window.location.href = "__MODULE__/ComSundry/edit/id/{$model.id}"
+            }, 500);
+        },
+        beforeSend: function() {
+            layer.closeAll();
+            layer.msg('正在提交....');
+        }
+    });
+    $(this).parents('.wrap-modal').hide();
+})
+</script>

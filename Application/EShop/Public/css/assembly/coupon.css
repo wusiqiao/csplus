@@ -1,0 +1,156 @@
+/*模态弹出框样式*/
+.ticket-receive {
+    position: fixed;
+    height: 100%;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 999;
+    background-color: rgba(0,0,0,0.5);
+}
+.modal-dialog {
+    width: 6rem !important;
+}
+.modal-content {
+    position: relative;
+    border: none;
+    box-shadow: none;
+    border-radius: 10px !important;
+    text-align: center;
+    background-color: rgba(255,255,255,0) !important;
+    background: url(../../images/voucher/redpacket.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+.modal-content-coupon {
+    position: relative;
+    border: none;
+    box-shadow: none;
+    border-radius: 10px !important;
+    text-align: center;
+    background-color: rgba(255,255,255,0) !important;
+    background: url(../../images/distribution/coupon-bg.png) no-repeat;
+    background-size: 100% 100%;
+}
+.modal-content button {
+    border: none;
+}
+.modal-body {
+    padding: 0 0.25rem !important;
+}
+.modal-body .modal-top {
+    height: 2rem;
+    border-bottom: 1px solid #ffe39d;
+}
+.modal-body .modal-top-coupon {
+    height: 3.15rem;
+}
+.modal-top .congratulation{
+    padding-top: 0.25rem;
+    font-size: 0.72rem;
+    line-height: 1rem;
+    font-weight: bold;
+}
+.modal-top-coupon .congratulation-coupon {
+    font-size: 0.72rem;
+    line-height: 3.15rem;
+    color: #ffffff;
+    font-family: 黑体;
+}
+.modal-top .already-get{
+    font-size: 0.3rem;
+}
+.modal-bottom {
+    width: 100%;
+    height: 1.5rem;
+}
+.modal-bottom-coupon {
+    width: 100%;
+    height: 2.95rem;
+}
+.modal-bottom-coupon .box-coupon {
+    margin: 0 auto;
+    width: 3.22rem;
+    height: 2.98rem;
+    background-image: url(../../images/distribution/box.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+.box-coupon .red-font {
+    color: #f32a3a;
+}
+.modal-bottom .modal-money {
+    float: left;
+    width: 50%;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    color: #ff0000;
+    text-align: right;
+    padding-right: 0.25rem;
+}
+.modal-bottom .modal-money span {
+    font-size: 0.56rem;
+}
+.modal-bottom .modal-money strong {
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+.modal-bottom .modal-fulluse {
+    float: left;
+    width: 50%;
+    height: 100%;
+    text-align: left;
+    font-weight: bold;
+    padding: 0.25rem 0;
+}
+.modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    height: 1.4rem !important;
+    padding: 0 !important;
+    border: none !important;
+}
+.modal-footer .btn-2 {
+    width: 50%;
+    line-height: 1.4rem;
+    text-align: center;
+    font-size: 0.3rem;
+}
+.modal-footer button {
+    height: 1.4rem !important;
+    border-radius: 10px;
+}
+.modal-footer-coupon {
+    padding: .94rem 0 1.35rem 0;
+}
+.modal-footer-coupon .coupon-btn {
+    display: block;
+    width: 78%;
+    height: .9rem;
+    margin: 0 auto;
+    line-height: .9rem;
+    border-radius: 2px;
+    background-color: #0077f4;
+    color: #ffffff;
+}
+.close-coupon {
+    position: absolute;
+    right: .1rem;
+    top: .1rem;
+    font-size: .75rem;
+    text-align: center;
+    line-height: .65rem;
+    width: .75rem;
+    height: .75rem;
+    color: #ffffff;
+}
+.modal-dialog-coupon {
+    position:absolute;
+    top: 50% !important;
+    left: 50%;
+    width: 6.88rem;
+    margin-left: -3.44rem;
+    margin-top: -4.65rem;
+}
+/*模态弹出框样式-end*/

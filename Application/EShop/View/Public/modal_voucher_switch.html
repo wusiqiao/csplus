@@ -1,0 +1,62 @@
+<style>
+	.modal-backdrop.fade{z-index: 1110;}
+</style>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+
+<div class="modal-voucher" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+	<div class="modal-dialog" style="width:100%">
+		<div class="modal-content">
+			<header id="header" class="mui-bar mui-bar-nav link-style">
+			<div class="mui-title">选择红包</div>
+			<button class=" mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left" style="color: #444444 !important;">
+				<span class="mui-icon mui-icon-arrowleft">
+				</span>返回
+			</button>
+		</header>
+			<div class="modal-body">
+				<section class="no-use" >
+					<div class="">不使用红包</div>
+					<div class="mui-radio">
+						<input class="" type="radio"name="voucher" voucher_price="0" ticket_id="0"/>
+					</div>
+				</section>
+                <section class="use-jump" onclick="location.href='/User/myVoucher/location/4.html'">
+                    <div class="">领取优惠券</div>
+                    <div class="mui-radio">
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </div>
+                </section>
+				<section class="select-redpacket">
+					<div class="vouchet-msg-div">
+						<span>共有{$voucher_tickets.usable_ticket}个可用红包</span>
+						<!--<a data-toggle="modal" data-target="#myModal-read" style="color: #ff840b;margin-left: 5px;">-->
+							<!--<span class="mui-icon mui-icon-help" style="font-size: 1.5rem !important;"></span>使用说明</a>-->
+					</div>
+					<div class="voucher-lists-div" style="width: 100%;height: 100%;position:fixed">
+						<volist name="voucher_tickets['lists']" id='vo' key='k'>
+							<div class="voucher-{$vo.show_type}-white">
+								<div class="value">
+									<div class="head"><span>￥</span><span class="money">{$vo.reduce_cost}</span></div>
+									<div class="bottom">满&nbsp;{$vo.least_cost}&nbsp;可用</div>
+								</div>
+								<div class="amount">
+									<div class="head">{$vo.show_scope}</div>
+									<div class="bottom">{$vo.ticket_begin_date}&nbsp;-&nbsp;{$vo.ticket_end_date}使用</div>
+								</div>
+								<div class="mui-radio">
+									<if condition="$k eq $max_voucher[max_voucher_key]">
+										<input type="radio" name="voucher" voucher_price="{$vo.reduce_cost}" ticket_id="{$vo.id}" checked/>
+									<else/>
+										<neq name="vo.show_type" value="error">
+										<input type="radio" name="voucher" voucher_price="{$vo.reduce_cost}" ticket_id="{$vo.id}" />
+										</neq>
+									</if>
+								</div>
+							</div>
+						</volist>
+					</div>
+				</section>
+			</div>
+		</div>
+	</div>
+</div>

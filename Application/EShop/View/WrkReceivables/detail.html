@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    html,body{
+        height: auto;
+    }
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+   
+    #current-billing-plan .info-title{
+        width: 2.35rem;
+    }
+    .icon-down{
+        position: absolute;
+        top:0px;
+        right: 0px;
+        width: 0.35rem;
+        height: 0.35rem;
+        margin: 0.1rem;
+        background-image: url("/{$Think.MODULE_PATH}Public/images/work/icon-hide.png");
+        background-size: 100% 100%;
+    }
+    .info-upset{
+        flex: 1;
+        font-size: 0.28rem;
+        text-indent: 0.2rem;
+        color: #368bfe;
+        line-height: 0.95rem;
+    }
+    .basic-info .info-title {
+        width: 2.75rem;
+    }
+</style>
+
+<body>
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <form id="customerForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title" style="position:relative;">合同信息
+                    <div class="icon-down" onclick="toggleShow(this)" data-flag="1"></div>
+                </div>
+                <input type="hidden" name="id" value="{$id}" />
+                <input type="hidden" name="notice_id" value="{$notice_id}" />
+                <div class="ipt-info">
+                    <div class="info-line">
+                        <div class="info-title">公司名称<i></i></div>
+                        <input type="text" name="" v-model="model.wrkAgreement.company_name" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">合同名称<i></i></div>
+                        <input type="text" name="" v-model="model.wrkAgreement.name" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">合同金额<i></i></div>
+                        <input type="text" class="money_input" name="" v-model="'￥'+model.wrkAgreement.agreement_money" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">已收款金额<i></i></div>
+                        <input type="text" name="" v-model="'￥'+model.wrkReceivables.actual_amount" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">未收款金额<i></i></div>
+                        <input type="text" name="" v-model="'￥'+model.wrkReceivables.unpaid_amount" readonly/>
+                    </div>
+                    <div class="info-line" v-if="model.wrkReceivables.status == 2">
+                        <div class="info-title">坏账金额<i></i></div>
+                        <input type="text" name="" v-model="'￥'+model.wrkReceivables.bad_dept_amount" placeholder="" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">收款计划期数<i></i></div>
+                        <input type="text" name="" v-model="model.wrkReceivables.detail_count" readonly/>
+                    </div>
+                </div>
+            </div>
+            <template v-if="model.item">
+            <div style="margin: 10px"></div>
+            <div class="basic-info">
+                <div class="title">本期收款计划</div>
+                <div class="info-line important-input">
+                    <div class="info-title">当前计划期数<i></i></div>
+                    <input style="color: #e91835;" type="text" name="" v-model="model.item.period_number" placeholder="" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">本期收款状态<i></i></div>
+                    <input type="text" name="" v-model="model.item.show_status" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">计划收款日期<i></i></div>
+                    <input type="text" name="" v-model="model.item.receivable_date" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">计划收款金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+model.item.receivables_amount" placeholder="" readonly/>
+                </div>
+                <div class="info-line important-input">
+                    <div class="info-title">计划未收款金额<i></i></div>
+                    <input type="text" name="" v-model="'￥'+model.item.unpaid_amount" placeholder="" readonly/>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info">
+                <div class="title" style="position:relative;">本期收款明细
+                    <div class="icon-down" onclick="toggleShow(this)" data-flag="1"></div>
+                </div>
+                <div class="ipt-info">
+                    <div class="info-line">
+                        <div class="info-title">付款日期<i></i></div>
+                        <input type="text" name="" v-model="model.item.actual_date" placeholder="" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">线下付款<i></i></div>
+                        <input type="text" name="" v-model="model.item.offline_amount" placeholder="" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">余额付款<i></i></div>
+                        <input type="text" name="" v-model="model.item.balance_amount" placeholder="" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">微信付款<i></i></div>
+                        <input type="text" name="" v-model="'￥'+model.item.wechat_amount" placeholder="" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">优惠券抵扣<i></i></div>
+                        <input type="text" name="" v-model="'￥'+model.item.coupon_amount" placeholder="" readonly/>
+                    </div>
+                    <div class="info-line">
+                        <div class="info-title">附件<i></i></div>
+                        <!-- <input style="color: #4591fe;" type="text" name="" onclick="attachment()" value="点击查看附件" readonly/> -->
+                        <div style="text-align:right;padding: 0 0.21rem;" class="info-upset" onclick="attachment()">
+                            点击查看附件<span class="mui-icon mui-icon-arrowright"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </template>
+            <template v-else>
+            <div style="margin: 10px"></div>
+            <div class="basic-info" >
+                <div class="title">本期收款计划</div>
+                <div class="" style="padding: 5px;text-align: center">
+                    暂无数据
+                </div>
+            </div>
+            </template>
+            <div style="margin: 10px"></div>
+            <div class="basic-info">
+                <if condition="$instance_permit egt 4">
+                    <div class="info-line" v-if="model.wrkReceivables.status == 0">
+                        <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="toPayConfirm()">到款确认</button>
+                    </div>
+                </if>
+                <div class="info-line">
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="toReceivablesList()">收款列表</button>
+                </div>
+                <if condition="$instance_permit egt 4">
+                    <div class="info-line" v-if="model.wrkReceivables.status == 0">
+                        <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;background-color: red!important;" onclick="toBadDept()">坏账处理</button>
+                    </div>
+                </if>
+            </div>
+            <div style="margin: 10px"></div>
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+
+        var receivablesDetailVue = new Vue({
+            el:"#customerForm",
+            data:{
+                model:[]
+            }
+        });
+
+        $(function(){
+            getDetail();
+        });
+        //获取数据
+        function getDetail(){
+            $.post("/WrkReceivables/detail/id/{$id}",
+            {
+                item_id:'{$item_id}',
+                notice_id:'{$notice_id}'
+            }
+            ,function(result){
+                receivablesDetailVue.model = result;
+            },'json')
+        }
+        //查看附件
+        function attachment(){
+            var attach_group = receivablesDetailVue.model.wrkReceivables.attach_group;
+            openWrkAttachmentForm("附件", [{attach_group:attach_group}]);
+        }
+
+
+        function toReceivablesList(){
+            var toReceivables = layer.open({
+                type:2,
+                title:"收款列表",
+                shadeClose:true,
+                shade:0.8,
+                area:['100%','100%'],
+                content:"__MODULE__/WrkReceivables/getItem/id/{$id}/type/2",
+                closeBtn:1,
+                success: function(layero, index) {},
+                end: function() {}
+            })
+        }
+        //到款确认页面
+        function toPayConfirm(){
+            var toPayConfirm = layer.open({
+                type:2,
+                title:"到款确认",
+                shadeClose:true,
+                shade:0.8,
+                area:['100%','100%'],
+                content:"__MODULE__/WrkReceivables/payConfirm/id/{$id}/notice_id/{$notice_id}",
+                closeBtn:1,
+                success: function(layero, index) {},
+                end: function() {}
+            })
+        }
+        //坏账
+        function toBadDept(){
+            var bad_dept_amount = receivablesDetailVue.model.wrkReceivables.unpaid_amount;
+            bad_dept_amount = parseFloat(bad_dept_amount);
+            bad_dept_amount = bad_dept_amount.toFixed(2);
+            mui.confirm("将对未收款金额："+bad_dept_amount+"进行坏账处理，请确认。","坏账处理",["是","否"],function(e){
+                if(e.index == 0){
+
+                    $.post("/WrkReceivables/badDept/id/{$id}",{bad_dept_amount:bad_dept_amount},function(result) {
+                        layer.msg(result.message);
+                        if (result.code == 0) {
+                            setTimeout(function() {
+                                getDetail();
+                            }, 1500);
+                        }
+                    }, "json");
+                }
+            });
+        }
+        // 收起、展示
+        function toggleShow(e){
+            if($(e).attr("data-flag")==1){
+                $(e).css("background-image",'url("/{$Think.MODULE_PATH}Public/images/work/icon-show.png")');
+                $(e).parent(".title").siblings(".ipt-info").hide();
+                $(e).attr("data-flag","0");
+            }else{
+                $(e).css("background-image",'url("/{$Think.MODULE_PATH}Public/images/work/icon-hide.png")');
+                $(e).parent(".title").siblings(".ipt-info").show();
+                $(e).attr("data-flag","1");
+            }
+        }  
+    </script>
+</body>
+
+</html>

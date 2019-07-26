@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+		<link href="/Application/EShop/Public/css/mui/mui.css" rel="stylesheet" />
+		<link href="/Application/EShop/Public/css/css-new/bootstrap.min.css" rel="stylesheet" />
+		<link href="/Application/EShop/Public/css//css-new/style.css?v=2" rel="stylesheet" />
+		<link rel="stylesheet" href="/Application/EShop/Public/css/mui/imageviewer.css">
+		<link href="/Application/EShop/Public/css/reset.css?v=" rel="stylesheet" />
+        <link href="/Application/EShop/Public/css/common.css?v=" rel="stylesheet" />
+        <link href="/Application/EShop/Public/css/style.css?v=" rel="stylesheet" />
+		<script src="/Application/Public/mui/js/mui.min.js"></script>
+		<title>{$title}</title>
+		<script src="/Application/EShop/Public/js/jquery.min.js"></script>
+	</head>
+	<style>
+        .star-y{
+            background-image: url("/Application/EShop/Public/images/img/star-on.png");
+            display: inline-block;
+            width: .4rem;
+            height: .4rem;
+            color: transparent;
+            cursor: pointer;
+            background-repeat: no-repeat;
+        }
+        .star-n{
+            background-image: url("/Application/EShop/Public/images/img/star-off.png");
+            display: inline-block;
+            width: .4rem;
+            height: .4rem;
+            color: transparent;
+            cursor: pointer;
+            background-repeat: no-repeat;
+        }
+        .process-des.left {
+            text-align: center;
+        }
+        .htxq{
+            float:right;
+            color: #333;
+        }
+        .progress-line:last-child::before {
+            height: 0;
+        }
+        .process-des.avtive:after {
+            z-index: 1;
+        }
+        .order-bottom-btn {
+            z-index: 8;
+        }
+        .process-des.right {
+            align-items: center;
+        }
+        .tel{
+            display: inline-block;
+            width: .35rem;
+            height: .34rem;
+            margin-right: .1rem;
+            background-image: url("/Application/EShop/Public/images/work/tel_new.png");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+	</style>
+	<body>
+		<section class="secondary-wrap">
+            <include file="Index:header" />
+            <div  id="detail">
+            <div class="copy-order ptb25 plr15 gray-9 bg-white mb15">
+                <div>公司名称 <span class="htxq">{$model.company_name}</span></div>
+                <div>合同名称 <span class="htxq">{$model.contract_name}</span></div>
+                <div>合同编号 <span class="htxq">{$model.sys_sn}</span></div>
+                <div>任务名称 <span class="htxq">{$model.task_name}</span></div>
+                <div>是否通知客户 <span class="htxq"><if condition="$model.is_to_customer eq 1">是<else />否</if></span></div>
+                <div v-if="status == 1" >合同任务状态 <span class="htxq">服务中</span></div>
+                <div v-if="status == 2" >合同任务状态 <span class="htxq">冻结中</span></div>
+                <div v-if="status == 3" >合同任务状态 <span class="htxq">已结束</span></div>
+                <foreach name="users" item="khuser">
+                    <div style="display: flex;justify-content: space-between;align-items: center;">客户任务负责人
+                        <span style="display: flex;align-items: center;">
+                            <span style="margin: 0 0.2rem;">{$khuser.name}</span>
+                            <a href="tel:{$khuser.mobile}" style="display: flex;align-items: center;"><i class="tel"></i><span class="htxq">{$khuser.mobile}</span></a>
+                        </span>
+                    </div>
+                </foreach>
+            </div>
+            <if condition="$model.status eq 3">
+            <div class="details-content">
+                <div id="task-evaluation">
+                    <div class="row" style="margin: 5px 0;">
+                        <div class="caption"><span>服务等级：</span></div>
+                        <div style="display: flex;align-items: center;height: 30px;">
+                            <div v-for="(item,index) in 5" style="margin: 0 3px;">
+                                <img v-if="index < evaluationNum" src="__ROOT__/Application/ESAdmin/Public/images/icon/xx1.png" alt="">
+                                <img v-else src="__ROOT__/Application/ESAdmin/Public/images/icon/xx2.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin: 5px 0;">
+                        <div class="caption"><span>客户评价：</span></div>
+                        <div class="inputbox">
+                            <textarea style="resize: none;height: 70px;" name="" id="" cols="50" rows="3" placeholder="暂无评论" v-model="evaluationTxt" readonly ></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </if>
+            <section class="con-wrap mb15" >
+                <div style="display: flex;border-bottom: 1px solid #d3d3d3;border-radius: 0;">
+                    <div style="flex: 1;text-align: center;line-height: 0.8rem;border-right: 1px solid #d3d3d3;">客户</div>
+                    <div style="flex: 1;text-align: center;line-height: 0.8rem;">商户</div>
+                </div>
+                <div v-for="(item,index) in scheduleList" class="progress-line pd-t-40">
+                    <div v-if="item.create_type == 1" class="process-list clearfix">
+                        <!-- 客户 -->
+                        <div v-if="item.is_sure == 1 && (item.sure_time || item.rejected_time)" :class="status != 3 && index == 0 ? 'process-des left avtive system':'process-des left system'" style="float: left;align-items: center;color: #bfbdbd;">
+                            <template v-if="item.sure_time">
+                                <span class="gray-color-sm" style="width: 150px;">已确认</span>
+                                <span class="gray-color-sm" style="width: 150px;">{{item.receiver_name}}</span>
+                            </template>
+                            <template v-else-if="item.rejected_time">
+                                <span class="gray-color-sm" style="width: 150px;">已驳回</span>
+                                <span class="gray-color-sm" style="width: 150px;">{{item.receiver_name}}</span>
+                            </template>
+                            <template v-else>
+                                <span class="gray-color-sm" style="width: 150px;">未确认</span>
+                            </template>
+                            <span v-if="item.sure_time" class="gray-color-sm" style="width: 150px;">{{item.sure_time}}</span>
+                            <span v-if="item.rejected_time" class="gray-color-sm" style="width: 150px;">{{item.rejected_time}}</span>
+                        </div>
+                        <div v-else-if="item.is_sure == 1" class="process-des left avtive system" style="float: left;align-items: center;color: #bfbdbd;">
+                            <span class="gray-color-sm" style="width: 150px;">未确认</span>
+                            <!--<span class="gray-color-sm" style="width: 150px;">{{item.receiver_name}}</span>-->
+                        </div>
+                        <!-- 商户 -->
+                        <div :class="status != 3 && index == 0 ? 'process-des right avtive':'process-des right'" style="text-align: center;align-items: center;color: #bfbdbd;">
+                            <span class="gray-color-sm" style="width: 150px;">{{item.progress_type_name}}</span>
+                            <span class="gray-color-sm" style="width: 150px;">{{item.create_name}}</span>
+                            <span class="gray-color-sm" style="width: 150px;">{{item.create_time}}</span>
+                            <a @click="toDetail(item.id)" style="color: #368bfe;">[查看详情]</a>
+                        </div>
+                    </div>
+                    <div v-else class="process-list clearfix">
+                        <!-- 客户 -->
+                        <div :class="status != 3 && index == 0 ? 'process-des left avtive system':'process-des left system'" style="float: left;align-items: center;text-align: center;color: #bfbdbd;">
+                            <span class="gray-color-sm" style="width: 150px;">{{item.progress_type_name}}</span>
+                            <span class="gray-color-sm" style="width: 150px;">{{item.create_name}}</span>
+                            <span class="gray-color-sm" style="width: 150px;">{{item.create_time}}</span>
+                            <a @click="toDetail(item.id)" style="color: #368bfe;">[查看详情]</a>
+                        </div>
+                        <!-- 商户 -->
+                    </div>
+                </div>
+            </section>
+            <div style="height: 1.35rem;"></div>
+            <div v-if="czable == 1" class="order-bottom-btn">
+                <div id="more-load" style="position: absolute;display: none;bottom: 1.12rem;left: 0.1rem;">
+                    <div v-if="status == 1 || status ==2" onclick="ToFinishTask()" style="text-align: center;border-radius: 3px;height: .75rem;line-height: .75rem;width: 2.25rem;color:#fff;background-color: rgb(245, 3, 3);">结束任务</div>
+                    <div v-if="status == 1" onclick="ToFreezeTasks(this)" style="text-align: center;border-radius: 3px;height: .75rem;line-height: .75rem;width: 2.25rem;color:#fff;background-color: rgb(122, 120, 120);">冻结任务</div>
+                    <div v-if="status == 2" onclick="disToFreezeTasks(this)" style="text-align: center;border-radius: 3px;height: .75rem;line-height: .75rem;width: 2.25rem;color:#fff;background-color: rgb(122, 120, 120);">解冻任务</div>
+                    <div onclick="ToNoteRecord()" style="text-align: center;border-radius: 3px;height: .75rem;line-height: .75rem;width: 2.25rem;color:#fff;background-color: rgb(27, 190, 81);">备注记录</div>
+                </div>
+                <button class="left-btn">更多</button>
+                <a v-if="status == 1" href="/WrkTaskPlan/feedback/task_plan_id/{$model.id}" style="flex: 1;"><button class="bg-368bfe" style="width: calc(100% - 0.2rem);">沟通反馈</button></a>
+                <a v-if="status == 1" href="/WrkTaskPlan/reporting/task_plan_id/{$model.id}" style="flex: 1;"><button class="bg-368bfe" style="width: calc(100% - 0.2rem);">提报进度</button></a>
+            </div>
+            <div v-else class="order-bottom-btn">
+                <a onclick="ToNoteRecord()" style="flex: 1;"><button class="bg-368bfe" style="width: calc(100% - 0.2rem);">备注记录</button></a>
+            </div>
+            </div>
+		</section>
+	</body>
+	<script src="/Application/EShop/Public/js/jquery.min.js"></script>
+	<script src="/Application/EShop/Public/js/bootstrap.min.js"></script>
+	<script src="/Application/EShop/Public/js/layer/layer.js"></script>
+    <script src="/Application/EShop/Public/js/clipboard/dist/clipboard.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+    <script src="/Application/EShop/Public/js/common.js"></script>
+    <script>
+        var schedule = new Vue({
+            el: "#detail",
+            data: {
+                status:"{$model.status}",
+                scheduleList: [],
+                evaluationNum:"{$model.evaluation_num}",
+                evaluationTxt:"{$model.evaluation_txt}",
+                czable:"{$czable}",
+            },
+            methods: {
+                toDetail:function(id){
+                    window.open('/WrkTaskPlan/scheduleInfo/id/'+id,'_self')
+                }
+            }
+        })
+
+        var p = 1;
+        var task_plan_id = {$model.id};
+        function getNextPage() {
+            $.post("/WrkTaskPlan/scheduleList", {task_plan_id:task_plan_id,page:p,rows:10}, function (result) {
+                if (result.code == 0){
+                    $.each(result.message,function (val,index) {
+                        schedule.scheduleList.push(this);
+                    });
+                    p = p+1;
+                } else {
+                    mui.alert("",result.message);
+                }
+            }, 'json')
+        }
+        getNextPage();
+
+        document.onclick = function(){
+            if($(event.target).hasClass("left-btn")){
+                if($("#more-load").css('display') == 'none'){
+                    $("#more-load").show();
+                }else{
+                    $("#more-load").hide();
+                }
+            }else{
+                $("#more-load").hide();
+            }
+        }
+        // 结束任务
+        function ToFinishTask(){
+            mui.confirm("","结束任务后将不能再推送服务进度给客户，</br>确定要结束该任务？",["取消","确认"],function(e){
+                $.post("/WrkTaskPlan/status", {task_plan_id:task_plan_id,status:3}, function (result) {
+                    if (result.code == 0){
+                        p = 1;
+                        schedule.scheduleList = [];
+                        schedule.status = 4;
+                        getNextPage();
+                    }
+                }, 'json')
+            });
+        }
+        // 冻结任务
+        function ToFreezeTasks(ele){
+            mui.confirm("","冻结任务后该任务将暂停服务。</br>确定冻结该任务？",["取消","确认"],function(e){
+                $.post("/WrkTaskPlan/status", {task_plan_id:task_plan_id,status:2}, function (result) {
+                    if (result.code == 0){
+                        schedule.status = 2;
+                        p = 1;
+                        schedule.scheduleList = [];
+                        getNextPage();
+                    }
+                }, 'json')
+            });
+        }
+        
+        function disToFreezeTasks() {
+            mui.confirm("","解冻任务后该任务将继续服务。</br>确定解冻该任务？",["取消","确认"],function(e){
+                $.post("/WrkTaskPlan/status", {task_plan_id:task_plan_id,status:1}, function (result) {
+                    if (result.code == 0){
+                        schedule.status = 1;
+                        p = 1;
+                        schedule.scheduleList = [];
+                        getNextPage();
+                    }
+                }, 'json')
+            });
+        }
+        // 沟通记录
+        function ToCommunicationRecord(){
+            openAttachmentForm("沟通记录", [{attach_group:"{$model.attach_group}"}]);
+        }
+        
+        //备注记录
+        function ToNoteRecord() {
+            openNoteForm("备注记录", [{attach_group:"{$model.attach_group}"}]);
+        }
+    </script>
+</html>

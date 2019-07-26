@@ -1,0 +1,96 @@
+body {
+	font-size: 1.25rem;
+}
+#bg {
+    background-color: #000;
+    position: fixed;
+    z-index: 99;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: -5rem;
+    display: none;
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+    filter: alpha(opacity=30);
+    -moz-opacity: 0.3;
+}
+
+.cards {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 20rem;
+	overflow-y: scroll;
+}
+
+.card-list {
+    z-index: 999;
+    width: 90%;
+    position: absolute;
+    left: 5%;
+    top: 50%;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    transform: translateY(-50%);
+}
+.chose-card {
+	position: relative;
+	padding: 0.83rem 1.25rem;
+    box-shadow: 0 1px 0 #f4f4f4;
+}
+.card-style {
+ 	float: left;
+    width: 75%;
+    border-radius: 0.5rem;
+    border: 1px solid #f4f4f4;
+}
+
+
+.card-info {
+	padding: 0.83rem 0;
+	background-color: #f4f4f4;
+}
+.card-info span {
+	float: left;
+	height: 2rem;
+    line-height: 2rem;
+}
+.card-info .font-set1 {
+	width: 25%;
+	margin-left: 5%;
+	text-align: left;
+}
+.card-style img{
+	height: 3rem;
+}
+
+/*bank*/
+.bank-list {
+    z-index: 999;
+    width: 90%;
+    position: absolute;
+    left: 5%;
+    top: 50%;
+    border-radius: 10px;
+    overflow: hidden;
+    transform: translateY(-50%);
+}
+.chose-bank {
+	position: relative;
+    box-shadow: 0 1px 0 #f4f4f4;
+    height: 20rem;
+    overflow-y: scroll;
+}
+
+/*滚动条*/
+.chose-bank::-webkit-scrollbar {
+    width: 1px;     
+
+}
+.cards::-webkit-scrollbar {
+    width: 1px;     
+}
+

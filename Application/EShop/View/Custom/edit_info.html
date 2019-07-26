@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+</head>
+<body>
+    <section class="custom-info-wrap common-wrap">
+    	<form action="">
+	    	<div class="basic-info">
+	    		<div class="title">基本资料</div>
+	    		<div class="info-line">
+	    			<div class="info-title">客户名<i></i></div>
+	    			<input type="text" value="欧阳锋"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">所在分组<i></i></div>
+					<select name="">
+						<option value="">代账一组</option>
+						<option value="">代账二组</option>
+						<option value="">代账三组</option>
+					</select>
+					<div id="new-group-btn" class="new-group-btn blue-4591fe">移至新分组</div>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">公司名称<i></i></div>
+	    			<input type="text" value="厦门红鞋子网络科技有限公司"/>
+	    		</div>
+	    		
+	    		<div class="info-line">
+	    			<div class="info-title">职务<i></i></div>
+	    			<input type="text" value="总经理"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">联系电话<i></i></div>
+	    			<input type="number" value="18020864268"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">客户标签<i></i></div>
+	    			<div class="info-con icon">
+	    				<span>可爱</span><span>善良</span><span id="add-tag" class="tag-btn">+</span>
+	    			</div>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">注册时间<i></i></div>
+	    			<input type="date" value="2018-08-08"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">地址<i></i></div>
+	    			<div class="area-chose">
+	    				<div class="province-city">
+		    				<select name="">
+		    					<option value="">北京市</option>
+		    					<option value="">天津市</option>
+		    					<option value="">上海市</option>
+		    					<option value="">重庆市</option>
+		    				</select>
+		    				<select name="">
+		    					<option value="">全部</option>
+		    				</select>
+	    				</div>
+	    				<textarea name="" rows="" cols=""></textarea>
+	    			</div>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">税号<i></i></div>
+	    			<input type="number" value="1234567895623185"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">开户行<i></i></div>
+	    			<input type="text" value="中国建设银行厦门科技支行"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">电话<i></i></div>
+	    			<input type="tel" value="0592-5968465"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">传真<i></i></div>
+	    			<input type="tel" value="0592-5968465"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">邮箱<i></i></div>
+	    			<input type="email" value="cs+@qq.com"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="info-title">备注<i></i></div>
+	    			<input type="text" value="长期合作的公司，按最低价格，需不定期"/>
+	    		</div>
+	    		<div class="info-line">
+	    			<div class="customize blue-4591fe">+新增自定义类型</div>
+	    		</div>
+	    	</div>
+	    	<button class="save-edited mt30 bg-368bfe">保存</button>
+    	</form>
+    	<div class="wrap-modal" style="display: none">
+			<div class="modal-tag-select modal">
+				<div class="modal-content">
+		            <div class="title">选择已有标签</div>
+		            <div class="simple-line pr">
+		            	<select name="">
+		            		<option value=""></option>
+		            	</select>
+		            	<div class="select-icon"></div>
+		            </div>
+		            <div class="title">新增标签</div>
+		            <div class="simple-line">
+		            	<input type="text" placeholder="不超过5个字" />
+		            </div>
+				</div>
+				<div class="modal-btn">
+					<button id="popup-close" class="popup-close">取消</button>
+					<button class="blue" id="popup-complete">确定</button>
+				</div>
+			</div>
+		</div>
+    </section>
+    <script src="{$Think.const.JS_URL}/mui/mui.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script type="text/javascript">
+    	$('#add-tag').on('click',function(){
+    		$('.wrap-modal').show();
+    	})
+    	$('.popup-close').on('click',function(){
+    		$(this).parents('.wrap-modal').hide();
+    	})
+    </script>
+	
+</body>
+</html>

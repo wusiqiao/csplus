@@ -1,0 +1,34 @@
+
+
+@font-face {font-family: "iconfont";
+	src:url('../fonts-pay/iconfont.ttf') format('truetype'); /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+}
+
+
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-right:before { content: "\e613"; }
+
+.icon-tubiao06:before { content: "\e692"; }
+
+.icon-add:before { content: "\e612"; }
+
+.icon-iconfontweibiaoti1015:before { content: "\e660"; }
+
+.icon-select:before { content: "\e600"; }
+
+.icon-select-copy:before { content: "\e614"; }
+
+.icon-check-copy:before { content: "\e618"; }
+
+.icon-select-copy-copy:before { content: "\e693"; }
+
+.icon-checkboxempty:before { content: "\e60b"; }
+
+

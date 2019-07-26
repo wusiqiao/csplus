@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+	<link href="/{$Think.APP_PATH}Public/vender/layer/skin/layer.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.MODULE_PATH}Public/css/search.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.MODULE_PATH}Public/css/common.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.MODULE_PATH}Public/css/icons.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/swiper/swiper-3.4.2.min.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.indexedlist.css?v={$version}" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/app.css?v={$version}" rel="stylesheet" type="text/css" />
+	<link href="/{$Think.MODULE_PATH}Public/css/index.css?v={$version}" rel="stylesheet" />
+	<link href="/{$Think.MODULE_PATH}Public/css/style.css?v={$version}" rel="stylesheet" />
+	<script src="/{$Think.APP_PATH}Public/jquery/jquery.min.js"></script>
+	<script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+	<script src="/{$Think.MODULE_PATH}Public/js/common.js"></script>
+    <title>{$title}</title>
+	<style>
+		.idx-head .idx-consult {
+			position: absolute;
+			right: 0.1rem;
+			top: 0;
+			height: 0.8rem;
+			line-height: 0.8rem;
+			color: #009AFF;
+			letter-spacing: 1px;
+			font-size: 0.3rem;
+			text-align: center;
+		}
+		.icon-kefu{
+			width: 30px;
+			height: 30px;
+			text-align: center;
+			vertical-align: middle;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="app index-wrap">
+		<include file="Public:modal_subscribe" />
+	    <include file="search" />
+		<header class="idx-head">
+			<div class="idx-search"></div>
+	        <div class="idx-head-title">首页</div>
+			<div class="idx-consult">
+				<!--<a href="__MODULE__/Tool/consult.html">-->
+
+				<img class="icon-kefu" src="/{$Think.MODULE_PATH}Public/images/tool/icon-kefu.jpg" alt=""/>免费咨询
+				<!--</a>-->
+			</div>
+	    </header>
+		<notempty name="adv_lists">
+		    <div class="swiper-container">
+		    	<div class="swiper-wrapper">
+		    		<!--<volist name='adv_lists' id="vo">-->
+			            <!--<div class="swiper-slide">-->
+			            	<!--<if condition="$vo.url_switch eq 1">-->
+			            		<!--<a href="{$vo.adv_url}">-->
+			            			<!--<div>-->
+					                    <!--<img src="{$vo.adv_img}"/>-->
+					                <!--</div>-->
+			            		<!--</a>-->
+		            		<!--<else/>-->
+				            	<!--<img src="{$vo.adv_img}"/>-->
+				            <!--</if>-->
+				            <!---->
+			            <!--</div>-->
+			        <!--</volist>-->
+	
+		    		<volist name='adv_lists' id="vo">
+			            <div class="swiper-slide">
+			            	<if condition="$vo.url_switch eq 1">
+			            		<a href="{$vo.url}">
+			            			<div>
+					                    <img src="{$vo.pic}"/>
+					                </div>
+			            		</a>
+		            		<else/>
+				            	<img src="{$vo.pic}"/>
+				            </if>
+			            </div>
+			        </volist>
+			        <!--<div class="swiper-slide">-->
+			            <!--<img src="{$adv}"/>-->
+		           <!--</div>-->
+		        </div>
+		        <div class="swiper-pagination"></div>
+		    </div>
+		</notempty>
+	    <nav class="nav-container pi index-nav">
+	        <ul id="nav-lists" style="overflow: hidden;">
+				<notempty name="hot_categoty" >
+					<volist name="hot_categoty" id="vo">
+						<li data-type="seek_product">
+							<a class="nav-single" href="{$vo.location}">
+								<div class="nav-circle nav-icon1"
+									<notempty name="vo.icon">
+										style="background: url({$vo.icon}) 0rem 0rem no-repeat ;background-size: 100%;"
+									</notempty>
+								>
+
+								</div>
+								<span>{$vo.name}</span>
+							</a>
+						</li>
+					</volist>
+				</notempty>
+				<eq name="hot_category_count" value="5">
+					<li data-type="look_service">
+						<a class="nav-single" id="more-nav" href="__MODULE__/Index/classification.html">
+							<div class="nav-circle nav-icon2"></div>
+							<span>更多服务</span>
+						</a>
+					</li>
+				</eq>
+	        </ul>
+	    </nav>
+		<!--<div class="mui-slider">-->
+			<!--<div class="mui-slider-group">-->
+				<!--<volist name="ticket" id="vo">-->
+					<!--<div class="mui-slider-item">-->
+						<!--<div class="voucher-content">-->
+							<!--<div class="voucher-white-gray">-->
+								<!--<div class="head">-->
+									<!--<span class="icon">￥</span>-->
+									<!--<span class="money">{$vo.reduce_cost}</span><span class="title">商家代金券</span>-->
+									<!--<if condition="$vo.is_receive eq 0">-->
+										<!--<button type="button" onclick="location='__MODULE__/Index/checkLoginReceive.html'" style="background-color: #999999;">登录领取</button>-->
+										<!--<elseif condition="$vo.is_receive eq 1" />-->
+										<!--<button type="button" style="background-color: #999999;" disabled="disabled">已领取</button>-->
+										<!--<elseif condition="$vo.is_receive eq 2" />-->
+										<!--<button type="button" id="ticket_receive" onclick="ticket_receive(this);" activity_id="{$vo.activity_id}">立即领取</button>-->
+										<!--<elseif condition="$vo.is_receive eq 4" />-->
+										<!--<button type="button" style="background-color: #999999;" disabled="disabled">暂无库存</button>-->
+									<!--</if>-->
+								<!--</div>-->
+								<!--<div class="bottom">-->
+									<!--<div>满{$vo.least_cost}可用<br>限{$vo.activity_begin_date}至{$vo.activity_end_date}使用</div>-->
+								<!--</div>-->
+							<!--</div>-->
+						<!--</div>-->
+					<!--</div>-->
+				<!--</volist>-->
+			<!--</div>-->
+			<!--<button type="button" class="modal-starter" data-toggle="modal" data-target="#myModal" style="display: none;"></button>-->
+		<!--</div>-->
+		<if condition="$tool_list">
+			<div class="home-tool">
+				<div class="flex-start-center">
+					<img src="/{$Think.MODULE_PATH}Public/images/Index_img/tool-icon.png" alt=""/>
+					<span>自助查询</span>
+				</div>
+				<div class="tool-wrap">
+					<if condition="$tool_list eq 'all' or in_array('nuclear',$tool_list)">
+						<a href="__MODULE__/Tool/nuclear_name.html">
+							<img class="check-tool" src="/{$Think.MODULE_PATH}Public/images/Index_img/icon-check.png" alt="" />
+							<span>免费核名</span>
+						</a>
+					</if>
+					<if condition="$tool_list eq 'all' or in_array('trademarks',$tool_list)">
+					<a href="__MODULE__/Tool/search_trademarks.html">
+						<img class="search-tool" src="/{$Think.MODULE_PATH}Public/images/Index_img/icon-search.png" alt="" />
+						<span>免费查询商标</span>
+					</a>
+					</if>
+					<if condition="$tool_list eq 'all' or in_array('files',$tool_list)">
+					<a href="__MODULE__/Tool/files.html">
+						<img class="file-tool" src="/{$Think.MODULE_PATH}Public/images/Index_img/icon-file.png" alt="" />
+						<span>免费文档</span>
+					</a>
+					</if>
+				</div>
+			</div>
+		</if>
+		<div class="home-hot">
+			<img src="/{$Think.MODULE_PATH}Public/images/Index_img/hot-icon.png" alt=""/>
+			<span>热门推荐</span>
+		</div>
+        <!--模板 - 找服务 start-->
+        <div style="display:none" id="temp-product" class="item-wrap media-list">
+            <a href="__MODULE__/Product/productDetail/product_id/{%product_id%}.html">
+                <div id="" class="media-pic" >
+                    <img src="{%product_pic%}" alt="">
+                </div>
+                <div class="title1 media-content">
+                    <h3>{%product_title%}</h3>
+                    <p>{%product_desc%}</p>
+                    <span>{%view_price%}</span>
+
+                </div>
+            </a>
+        </div>
+
+        <!--模板 - 找服务 end-->
+	    <!--模板 end -->
+	    <section>
+    		<div class="require-container wrap-content" id="yxload" style="padding:0 0.2rem;padding-bottom: 2rem;background-color: #fff;">
+	            <section class="yxcontent clearfix">
+
+	    		</section>
+	    	</div>
+		</section>
+		<div style="bottom: 1.5rem;position: relative;text-align: center;color:#8f8f94">
+			<span style="display: inline-block;left: 20%;width: 15%;border-top: 1px solid #e4e4e4;position: absolute;top: 50%;"></span>
+			<span style="display: inline-block;width: 60%;color: #999999;">
+				技术支持:财穗加
+			</span>
+			<span style="display: inline-block;right: 20%;width: 15%;border-top: 1px solid #e4e4e4;position: absolute;top: 50%;"></span>
+		</div>
+    	<include file="Public:footer" />
+    	<include file="Public:contact" />
+    	<include file="Public:modal_coupon_receive" />
+    	<include file="Public:modal_share" />
+    </div>
+</body>
+<script src="/{$Think.APP_PATH}Public/swiper/swiper-3.4.2.jquery.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/js/dropload.min.js"></script>
+<script src="/{$Think.MODULE_PATH}/Public/js/bootstrap.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+<script src="/{$Think.MODULE_PATH}/Public/js/search-chosen.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/city.data.js" type="text/javascript" charset="utf-8"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.indexedlist.js"></script>
+<!--<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>-->
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
+<script>
+	$(".idx-consult").on('click',function(){
+	    window.location.href = "__MODULE__/Tool/consult"
+	})
+	$('.close-coupon,.close-qrcode,.close-particular').on('click',function(){
+        $('body').css({'overflow-y':'initial','height':'','position':''})
+		$(this).parents('.modal').hide();
+	});
+	$("#contact-wrap").find("a").each(function(idx,ele){
+		if($(ele).attr("href") == "/Liuyan.html"){
+			$(ele).on("click",function(){
+				event.preventDefault();
+				var id = `<a onclick="getAttachGroup(this)" class="msg-content clearfix"><div class="consult-img"><img src="http://thirdwx.qlogo.cn/mmopen/JyBjdkSOVdC5uXIoOwrwIeXvcVF7f069BCNFDvwDniasNCfpC1ksiaODVvnmYw28mIcBLTiarTmeRWiczqsHibvkzMRq1LvM2ckel/132" alt=""><span class="msg-new"></span></div><div class="consult-content"><div class="consult-title over-flow">微店留言</div><div class="time-set"><div class="consult-msg"></div><div class="consult-time">2019-04-30</div></div></div></a>`;
+				$.post("/ComPotential/getAttachGroup/id/"+id,function(result){
+					var attach_group = result.attach_group;
+					openAttachmentForm("沟通记录", [{text:"沟通记录",attach_group:attach_group}]);
+				},'json');
+			})
+		}
+	})
+    wx.config({
+        debug: false,
+        appId: '{$signPackage.appId}',
+        timestamp: '{$signPackage.timestamp}',
+        nonceStr: '{$signPackage.nonceStr}',
+        signature: '{$signPackage.signature}',
+        jsApiList: [
+            // 所有要调用的 API 都要加到这个列表中
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage'
+        ]
+    });
+
+    wx.ready(function () {
+        //如果是小程序环境
+        //share类型判断
+        //传递id title descript
+        if(window.__wxjs_environment ==='miniprogram') {
+            wx.miniProgram.postMessage({
+                data: {
+                    type: 'share',
+                    from:'Index.index',
+                    title: '{$share_data.title}',
+                    desc: '{$share_data.desc}',
+                    link: '{$share_data.link}'
+                }
+            });
+        }else{
+            $(".unsubscribe-tip").show();
+		}
+        //发送给朋友
+        wx.onMenuShareAppMessage({
+            title: '{$share_data.title}',
+            desc: '{$share_data.desc}',
+            link: '{$share_data.link}',
+            imgUrl: '{$share_data.imgUrl}',
+			success:function(){
+                var isLogin = '{$is_login}';
+                if(isLogin == '0'){
+                    $.post('__MODULE__/Index/HandlerUserRegion',function(){
+
+                    })
+                }
+			}
+        });
+        //分享到朋友圈
+        wx.onMenuShareTimeline({
+            title: '{$share_data.title}',
+            desc: '{$share_data.desc}',
+            link: '{$share_data.link}',
+            imgUrl: '{$share_data.imgUrl}',
+            success:function(){
+                var isLogin = '{$is_login}';
+                if(isLogin == '0'){
+                    $.post('__MODULE__/Index/HandlerUserRegion',function(){
+
+                    })
+                }
+            }
+        });
+        wx.error(function(res){
+            //   alert(res);
+        });
+    })
+</script>
+<script>
+        //定位region值
+        var regionDefult=   {'0':'{$city_level[1]}','province':"{$city_level[1]}",'city':'{$city_level[2]}','district':'{$city_level[3]}'};
+        var regionArr   =   {};
+        function resetLookTask(){
+        console.log($(window).height() - $('#seek_same_task').height() - $('#close-detail').height());
+        $('#detail_parent').height($(window).height() - $('#seek_same_task').height() - $('#close-detail').height() - $('#close-detail').height() - 10);        
+    }
+    //点击切换 更新数据
+ function loadDropload(){
+     var url;
+     var temp;
+     var data;
+     var counter = 0;
+     var num = 20;
+     var paging = 1;
+     $(window).off('scroll');
+     $(".dropload-down").remove();
+     $(".yxcontent").empty();
+     $('#yxload').dropload({
+             domUp: {
+                 domClass: 'dropload-up',
+                 domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+                 domUpdate: '<div class="dropload-update">↑释放更新</div>',
+                 domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...<br><br></div>',
+             },
+			 domDown : {
+				 domClass   : 'dropload-down',
+				 // 滑动到底部显示内容
+				 domRefresh : '<div class="dropload-refresh gray-9" style="font-size: 0.26rem;text-align: center;line-height: 1rem;">↑上拉加载</div>',
+				 // 内容加载过程中显示内容
+				 domLoad    : '<div class="dropload-load gray-9" style="font-size: 0.26rem;text-align: center;line-height: 1rem;"><span class="loading" ></span>加载中...</div>',
+				 // 没有更多内容-显示提示
+				 domNoData  : '<div class="dropload-noData"><div class="empty-voucher"><img src="../images/voucher/emptyPic.png" alt="" width="31%"/><div style="text-align: center;color:#cccccc;line-height: 1rem;">列表是空的哦</div></div></div>'
+			 },
+             scrollArea: window,
+             loadDownFn: function(me) {
+                     url = '__MODULE__/Index/getProductLists';
+                     temp= 'temp-product';
+                     data = {page_size: num, paging:paging}
+					 $.ajax({
+						 type: 'POST',
+						 url: url,
+						 dataType: 'json',
+						 data: data,
+						 success: function(data) {
+								 if(data.count == 0) {
+									 if(paging == 1) {
+										 html = '<div class="text-center m-t-40" style="padding-top: 1rem;padding-bottom: 1rem;text-align:center;background-color: #ffffff;">';
+										 html += '<img src="{$Think.const.IMG_URL}/voucher/emptyPic.png" style="width:31%" />';
+										 html += '<div class="text-muted m-t-15" style="text-align: center;color:#cccccc;line-height: 1rem;">空空如也~亲,当前没有记录哦';
+										 $(".dropload-down").html("");
+										 $(".yxcontent").append(html);
+									 } else {
+										 $(".dropload-down").html("<center class='gray-9' style='font-size: 0.26rem;text-align: center'>亲,已经没有更多的数据了哦!</center>");
+									 }
+									 $(".screen_count").text('暂无数据');
+								 } else {
+									 var result = '';
+									 counter++;
+									 paging ++;
+                                     console.log(data);
+									 for(var i = 0; i < data.list.length; i++) {
+										 result += parseTemplate('#'+temp, data.list[i]);
+									 }
+
+                                     console.log('----');
+                                     console.log(result);
+									 $('.yxcontent').append(result);
+									 loadComplete();
+									 // 每次数据加载完，必须重置
+									 me.resetload();
+								 }
+								 loadAdditional();
+						 },
+						 error: function(xhr, type) {
+							 // 即使加载出错，也得重置
+							 me.resetload();
+						 }
+					 });
+             }
+         })
+ }
+    //mui初始化
+    function loadComplete(){
+        $(".task-detail-item").unbind("tap");
+        $(".task-detail-item").on("tap", function(){
+            var task_id = $(this).attr("data-value"); 
+            mui.toast('加载中...',{duration:'short',verticalAlign:'center'});
+         	$("#task-detail-content").html("");  
+            setTimeout("loadTaskDetail("+task_id+")", 1000);
+        });
+    }
+    function loadTaskDetail(task_id){
+        $.post("__MODULE__/Index/task_detail/task_id/" + task_id, function(result){            
+            $("#task-detail-content").append(result);
+            resetLookTask();
+        });
+    }
+    mui.init({
+        swipeBack: true//启用右滑关闭功能 
+    });
+   
+    var mySwiper = new Swiper('.swiper-container', {
+        loop: true,
+        spaceBetween: 30,
+        pagination : '.swiper-pagination',
+        paginationHide :true,
+        paginationClickable :true,
+        autoplay:3000
+    })
+    var mySwiper = new Swiper('.swiper-container-merchants', {
+        loop: true,
+        spaceBetween: 10,
+        pagination : '.swiper-pagination',
+        paginationType : 'none',
+        autoplay:3000
+    })
+    $(function () {
+        var redpacket = '{$redpacket}' || '';
+        if(redpacket == 'show') {
+            $('body').css({'overflow-y':'hidden','height':'100%','position':'fixed'});
+		}
+        var isRedpacket =   $("#is_redpacket").attr("value");
+        var isGiveUser  =   $("#is_give_user").attr("value");
+        if(isRedpacket == 'show'){
+            $("#show_modal").click();
+        }
+        if(isGiveUser == 'show'){
+            $("#show_modal_give").click();
+        }
+        $('.idx-search').click(function () {
+            $('.float-search').css({'display': 'block'});
+        })
+        $('.search-back').click(function () {
+            $('.float-search').css({'display': 'none'});
+        })
+
+        $('.classification-back').click(function () {
+            $('.float-classification').css({'display': 'none'});
+        })
+        $('.clear-all').click(function () {
+            $('.J-history-list').empty();
+            $('.last-search').css({'display': 'none'});
+        });
+        $("#input-keyword-search").on("search", function(){
+            var string = $(this).val();
+            var regEn = /[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/im,
+                    regCn = /[·！#￥（——）：；“”‘、，|《。》？、【】[\]]/im;
+            if(regEn.test(string) || regCn.test(string)){
+                layer.msg("请勿输入特殊字符");
+                return false;
+            }
+            location.href = "__MODULE__/index/search_result/keyword/" + $(this).val() ;
+        })
+        $("#search-btn").on('click',function(){
+        	jump_search();
+        })
+
+    })
+    function loadAdditional(){
+        $(".brands-show").css('position','initial');
+        $(".brands").css('position','initial');
+    }
+    function jump_search(){
+        var regEn = /[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/im,
+                regCn = /[·！#￥（——）：；“”‘、，|《。》？、【】[\]]/im;
+        var string = $("#search-company").val();
+        if(regEn.test(string) || regCn.test(string)){
+            $("#search-company").val("");
+            layer.msg("请勿输入特殊字符");
+            return false;
+        }
+        //string = $.trim(string);
+        location.href = "__MODULE__/index/search_result/keyword/" + string;
+    }
+</script>
+<script>
+    loadDropload();
+    function ticket_receive(obj) {
+        var activity_id = $(obj).data("id");
+        $.ajax({
+            type: 'POST',
+            url: '__MODULE__/User/scopeTicketReceive.html',
+            dataType: 'json',
+            data: {
+                activity_id: activity_id
+            },
+            success: function(data) {
+                if(data.error == 0) {
+                    layer.closeAll();
+                    layer.msg('领取成功,正在跳转至优惠券页面!!');
+                    setTimeout(function(){
+                        window.location.href='__MODULE__/user/myVoucher.html';
+                    },1000);
+                } else if(data.error == 1){
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                } else{
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                    setTimeout(function(){
+						window.location.href=data.url;
+					},1000);
+				}
+            },
+        });
+    }
+</script>
+
+</html>

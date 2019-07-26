@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.picker.min.css" rel="stylesheet" />
+</head>
+<style>
+    html,body{
+        height: auto;
+    }
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+   
+    #current-billing-plan .info-title{
+        width: 2.35rem;
+    }
+</style>
+
+<body>
+    <!-- <include file="Index:header" /> -->
+    <section class="custom-info-wrap common-wrap bg-none" id="body-section">
+        <form id="customerForm" onsubmit="return false;">
+            <div class="basic-info">
+                <div class="title">催款通知</div>
+                <input type="hidden" name="id" value="{$model.id}" readonly/>
+                <input type="hidden" name="prompt_item_id" value="{$model.prompt_item_id}" readonly/>
+                <div class="info-line">
+                    <div class="info-title">应收金额<i></i></div>
+                    <input type="text" name="receivables_amount" value="{$model.receivables_amount}" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">未收金额<i></i></div>
+                    <input type="text" name="unpaid_amount" value="{$model.unpaid_amount}" readonly/>
+                </div>
+                <div class="info-line">
+                    <div class="info-title">续费日期<i></i></div>
+                    <input onclick="SelectTime(this)" type="text" class="money_input" name="date" value="{$model.pay_date}" placeholder="请选择日期" />
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div class="basic-info">
+                <div class="info-line" >
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="sendAction()">发送</button>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+        var payconfirmVue = new Vue({
+            el:"#customerForm",
+            data:{
+
+            }
+        });
+
+        function sendAction() {
+            var data = $('#customerForm').serialize();
+            $.post("/WrkPrompt/sendMessage/id/{$model.id}",data,function(result) {
+                layer.msg(result.message);
+                if (result.code == 0) {
+                    setTimeout(function() {
+                        parent.getDetail();
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                    }, 1500);
+                }
+            }, "json");
+        }
+
+        // 日期选择
+        var dtPicker = new mui.DtPicker({"type":"date"});
+        function SelectTime(e){
+            dtPicker.show(function (selectItems) {
+                $(e).val(selectItems.value);
+            })
+        }
+    </script>
+</body>
+
+</html>

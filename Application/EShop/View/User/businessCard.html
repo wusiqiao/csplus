@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style” content=black" />
+	<link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	<link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+	<title>{$title}</title>
+	<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<style>
+	.c {
+		text-align: center
+	}
+
+	.top-drilling-blue,
+	.top-purplish-blue,
+	.top-crimson,
+	.top-black-gold {
+		background-size: 200%;
+		border-radius: 5px;
+	}
+
+	.theme {
+		width: 53px;
+		height: 53px;
+		border-radius: 50px;
+		/* rgb(100,100,100) 1px; */
+		display: inline-block;
+		margin-top: 6px;
+		padding-left: 1%;
+	}
+
+	.share-tip {
+		position: absolute;
+		top: -.55rem;
+		right: .3rem;
+		font-size: .24rem;
+		height: .55rem;
+		padding: 0 .1rem;
+		color: #fcfdfd;
+		line-height: .5rem;
+		border-radius: .1rem;
+		background-color: rgba(0, 0, 0, .75);
+	}
+
+	.share-tip:after {
+		content: '';
+		position: absolute;
+		bottom: -.125rem;
+		left: 30%;
+		width: 0rem;
+		height: 0rem;
+		border-width: .15rem .15rem 0;
+		border-style: solid;
+		border-color: rgba(0, 0, 0, .75) transparent transparent;
+		color: #fcfdfd;
+		line-height: .5rem;
+	}
+
+	.save-tip {
+		position: absolute;
+		top: -.55rem;
+		left: .3rem;
+		font-size: .24rem;
+		height: .55rem;
+		padding: 0 .1rem;
+		color: #fcfdfd;
+		line-height: .5rem;
+		border-radius: .1rem;
+		background-color: rgba(0, 0, 0, .75);
+	}
+
+	.save-tip:after {
+		content: '';
+		position: absolute;
+		bottom: -.125rem;
+		left: 30%;
+		width: 0rem;
+		height: 0rem;
+		border-width: .15rem .15rem 0;
+		border-style: solid;
+		border-color: rgba(0, 0, 0, .75) transparent transparent;
+		color: #fcfdfd;
+		line-height: .5rem;
+	}
+
+	.out_theme {
+		float: left;
+		width: 25%;
+		padding-left: 5%
+	}
+</style>
+
+<body>
+	<section class="common-wrap pt100 bg-none">
+		<include file='Public:header' />
+		<!--bg-purplish-blue bg-drilling-blue bg-crimson bg-black-gold-->
+		<div style="height: 100%" id="card">
+			<!--<div class="private-business-card" style="padding-bottom: 0">
+	        </div>-->
+			<div class="private-code c" id="gzh" style="display: none;padding: 0.6rem 0 0;">
+				<img id="WxQrcodeCover" style="width: 100%;height: auto;" src="{$resources}" alt="">
+				<!-- <img id="WxQrcode" src="{$WxQrcode}" class="erweimaimg" style="width: 180px;height: 180px;"> -->
+				<div style="margin-top: 8%;margin-bottom: 15%"><span style="color: white">长按识别二维码</span></div>
+			</div>
+			<div class="private-code c" id="miniProgram" style="display: none">
+				<img src="/Index/getMpQrcode" class="" alt="" style="width: 180px;height: 180px">
+				<div style="margin-top: 8%;margin-bottom: 15%"><span style="color: white">长按识别小程序码</span></div>
+			</div>
+		</div>
+
+		<div class="order-bottom-btn">
+			<div class="save-tip" id="save-tip-mini" style="display: none">长按二维码，保存到相册 <span>×</span></div>
+			<button class="left-btn" id="saveCard">保存到相册</button>
+			<div class="share-tip" id="share-tip-mini" style="display: none">长按二维码，发送给朋友 <span>×</span></div>
+			<button class="right-btn" style="color: #368cfd" id="share-it1">分享给朋友</button>
+		</div>
+
+		<!-- <div class="" style="background-color: white;height:95px;margin-top: 5px;border-radius:5px;width: 100%">
+			<div style="display:inline-block;width: 100%">
+				<div style="display:block;text-align: center;color: grey;margin-top: 3px">主题背景</div>
+				<div class="out_theme"><div class="top-drilling-blue theme" onclick="toggleTheme(1)"></div></div>
+				<div class="out_theme"><div class="top-purplish-blue theme" onclick="toggleTheme(2)"></div></div>
+				<div class="out_theme"><div class="top-crimson theme" onclick="toggleTheme(3)"></div></div>
+				<div class="out_theme"><div class="top-black-gold theme" onclick="toggleTheme(4)"></div></div>
+			</div>
+		</div> -->
+	</section>
+
+	<!--end 底部-->
+	<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	<script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+	<script src="{$Think.const.JS_URL}mui/mui.min.js"></script>
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script src="https://cdn.bootcss.com/html2canvas/0.4.1/html2canvas.js"></script>
+	<script type="text/javascript">
+		$(function () {
+			function ready() {
+				if (window.__wxjs_environment === 'miniprogram') { // true
+					//$('#miniProgram').css('display','block');
+					$('#miniProgram').show();
+				} else {
+					//$('#gzh').css('display','block');
+					$('#gzh').show();
+					var WxQrcodeUrl = "{$resources}";
+					(function (WxQrcodeUrl) {
+						var canvas = document.createElement("canvas");
+						// $("#gzh").append(canvas)
+						// alert(WxQrcodeUrl)
+						canvas.width = 350;
+						canvas.height = 630;
+						var context = canvas.getContext("2d");
+
+						context.rect(0, 0, canvas.width, canvas.height);
+						context.fillStyle = "#fff";
+						context.fill();
+
+						var myImage = new Image();
+						myImage.src = "/{$Think.MODULE_PATH}Public/images/work/bg-wxCode.jpg";    //背景图片  你自己本地的图片或者在线图片
+						myImage.crossOrigin = 'Anonymous';
+
+						myImage.onload = function () {
+							context.drawImage(myImage, 0, 0, 350, 630);
+
+							var myImage2 = new Image();
+
+							myImage2.src = WxQrcodeUrl;   //你自己本地的图片或者在线图片
+							myImage2.crossOrigin = 'Anonymous';
+
+							myImage2.onload = function () {
+								context.drawImage(myImage2, 120, 360, 110, 110);
+								var base64 = canvas.toDataURL("image/png");  //"image/png" 这里注意一下
+
+								$("#WxQrcodeCover").attr("src", base64);
+								// console.log(base64)
+							}
+						}
+					})(WxQrcodeUrl)
+						
+				}
+			}
+			if (!window.WeixinJSBridge || !WeixinJSBridge.invoke) {
+				document.addEventListener('WeixinJSBridgeReady', ready, false)
+			} else {
+				ready()
+			}
+		})
+
+		$("#share-it1").on('click', function () {
+			$("#share-tip-mini").show();
+			setTimeout(function () { $("#share-tip-mini").hide() }, 3000);
+		})
+		$('.share-tip span').on('click', function () {
+			$(this).parents('.share-tip').hide();
+		})
+
+		$("#saveCard").on("click", function () {
+			$("#save-tip-mini").show();
+			setTimeout(function () { $("#save-tip-mini").hide() }, 3000);
+		})
+		$('.save-tip span').on('click', function () {
+			$(this).parents('.save-tip').hide();
+		})
+
+		// function toggleTheme(n){
+		//     $("#card").removeClass();
+		//     switch(n){
+		// 		case 1:
+		// 			$("#card").addClass('top-drilling-blue');
+		// 			break;
+		//         case 2:
+		//             $("#card").addClass('top-purplish-blue');
+		//             break;
+		//         case 3:
+		//             $("#card").addClass('top-crimson');
+		//             break;
+		//         case 4:
+		//             $("#card").addClass('top-black-gold');
+		//             break;
+		// 		}
+		// }
+
+		wx.config({
+			debug: false,
+			appId: '{$signPackage.appId}',
+			timestamp: '{$signPackage.timestamp}',
+			nonceStr: '{$signPackage.nonceStr}',
+			signature: '{$signPackage.signature}',
+			jsApiList: [
+				// 所有要调用的 API 都要加到这个列表中
+				'onMenuShareTimeline',
+				'onMenuShareAppMessage'
+			]
+		});
+
+		wx.ready(function () {
+			//如果是小程序环境
+			//share类型判断
+			//传递id title descript
+			if (window.__wxjs_environment === 'miniprogram') {
+				wx.miniProgram.postMessage({
+					data: {
+						type: "share",
+						from: 'Product.productDetail',
+						title: '{$share_data.title}',
+						desc: '{$share_data.desc}',
+						link: '{$share_data.link}'
+					}
+				});
+			}
+			wx.error(function (res) {
+				// alert(res);
+			});
+
+			function onBridgeReady() {
+				WeixinJSBridge.call('hideOptionMenu');
+			}
+			if (typeof WeixinJSBridge == "undefined") {
+				if (document.addEventListener) {
+					document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+				} else if (document.attachEvent) {
+					document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+					document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+				}
+			} else {
+				onBridgeReady();
+			}
+
+		});
+	
+	</script>
+</body>
+
+</html>

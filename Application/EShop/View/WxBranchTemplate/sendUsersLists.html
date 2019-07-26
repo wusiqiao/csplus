@@ -1,0 +1,510 @@
+<include file="UserSupervise:head"/>
+<link rel="stylesheet" href="/{$Think.APP_PATH}Public/css/comm.css">
+<style>
+    .item-wrap {
+        /*height: 100%;*/
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+    .item-wrap::-webkit-scrollbar,
+    #group-list::-webkit-scrollbar,
+    #select-part::-webkit-scrollbar {
+        display: none;
+    }
+    .item-container {
+        width: 100%
+    }
+
+    .item-container li {
+        width: 100%;
+    }
+
+    .item-container li .item {
+        height: auto;
+        position: relative;
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 5px;
+        background: #fff
+    }
+</style>
+<body>
+<li data-value="{%pinyin%}" id="template-1" style="display:none" data-tags="{%pinyin%}" data-url="/UserSupervise/customer_detail/id/{%id%}">
+    <div class="check-div">
+        <input type="checkbox" value="{%id%}">
+        <img src="{%head_pic%}" alt="">
+        <span class="nickname">{%name%}</span>
+    </div>
+    <div class="check-div blue-4591fe url">
+        <span>{%group_name%}</span>
+        <span class="mui-icon mui-icon-arrowright"></span>
+    </div>
+</li>
+<section class="group-addition-wrap custom-wrap" style="overflow: hidden;">
+	<ul class="con-tab pr" id="main-content">
+		<li id="list" class="cons">
+			<div class="mui-search-area">
+				<input class="mui-search-area-input mui-input-clear" v-model="likename" type="text" placeholder="请输入用户姓名搜索"/>
+				<button onclick="queryData()"></button>
+			</div>
+			<div class="match-check">
+                <div class="blue-checkbox flex-center blue-4591fe" style="display: none;">
+                    <input type="checkbox" id="checkAll" />
+                    <label for="checkAll">全选/取消全选</label>
+                </div>
+                <div></div>
+                <div class="select-match flex-center blue-4591fe">筛选<span class="ml10"></span></div>
+            </div>
+			<div class="mui-indexed-list-bar" style="display: none;">
+				<a>A</a>
+				<a>B</a>
+				<a>C</a>
+				<a>D</a>
+				<a>E</a>
+				<a>F</a>
+				<a>G</a>
+				<a>H</a>
+				<a>I</a>
+				<a>J</a>
+				<a>K</a>
+				<a>L</a>
+				<a>M</a>
+				<a>N</a>
+				<a>O</a>
+				<a>P</a>
+				<a>Q</a>
+				<a>R</a>
+				<a>S</a>
+				<a>T</a>
+				<a>U</a>
+				<a>V</a>
+				<a>W</a>
+				<a>X</a>
+				<a>Y</a>
+				<a>Z</a>
+			</div>
+
+			<div class="mui-indexed-list-alert"></div>
+			<div class="mui-indexed-list-inner pr"   v-cloak>
+				<div class="mui-indexed-list-empty-alert">没有数据</div>
+				
+				<div class="item-wrap groups customer bg-none">
+                    <ul class="item-container mui-table-view bg-none" style="margin-bottom: 1rem" id="customer_lists">
+                        <li v-for="(item,index) in item_list" @tap="onItemTap(item)" :id="item.item_id" class="plr20 bg-white mb20">
+                            <div class="flex-between border-b"  >
+                                <div class="check-div">
+                                    <input name="user_id" @change="singleChecked" type="checkbox" v-model="users" :value="item.id">
+                                    <img :src="item.head_pic" alt="">
+                                    <span class="nickname">{{item.name}}</span>
+                                    <span class="tel">{{item.mobile}}</span>
+                                </div>
+                            </div>
+                            <div class="ptb15">
+                                <div class="flex-between line50 gray-9">
+                                    <div>{{item.branch_name}}</div>
+                                    <div>{{item.contact}}</div>
+                                </div>
+                                <div class="flex-between line50">
+                                    <div class="blue-4591fe dis-flex word-keep">
+                                        分组：<span class="icon-mark">{{item.group_name}}</span>
+                                    </div>
+                                    <div class="blue-4591fe dis-flex word-keep">
+                                        标签：<Tempalte v-for="(tag,tagIndex) in item.tags">
+                                        	<span class="icon-mark" v-if="tagIndex < 2">
+											  {{tag.value}}
+											</span>
+										    <span class="icon-mark" v-else-if="tagIndex == 2">
+										      ……
+										    </span>
+                                        </Tempalte>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+			</div>
+			<div class="mui-bottom-check-commit">
+				<div class="chose-all">
+					<div id="selectAll" class="gray-9">
+						<input type="checkbox" v-model="allChecked" @change="allButton" value="all">
+						<span>全选</span>
+					</div>
+					<div id="count" class="blue-4591fe">{{usersCount}}人</div>
+				</div>
+				<button :class="{'mui-disabled':hasCheckedClass}" @click="addUsers">选好了</button>
+			</div>
+		</li>
+	</ul>
+    <input type="hidden" id="user_select">
+</section>
+	<div class="slide-match-wrap flex-end">
+        <div id="select-wrap" class="mui-select-wrap slideInRight animated pr">
+            <div class="groups tag" id="group-wrap">
+                <div class="title gray-9">
+                    <span>分组选择</span>
+                    <div class="flex-between">
+                        <span id="group-tip" class="question-mark" data-modal="groupModal"></span>
+                    </div>
+                </div>
+                <notempty name="groups">
+                    <div id="group-list" class="select-item beside-selector">
+                    	<span v-for="(item,index) in group_list" :data-id="item.id">{{item.value}}({{item.user_count}})</span>
+                    </div>
+                    <else/>
+                    <div class="no-create tc">
+                        <div class="gray-9c">您尚未创建任何分组</div>
+                        <div>
+                            <a class="blue-4591fe" href="/UserSupervise/customer_groups.html">点击创建分组</a>
+                        </div>
+                    </div>
+                </notempty>
+            </div>
+            <div class="groups tag" id="tag-wrap">
+                <div class="title gray-9">
+                    <span>标签</span>
+                    <div class="flex-between">
+                        <!--<span class="filter-level blue-4591fe addBtn"></span>-->
+                        <!--<span class="filter-level blue-4591fe delBtn"></span>-->
+                    </div>
+                    <div class="flex-between">
+                        <span id="tag-tip" class="question-mark" data-modal="tagModal"></span>
+                    </div>
+                </div>
+                <notempty name="tags">
+                    <div id="select-part" class="beside-selector">
+                        <div class="select-element">
+                            <div class="tag-title gray-9c">一级标签</div>
+                            <ul class="more-tag select-item">
+                                <span v-for="(item,index) in tag_list" :data-id="item.id">{{item.value}}({{item.user_count}})</span>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="add-select-item flex-center mt15 mb15">
+                        <button class="confirm-match">确定</button>
+                        <button class="add-level-tag">添加下级标签</button>
+                    </div>
+                    <else/>
+                    <div class="no-create tc">
+                        <div class="gray-9c">您尚未创建任何标签</div>
+                        <div>
+                            <a class="blue-4591fe" href="/UserSupervise/customer_tags.html">点击添加标签</a>
+                        </div>
+                    </div>
+                </notempty>
+            </div>
+            
+        </div>
+        <div class="wrap-modal" id="groupModal" style="display: none;">
+            <div class="modal-common-wrap modal" style="width: 90%;">
+                <div class="modal-title bg-e gray-9">分组提示
+                    <!--<span class="close-popup">×</span>--></div>
+                <div class="modal-content-text tc">选择分组时只可选择一个分组，
+                    <br>未选择时默认为未分组</div>
+                <div class="modal-btn">
+                    <button class="popup-close">取消</button>
+                    <button class="blue popup-complete">确认</button>
+                </div>
+            </div>
+        </div>
+        <div class="wrap-modal" id="tagModal" style="display: none;">
+            <div class="modal-common-wrap modal" style="width: 90%;">
+                <div class="modal-title bg-e gray-9">标签提示
+                    <!--<span class="close-popup">×</span>--></div>
+                <div class="modal-content-text tc">对用户进行标签分类，可选择多级标签
+                    <br>对用户进行快速筛选</div>
+                <div class="modal-btn">
+                    <button class="popup-close">取消</button>
+                    <button class="blue popup-complete">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<include file="UserSupervise:foot_access_file"/>
+<script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
+<script src="{$Think.const.JS_URL}/mui/mui.indexedlist.js"></script>
+<script src="/{$Think.MODULE_PATH}Public/js/common.js"></script>
+<script>
+    function autoHeight(){
+        var nWinHeight = $(window).height();
+        var nGroupHeight = $("#group-wrap").height();
+        console.log(nGroupHeight);
+        $('#group-list').css({'max-height':nWinHeight * 0.3,'overflow':'auto'});
+        var nbtnH = $(".add-select-item").height();
+        var ntitleH = $(".groups .title").height();
+        $('#select-part').css({'max-height':nWinHeight - nGroupHeight - nbtnH - (ntitleH * 2),'overflow':'auto'});
+    }
+	autoHeight();
+    var listHeight = 300;
+    var last = 0;
+    var levelArray = ['一级标签', '二级标签', '三级标签', '四级标签', '五级标签', '六级标签', '七级标签', '八级标签', '九级标签', '十级标签'];
+    //下拉加载
+    var vue = new Vue({
+        el: "#main-content",
+        data: {
+            item_list: [],
+            users: [],
+            user_total:[],
+            likename:'',
+            allChecked:''
+        },
+        computed:{
+            usersCount(){
+                return this.users.length;
+            },
+            hasCheckedClass(){
+                return this.users.length == 0 ? true : false;
+            }
+        },
+        methods: {
+            onItemTap: function(item) {},
+            singleChecked(){
+                if(this.users.length > 0 && (this.users.length != this.user_total.length))
+                {
+                    this.allChecked = '';
+                }
+            },
+            allButton(){
+                if (this.allChecked != '') {
+                    this.users = [];
+                    for (var i = 0; i < this.user_total.length; i++) {
+                        this.users.push(this.user_total[i].id)
+                    }
+                } else {
+                    this.users = [];
+                }
+            },
+            addUsers(){
+                var userTotalCount = this.user_total.length;
+                if (userTotalCount > 0) {
+                    var checkedValues = [];
+                    for(var i = 0;i < userTotalCount;i++) {
+                        if(this.users.includes(this.user_total[i]['id'])) {
+                            checkedValues.push(this.user_total[i])
+                        }
+                    }
+                    console.log(this.users[0]);
+                    parent.$("#handle_status").val('1').data('id',checkedValues);
+                    // layer.closeAll();
+                    var name = window.frameElement.getAttribute('name')
+                    var index = parent.layer.getFrameIndex(name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                } else {
+                    layer.msg('请选择用户')
+                }
+
+            }
+        }
+    });
+    //分组
+    var group = new Vue({
+        el: "#group-list",
+        data: {
+            group_list: {$groups}
+        }
+    });
+    //标签
+    var tag = new Vue({
+        el: "#select-part",
+        data: {
+            tag_list: {$tags}
+        }
+    });
+    var name = "";
+    var groupIds = [];
+    var tagIds = [];
+    var branchId = "";
+
+    function queryData() {
+        $('.item-wrap').data("last_scroll_top",0);
+        $('.item-wrap').data("current_page",1);
+        pullRefresh(".item-wrap", ".item-container", function($target, current_page) {
+            $.post("/WxBranchTemplate/getCustomerLists", {
+                page: current_page,
+                name: vue.likename,
+                groups: groupIds,
+                tags: tagIds
+            }, function (result) {
+                vue.item_list = result.data;
+                if (current_page === 1) {
+                    vue.user_total = result.user_total;
+                    vue.users = [];
+                    if (result.user_total.length > 0) {
+                        for (var i = 0; i < result.user_total.length; i++) {
+                            vue.users.push(result.user_total[i].id)
+                        }
+                        vue.allChecked = 'all'
+                    } else {
+                        layer.msg('查无用户')
+                    }
+                }
+                $target.scrollTop(0);
+                $target.data("loading", false);
+            }, "json");
+        },listHeight)
+    }
+	$('.select-match').on('click', function() {
+        $('.slide-match-wrap').addClass('active');
+        autoHeight();
+    })
+    $(function(){
+        setTimeout(function(){
+            userSelect();
+        },800)
+        var nWinHeight = $(window).height();
+        var matchHeight = $(".match-check").height();
+        var areaHeight = $('.mui-search-area').height();
+        var commitHeight = $('.mui-bottom-check-commit').height();
+        console.log('nWinHeight : '+nWinHeight+' matchHeight : '+matchHeight+' areaHeight:'+areaHeight+' commitHeight : '+commitHeight)
+        listHeight = nWinHeight - matchHeight  - ( 2 * areaHeight )  - commitHeight;
+        pullRefresh(".item-wrap", ".item-container", function($target, current_page) {
+            $.post("/WxBranchTemplate/getCustomerLists", { page: current_page, name: vue.likename, groups: groupIds, tagIds: tagIds}, function(result) {
+                vue.item_list = vue.item_list.concat(result.data);
+                if (current_page === 1) {
+                    vue.user_total = result.user_total;
+                    // vue.users = [];
+                    // for (var i=0;i<result.user_total.length;i++) {
+                    //     vue.users.push(result.user_total[i].id)
+                    // }
+                }
+                $target.data("loading", false);
+            }, "json");
+        },listHeight)
+    })
+    function userSelect()
+    {
+        var ids = $('#user_select').val();
+        vue.users = ids ? ids.split(',') : [];
+    }
+    //为第一个按钮注册事件
+    $('.add-level-tag').on('click',function(){
+        var self = $(this);
+        filterLi(self);
+    })
+    $('.select-item span').on('click', function() {
+        $(this).toggleClass('active');
+    })
+    $('#tag-tip').on('click', function() {
+        $('#tagModal').show();
+    })
+
+    $('#group-tip').on('click', function() {
+        $('#groupModal').show();
+    })
+
+    $('.popup-close,.close-popup,.popup-complete').on('click', function() {
+        $(this).parents('.wrap-modal').hide();
+    })
+    function filterLi(self){
+        last = last + 1;
+        var ulClass = 'ul' + last;
+        //获取没有被选中的同级li
+        var child = self.parent('.add-select-item').siblings().find('.active').siblings('span').not('.active');
+        //判断剩下的元素个数是否有筛选必要
+        if(child.size() <= 0){
+            layer.msg('元素不足，无法继续筛选！');
+            return;
+        }
+        $("#select-part").append('<div class="select-element">' +
+            '<div class="tag-title gray-9c">' +
+            levelArray[last] +
+            '</div><ul class="more-tag select-item ' +
+            ulClass +
+            '"><div class="filter-level blue-4591fe delBtn"></div>' +
+            '</ul></div>'
+        );
+        child.appendTo('.' + ulClass);
+        //上一个按钮已经筛选过，防止他第二次点击，解绑事件
+        $('.delBtn').off();
+        $('.delBtn').last().on('click', function() {
+            var self = $(this);
+            filterDel(self);
+        })
+        if (last >= 9) {
+            $('.add-level-tag').prop('disabled', true);
+        } else {
+            $('.add-level-tag').prop('disabled', false);
+        }
+        autoHeight();
+    }
+
+    $('.delBtn').on('click',function(){
+        var self = $(this);
+        filterDel(self);
+    })
+
+    function filterDel(self) {
+        last = last - 1;
+        var pre = last - 1;
+        var preUlClass = 'ul' + pre;
+        var child = self.siblings().removeClass('active');
+        child.appendTo(self.parents('.select-element').prev().children('.more-tag'));
+        $('.delBtn').off();
+        self.off();
+        self.parents('.select-element').remove();
+        $('.delBtn').last().on('click', function() {
+            var self = $(this);
+            filterDel(self);
+        })
+        if (last > 9) {
+            $('.add-level-tag').prop('disabled', true);
+        } else {
+            $('.add-level-tag').prop('disabled', false);
+        }
+    }
+    $(".slide-match-wrap").mouseup(function(e) {
+        var _con = $('#select-wrap,#groupModal,#tagModal'); // 设置目标区域
+        if (!_con.is(e.target) && _con.has(e.target).length === 0) { // Mark 1
+            $(".slide-match-wrap").removeClass('active');
+            $('.wrap-modal').hide();
+        }
+    });
+    $('.confirm-match').on('click', function() {
+        $(this).parents('.slide-match-wrap').removeClass('active');
+        handlerCustomerLists();
+    })
+    function handlerCustomerLists() {
+        var groupDom = $('#select-wrap').find('div:first > .select-item > .active');
+        var tagSingleDom = $('#select-wrap').find('#tag-wrap > #select-part > .select-element');
+        var tagDom = tagSingleDom.find('.select-item > .active');
+        groupIds = [];
+        tagIds = [];
+        if (groupDom.length > 0) {
+            groupIds = groupDom.map(function() {
+                return $(this).data('id')
+            }).get();
+        }
+        if (tagDom.length > 0) {
+            tagSingleDom.map(function() {
+                var tagSingleIds = $(this).find('.select-item > .active');
+                if (tagSingleIds.length > 0) {
+                    var template = tagSingleIds.map(function() {
+                        return $(this).data('id')
+                    }).get();
+                    tagIds.push(template);
+                }
+            });
+        }
+        queryData();
+    }
+</script>
+<script type="text/javascript">
+
+    mui.init();
+    $('.show-icon').last().on('click',function(){
+        var self = $(this);
+        self.toggleClass('hide-icon').parent('.more-tag').toggleClass('active');
+    })
+
+    $('#edit-group').on('click',function(){
+        $('#creat-group').toggleClass('hide');
+        $(this).parents('.edit-groups').toggleClass('active');
+    })
+
+    $('#edit-tag').on('click',function(){
+        $('#creat-tag').toggleClass('hide');
+        $(this).parents('.edit-groups').toggleClass('active');
+    })
+</script>
+</body>
+</html>

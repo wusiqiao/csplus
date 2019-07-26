@@ -1,0 +1,226 @@
+<include file="UserSupervise:head" />
+
+<head>
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+    <title>{$title}</title>
+</head>
+
+<body>
+    <section class="common-wrap bg-none mt85">
+        <include file="Index:header" />
+        <ul class="main-tab">
+            <li class="active">内部借用</li>
+            <li onclick="window.location.href = '__MODULE__/ComSundryOrder/index'">客户借还</li>
+            <li onclick="window.location.href = '__MODULE__/ComSundry/index'">物品管理</li>
+        </ul>
+        <form id="ComSundryTransfer-from">
+            <section>
+                <div class="chose-company mb20">
+                    <div class=" flex-1">
+                        <!-- <div>选择公司</div> -->
+                        <!-- <div class="select-icon1"></div> -->
+                    </div>
+                    <button type="button" class="ml15 mui-disabled" id="transfer">物品转交</button>
+                </div>
+                <div>
+                    <div class="item-titles mb20">
+                        <div>物品名称</div>
+                        <div>在手员工</div>
+                        <div>物品编号</div>
+                        <div>存放库号</div>
+                    </div>
+                    <ul class="mui-">
+                        <foreach name="model.sundry" item="v">
+                            <li class="transfer-list blue-checkbox">
+                                <input name="sundry_ids[]" sundry_name="{$v.name}" type="checkbox" value="{$v.id}" />
+                                <div class="con">
+                                    <div class="word-hidden">{$v.name}</div>
+                                    <div class="word-hidden">{$v.user_name}</div>
+                                    <div class="word-hidden">{$v.no}</div>
+                                    <div class="word-hidden">{$v.position}</div>
+                                </div>
+                            </li>
+                        </foreach>
+                    </ul>
+                </div>
+                <div class="company-selected flex-1 mb15">
+                    <div>转交单：</div>
+                    <div class="select-icon1" onclick="transferList(this)">
+                        <!-- <input name="transfer_id" type="hidden"> -->
+                    </div>
+                </div>
+                <div class="progress-line pd-t-40 bg-white">
+                </div>
+            </section>
+            <div id="transferModal" class="wrap-modal" style="display: none;">
+                <div class="modal-common-wrap modal">
+                    <div class="modal-title bg-e gray-9">转交通知</div>
+                    <div class="modal-content">
+                        <div class="mb15 gray-9">
+                            <!-- <div>公司：厦门回升软件科技有限公司</div> -->
+                            <div>借用物品：<span id="sundry_names"></span>
+                                <input name="sundry_names" type="hidden">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex-start mb20">
+                                <div class="wd30 tr">单据编号：</div>
+                                <div class="wd50">
+                                    <input name="no" type="text" value="{$model.no}">
+                                </div>
+                            </div>
+                            <div class="flex-start mb15">
+                                <div>物品签收人：</div>
+                                <div class="company-selected wd50">
+                                    <div></div>
+                                    <div class="select-icon1" onclick="userList(this)"></div>
+                                    <input name="borrower" type="hidden">
+                                </div>
+                            </div>
+                            <div id="company_cc_recipient_others">
+                                <div class="flex-start mb15">
+                                    <div>公司抄送人：</div>
+                                    <div id="company_cc_recipient" class="company-selected wd50">
+                                        <div></div>
+                                        <div class="select-icon1" onclick="userList(this)"></div>
+                                        <input name="company_cc_recipient[]" type="hidden">
+                                    </div>
+                                    <div class="add-sent-name" onclick="addcompanyCcr()"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-btn">
+                        <button type="button" id="popup-close" class="popup-close">取消</button>
+                        <button type="button" class="blue" id="popup-complete">确定</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div id="processModal" class="wrap-modal" style="display: none;">
+        </div>
+    </section>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script type="text/javascript">
+    mui.init();
+    mui.ready(function() {
+        mui('.transfer-list').on('change', 'input', function() {
+            var nCheckBox = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            var transferBtn = document.getElementById('transfer');
+            if (nCheckBox) {
+                if (transferBtn.classList.contains("mui-disabled")) {
+                    transferBtn.classList.remove("mui-disabled");
+                }
+            } else {
+                if (!transferBtn.classList.contains("mui-disabled")) {
+                    transferBtn.classList.add("mui-disabled");
+                }
+            }
+            var str = "";
+            $i = 0;
+            $("input[type='checkbox']").each(function() {
+                if ($(this).prop('checked')) {
+                    if ($i == 0) {
+                        str = $(this).attr("sundry_name");
+                    } else {
+                        str = str + "," + $(this).attr("sundry_name");
+                    }
+                    $i++;
+                }
+            });
+            $("#sundry_names").text(str);
+            $("input[name='sundry_names']").val(str);
+        });
+
+    });
+    var userPick = new mui.PopPicker();
+    userPick.setData(
+        $.parseJSON('{$model.userList}')
+    );
+    //下拉框实现
+    function userList(e) {
+        userPick.show(function(item) { //弹出列表并在里面写业务代码
+            var itemCallback = userPick.getSelectedItems();
+            $(e).prev("div").html(itemCallback[0].text);
+            $(e).next("input").val(itemCallback[0].value);
+        });
+    }
+
+    var transferPick = new mui.PopPicker();
+    transferPick.setData(
+        $.parseJSON('{$model.transferList}')
+    );
+    //下拉框实现
+    function transferList(e) {
+        transferPick.show(function(item) { //弹出列表并在里面写业务代码
+            var itemCallback = transferPick.getSelectedItems();
+            $(e).prev("div").html("转交单：" + itemCallback[0].text);
+            $(e).next("input").val(itemCallback[0].value);
+            $(".progress-line").load("__MODULE__/ComSundryTransfer/getRecord/id/" + itemCallback[0].value);
+        });
+    }
+
+
+    $('#transfer').on('click', function() {
+        var transferBtn = document.getElementById('transfer');
+        if (!transferBtn.classList.contains("mui-disabled")) {
+            $('#transferModal').show();
+        }
+    })
+    $('.popup-close').on('click', function() {
+        $(this).parents('.wrap-modal').hide();
+    })
+
+    $('#popup-complete').on('click', function() {
+        formid = "ComSundryTransfer-from";
+        form_url = "__MODULE__/ComSundryTransfer/add";
+        $.ajax({
+            url: form_url,
+            type: "post",
+            dataType: "json",
+            data: $('#' + formid).serialize(),
+
+            success: function(data) {
+                console.info(data);
+                if (data.error == 0) {
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                    setTimeout(function() {
+                        window.location.href = "__MODULE__/ComSundryTransfer/index"
+                    }, 500);
+                } else {
+                    layer.closeAll();
+                    layer.msg(data.msg);
+                }
+            },
+            error: function() {
+                layer.msg('系统故障！请重试！');
+                setTimeout(function() {
+                    // window.location.href = "__MODULE__/ComSundry/edit/id/{$model.id}"
+                }, 500);
+            },
+            beforeSend: function() {
+                layer.closeAll();
+                layer.msg('正在提交....');
+            }
+        });
+        $(this).parents('.wrap-modal').hide();
+    })
+
+
+    function addcompanyCcr() {
+        var html = $("#company_cc_recipient").html();
+        $("#company_cc_recipient_others").append('<div class="flex-start mb15"><div>公司抄送人：</div><div class="company-selected wd50">' + html + '</div><div onclick="removecompanyCcr(this)" class="minus-sent-name"></div></div>');
+    }
+
+    function removecompanyCcr(e) {
+        div = $(e).parents('div.flex-start');
+        div.remove();
+    }
+    </script>
+</body>
+
+</html>

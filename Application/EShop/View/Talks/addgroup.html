@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <title>Title</title>
+</head>
+<style>
+    .button-group{
+        margin-top: .5rem;
+        padding: .18rem .2rem;
+        display: flex;
+        width: 100%;
+    }
+    .custom-info-wrap::-webkit-scrollbar{
+        display: none;
+    }
+    .button-group a{
+        flex: 1;
+        text-align: center;
+        background-color: rgb(69,145,254);
+        color: #fff;
+        border-radius: .1rem;
+        padding: .1rem;
+        margin: 0 .1rem;
+    }
+    input   {
+        color:rgb(153,153,153)
+    }
+</style>
+<body>
+<div class="custom-info-wrap common-wrap bg-none" style="background-color: #EFEFF4;height:100%;">
+    <div class="basic-info" style="background-color: #FFFFFF;">
+        <div class="title">新增群聊</div>
+        <div class="info-line">
+            <div class="info-title">群名称<i></i></div>
+            <input id="group_name" type="text" style="color: #368bfe;" placeholder="请输入群名称"/>
+        </div>
+    </div>
+    <div class="order-bottom-btn">
+        <div onclick="creatNewGroup()" style="flex: 1;"><button class="bg-368bfe" style="width: calc(100% - 0.2rem);">确认</button></div>
+    </div>
+</div>
+
+</body>
+<script src="/{$Think.APP_PATH}Public/jquery/jquery.min.js"></script>
+<script src="/{$Think.APP_PATH}Public/vender/layer/layer.js"></script>
+<script>
+    function close(){
+        var name = window.frameElement.getAttribute('name');
+        var index = parent.layer.getFrameIndex(name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    }
+    function creatNewGroup(){
+        var name = $("#group_name").val();
+        if(name == ""){
+            return false;
+        }
+        $.post('/Talks/createGroup',{name:name},function(res){
+            if(res.code == 0){
+                $("#group_name").val("");
+                close();
+            }else{
+               
+            }
+        })
+    }
+</script>
+</html>

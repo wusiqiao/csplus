@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}css-new/bootstrap.min.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+    <title>{$title}</title>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body>
+<include file="Index:header" />
+    <section class="my-wrap" style="margin-top: 1rem">
+        <div class="company-selected flex-1 mb15" style="border: 1px solid #c7c5c5;width: 95%;margin-left: 10px" onclick="selectCompany(this)">
+            <div id="company-text" style="color: #368BFE;font-weight: bold;">
+                <input name="company_name" value="{$company_name}" style="border: none" readonly>
+            </div>
+            <div class="select-icon1" ></div>
+            <input type="hidden" />
+        </div>
+        <div class="my-wrap-order">
+            <a class="my-wrap-link" style="height: 25px;color: #4591fe;background-color: #eff8fd;border-radius: 5px;box-shadow: none">
+                <div class="order-img">
+                    <span>工作中心</span>
+                </div>
+            </a>
+            <if condition="$menuList['ComAgreement']['menu_actions']['list'] eq 1 and $menuList['ComAgreement']['allow'] eq 1">
+                <a class="my-wrap-link" href="__MODULE__/ComAgreement/index.html">
+                    <div class="order-img">
+                        <img src="{$Think.const.IMG_URL}/distribution/order.png" alt="" />
+                        <span>合同管理</span>
+                    </div>
+                    <span class="mui-icon mui-icon-arrowright"></span>
+                </a>
+                <else/>
+                <a class="my-wrap-link" onclick="mui.alert('无此功能操作权限！')">
+                    <div class="order-img">
+                        <img src="{$Think.const.IMG_URL}/distribution/order.png" alt="" />
+                        <span>合同管理</span>
+                    </div>
+                    <span class="mui-icon mui-icon-arrowright"></span>
+                </a>
+            </if>
+            <a class="my-wrap-link" href="__MODULE__/ComAgreement/invoiceList">
+                <div class="active-img">
+                    <img src="{$Think.const.IMG_URL}/distribution/active.png" alt="" />
+                    <span>发票管理</span>
+                </div>
+
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </a>
+            <a class="my-wrap-link" href="__MODULE__/WrkReceivables/customerList.html">
+                <div class="voucher-img">
+                    <img src="{$Think.const.IMG_URL}/distribution/voucher.png" alt="" />
+                    <span>缴费管理</span>
+                </div>
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </a>
+            <a class="my-wrap-link" href="__MODULE__/ComWxOperateTemplate/index.html">
+                <div class="voucher-img">
+                    <img src="{$Think.const.IMG_URL}/distribution/order.png" alt="" />
+                    <span>清卡通知</span>
+                </div>
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </a>
+        </div>
+        <div class="my-wrap-order" style="margin-top: 10px">
+            <a class="my-wrap-link" style="height: 25px;color: #4591fe;background-color: #eff8fd;border-radius: 5px;box-shadow: none">
+                <div class="order-img">
+                    <span>公司设置</span>
+                </div>
+            </a>
+            <a class="my-wrap-link" href="__MODULE__/ComAgreement/userManage.html">
+                <div class="order-img">
+                    <img src="{$Think.const.IMG_URL}/distribution/order.png" alt="" />
+                    <span>人员管理</span>
+                </div>
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </a>
+            <a class="my-wrap-link" href="__MODULE__/ComAgreement/workSetting">
+                <div class="active-img">
+                    <img src="{$Think.const.IMG_URL}/distribution/active.png" alt="" />
+                    <span>工作设置</span>
+                </div>
+
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </a>
+            <a class="my-wrap-link" href="__MODULE__/ComAgreement/invoiceInfo">
+                <div class="voucher-img">
+                    <img src="{$Think.const.IMG_URL}/distribution/voucher.png" alt="" />
+                    <span>开票资料</span>
+                </div>
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </a>
+        </div>
+    </section>
+    <include file="Public:footer" />
+    <include file="Public:contact" />
+    <!--end 底部-->
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="{$Think.const.JS_URL}bootstrap.min.js"></script>
+    <script src="{$Think.const.JS_URL}mui/mui.min.js"></script>
+<script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script>
+        select_menu("my");
+        function selectCompany(obj){
+            layer.open({
+                type:2,
+                title:"选择公司",
+                closeBtn:1,
+                area:["100%","100%"],
+                content:"/ComAgreement/selectCompany/init/0/view_header/0"
+            })
+        }
+    </script>
+</body>
+</html>

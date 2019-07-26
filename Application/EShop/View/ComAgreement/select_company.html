@@ -1,0 +1,86 @@
+<if condition="$init eq 0">
+    <include file="UserSupervise:head"/>
+    <style>
+        .mui-indexed-list-inner img {
+            width: .28rem;
+            height: .28rem;
+            margin-right: .2rem;
+        }
+        .mui-indexed-list-inner .company-select-item {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: .9rem;
+            line-height: .9rem;
+            padding: 0 .2rem;
+            box-shadow: 0 1px 0 #eeeeee inset;
+            background-color: #ffffff;
+        }
+        .mui-indexed-list-inner {
+            border-radius: .1rem;
+        }
+        .view-top {
+            margin-top: 1rem;
+        }
+    </style>
+    <body>
+    <eq name="view_header" value="1">
+        <include file="Index:header" />
+    </eq>
+<section class="common-wrap fixed-page bg-none" style="overflow: hidden;">
+	<div class="mui-search-area" >
+		<input id="company-name" class="mui-search-area-input mui-input-clear" type="text" placeholder="请输入公司名称搜索"/>
+		<button></button>
+	</div>
+	<div class="mui-indexed-list-inner"  style="overflow-y: auto;">
+        <foreach name="company" item="v">
+            <div class="company-select-item" onclick="setWrkCompany(this)" data-id="{$v.value}" data-name="{$v.text}">
+                <img src="{$Think.const.IMG_URL}/\icon\all-company.png" alt="">
+                <span class="gray-6">{$v.text}</span>
+            </div>
+        </foreach>
+	</div>
+
+</section>
+<include file="UserSupervise:foot_access_file"/>
+
+</body>
+</html>
+<script type="text/javascript">
+
+    function setWrkCompany(obj){
+        var company_id = $(obj).data("id");
+        var company_name = $(obj).data("name");
+        $.post("/ComAgreement/setSessionWrkCompany",{company_id:company_id,company_name:company_name},function(result){
+            if(result.error == 0){
+                if("{$view_header}" == 1){
+                    window.open("/ComAgreement/company","_self");
+                }else{
+                    parent.window.location.reload();
+                    /*var index = parent.layer.getFrameIndex(window.name);
+                    parent.$("#money-company").attr('href','__MODULE__/Money/company/id/'+company_id);
+                    parent.$("input[name='SysDocument_url']").val('__MODULE__/SysDocument/index/id/'+company_id);
+                    parent.$("input[name='company_id']").val(company_id);
+                    parent.$("input[name='company_name']").val(result.name);
+                    parent.layer.close(index);*/
+                }
+            }
+        },'json');
+    }
+    $('#company-name').on('change',function(){
+        $(".mui-indexed-list-inner").load("__MODULE__/ComAgreement/selectCompany/init/1/view_header_/0/name/" + $('#company-name').val());
+    });
+    $(function(){
+        if("{$view_header}" == 1){
+            $('section').addClass('view-top')
+        }
+    })
+</script>
+<else/>
+    <foreach name="company" item="v">
+        <div class="company-select-item" onclick="setWrkCompany(this)" data-id="{$v.value}" data-name="{$v.text}">
+            <img src="{$Think.const.IMG_URL}/\icon\all-company.png" alt="">
+            <span class="gray-6">{$v.text}</span>
+        </div>
+    </foreach>
+</if>

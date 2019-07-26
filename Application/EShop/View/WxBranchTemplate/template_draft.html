@@ -1,0 +1,64 @@
+<include file="UserSupervise:head"/>
+<style>
+    .mui-pull-bottom-wrapper{
+        text-align: center;
+        padding: .2rem;
+    }
+    .mui-scroll{
+        position: initial;
+    }
+    .mui-scroll-wrapper {
+	    top: .85rem;
+	}
+</style>
+<body id="app">
+	<include file="Index:header" />
+	<section class="template-wrap pt85" style="position: absolute;top: .85rem;left:0;right: 0;bottom: 0;">
+	    <ul class="main-tab">
+	        <li onclick="window.location.href = '/WxBranchTemplate/template_history.html'">历史</li>
+	        <li onclick="window.location.href = '/WxBranchTemplate.html'">模板群发</li>
+	        <li class="active">草稿</li>
+	    </ul>
+		<if condition="$is_list">
+		<div class="mui-scroll-wrapper order-lists" id="pullrefresh" style="margin-top: .2rem" data-url="__MODULE__/WxBranchTemplate/getNoticeLists" rows="10">
+			<div class="mui-scroll " id="more_list_div">
+				<div class="simple-con mb15 font26 item-tpl" style="display:none">
+					<div class="simple-line">
+						<div class="title gray-a1">收信人：</div>
+						<div>{%users_name%}</div>
+					</div>
+					<hr>
+					{%view_content%}
+					<a class="detail-btn db"  href="/WxBranchTemplate/preview_update/id/{%id%}">编辑草稿</a>
+				</div>
+                <ul class="order-datas">
+                </ul>
+			</div>
+		</div>
+			<else/>
+			<div class="template-notice">
+				<div class="title font24" style="line-height: .5rem;padding-left: .2rem;">提示</div>
+				<p class="font24">1.只有通过微信认证的服务号才能使用本功能，发送模板消息时不占用公众号规定的群发次数。<br>2.微信规定：模板消息仅用于公众号向粉丝发送重要的服务通知，不支持广告等营销类消息以及其他所有可能对粉丝造成骚扰的信息，否则将受到微信的处罚。</p>
+			</div>
+			<div class="gray-9 tc" style="line-height: 2rem;">您暂未发送模板消息，<a href="/WxBranchTemplate/index.html" class="blue-4591fe">点击马上群发</a></div>
+		</if>
+	</section>
+	<include file="UserSupervise:foot_access_file"/>
+	<script src="/{$Think.APP_PATH}Public/mui/js/mui.pullToRefresh.js"></script>
+	<script src="/{$Think.APP_PATH}Public/mui/js/mui.pullToRefresh.material.js"></script>
+	<script src="/{$Think.APP_PATH}Public/js/mobile.js"></script>
+	<script type="text/javascript">
+        $(function() {
+            mui.init();
+            var pullRefreshApi;
+            mui.ready(function () {
+                var data = {
+                    state:2,
+                };
+                var pullToRefreshObj = pullRefresh("#pullrefresh", data);
+                pullRefreshApi = mui("#pullrefresh .mui-scroll").pullToRefresh(pullToRefreshObj);
+            })
+        })
+</script>
+</body>
+</html>

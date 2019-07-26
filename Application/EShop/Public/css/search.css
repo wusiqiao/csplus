@@ -1,0 +1,188 @@
+.float-search {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #eee;
+  z-index: 9999;
+  display: none;
+}
+.float-search .float-search-title {
+  position: absolute;
+  width: 100%;
+  height: 1rem;
+  top: 0;
+  left: 0;
+  background: #fff;
+}
+.float-search .float-search-content {
+  padding-top: 1rem;
+}
+.float-search .search-back {
+  width: 46px;
+  height: 0.85rem;
+  float: left;
+  position: relative;
+  z-index: 10;
+}
+.float-search .search-back span {
+ display: block;
+ width: 100%;
+ line-height: 1rem;
+ text-align: center;
+}
+.float-search .last-search {
+  padding: 0.25rem;
+  color: #484848;
+}
+.float-search .hot-search {
+  padding: 0.1rem 15px;
+  color: #484848;
+}
+.float-search .word-strong {
+  color: #868686 !important;
+  line-height: 0.5rem;
+}
+.h1, .h2, .h3, h1, h2, h3 {
+	margin-top: 0 !important;
+}
+.float-search .hot-label {
+  float: left;
+  padding: 0 12px;
+  background: #fff;
+  height: 0.5rem;
+  line-height: 0.5rem;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 0.2rem;
+  color: #333;
+  text-align: center;
+  cursor: pointer;
+}
+.float-search .last-title {
+  position: relative;
+}
+.float-search .clear-all {
+  width: 0.4rem;
+  height: 0.4rem;
+  background: url(../images/Index_img/delete.png) no-repeat;
+  background-size: 100%;
+  position: absolute;
+  top: 2px;
+  right: 0;
+  color: #b0b0b0;
+}
+.float-search .search-record {
+  float: left;
+  padding: 0 12px;
+  background: #fff;
+  height: 0.5rem;
+  line-height: 0.5rem;
+  border-radius: 4px;
+  margin-right: 0.2rem;
+  margin-top: 0.1rem;
+  color: #333;
+  text-align: center;
+  cursor: pointer;
+}
+.float-search .search-faxuqiu {
+  position: absolute;
+  display: block;
+  width: 18px;
+  height: 0.2rem;
+  background: url() no-repeat;
+  background-size: 100%;
+  right: 11px;
+  top: 0.1rem;
+}
+
+.float-search .similar-search-wrap {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  background: #fff;
+  overflow: auto;
+  display: none;
+}
+.float-search .similar-search-wrap .similar-search {
+  position: absolute;
+  width: 100%;
+}
+.float-search .similar-search-wrap .similar-list {
+  border-bottom: 1px solid #eee;
+  line-height: 1rem;
+  padding: 0 20px 0 15px;
+  position: relative;
+}
+.float-search .similar-search-wrap .similar-list:after {
+  font-family: iconfont!important;
+  content: '\e602';
+  color: #d9d9d9;
+  position: absolute;
+  right: 10px;
+  top: 0;
+}
+.float-search .similar-search-wrap .similar-list a {
+  color: #000;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.float-search .similar-search-wrap .similar-list .col8a {
+  color: #8a8a8a;
+}
+.float-search .similar-search-wrap .shopicon {
+  display: inline-block;
+  width: 15px;
+  height: 1rem;
+  vertical-align: middle;
+  background: url('') no-repeat center center;
+  background-size: 100%;
+  margin-top: -0.1rem;
+  margin-right: 6px;
+}
+.search-off {
+  visibility: hidden;
+}
+.search-ipt {
+	height: 100% !important;
+	margin-bottom: 0px !important;
+	padding-left: 0.2rem !important;
+	border: none !important;
+	font-weight: normal;
+}
+.search-ipt-box {
+	position: relative;
+	height: 100%;
+}
+.search-ipt-box i {
+	position: absolute;
+	left: 0px;
+	top: 0;
+	width: 0.2rem;
+	height: 100%;
+	line-height: 1rem;
+	text-align: center;
+	background: url(../images/Index_img/search.png) no-repeat;
+	background-size: 60%;
+	background-position: 50% 56%;
+}
+
+.hot-style {
+	padding: 0 10px;
+}
+.hot-style a {
+	float: left;
+	height: 1rem;
+	margin: 0.42px 5px;
+	padding: 0 5px;
+	border-radius: 2px;
+	color: #444444;
+	border: 1px solid #e4e4e4;
+	line-height: 1rem;
+	background-color: #f4f4f4;
+}

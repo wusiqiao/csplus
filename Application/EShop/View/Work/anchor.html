@@ -1,0 +1,38 @@
+<div class="jump-area">
+	<a class="jump" href="#A">A</a>
+	<a class="jump" href="#B">B</a>
+	<a class="jump" href="#C">C</a>
+	<a class="jump" href="#D">D</a>
+	<a class="jump" href="#E">E</a>
+	<a class="jump" href="#F">F</a>
+	<a class="jump" href="#G">G</a>
+	<a class="jump" href="#H">H</a>
+	<a class="jump" href="#I">I</a>
+	<a class="jump" href="#J">J</a>
+	<a class="jump" href="#K">K</a>
+	<a class="jump" href="#L">L</a>
+	<a class="jump" href="#M">M</a>
+	<a class="jump" href="#N">N</a>
+	<a class="jump" href="#O">O</a>
+	<a class="jump" href="#P">P</a>
+	<a class="jump" href="#Q">Q</a>
+	<a class="jump" href="#R">R</a>
+	<a class="jump" href="#S">S</a>
+	<a class="jump" href="#T">T</a>
+	<a class="jump" href="#U">U</a>
+	<a class="jump" href="#V">V</a>
+	<a class="jump" href="#W">W</a>
+	<a class="jump" href="#X">X</a>
+	<a class="jump" href="#Y">Y</a>
+	<a class="jump" href="#Z">Z</a>
+	<a class="jump" href="##">#</a>
+</div>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+<script>
+	$(".jump").click(function(){
+	    var href = $(this).attr("href");
+	    var pos = $(href).offset().top;
+	    $("html,body").animate({scrollTop: pos}, 1000);	
+	    return false;
+	});
+</script>

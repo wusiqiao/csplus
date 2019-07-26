@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	    <meta name="apple-mobile-web-app-capable" content="yes" />
+	    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+	    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+	    <link href="{$Think.const.CSS_URL}style.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/{$Think.APP_PATH}Public/js/load/dropload.css" />
+	    <title>{$title}</title>
+	    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+	</head>
+	<body>
+	<include file="Public:header" />
+		<section class="spread-list-wrap">
+
+			<div style="height: .85rem;">
+			</div>
+			<div class="spread-tip">点击查看喜欢的文章，生成店铺专属广告文章，<br>可以分享给朋友</div>
+			<div class="article-list hsui-sync-refresh" data-url="__MODULE__/Spread/getTweetsLists" page-size="10">
+				<div class="hsui-sync-refresh-content">
+					<div style="display:none" class="item-wrap media-list article-preview" onclick="window.location.href = '/Spread/tweets/id/{%id%}'">
+						<img src="{%pic%}" alt="" />
+						<div class="preview-part">
+							<div class="preview-title">{%title%}</div>
+							<div class="preview-info">
+								<div class="preview-icons">
+									<div>
+										<span class="eye"></span>
+										<span>{%eye%}</span>
+									</div>
+									<div>
+										<span class="share"></span>
+										<span>{%share%}</span>
+									</div>
+								</div>
+
+								<div class="time">{%time%}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+    <script src="{$Think.const.JS_URL}load/dropload.min.js"></script>
+	<script src="{$Think.const.JS_URL}common.js?v=2"></script>
+	<script>
+        dropload($(".hsui-sync-refresh"));
+        // dropload_data();
+        // function dropload_data(){
+        //
+        // }
+	</script>
+</html>

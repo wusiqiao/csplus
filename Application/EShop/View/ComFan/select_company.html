@@ -1,0 +1,74 @@
+<if condition="$init eq 0">
+<include file="UserSupervise:head"/>
+<style>
+	.mui-indexed-list-inner img {
+	    width: .28rem;
+	    height: .28rem;
+	    margin-right: .2rem;
+	}
+	.mui-indexed-list-inner .company-select-item {
+	    display: flex;
+	    justify-content: flex-start;
+	    align-items: center;
+		height: .9rem;
+		line-height: .9rem;
+	    padding: 0 .2rem;
+	    box-shadow: 0 1px 0 #eeeeee inset;
+	    background-color: #ffffff;
+	}
+	.mui-indexed-list-inner {
+		border-radius: .1rem;
+	}
+</style>
+<body>
+<section class="common-wrap fixed-page bg-none" style="overflow: hidden;">
+	<div class="mui-search-area">
+		<input id="company-name" class="mui-search-area-input mui-input-clear" type="text" placeholder="请输入公司名称搜索"/>
+		<button></button>
+	</div>
+	<div class="mui-indexed-list-inner"  style="overflow-y: auto;">
+        <div class="company-select-item" onclick="closeSelect(0,'选择公司')">
+            <img src="{$Think.const.IMG_URL}/img/icon-company.png" alt="">
+            <span class="gray-6">全部公司</span>
+        </div>
+        <foreach name="company" item="v">
+            <div class="company-select-item" onclick="closeSelect('{$v.value}','{$v.text}')">
+                <img src="{$Think.const.IMG_URL}/\icon\all-company.png" alt="">
+                <span class="gray-6">{$v.text}</span>
+            </div>
+        </foreach>
+	</div>
+
+</section>
+<include file="UserSupervise:foot_access_file"/>
+
+</body>
+</html>
+<script type="text/javascript">
+		$(function () {
+		function calculateH(){
+			var winH = $(document).height();
+			var searchH = $('.mui-search-area').height();
+			var btnH = $('.bottom-btn').height();
+			$('.mui-indexed-list-inner').css('height',winH - searchH - btnH - 60);
+		}
+        calculateH();
+    })
+$('#company-name').on('change',function(){
+    $(".mui-indexed-list-inner").load("__MODULE__/ComFan/selectCompany/init/1/name/" + $('#company-name').val());
+})
+
+function closeSelect(value,text) {
+    var index = parent.layer.getFrameIndex(window.name);
+    parent.getCompany(value,text);
+    parent.layer.close(index);
+}
+</script>
+<else/>
+        <foreach name="company" item="v">
+            <div class="company-select-item" onclick="closeSelect('{$v.value}','{$v.text}')">
+                <img src="{$Think.const.IMG_URL}/img/icon-company.png" alt="">
+                <span class="gray-6">{$v.text}</span>
+            </div>
+        </foreach>
+</if>

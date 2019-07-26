@@ -1,0 +1,721 @@
+<include file="UserSupervise:head"/>
+<style>
+	.modal input[type='text'] {
+	    margin: 0 0;
+	    padding: 0 .1rem;
+	    border: 1px solid #e9e9e9;
+	}
+	.navigation-bar{
+        background-color: #fff;
+        margin-bottom: .1rem;
+        padding: .1rem;
+    }
+    .navigation-bar div{
+        display: -webkit-inline-flex;
+    }
+    .navigation-bar div span{
+
+    }
+    .navigation-bar div span.checked{
+        color: #2174FF;
+    }
+    .file-name{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        height: .85rem;
+    }
+    .close-button{
+        margin-right: .2rem;
+        height: .75rem;
+        color: #368bfe;
+        border: 1px solid #368bfe;
+    }
+    .file-operation{
+        /*height: 1rem;*/
+    }
+    .visible-manner{
+        color:rgb(156, 156, 156);
+    }
+    .document-list{
+        width: 100%;
+        display: flex;
+    }
+    .document-menu{
+        display: flex;
+        padding: .4rem 0 .2rem 0;
+    }
+    .icon-flex-column {
+        display: -webkit-inline-box;
+        flex-direction: column;
+        align-items: center;
+        margin-left: .2rem;
+    }
+    .icon-format {
+        width: .48rem;
+        height: .48rem;
+        background-size: .38rem .38rem;
+    }
+    .icon-format-oblong {
+        width: .48rem;
+        height: .48rem;
+        background-size: .38rem .28rem;
+    }
+    .search-keyword{
+        color:red;
+        display:inline-block;
+    }
+</style>
+<body>
+<section class="common-wrap bg-none mt85">
+	<include file="Index:header" />
+	
+	<div id="app">
+        <div class="company-selected flex-1 mb15" style="border: 1px solid #c7c5c5;" onclick="selectCompany(this)">
+            <div id="company-text" style="color: #368BFE;font-weight: bold;">{$companyname}</div>
+            <div class="select-icon1" ></div>
+            <input type="hidden" />
+        </div>
+        <div class="mui-search-area">
+            <input id="keyword" name="keyword" v-model="keyword" class="mui-search-area-input mui-input-clear" type="text" placeholder="请输入文件或文件夹名称搜索"/>
+            <button></button>
+        </div>
+		<ul class="main-tab">
+            <li v-bind:class="[myFile? 'active' : '']" @click="toggleTab(true)">我上传的文件</li>
+	        <li v-bind:class="[myFile? '' : 'active']" @click="toggleTab(false)">{{taView}}</li>
+	    </ul>
+		<div  style="margin-bottom: 1rem">
+            <div class="navigation-bar">
+                <div  v-for="(NavigationBar,index) in NavigationBars" >
+                    <span style="margin: 0 .1rem">›</span>
+                    <span  @click="leapOfFreedom(NavigationBar.parent)" v-if="NavigationBar.checked" class="checked">{{NavigationBar.text}}</span>
+                    <span  v-if="!NavigationBar.checked" >{{NavigationBar.text}}</span>
+            </div>
+            </div>
+			<div class="file-operation blue-checkbox" style="display: block;padding: .1rem .15rem .1rem .15rem;" v-for="(document,index) in documents">
+                <div class="document-list">
+                    <div class="flex-start flex-1 file-name" @click="intoSubsidiary(index,document.visible)">
+                        <input type="checkbox" v-if="select_toggle && document.visible" :value="index" v-model="selecteds"/>
+                        <div class="ml15 ">
+                            <div class="flex-start gray-6 ">
+                                <span class="icon-file" v-if="document.mold != 'file'"></span>
+                                <span class="icon-document" v-if="document.mold == 'file'"></span>
+                                <span class="ml10" v-bind:class="{'visible-manner':!document.visible}" v-html="document.text">{{document.name}}</span>
+                            </div>
+                            <div class="gray-9" v-bind:class="{'visible-manner':!document.visible}">{{document.time}}</div>
+                        </div>
+                    </div>
+                    <div class="move-down blue-368bfe" v-if="!select_toggle && document.visible && ((document.mold == 'file' && !myFile) || myFile)" @click="menu_toggle(index)">
+                        <img src="{$Think.const.IMG_URL}/icon/icon-menu.png" style="width: .1rem;" alt="">
+                    </div>
+                </div>
+                <div class="document-menu" v-if="index == menu" >
+                    <if condition=" ($menuList['SysDocument']['menu_actions']['update'] eq 1 and $menuList['SysDocument']['allow'] eq 1)  or $permissions['_IS_Manager_'] eq 1">
+                        <div class="icon-flex-column" @click="moveFile(document.id,document.name)" v-if="document.mold == 'file' && myFile && document.visible">
+                            <div class="icon-move icon-format"></div>
+                            <div class="font20" style="margin: 0 .2rem;">移动</div>
+                        </div>
+                        <else/>
+                        <div class="icon-flex-column" @click="prohibit()" v-if="document.mold == 'file' && myFile && document.visible">
+                            <div class="icon-move icon-format"></div>
+                            <div class="font20" style="margin: 0 .2rem;">移动</div>
+                        </div>
+                    </if>
+                    <div class="icon-flex-column" @click="downFile(document.path,document.name,document.mold)" v-if="document.mold == 'file' && document.visible">
+                        <div class="icon-download icon-format"></div>
+                        <div class="font20" style="margin: 0 .2rem;">下载</div>
+                    </div>
+                    <if condition=" ($menuList['SysDocument']['menu_actions']['update'] eq 1 and $menuList['SysDocument']['allow'] eq 1)  or $permissions['_IS_Manager_'] eq 1">
+                        <div class="icon-flex-column" @click="rename(document.name,document.id)" v-if="myFile && document.visible">
+                            <div class="icon-rename icon-format"></div>
+                            <div class="font20" style="margin: 0 .2rem;">重命名</div>
+                        </div>
+                        <else/>
+                        <div class="icon-flex-column" @click="prohibit()" v-if="myFile && document.visible">
+                            <div class="icon-rename icon-format"></div>
+                            <div class="font20" style="margin: 0 .2rem;">重命名</div>
+                        </div>
+                    </if>
+                    <div class="icon-flex-column" @click="shareFile(document.id,document.parent_id)" v-if="document.mold == 'file' && myFile && document.visible && document.share_toggle && document.share == '1'">
+                        <div class="icon-eye icon-format-oblong" v-if=""></div>
+                        <div class="font20" style="margin: 0 .2rem;">设为私密</div>
+                    </div>
+                    <div class="icon-flex-column" @click="shareFile(document.id,document.parent_id)" v-if="document.mold == 'file' && myFile && document.visible && document.share_toggle && document.share == '0'">
+                        <div class="icon-eye-slash icon-format-oblong" v-if=""></div>
+                        <div class="font20" style="margin: 0 .2rem;">取消私密</div>
+                    </div>
+                </div>
+			</div>
+            <form onsubmit="return false;" method="" style="display: none;">
+                <input type="file" data-tag="0" name='File0'  id='File0'  style="display:none;">
+            </form>
+		</div>
+        <div class="order-reorder ptb15 plr25" v-if="selectToggle(0)">
+            <div class="menu-more">
+                <div onclick="showMore(this);">更多</div>
+                <div class="more-list" style="display: none">
+                    <!--<button class="menu-rename">重命名</button>-->
+                    <if condition=" ($menuList['SysDocument']['menu_actions']['delete'] eq 1 and $menuList['SysDocument']['allow'] eq 1)  or $permissions['_IS_Manager_'] eq 1">
+                            <button class="menu-del" @click="delToggle">删除</button>
+                        <else/>
+                            <button class="menu-del" @click="mui.alert('无此功能操作权限')">删除</button>
+                    </if>
+                </div>
+            </div>
+            <if condition=" ($menuList['SysDocument']['menu_actions']['add'] eq 1 and $menuList['SysDocument']['allow'] eq 1)  or $permissions['_IS_Manager_'] eq 1">
+                    <button class="myorder bg-e newfileBtn" onclick="$('#newfile').show()">新建文件夹</button>
+                    <button class="reorder" @click="upload">上传</button>
+                <else/>
+                    <button class="myorder bg-e newfileBtn" @click="mui.alert('无此功能操作权限')">新建文件夹</button>
+                    <button class="reorder" @click="mui.alert('无此功能操作权限')">上传</button>
+            </if>
+        </div>
+        <div class="order-reorder ptb15 plr25" v-if="selectToggle(1)">
+            <button class="close-button" style="width: 50%" @click="delToggle">取消</button>
+            <button class="reorder"  style="width: 50%;background-color: red;" @click="deleteAction(true)">删除</button>
+        </div>
+        <div class="wrap-modal" id="delete-file" style="display: none;">
+            <div class="modal-common-wrap modal">
+                <div class="modal-title bg-e gray-9">删除文件</div>
+                <div class="modal-content-text black-3">
+                    <div class="tc" id="deleteView">确认删除所选文件？</div>
+                </div>
+                <div class="modal-btn">
+                    <button class="popup-close">取消</button>
+                    <button class="blue" @click="deleteAction(false)">确定</button>
+                </div>
+            </div>
+        </div>
+	</div>
+    
+    <!--modal 重命名-->
+    <div class="wrap-modal" id="rename" style="display: none;">
+        <div class="modal-common-wrap modal">
+        	<div class="modal-title bg-e gray-9">重命名</div>
+            <div class="modal-content-text black-3">
+                <div class="flex-start mb20">
+                    <div class="wd30 tr">原名称</div>
+                    <input style="width: 50%;margin-left: .2rem;" id="old_name" type="text" value="" readonly/>
+                </div>
+            	<div class="flex-start mb20">
+	    			<div class="wd30 tr">文件名</div>
+		    		<input style="width: 50%;margin-left: .2rem;" type="text" id="new_name" placeholder="请输入新文件名"/>
+            	</div>
+            </div>
+            <div class="modal-btn">
+                <button class="popup-close">取消</button>
+                <button class="blue popup-complete" bind="rename">确定</button>
+            </div>
+        </div>
+    </div>
+    <!--modal end-->
+    <!--modal 重命名-->
+    <div class="wrap-modal" id="uploadFile" style="display: none;">
+        <div class="modal-common-wrap modal">
+            <div class="modal-title bg-e gray-9">上传文件</div>
+            <div class="modal-content-text black-3">
+                <div class="flex-start mb20">
+                    <div class="wd30 tr">文件名</div>
+                    <input style="width: 50%;margin-left: .2rem;" type="text" id="upload_name" placeholder="请输入新文件名"/>
+                </div>
+            </div>
+            <div class="modal-btn">
+                <button class="popup-close" bind="uploadFile">取消</button>
+                <button class="blue popup-complete" bind="uploadFile">确定</button>
+            </div>
+        </div>
+    </div>
+    <!--modal end-->
+    <!--modal 新建文件夹-->
+    <div class="wrap-modal" id="newfile" style="display: none;">
+        <div class="modal-common-wrap modal">
+        	<div class="modal-title bg-e gray-9">新建文件夹</div>
+            <div class="modal-content-text black-3">
+            	<div class="flex-start mb20">
+	    			<div class="wd30 tr">文件名</div>
+		    		<input style="width: 50%;margin-left: .2rem;" type="text" id="new_file_name" placeholder="请输入文件夹名"/>
+            	</div>
+            </div>
+            <div class="modal-btn">
+                <button class="popup-close" >取消</button>
+                <button class="blue popup-complete" bind="newfile">确定</button>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="handle_status" >
+    <!--modal end-->
+</section>
+<div class="share-it" id="share-wrap" style="background: initial">
+    <img class="arrow" style="top:2rem" src="/{$Think.MODULE_PATH}Public/images/Index_img/tips.png">
+    <div style="background-color: #999798;
+                width: 40%;
+                margin: 0 30%;
+                top: 5rem;
+                height: .8rem;
+                line-height: .8rem;
+                opacity: 0.80;
+                ">选择公司进行切换</div>
+</div>
+<script>
+    $("#share-wrap").on("click", function() {
+        $(this).hide();
+    })
+    $(function(){
+        var RecordSignKey = '_record_sign_from_file_management';
+        var RecordSignValue     = localStorage.getItem(RecordSignKey);
+        if (RecordSignValue !== '1') {
+            $("#share-wrap").show();
+            localStorage.setItem(RecordSignKey,'1');
+        }
+    })
+</script>
+<include file="WxBranchTemplate:foot_access_file"/>
+<script src="{$Think.const.JS_URL}ajaxfileupload.js" type="text/javascript"></script>
+<script>
+	var app = new Vue({
+		el:'#app',
+		data:{
+		    documents:{$documents},
+            reveals:{$documents},
+            parentId:[],
+            file_location:'首页',
+            checkedId:[],
+            select_toggle:false,
+            selecteds:[],
+            target_branch:'{$target_branch}',
+            myFile: true,
+            target:'me',
+            is_staff:'{$is_staff}',
+            menu:0,
+            keyword:"",
+            isAction:{$isAction}
+		},
+        computed:{
+		    taView(){
+		      return this.is_staff === '1' ? '客户上传的文件' : '商户上传的文件';
+            },
+            NavigationBars(){
+                var bars = this.file_location.split('/');
+                var navigationBars = [];
+                navigationBars[0] = {'text':bars[0],'parent':0,'checked':true};
+                if (bars.length > 1) {
+                    for (var i = 0; i < this.parentId.length ; i++) {
+                        navigationBars[i+1] = {'text':bars[i+1],'parent':this.parentId[i],'checked':true};
+                    }
+                }
+                navigationBars[navigationBars.length - 1]['checked'] = false;
+                return navigationBars;
+            },
+            tabClass(target){
+                return target == this.target ? 'active':'';
+            },
+        },
+		methods:{
+            shareFile(id,pid){
+                $.post('/{$Think.const.CONTROLLER_NAME}/shareFile', {id: id}, function (data) {
+                    if (data.code == 0) {
+                        layer.msg(data.message);
+                        saveRefreshDocuments(pid);
+                    } else {
+                        layer.msg(data.message);
+                    }
+                }, 'JSON')
+            },
+            menu_toggle(index){
+                this.menu = this.menu == index ? 0 : index;
+            },
+            selectToggle(target){
+                if (this.myFile && this.isAction && (this.target_branch == '0' || this.target_branch > 0)){
+                    return target == this.select_toggle ? true : false;
+                } else {
+                    return false;
+                }
+            },
+            intoSubsidiary(index,visible){
+                if(!visible){
+                    return false;
+                }
+                if (this.parentId.length > 0) {
+                    var template = {};
+                    for (var i = 0; i < this.parentId.length ; i++) {
+                        template = i > 0 ? template[this.parentId[i]]['children'] : this.reveals[this.parentId[i]].children;
+                    }
+                    if (template[index].mold == 'folder' && !this.select_toggle) {
+                        this.file_location = template[index].current;
+                        this.documents = template[index].children;
+                        this.parentId.push(index);
+                    }
+                } else {
+                    if (this.reveals[index].mold == 'folder' && !this.select_toggle) {
+                        this.file_location = this.reveals[index].current;
+                        this.documents = this.reveals[index].children;
+                        this.parentId.push(index);
+                    }
+
+                }
+			},
+            formSubsidiary(parent){
+                if(this.keyword != "" && this.parentId.length == 0){
+                    parent = 0;
+                }
+                if (parent == 0) {
+                    this.documents = this.reveals;
+                    this.parentId = [];
+                } else {
+                    var template = {};
+                    var newParentId = [];
+                    var idLength = this.parentId.length;
+                    for (var i = 0; i < idLength; i++) {
+                        newParentId.push(this.parentId[i]);
+                        if (i > 0) {
+                            template = (this.parentId[i] == parent) ? template[this.parentId[i]]: template[this.parentId[i]].children
+                        } else {
+                            template = (this.parentId[i] == parent)  ? this.reveals[this.parentId[i]] : this.reveals[this.parentId[i]].children;
+                        }
+                    }
+                    this.file_location = template.current;
+                    this.documents = template.children;
+                    this.parentId = newParentId;
+                }
+            },
+            getSingle(index){
+                return this.documents[index];
+            },
+            leapOfFreedom(parent){
+                if (parent == 0) {
+                    this.documents = this.reveals;
+                    this.parentId = [];
+                } else {
+                    var template = {};
+                    var newParentId = [];
+                    var idLength = this.parentId.length - 1;
+                    for (var i = 0; i < idLength; i++) {
+                        newParentId.push(this.parentId[i]);
+                        if (i > 0) {
+                            template = (this.parentId[i] == parent) ? template[this.parentId[i]]: template[this.parentId[i]].children
+                        } else {
+                            template = (this.parentId[i] == parent)  ? this.reveals[this.parentId[i]] : this.reveals[this.parentId[i]].children;
+                        }
+                        if (this.parentId[i] == parent) {
+                            break;
+                        }
+                    }
+                    this.file_location = template.current;
+                    this.documents = template.children;
+                    this.parentId = newParentId;
+                }
+                this.select_toggle = false;
+                this.selecteds = [];
+            },
+            downFile(url,name,mold){
+                if (mold == 'file') {
+                    var fileDecompose = name.split('.');
+                    var fileSuffix = fileDecompose.pop();
+                    var record = this.getLocalStorage('downloadTheRecordFromName',fileDecompose);
+                    if (record) {
+                        window.location.href = url+'?attname='+fileDecompose+'('+record.count+').'+fileSuffix;
+                        record.count ++;
+                        this.setLocalStorage('downloadTheRecordFromName',fileDecompose,record)
+                    } else {
+                        window.location.href = url+'?attname='+name;
+                        this.setLocalStorage('downloadTheRecordFromName',fileDecompose,{name:fileDecompose,suffix:fileSuffix,count:1})
+                    }
+                }
+            },
+            delToggle(){
+                this.select_toggle = !this.select_toggle;
+            },
+            deleteAction(isTip){
+                if (this.selecteds.length > 0) {
+                    if (isTip){
+                        var hasChildren = 0;
+                        var template = [];
+                        var idLength = this.parentId.length;
+                        if (idLength > 0) {
+                            idLengthMax = idLength -1;
+                            for (var i = 0; i < idLength; i++) {
+                                if (i > 0) {
+                                    template = (i == idLengthMax) ? template[this.parentId[i]].children: template[this.parentId[i]].children
+                                } else {
+                                    template = (i == idLengthMax)  ? this.reveals[this.parentId[i]].children : this.reveals[this.parentId[i]].children;
+                                }
+                                if (i == idLengthMax) {
+                                    break;
+                                }
+                            }
+                        } else {
+                            template = this.reveals;
+                        }
+                        console.log(template);
+                        for (var i = 0;i < this.selecteds.length ; i++) {
+                            console.log(this.selecteds);
+                            if (Object.getOwnPropertyNames(template[this.selecteds[i]].children).length > 0 && template[this.selecteds[i]].children.length != 0) {
+                                hasChildren = 1;
+                                break;
+                            }
+                        }
+                        if (hasChildren == 1) {
+                            $('#deleteView').text('所选文件中含有下级文件,确认删除?')
+                        } else {
+                            $('#deleteView').text('确认删除所选文件?')
+                        }
+                        $('#delete-file').show();
+
+                    } else {
+                        var appThis = this;
+                        $.post('/SysDocument/delete',{ids:this.selecteds,target_branch:this.target_branch},function (response) {
+                            if (response['error'] == 0) {
+                                var parentId = app.parentId.length > 0 ? app.parentId[app.parentId.length - 1] : 0;
+                                saveRefreshDocuments(parentId);
+                                appThis.selecteds = [];
+                                layer.msg('文件删除成功');
+                                $('#delete-file').hide();
+                            } else {
+                                layer.msg(response.message);
+                            }
+                        },'JSON')
+                    }
+                } else {
+                    layer.msg('请选择需要删除的文件/文件夹');
+                    return false;
+                }
+            },
+            upload(){
+                $('#File0').click();
+            },
+            moveFile(id){
+                var title = '移动';
+                // for (var i = 0; i < app.NavigationBars.length ; i++)
+                // {
+                //     title += app.NavigationBars[i].text +'/';
+                // }
+                // title += name;
+                // title += '   移动到 ';
+                layer.open({
+                    type: 2,
+                    title: title,
+                    shadeClose: true,
+                    shade: 0.8,
+                    area: ['100%', '100%'],
+                    content: '/SysDocument/folders/id/'+id+'/target_branch/'+this.target_branch, //iframe的url
+                    success: function (layero, index) {
+                    },
+                    end: function () {
+                        if($('#handle_status').val() == 1) {
+                            var parentId = app.parentId.length > 0 ? app.parentId[app.parentId.length - 1] : 0;
+                            saveRefreshDocuments(parentId);
+                        }
+                    }
+                });
+            },
+            toggleTab(single)
+            {
+                if (this.myFile != single){
+                    this.myFile = single;
+                    if ((this.target_branch == '0' || this.target_branch > 0)) {
+                        this.RefreshData();
+                    }
+                    this.select_toggle = false;
+                }
+            },
+            RefreshData(){
+                var target = this.myFile === false ? 'hisBranch' : 'myBranch';
+                var appThis = this;
+                $.post('/SysDocument/refreshData',{target:target,target_branch:this.target_branch,keyword:this.keyword},function (response) {
+                        appThis.documents = response.data;
+                        appThis.reveals = response.data;
+                        appThis.isAction = response.isAction;
+                        appThis.parentId = [];
+                        appThis.file_location = '首页';
+                },'JSON')
+            },
+            setLocalStorage(itemValue,key,data){
+                data = $.isArray(data) || $.type(data) == 'object' ? JSON.stringify(data):data ;
+                localStorage.setItem(itemValue+'['+key+']',data);
+            },
+            getLocalStorage(itemValue,key){
+                var value     = localStorage.getItem(itemValue+'['+key+']');
+                return $.parseJSON(value);
+            },
+            prohibit(){
+                mui.alert('无此功能操作权限')
+            }
+		}
+	})
+</script>
+<script>
+    //上传文件
+    $('input[type=file]').change(function() {
+        var files = $(this).get(0).files[0]; //获取图片信息
+        var maxfilesize = 1024 * 1024 * 5; //最大文件大小设置为2M
+        if(files.size > maxfilesize) {
+            layer.msg("文件大小最多只能5M,请重新上传");
+            return false;
+        } else {
+            var fileName = handlerFileName(files);
+            uploadPlug(fileName);
+        }
+        // var fileName = handlerFileName(files);
+        // $('#upload_name').val(fileName);
+        // $('#uploadFile').show();
+    });
+    function handlerFileName(files)
+    {
+        var fileName = files['name'].split('.');
+        fileName.splice(fileName.length - 1,1);
+        return fileName.join('.');
+    }
+    function getCompany(value,text) {
+        $("#company-text").text(text);
+        app.target_branch = value;
+        app.RefreshData();
+    }
+    function selectCompany() {
+        app.keyword = "";
+        var url = '__MODULE__/sysDocument/selectCompany';
+        layer.open({
+            type: 2,
+            title: '选择公司',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['100%', '100%'],
+            content: url, //iframe的url
+            success: function (layero, index) {
+            },
+            end: function () {
+            }
+        });
+    }
+    //确定操作
+    $('.popup-complete').on('click',function(){
+        var type = $(this).attr('bind');
+        if (type == 'newfile') {
+           var name =  $('#'+type).find('input').val();
+           name = $.trim(name);
+           if ( name == '') {
+                layer.msg('文件夹名称不能为空!!');
+                return false;
+           } else {
+               var parentId = app.parentId.length > 0 ? app.parentId[app.parentId.length - 1] : 0;
+               $.post('/SysDocument/newFolder',{name:name,pid:parentId,target_branch:app.target_branch},function (response) {
+                   if (response['error'] == 0) {
+                       saveRefreshDocuments(parentId);
+                       layer.msg('文件夹添加成功');
+                       $('#'+type).find('input').val('');
+                       $('#newfile').hide();
+                   } else {
+                       layer.msg(response.message);
+                   }
+               },'JSON')
+           }
+        } else if (type == 'rename') {
+            var new_name =  $('#'+type).find('#new_name').val();
+            var old_name =  $('#'+type).find('#old_name').val();
+            new_name = $.trim(new_name);
+            old_name = $.trim(old_name);
+            if (new_name == '') {
+                layer.msg('文件名称不能为空!!');
+                return false;
+            }
+            if (new_name == old_name) {
+                layer.msg('请输入新的文件名称!!');
+                return false;
+            }
+            var checkedId = app.checkedId.id;
+            var type = app.checkedId.mold == 'folder' ? 0 : 1;
+            var pid = 0;
+            if (app.parentId.length > 0) {
+                pid = app.parentId[app.parentId.length - 1];
+            }
+            $.post('/SysDocument/rename',{name:new_name,id:checkedId,pid:pid,type:type,target_branch:app.target_branch},function (response) {
+                if (response['error'] == 0) {
+                    saveRefreshDocuments(app.checkedId.parent_id);
+                    layer.msg('文件名称修改成功');
+                    $('#rename').hide();
+                    $('#new_name').val('');
+                    app.checkedId = [];
+                } else {
+                    layer.msg(response.message);
+                }
+            },'JSON')
+        } else if (type == 'uploadFile') {
+            var name =  $('#'+type).find('#upload_name').val();
+            name = $.trim(name);
+            if (name == '') {
+                layer.msg('文件名称不能为空!!');
+                return false;
+            }
+            uploadPlug(name)
+        }
+    })
+    function uploadPlug(name)
+    {
+        //默认加载
+        var index = layer.load(1, {});
+        var parentId = app.parentId.length > 0 ? app.parentId[app.parentId.length - 1] : 0;
+        $.ajaxFileUpload({
+            url: '/SysDocument/uploadFile', //你处理上传文件的服务端
+            type:'post',
+            data:{name:name,pid:parentId,target_branch:app.target_branch},
+            secureuri: false,
+            fileElementId: 'File0',
+            dataType: 'json',
+            success: function(data) {
+                parent.layer.close(index);
+                if(data.error == 0) {
+                    saveRefreshDocuments(parentId);
+                    $("#upload_name").val('');
+                    $('#uploadFile').hide();
+                    $('input[type=file]').val('');
+                    layer.msg(data.message);
+                } else {
+                    layer.closeAll();
+                    layer.msg(data.message);
+                }
+            }
+        })
+    }
+
+    function saveRefreshDocuments(parentId)
+    {
+        //var target = app.target == 'me' ? 'myBranch' : 'hisBranch';
+        var target = app.myFile === false ? 'hisBranch' : 'myBranch';
+        $.post('/SysDocument/refreshData',{target:target,target_branch:app.target_branch,keyword:app.keyword.trim()},function (response) {
+            app.reveals = response.data;
+            if (parentId !== null) {
+                app.formSubsidiary(parentId);
+            }
+        },'JSON')
+    }
+    function rename(name,id){
+        app.checkedId = app.getSingle(id);
+        $('#rename').show();
+        $('#old_name').val(name);
+    }
+	function showMore(obj){
+		$(obj).next('.more-list').toggle();
+	}
+	$('.popup-close').on('click',function(){
+        $(this).parents('.wrap-modal').hide();
+        $('#new_file_name').val('')
+        $('#new_name').val('')
+        $('#upload_name').val('')
+    })
+    // $('.menu-del').on('click',function(){
+    //     $('#delete-file').show();
+    // })
+	$('.menu-rename').on('click',function(){
+        $('#rename').show();
+    })
+
+    var searchTime = "";
+    $("input[name='keyword']").bind("input propotychange",function(){
+        clearTimeout(searchTime);
+        searchTime = setTimeout(function(){
+            saveRefreshDocuments(0);
+        },'500')
+    })
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    html,body{
+        height: auto;
+    }
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div {
+        flex: .2;
+        line-height: 1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+   
+    #current-billing-plan .info-title{
+        width: 2.35rem;
+    }
+    .basic-info input[type=checkbox]{
+        width: 0.35rem;
+        height: 0.35rem;
+        margin-right: 0.3rem;
+    }
+</style>
+
+<body>
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <form id="customerForm" onsubmit="return false;">
+            <div style="margin: 10px"></div>
+            <template v-for="(item,index) in items">
+            <div  class="basic-info" v-if="item.actual_amount == 0 && item.confirm_flag == 0" >
+                <div class="title">缴费计划{{index+1}}期(共{{items.length}}期)</div>
+                <div class="info-line" style="align-items: center;">
+                    <div class="info-title">应付日期</div>
+                    <input type="text" name="" v-model="item.show_receivables_date"  readonly/>
+                    <input v-if="'{$item.id}' == item.id" :data-id="item.id" style="margin-right:0.2rem !important;" type="checkbox" name="ck" :value="item.unpaid_amount" checked />
+                    <input v-else style="margin-right:0.2rem !important;" type="checkbox" :data-id="item.id" name="ck" :value="item.unpaid_amount" />
+
+                </div>
+                <div class="info-line">
+                    <div class="info-title">未付金额</div>
+                    <input type="text" name="" v-model="'￥'+item.unpaid_amount"  readonly/>
+                </div>
+            </div>
+            <div style="margin: 10px"></div>
+            </template>
+            <div class="basic-info" v-if="len == 0">
+                <div class="title">缴费计划</div>
+                <div class="" style="padding: 5px;text-align: center">暂无数据</div>
+            </div>
+            <div style="margin: 10px"></div>
+            <div style="margin-bottom: 1.95rem"></div>
+            <div class="basic-info" style="position:fixed;bottom:0px;z-index:8;background:#fff;width:95%;">
+                <div class="info-line" v-if="len > 0">
+                    <div class="info-title">合计：</div>
+                    <input type="text" name="total" v-model="total" readonly/>
+                </div>
+                <div class="info-line" v-if="len > 0">
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="customerPay()">立即缴费</button>
+                </div>
+<!--                 <div class="info-line">
+                    <button class="save-edited mt30 bg-368bfe" style="width: 90%;margin: 5px 20px !important;" onclick="backToDetail()">返回缴费详情</button>
+                </div> -->
+            </div>
+            
+        </form>
+    </section>
+
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <!--<script src="/{$Think.APP_PATH}/Public/js/layer/mobile/layer.js"></script>-->
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+    <script type="text/javascript">
+
+        var  payMentVue = new Vue({
+            el:"#customerForm",
+            data:{
+                // model:[],
+                items:[],
+                len:0,
+                total:0
+            }
+        });
+
+        $(function(){
+            // getDetail();
+            getItems();
+        });
+        function mathAdd(a,b) {
+           var sum = (a*100 + b*100)/100;
+           return sum.toFixed(2);
+        }
+        function customerPay(){
+            var pay_amount = 0;
+            $("input[name='ck']:checked").each(function(){
+                pay_amount = mathAdd(pay_amount,$(this).val());
+            });
+            if(pay_amount == 0){
+                layer.msg("请至少勾选一条数据");
+                return false;
+            }
+            window.location.href="__MODULE__/WrkReceivables/customerPay/id/{$id}/pay_amount/"+pay_amount;
+            // var toReceivables = layer.open({
+            //     type:2,
+            //     title:"收款列表",
+            //     shadeClose:true,
+            //     shade:0.8,
+            //     area:['100%','100%'],
+            //     content:"__MODULE__/WrkReceivables/customerPay/id/{$id}/type/2",
+            //     closeBtn:1,
+            //     success: function(layero, index) {},
+            //     end: function() {}
+            // })
+        }
+          
+        $(document).on('click',"input[name='ck']",function(){
+            var pay_amount = 0;
+            var id = $(this).attr("data-id");
+            var checked = $(this).prop("checked");
+            $("input[name='ck']").each(function(){
+                if(checked){
+                    if($(this).attr("data-id") < id){
+                        $(this).prop("checked",true);
+                    }
+                }else{
+                    if($(this).attr("data-id") > id){
+                        $(this).prop("checked",false);
+                    }
+                }
+            });
+            $("input[name='ck']:checked").each(function(){
+                pay_amount = mathAdd(pay_amount,$(this).val());
+            });
+            payMentVue.total = pay_amount;
+        });
+
+        function backToDetail(){
+            window.location.href="__MODULE__/WrkReceivables/customer/id/{$id}"
+        }
+        // function getDetail(){
+        //     $.post("/WrkReceivables/detail/id/{$id}"
+        //     ,function(result){
+        //          payMentVue.model = result;
+        //     },'json')
+        // }
+        function getItems(){
+            $.post("/WrkReceivables/getItem/id/{$id}/type/2"
+            ,function(result){
+                payMentVue.items = result;
+                var len = 0;
+                result.forEach(function(v){
+                    if (v.actual_amount == 0 && v.confirm_flag == 0 ) {
+                        len = len + 1;
+                    }  
+                });
+                payMentVue.len = len;
+
+                payMentVue.$nextTick(function() {
+            var pay_amount = 0;
+            $("input[name='ck']:checked").each(function(){
+                pay_amount = mathAdd(pay_amount,$(this).val());
+            });
+            payMentVue.total = pay_amount;
+            console.log(pay_amount);
+});
+            },'json')
+        }
+    </script>
+</body>
+
+</html>

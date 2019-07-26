@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+    <link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+</head>
+<style>
+    textarea {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+    }
+
+    .delete-div span {
+        border: 1px solid red;
+        padding: .05rem;
+        border-radius: .05rem;
+        color: red;
+    }
+    .basic-info{
+        margin-bottom: 0.2rem;
+    }
+    .basic-info .info-title {
+        width: 1.5rem;
+        text-align: justify;
+        padding: 0 0 0 .25rem;
+        color: #999999;
+    }
+    .basic-info input {
+        color: #808080;
+        text-align: right;
+    }
+
+    .head_pic{
+        line-height: 2rem;
+        vertical-align: middle;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin: 20px 40%;
+    }
+
+</style>
+
+<body style="height: 93%">
+    <include file="Index:header" />
+    <section class="custom-info-wrap common-wrap bg-none mt85" id="body-section">
+        <div class="basic-info user_head" style="height: 3rem">
+            <div style="height: 100%;width: 100%">
+                <input type="hidden" value="{$model.id}" name="id">
+                <img class="head_pic" src="{$model.head_pic}" onerror="this.src='__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/user_pic_none.jpg'">
+                <div style="text-align: center">{$model.name}</div>
+            </div>
+        </div>
+        <div class="basic-info">
+            <!--<div class="title">员工</div>-->
+            <div class="info-line important-input">
+                <div class="info-title">姓名<i></i></div>
+                <input type="text" name="staff_name" value="{$model.staff_name}" readonly/>
+            </div>
+            <div class="info-line important-input" >
+                <div class="info-title">绑定手机<i></i></div>
+                <input type="text" value="{$model.mobile}" readonly/>
+            </div>
+            <div class="info-line important-input">
+                <div class="info-title">人员类型<i></i></div>
+                <if condition="$model.staff_type eq 1">
+                    <input type="text" value="管理员" name="staff_type" style="color: red" readonly/>
+                    <else/>
+                    <input type="text" value="员工" name="staff_type" readonly/>
+                </if>
+
+            </div>
+        </div>
+
+        <div class="order-reorder ptb15 plr25 footer" >
+            <if condition="$model.showBtn eq 1">
+                <button class="reorder leader_show" type="button" style="margin: auto" onclick="comStaffDetailFunctions.replaceCustomerLeader()">设为管理员</button>
+            </if>
+            <if condition="$model.showEditBtn eq 1">
+                <button class="myorder bg-e edit leader_show"  style="width: 21%;margin: auto" onclick="comStaffDetailFunctions.editDetail(this)">编辑</button>
+            </if>
+            <if condition="$model.showBtn eq 1">
+                <button class="myorder bg-e leader_show" style="width: 21%;color: red;border-color: red;margin: auto" onclick="comStaffDetailFunctions.deleteStaff()">删除</button>
+            </if>
+            <button class="myorder bg-e save"  style="width: 21%;margin: auto;display: none" onclick="comStaffDetailFunctions.saveEdit(this)">保存</button>
+        </div>
+    </section>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <include file="UserSupervise:foot_access_file" />
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script type="text/javascript">
+        var comStaffDetailFunctions = {
+            deleteStaff:function(){
+                mui.confirm("删除后将不可找回，需重新添加","确认删除所选员工？",["确定","取消"],function(e){
+                  if(e.index == 0){
+                      $.post("/ComAgreement/deleteComStaff",{id:$("input[name='id']").val()},function(result){
+                          layer.msg(result.message);
+                          if(result.error == 0){
+                              window.location.href="/ComAgreement/userManage";
+                          }
+                      },'json')
+                  }
+                })
+            },
+            replaceCustomerLeader:function(){
+                mui.confirm("移交后您将不是系统最高权限人员","确认移交管理员？",["确定","取消"],function(e){
+                    if(e.index == 0){
+                        $.post("/ComAgreement/replaceCustomerLeader",{id:$("input[name='id']").val()},function(result){
+                            layer.msg(result.message);
+                            if(result.error == 0){
+                                $("input[name='staff_type']").css("color","red").val("管理员");
+                                $(".leader_show").remove();
+                            }
+                        },'json')
+                    }
+                })
+            },
+            editDetail:function(obj){
+                //$(obj).hide();
+                $(".leader_show").hide();
+                $("input[name='staff_name']").removeAttr("readonly").focus();
+                $(".save").show();
+                layer.msg("现在您可以编辑姓名！");
+            },
+            saveEdit:function(obj){
+                var id = $("input[name='id']").val();
+                var staff_name = $("input[name='staff_name']").val();
+                $.post("/ComAgreement/saveStaffEdit",{id:id,staff_name:staff_name},function(result){
+                    layer.msg(result.message);
+                    if(result.error == 0){
+                        $(obj).hide();
+                        $(".leader_show").show();
+                        //$(".edit").show();
+                        $("input[name='staff_name']").attr("readonly",true);
+                    }
+                },'json');
+
+            }
+        };
+    </script>
+</body>
+
+</html>

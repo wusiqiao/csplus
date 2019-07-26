@@ -1,0 +1,239 @@
+<include file="UserSupervise:head"/>
+<style>
+	.modal input[type='text'] {
+	    margin: 0 0;
+	    padding: 0 .1rem;
+	    border: 1px solid #e9e9e9;
+	}
+	
+</style>
+<body>
+<section class="common-wrap bg-none mt85">
+	<include file="Index:header" />
+    <ul class="main-tab">
+        <li onclick="window.location.href = '/Service/index.html'">内部借用</li>
+        <li onclick="window.location.href = '/Service/borrow.html'">客户借还</li>
+        <li class="active">物品管理</li>
+    </ul>
+    <section>
+    	<div class="chose-company mb20">
+    		<div class="company-selected flex-1">
+    			<div>选择公司</div>
+    			<div class="select-icon1"></div>
+    		</div>
+    		<input type="hidden" />
+    	</div>
+    	<div>
+    		<div class="manage-titles mb20">
+    			<div>物品名称</div>
+    			<div>物品状态</div>
+    			<div>在手员工</div>
+    			<div>物品编号</div>
+    			<div>存放库号</div>
+    		</div>
+    		<ul class="">
+    			<li class="manage-list blue-checkbox">
+    				<input type="checkbox" />
+    				<div class="con">
+    					<div class="word-hidden">身份证a</div>
+    					<div class="word-hidden">借用中</div>
+	    				<div class="word-hidden">王海</div>
+	    				<div class="word-hidden">HS003</div>
+	    				<div class="word-hidden">A01001</div>
+    				</div>
+    			</li>
+    			<li class="manage-list blue-checkbox">
+    				<input type="checkbox" />
+    				<div class="con">
+    					<div class="word-hidden">身份证a</div>
+    					<div class="word-hidden">借用中</div>
+	    				<div class="word-hidden">王海</div>
+	    				<div class="word-hidden">HS003</div>
+	    				<div class="word-hidden">A01001</div>
+    				</div>
+    			</li>
+    			<li class="manage-list blue-checkbox">
+    				<input type="checkbox" />
+    				<div class="con">
+    					<div class="word-hidden">公章</div>
+    					<div class="word-hidden">借用中</div>
+	    				<div class="word-hidden">王海</div>
+	    				<div class="word-hidden">HS003</div>
+	    				<div class="word-hidden">A01001</div>
+    				</div>
+    			</li>
+    			<li class="manage-list blue-checkbox">
+    				<input type="checkbox" />
+    				<div class="con">
+    					<div class="word-hidden">财务章</div>
+    					<div class="word-hidden">已归还</div>
+	    				<div class="word-hidden">王海</div>
+	    				<div class="word-hidden">HS003</div>
+	    				<div class="word-hidden">A01001</div>
+    				</div>
+    			</li>
+    			<li class="manage-list blue-checkbox">
+    				<input type="checkbox" />
+    				<div class="con">
+    					<div class="word-hidden">合同章</div>
+    					<div class="word-hidden">未借用</div>
+	    				<div class="word-hidden">王海</div>
+	    				<div class="word-hidden">HS003</div>
+	    				<div class="word-hidden">A01001</div>
+    				</div>
+    			</li>
+    		</ul>
+    	</div>
+    	
+    </section>
+    <div class="order-bottom-btn">
+    	<button class="left-btn" id="edit">物品编辑</button>
+        <button class="bg-368bfe" id="add">物品新增</button>
+    </div>
+    
+    <!--modal 物品编辑-->
+    <div class="wrap-modal" id="edit-good" style="display: none;">
+        <div class="modal-common-wrap modal">
+        	<div class="modal-title bg-e gray-9">物品编辑</div>
+            <div class="modal-content">
+            	<div class="gray-9 mb15">
+            		<div>公司名称：厦门艾尔软件科技有限公司</div>
+            	</div>
+                <div>
+                	<div class="flex-start mb15">
+                		<div>物品名称：</div>
+                		<div class="wd50">
+			    			<input type="text" value="公章"/>
+			    		</div>
+		    		</div>
+		    		<div class="flex-start mb15">
+                		<div>物品编号：</div>
+                		<div class="wd50">
+			    			<input type="text" value="HS001"/>
+			    		</div>
+		    		</div>
+		    		<div class="flex-start mb15">
+                		<div>存放库号：</div>
+                		<div class="wd50">
+			    			<input type="text" value="A01001"/>
+			    		</div>
+		    		</div>
+                	<div class="flex-start mb15">
+                		<div>物品状态：</div>
+                		<div class="company-selected wd50">
+			    			<div>借用中</div>
+			    			<div class="select-icon1"></div>
+			    		</div>
+		    		</div>
+		    		<div class="flex-start mb15">
+		    			<div>内部状态：</div>
+			    		<div class="company-selected wd50">
+			    			<div>员工</div>
+			    			<div class="select-icon1"></div>
+			    		</div>
+                	</div>
+                	<div class="flex-start">
+		    			<div>新增日期：</div>
+			    		<div class="wd50">
+			    			<input type="text" value="20180820"/>
+			    		</div>
+                	</div>
+                </div>
+            </div>
+            <div class="modal-btn">
+                <button id="popup-close" class="popup-close">取消</button>
+                <button class="blue" id="popup-complete">确定</button>
+            </div>
+        </div>
+    </div>
+    <!--modal end-->
+
+	<!--modal 物品新增-->
+    <div class="wrap-modal" id="add-good" style="display: none;">
+        <div class="modal-common-wrap modal">
+        	<div class="modal-title bg-e gray-9">物品新增</div>
+            <div class="modal-content">
+            	<div class="mb15 gray-9">
+            		<div>公司：厦门回升软件科技有限公司</div>
+                	<div>借用物品：身份证、公章</div>
+            	</div>
+                <div>
+                	<div class="flex-start mb15">
+                		<div>物品名称：</div>
+                		<div class="wd50">
+			    			<input type="text" value="公章"/>
+			    		</div>
+		    		</div>
+		    		<div class="flex-start mb15">
+                		<div>物品编号：</div>
+                		<div class="wd50">
+			    			<input type="text" value="HS001"/>
+			    		</div>
+		    		</div>
+		    		<div class="flex-start mb15">
+                		<div>存放库号：</div>
+                		<div class="wd50">
+			    			<input type="text" value="A01001"/>
+			    		</div>
+		    		</div>
+                	<div class="flex-start mb15">
+                		<div>物品状态：</div>
+                		<div class="company-selected wd50">
+			    			<div>借用中</div>
+			    			<div class="select-icon1"></div>
+			    		</div>
+		    		</div>
+		    		<div class="flex-start mb15">
+		    			<div>内部状态：</div>
+			    		<div class="company-selected wd50">
+			    			<div>员工</div>
+			    			<div class="select-icon1"></div>
+			    		</div>
+                	</div>
+                	<div class="flex-start">
+		    			<div>新增日期：</div>
+			    		<div class="wd50">
+			    			<input type="text" value="20180820"/>
+			    		</div>
+                	</div>
+                </div>
+            </div>
+            <div class="modal-btn">
+                <button id="popup-close" class="popup-close">取消</button>
+                <button class="blue" id="popup-complete">确定</button>
+            </div>
+        </div>
+    </div>
+    <!--modal end-->
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script type="text/javascript">
+	mui.init();
+    mui.ready(function() {
+    	mui('.manage-list').on('change', 'input', function() {
+            var nCheckBox = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            var manageBtn = document.getElementById('manage');
+            if(nCheckBox){
+                if (manageBtn.classList.contains("mui-disabled")) {
+                    manageBtn.classList.remove("mui-disabled");
+                }
+            } else {
+                if (!manageBtn.classList.contains("mui-disabled")) {
+                    manageBtn.classList.add("mui-disabled");
+                }
+            }
+        });
+	});
+
+	$('#edit').on('click',function(){
+        $('#edit-good').show();
+    })
+    $('.popup-close,.popup-complete').on('click',function(){
+        $(this).parents('.wrap-modal').hide();
+    })
+    $('#add').on('click',function(){
+        $('#add-good').show();
+    })
+</script>
+</body>
+</html>

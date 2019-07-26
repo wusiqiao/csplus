@@ -1,0 +1,127 @@
+<include file="UserSupervise:head"/>
+<link href="/{$Think.APP_PATH}Public/mui/css/mui.poppicker.css" rel="stylesheet" />
+<link href="/{$Think.APP_PATH}Public//mui/css/mui.picker.css" rel="stylesheet" />
+<style>
+    .link-div{
+        padding: .2rem .15rem;
+        display: flex;
+        background-color: #fff;
+    }
+    .link-div .link-show{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        flex: 1;
+        padding: .1rem;
+        background-color: #EEEEEE;
+        color: #ACACAC;
+        margin-right: .1rem;
+    }
+    .link-div .link-button{
+        display: -webkit-inline-box;
+        flex: .3;
+        border: 1px solid #87B8FA;
+        color: #87B8FA;
+        padding: .1rem;
+    }
+</style>
+<body>
+<include file="Index:header" />
+<section class="template-wrap mt85" id="app" >
+    <ul class="main-tab">
+        <li  :class="actionClass(1) ? 'active' : ''" @click="actionToggle(1)">商品</li>
+        <li :class="actionClass(2) ? 'active' : ''" @click="actionToggle(2)">广告</li>
+        <li :class="actionClass(3) ? 'active' : ''" @click="actionToggle(3)">其他</li>
+    </ul>
+    <div v-if="actionClass(1)">
+        <div class="item-wrap media-list" v-for="product in products" style="margin-bottom: .2rem">
+            <a href="javascript:;">
+                <div id="" class="media-pic" >
+                    <img v-bind:src="product.product_pic" alt="">
+                </div>
+                <div class="title1 media-content">
+                    <h3 style="">{{product.product_title}}</h3>
+                    <p style="">{{product.product_desc}}</p>
+                    <span>{{product.view_price}}</span>
+                </div>
+            </a>
+            <div class="link-div">
+                <div class="link-show">{{product.url}}</div>
+                <div class="link-button" @click="addLink(product.url)">添加该链接</div>
+            </div>
+        </div>
+    </div>
+    <div v-if="actionClass(2)" >
+        <div  v-for="tweet in tweets" style="background-color: #fff;margin-bottom: .2rem;">
+            <div  class="item-wrap media-list article-preview" style="border-bottom:0">
+                <img :src="tweet.pic" alt="" />
+                <div class="preview-part">
+                    <div class="preview-title">{{tweet.title}}</div>
+                    <div class="preview-info">
+                        <div class="preview-icons">
+                            <div>
+                                <span class="eye"></span>
+                                <span>{{tweet.eye}}</span>
+                            </div>
+                            <div>
+                                <span class="share"></span>
+                                <span>{{tweet.share}}</span>
+                            </div>
+                        </div>
+
+                        <div class="time">{{tweet.time}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="link-div">
+                <div class="link-show">{{tweet.url}}</div>
+                <div class="link-button" @click="addLink(tweet.url)">添加该链接</div>
+            </div>
+        </div>
+    </div>
+    <div v-if="actionClass(3)">
+        <div class="item-wrap media-list" v-for="other in others" style="margin-bottom: .2rem;background-color: #fff;">
+            <div style="padding: 0.1rem 0.2rem;font-size: .4rem;">{{other.title}}</div>
+            <div class="link-div">
+                <div class="link-show">{{other.url}}</div>
+                <div class="link-button" @click="addLink(other.url)">添加该链接</div>
+            </div>
+        </div>
+    </div>
+</section>
+<include file="WxBranchTemplate:foot_access_file"/>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.picker.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.poppicker.js"></script>
+
+<script type="text/javascript">
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            action:1,
+            products:{$products},
+            tweets:{$tweets},
+            others:{$others}
+        },
+        methods:{
+            actionClass(inc){
+                return this.action == inc ? 'active' :'';
+            },
+            actionToggle(inc) {
+                console.log(inc);
+                this.action = inc
+            },
+            addLink(inc){
+                parent.$("#handle_status").val('1').data('url',inc);
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                parent.layer.close(index); //再执行关闭
+            }
+        },
+        computed:{
+
+        }
+    });
+
+
+</script>
+</body>
+</html>

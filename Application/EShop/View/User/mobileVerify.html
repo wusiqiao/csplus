@@ -1,0 +1,270 @@
+<!--头部 start-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+    <title>{$title}</title>
+    <link href="{$Think.const.CSS_URL}/css-new/bootstrap.min.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/core.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/icons.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/components.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/pages.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/menu.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/responsive.css" rel="stylesheet" />
+    <link href="{$Think.const.CSS_URL}/css-new/style.css?v=22" rel="stylesheet" />
+    <link rel="stylesheet" href="/{$Think.APP_PATH}Public/mui/css/mui.min.css">
+    <script src="{$Think.const.JS_URL}/jquery.min.js"></script>
+    <script src="{$Think.const.JS_URL}/bootstrap.min.js"></script>
+    <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+    <script src="{$Think.const.JS_URL}jquery.min.js"></script>
+    <script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+    <style>
+        th,td {
+            text-align: center;
+            border:1px solid #e4e4e4;
+        }
+    </style>
+    <script>
+        $(window).resize(infinite);
+
+        function infinite() {
+            var htmlWidth = $('html').width();
+            if(htmlWidth >= 960) {
+                $("html").css({
+                    "font-size": "42px"
+                });
+            } else {
+                $("html").css({
+                    "font-size": 36 / 1080 * htmlWidth + "px"
+                });
+            }
+        }
+        infinite();
+    </script>
+</head>
+
+<body>
+<style>
+	html,body {
+		max-width: 768px;
+		margin-left: auto;
+		margin-right: auto;
+		font-size: 1.25rem;
+        height: 100% !important;
+	}
+	h3 {
+		font-size: 1.25rem;
+		margin: 0.83rem 0;
+	}
+	input[type=tel],input[type=button] {
+		display: inline-block;
+		margin-bottom: 0;
+		padding: 0.83rem 1.25rem;
+	}
+	input[type=tel] {
+		width: 72%;
+	}
+	label {
+		color: #444444;
+		font-weight: 100 !important;
+	}
+	.tel-info {
+		margin-top: 2.5rem;
+		text-align: center;
+	}
+	.col-xs-8,.col-xs-4 {
+		height: 3rem;
+		padding: 0 !important;
+	}
+	.col-xs-8 label,.col-xs-8 input {
+		height: 3rem;
+	    padding: 0;
+/*	    line-height: 3rem;*/
+	    margin-bottom: 0;
+	}
+	input[type='tel'] {
+		
+	}
+	.col-xs-4 {
+		border-radius: 0.5rem;
+		overflow: hidden;
+	}
+	.col-xs-4 input {
+		color: #0793ff !important;
+		font-size: 1.25rem;
+		height: 3rem;
+		padding: 0 1rem;
+		border-radius: 0.2rem;
+	}
+    html,body {overflow-x: hidden;}
+    .mui-bar {position: absolute !important;  height: 3.67rem;background-color: #ffffff;}
+    .mui-title {font-size: 1.33rem !important;line-height: 3.67rem;}
+    .mui-bar .mui-btn .mui-icon {top: 0.35rem;font-size: 3rem !important;}
+    .mui-bar .mui-btn-link {font-size: 1.25rem !important;}
+</style>
+<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+    <h1 class="mui-title">{$title}</h1>
+
+    <button class="mui-action-back mui-btn mui-btn-link mui-btn-nav mui-pull-left" id="come-back" style="color: #444444 !important;padding: 0 !important;">
+		<span class="mui-icon mui-icon-arrowleft">
+		</span>返回
+    </button>
+</header>
+	<div class="container" style="padding-top: 4.5rem;">
+        <div class="row">
+             <div class="tel-info">
+            	<!--短信验证码将发送到您的手机-->
+                <h3>{:ception_phone($user['mobile'])}</h3>
+            </div>
+            <form class="panel-body baseform" id="loginForm" onsubmit="return false;">
+                <div class="col-xs-8">
+                    <label for="">验证码</label>
+                    <input type="tel" id="code" placeholder="请输入" style="padding-left: 1rem;padding: 0.5rem;width: 70%;margin-bottom: 0;height: 3rem;background-color: #e4e4e4;border: initial;"/>
+                </div>
+                <!--<a class="send" title="点击切换验证码" href="javascript:;">-->
+                    <!--<img id="imgVerify" style="cursor:pointer;"   src="__MODULE__/Login/yxcode.html" onclick="fleshVerify();"/>-->
+
+                <!--</a>-->
+                <div class="col-xs-4">
+                <input class="btn btn-default btn-custom waves-effect" style="background-color: #e4e4e4;" onclick="getSMS(this)" type="button" value="获取验证码"/>
+                </div>
+            </form>
+            <div class="panel-body text-center">
+                <button type="button" id="loginBtn"  class="md-trigger btn btn-warning btn-block" data-modal="modal-1">确认</button>
+            </div>
+        </div>
+
+        <div class="md-modal md-effect-1" id="modal-1" style="display: none">
+            <div class="panel ks_list">
+                <div class="md-content col-xs-12 text-center">
+                    <div class="col-xs-12">
+                        <span class="pull-left">小贴士</span>
+                        <!--<a class="md-close"><i class="ion-close-round"></i></a>-->
+                    </div>
+                    <div>
+                        <p>
+                            <img src="" width="50" />
+                        </p>
+                        <p>
+                        	更换手机号成功
+                        </p>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="md-close btn btn-warning btn-custom waves-light btn-block">确定</button>
+                    </div>
+                </div>
+            </div>
+            <div class="md-overlay"></div>
+        </div>
+    </div>
+    <include file="Public:footer"/>
+    <include file="Public:contact" />
+<script>
+    // function fleshVerify(){
+    //     //重载验证码
+    //     $('#imgVerify').attr('src','__MODULE__/Login/yxcode.html');
+    // }
+    select_menu('my');
+	function getSMS(obj) {
+		if(!(/^1[3|4|5|7|8][0-9]\d{4,8}$/.test('{$user['mobile']}'))) {
+			alert('请输入正确的手机号');
+		} else {
+			$.ajax({
+				url: "__MODULE__/Check.html",
+				type: "post",
+				dataType: "json",
+				data: {
+					"phone": '{$user['mobile']}',
+					"action": "chagephone",
+				},
+				success: function(json) {
+					if(json.result == '0') {
+						alert(json.msg);
+						settime(obj);
+					} else {
+						alert(json.msg);
+						$(obj).attr("disabled", false);
+						return false
+					}
+
+				},
+				beforeSend: function() {
+					$(obj).attr("disabled", true);
+				},
+				errors: function() {
+					$(obj).attr("disabled", false);
+				}
+			});
+		}
+	}
+	var countdown = 60;
+
+	function settime(setbtn) {
+		if(countdown == 0) {
+			$(setbtn).attr("disabled", false);
+			$(setbtn).val("获取验证码");
+			$(setbtn).removeClass("check");
+			countdown = 60;
+			return;
+		} else {
+			$(setbtn).attr("disabled", true);
+			$(setbtn).val("重新发送(" + countdown + ")");
+			countdown--;
+		}
+		setTimeout(function() {
+			settime(setbtn);
+		}, 1000);
+	}
+</script>
+<script>
+	$(function() {
+		$(".btn-warning").click(function() {
+
+			if($("#mobile").val() == "") {
+				layer.msg('手机号不能为空！');
+				return false;
+			}
+
+			if($("#code").val() == "") {
+				layer.msg('您还没有输入验证码！');
+				return false;
+			}
+
+			var data = {
+				"mobile": $("#mobile").val(),
+				"code": $("#code").val(),
+				"action": 'ok',
+			};
+			$.ajax({
+				url: "__MODULE__/user/mobileVerify.html",
+				type: 'POST',
+				dataType: "json",
+				data: data,
+				beforeSend: function() {
+					var index = layer.load(0, {
+						shade: [0.1, '#fff'] //0.1透明度的白色背景
+					});
+				},
+				success: function(data) {
+					if(data.error == 0) {
+						layer.closeAll();
+						layer.msg('提交成功');
+						setTimeout(function() {
+							window.location.href = "__MODULE__/user/mobileChange/type/1.html";
+						}, 2000);
+
+					} else {
+
+						layer.closeAll();
+						layer.msg(data.msg);
+						setTimeout(function() {}, 2000);
+					}
+				},
+
+			});
+		});
+	});
+</script>

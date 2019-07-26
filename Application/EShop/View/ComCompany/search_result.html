@@ -1,0 +1,257 @@
+<include file="UserSupervise:head"/>
+<style>
+    .modal input[type='text'] {
+        margin: 0 0;
+        padding: 0 .1rem;
+        border: 1px solid #e9e9e9;
+    }
+    #empty{
+        padding: 10%;
+        text-align: center;
+        background-color: #ffffff
+    }
+    .del {
+        margin-right: .2rem;
+        height: .75rem;
+        color: red;
+        border: 1px solid red;
+    }
+    html,body{
+        position:relative;
+        height:100%;
+        min-height:100%;
+    }
+    .search-fixed{
+        position: fixed;
+        height: .85rem;
+        top: .85rem;
+        padding: .1rem 0;
+        width: 100%;
+        background-color: #eee;
+    }
+    .mui-bar{
+        position: fixed !important;
+    }
+</style>
+<body>
+<header id="header" class="mui-bar mui-bar-nav" style="box-shadow: 0 1px 0 #e4e4e4;">
+    <h1 class="mui-title">{$title}</h1>
+    <button class="mui-btn mui-btn-link mui-btn-nav mui-pull-left" id="come-back" style="color: #444444 !important;padding: 0 !important;">
+		<span class="mui-icon mui-icon-arrowleft">
+		</span>返回
+    </button>
+    <button id="back-home" class="back-home"></button>
+</header>
+<div class="search-fixed">
+    <div class="mui-search-area" style="width: 90%;margin: 0 5%;">
+        <input class="mui-search-area-input mui-input-clear" type="text" id="search1" placeholder="请输入公司名称搜索">
+        <button id="search"></button>
+    </div>
+</div>
+<section class="common-wrap bg-none ">
+    <!--<include file="Index:header" />-->
+    <div  style="margin-top: 1.5rem">
+        <div id="list" style="padding-bottom: 10%">
+            <div id="list1">
+                <foreach name="model" item="v" id="for">
+                    <div class="file-list blue-checkbox mb15" id={$v.name} style="height: 65px">
+                        <input name="check" type="checkbox" data-id={$v.id}>
+                        <div class="ml15 wd90" onclick="window.open('file_edit.html?id={$v.id}','_self')">
+                            <div class="gray-6" style="color:#4591fe">公司名称:{$v.name}</div>
+                            <div class="flex-between gray-9">
+                                <span>联系人:{$v.linkman}</span><span>手机:{$v.contact}</span>
+                            </div>
+                        </div>
+                    </div>
+                </foreach>
+                <eq name="model" value="empty">
+                    <div class="blue-checkbox mb15" id="empty" >
+                        <p style="color:#808080"> 没有数据</p>
+                    </div>
+                </eq>
+            </div>
+        </div>
+
+    </div>
+    <div class="order-reorder ptb15 plr25 footer">
+        <button class="myorder bg-e" id="toggleChecked" style="width: 21%">全选</button>
+        <button class="del bg-e" style="width: 21%" onclick="confirm()">删除</button>
+        <!-- <button class="myorder bg-e" onclick="edit()">编辑公司</button>-->
+        <button class="reorder" type="button" onclick="location='/ComCompany/file_edit.html'">新增公司</button>
+        <div class="menu-more">
+            <div onclick="showMore(this);">更多</div>
+            <div class="more-list" style="display: none;">
+                <button class="menu-del" onclick="location='permission_denied.html'" style="margin-right: 5px">导入导出</button>
+            </div>
+        </div>
+    </div>
+
+    <!--modal 确认删除-->
+    <div class="wrap-modal" id="add-good" style="display: none;">
+        <div class="modal-common-wrap modal">
+            <div class="modal-title bg-e gray-9">档案删除</div>
+            <div class="modal-content-text black-3">
+                <div class="tc">公司相关资料和工作任务会同步删除<br>是否确认删除</div>
+            </div>
+            <div class="modal-btn">
+                <button id="popup-close" class="popup-close">取消</button>
+                <button class="blue" id="popup-complete" class="popup-complete" onclick="del()">确定</button>
+            </div>
+        </div>
+    </div>
+    <!--modal end-->
+</section>
+<include file="UserSupervise:foot_access_file"/>
+<script>
+    function showMore(obj){
+        $(obj).next('.more-list').toggle();
+    }
+</script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.js"></script>
+<script src="/{$Think.APP_PATH}Public/mui/js/mui.min.js"></script>
+<script>
+    $('#come-back').on('click',function(){
+        //window.history.back();
+        window.location.href = '__MODULE__/ComCompany/index.html';
+    })
+    $('#back-home').on('click',function(){
+        window.location.href = '__MODULE__/Work/index.html';
+    })
+</script>
+<script type="text/javascript">
+    mui.init();
+    mui.ready(function() {
+        mui('.transfer-list').on('change', 'input', function() {
+            var nCheckBox = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            var transferBtn = document.getElementById('transfer');
+            if(nCheckBox){
+                if (transferBtn.classList.contains("mui-disabled")) {
+                    transferBtn.classList.remove("mui-disabled");
+                }
+            } else {
+                if (!transferBtn.classList.contains("mui-disabled")) {
+                    transferBtn.classList.add("mui-disabled");
+                }
+            }
+        });
+    });
+    function edit(){
+        var checked=$("input:checked");//获取所有选中的checkbox,chks是一个元素数组
+        if(checked.length>1 || checked.length<1){
+            layer.msg("请选择一条记录");
+            return;
+        }
+        window.location="/ComCompany/file_edit.html?id="+checked.data('id');
+    }
+
+    $('#edit').on('click',function(){
+        $('#edit-good').show();
+    })
+    $('.popup-close,.popup-complete').on('click',function(){
+        $(this).parents('.wrap-modal').hide();
+    })
+    $('#add').on('click',function(){
+        $('#add-good').show();
+    })
+
+    function confirm(){
+        var checked=$("input:checked");//获取所有选中的checkbox,chks是一个元素数组
+        if(checked.length<1){
+            layer.msg("请选择至少一条记录");
+            return;
+        }
+        $("#add-good").show();
+    }
+
+    function del(){
+        var checked=$("input:checked");
+        var data = new Array();
+        for(var i=0;i<checked.length;i++){
+            data[i] = checked[i].getAttribute("data-id");
+        }
+        console.log(data);
+        $.ajax({
+            url:"del",
+            data:{"data":data},
+            // dataType:'json',
+            success:function(result){
+                layer.msg("删除成功！");
+                $("#add-good").hide();
+                checked.parent().remove();
+            },
+            error:function(result){
+                layer.msg("删除错误！");
+                $("#add-good").hide();
+            }
+        })
+    }
+
+
+    $("#selectAll").on("click",function() {
+        var checkElements=document.getElementsByName('check');
+        for(var i=0;i<checkElements.length;i++){
+            var checkElement=checkElements[i];
+            checkElement.checked="checked";
+        }
+    })
+    $("#selectAllNo").on("click",function() {
+        var checkElements=document.getElementsByName('check');
+        for(var i=0;i<checkElements.length;i++){
+            var checkElement=checkElements[i];
+            checkElement.checked=null;
+        }
+    })
+
+
+    $('#search').on("click",function(){
+        window.location="search_result.html?name="+$("#search1").val();
+    })
+
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); // 构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg);  // 匹配目标参数
+        if (r != null) return decodeURI(r[2]); return null; // 返回参数值
+    }
+    $(function(){
+        var name = getUrlParam("name");
+        $("#search1").val(name);
+    })
+
+    var checkedAll = 0;
+    $("#toggleChecked").click(function(){
+        var checkElements = document.getElementsByName("check");
+        if(checkedAll == 0){
+            for(var i=0;i<checkElements.length;i++){
+                var checkElement=checkElements[i];
+                checkElement.checked="checked";
+                $("#toggleChecked").html("反选");
+                checkedAll=1;
+            }
+        }else{
+            for(var i=0;i<checkElements.length;i++){
+                var checkElement=checkElements[i];
+                checkElement.checked=null;
+                $("#toggleChecked").html("全选");
+                checkedAll =0;
+            }
+        }
+    })
+
+    var winHeight = $(window).height();
+    $(window).resize(function(){
+        var thisHeight=$(this).height();
+        if(winHeight - thisHeight >140){
+            $('.footer').css('position','static');
+            $('#list').css('padding-bottom','0');
+            $(".footer").hide();
+        }else{
+            $('.footer').css({'position':'fixed'});
+            $('#list').css('padding-bottom','10%');
+            $(".footer").show();
+        }
+    });
+
+
+</script>
+</body>
+</html>
