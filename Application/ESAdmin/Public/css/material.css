@@ -1,0 +1,334 @@
+#app {
+    width: 100%;
+    height: calc(100% - 13px);
+    background-color: #fff;
+}
+
+.c-header {
+    border-bottom: 1px solid #ebecec;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    color: #398bfe;
+    cursor: pointer;
+}
+
+.tab-span {
+    float: left;
+    width: 80px;
+    height: 31px;
+    line-height: 31px;
+    border: 1px solid #ebecec;
+    color: #9b9ea0;
+    margin-right: 4px;
+    background-color: #f6f9fe;
+}
+
+.on {
+    height: 29px;
+    line-height: 29px;
+    background: #fff;
+    color: #626262;
+    border-top: 3px solid #368bfe;
+    border-bottom: 1px solid #fff;
+}
+
+.search_ipt {
+    display: inline-block;
+    width: 360px;
+    height: 26px;
+    border: 1px solid #d3d3d3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 5px;
+    margin: 10px 20px 10px 0px;
+}
+
+.search_ipt:hover {
+    border: 1px solid #6eacfe;
+}
+
+.search_ipt input {
+    border: none;
+    height: 100%;
+    text-indent: 12px;
+    outline: none;
+}
+
+.btn_bg_blue {
+    display: inline-block;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background-color: #529bfd;
+    color: #fff;
+    padding: 0px 20px;
+    margin: 10px 10px;
+    cursor: pointer;
+}
+
+.btn_bg_blue:hover {
+    background-color: #6eacfe;
+}
+
+.show_box {
+    float: left;
+    position: relative;
+    width: 325px;
+    height: 270px;
+    margin: 10px;
+    background-color: #fff;
+    border: solid 1px #e7e7eb;
+    box-sizing: border-box;
+}
+.tuwen-title {
+    padding: 17px 13px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0;
+    font-size: 16px;
+}
+.tuwen-img {
+    width: calc(100% - 26px);
+    background-color: bisque;
+    margin: 0px 13px 5px;
+}
+.tuwen-lastupdata {
+    width: 148px;
+    margin-left: 10px;
+    font-size: 14px;
+    color: #929292;
+    background-color: white;
+}
+.tuwen-item{
+    padding: 5px 13px;
+    display: flex;
+    border-top: solid 1px #e7e7eb;
+    justify-content: space-between;
+    align-items: center;
+}
+.tuwen-item-title{
+    width: calc(100% - 75px);
+    height: 65px;
+    margin: 2.5px 0;
+    padding: 0 5px;
+    font-size: 16px;
+    overflow: hidden;
+    background-color: #d3d3d3;
+}
+.tuwen-item-img{
+    width: 65px;
+    height: 65px;
+    margin: 2.5px 0px;
+    background-color: #368bfe;
+}
+.tuwen-item-more{
+    height: auto;
+    width: 100%;
+    position: absolute;
+    z-index: 77;
+    right: 0px;
+    background-color: #fff;
+    border-bottom: solid 1px #e7e7eb;
+    box-sizing: border-box;
+}
+.tuwen-item-more-box{
+    width: 100%;
+    height: auto;
+    border-bottom: solid 1px #e7e7eb;
+    box-sizing: border-box;
+}
+
+.tuwen-tool {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.icon-btn-iseen{
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 5px 5px;
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-down.png");
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+.icon-btn-iseen:hover{
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-down-hover.png");
+}
+.tupian-name {
+    padding: 17px 13px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0;
+    font-size: 16px;
+}
+.tupian-img {
+    height: 170px;
+    width: calc(100% - 26px);
+    margin: 0px 13px;
+    overflow: hidden;
+}
+.tupian-tool {
+    height: 32px;
+    padding: 5px 10px;
+    text-align: right;
+}
+.yuyin-list-item {
+    width: 100%;
+    border-bottom: 1px solid #d3d3d3;
+    display: flex;
+    justify-content: space-between;
+}
+
+.yuyin-updatatime, .yuyin-title,.yuyin-operation {
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+}
+.yuyin-operation{
+    height: 30px;
+    padding: 10px 0;
+}
+.icon-img-down {
+    display: inline-block;
+    width: 14px;
+    height: 20px;
+    margin: 5px 5px;
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-img-down.png");
+    background-size: 100% 100%;
+    text-align: center;
+    cursor: pointer;
+}
+.icon-img-down:hover {
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-img-down-hover.png");
+}
+.icon-img-remove {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 5px 5px;
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-remove.png");
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+.icon-img-remove:hover{
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-sucai-remove-hover.png");
+}
+#mask{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 88;
+    background-color: #000000;
+    opacity: 0.5;
+}
+#synchronous-edit,#remove-edit {
+    position: fixed;
+    z-index: 99;
+    top: calc(50% - 150px);
+    left: calc(50% - 276px);
+    width: 552px;
+    height: 300px;
+    background-color: #ffffff;
+}
+.synchronous-edit-header,.remove-edit-header{
+    height: 30px;
+    padding: 10px 10px;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9fafb;
+    font-size: 16px;
+    color: #35323b;
+    cursor: move;
+}
+.synchronous-edit-content{
+    width:100%;
+    text-align:center;
+    font-size: 14px;
+    padding-top:55px;
+    color: #666666;
+    font-size: 16px;
+}
+.remove-edit-content{
+    padding-left: 67px;
+    font-weight:400;
+    font-size: 16px;
+    color: #666666;
+}
+.remove-edit-confirm{
+    float: left;
+    width: 88px;
+    height: 32px;
+    line-height: 32px;
+    background-color: #368bfe;
+    text-align:center;
+    margin: 0 7.5px;
+    cursor: pointer;
+    color: #f8fafb;
+}
+.remove-edit-cancel{
+    float: left;
+    width: 88px;
+    height: 32px;
+    line-height: 32px;
+    text-align:center;
+    margin: 0 7.5px;
+    cursor: pointer;
+    color: #368bfe;
+    border: solid 1px #368bfe;
+    box-sizing: border-box;
+}
+#img-edit {
+    width: 650px;
+    min-height: 420px;
+    position: fixed;
+    z-index: 99;
+    top: calc(50% - 250px);
+    left: calc(50% - 325px);
+    border: 1px solid #666;
+    background-color: #ffffff;
+}
+.img-edit-close{
+    position: absolute;
+    top:-40px;
+    right:-40px;
+    height:32px;
+    width:32px;
+    border-radius: 50%;
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/img-edit-close.png");
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+.img-edit-close:hover{
+    background-image: url("__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/img-edit-close-hover.png");
+}
+/* 媒体查询 */
+/* 大屏 */
+/* @media screen and (min-width:1366px) and (max-width:1920px){
+    .show_box {
+        width: 250px;
+    }
+    .tuwen-item-more{
+        width: 250px;
+    }
+} */
+/* 中屏 */
+/* @media screen and (min-width:1024px) and (max-width:1366px){
+    .show_box {
+        width: 180px;
+    }
+    .tuwen-item-more{
+        width: 180px;
+    }
+} */

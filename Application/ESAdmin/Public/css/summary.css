@@ -1,0 +1,174 @@
+ul li{list-style-type:none;}
+ul{padding: 0;}
+@media screen and (max-width: 480px) {
+    .attachment-container{position: relative}
+    .attachment-container  .empty-proxy{
+        background-repeat: no-repeat;
+        background-image: url("../images/icon/icon-empty.png");
+        background-size: 120px;
+        background-position: center top;
+        width: 100%;
+        height: 240px;
+        position: relative;
+    }
+
+    .attachment-container  .empty-proxy span{
+        position: absolute;
+        font-size: 1rem;
+        color: #ccc;
+        text-align: center;
+        width: 100%;
+        bottom: 10px;
+    }
+}
+@media screen and (min-width: 480px) {
+    .attachment-container{width:40vw; height:auto; position: relative}
+    .attachment-container  .empty-proxy{
+        background-repeat: no-repeat;
+        background-image: url("../images/icon/icon-empty.png");
+        background-size: 200px;
+        background-position: center top;
+        width: 100%;
+        height: 40vh;
+        position: relative;
+        background-color: #f5f5f5;
+    }
+
+    .attachment-container  .empty-proxy span{
+        position: absolute;
+        font-size: 1.2rem;
+        color: #ccc;
+        text-align: center;
+        width: 100%;
+        bottom: 10px;
+    }
+}
+.attachment-tabs ul{width: 100%; display: flex; flex-direction: row; align-items: center}
+.attachment-tabs ul li{
+    flex: 1;text-align: center;background: #fff; color: #ccc;height: 36px;line-height: 36px;
+    border:1px solid #d3d3d3; border-right-width:0;cursor: pointer;}
+.attachment-tabs ul .active{background: #0b95ff; color: #fff;border-color:#0b95ff}
+.attachment-tabs ul li:first-child{border-radius: 5px 0px 0px 0px;border-left:1px solid #d3d3d3}
+.attachment-tabs ul li:last-child{border-radius: 0px 5px 0px 0px;border-right:1px solid #d3d3d3}
+.attachment-container .records{height: 40vh; overflow-y: auto;padding: 0px;background-color: #f5f5f5;}
+.attachment-container .input-area{width:100%;}
+.attachment-container .input-area textarea{width:calc(100% - 20px);margin: 5px 0px;padding: 5px 10px;}
+.attachment-container .actions{ margin: 5px auto;display: flex; flex-direction: row; float:right}
+.attachment-container .input-attachment{
+    height:32px;
+    background-color: #eee;
+    background-repeat: no-repeat;
+    background-image: url("../images/icon/chat.png");
+    width:60px;
+    background-position: 10px center;
+    background-size: 24px;
+    line-height: 32px;
+    width:100%;
+    position: relative;
+}
+.attachment-container .input-attachment .tips{
+    padding-left: 42px;
+}
+.attachment-container .btn-attachment-add{
+    background-size: 24px;
+    background-repeat: no-repeat;
+    width:28px;
+    background-position: left center;
+    float: left;
+    height: 28px;
+    text-align: right;
+    margin-right: 5px;
+    cursor: pointer;
+    position: relative;
+}
+.attachment-container .icon-updata-img{
+    background-image: url("../images/icon/icon-attachment1.png");
+}
+.attachment-container .icon-updata-img:hover{
+    background-image: url("../images/icon/icon-attachment1-hover.png");
+}
+.attachment-container .icon-updata-file{
+    background-image: url("../images/icon/icon-attachment.png");
+}
+.attachment-container .icon-updata-file:hover{
+    background-image: url("../images/icon/icon-attachment-hover.png");
+}
+.attachment-container .attachments{overflow-x: auto;}
+.attachment-container .attachments li{float:left; margin: 5px;}
+.attachment-container .attachments li .img-wrap{border: 1px solid #ccc; padding: 5px;position: relative}
+.attachment-container .attachments img{height:32px; width:32px;text-align: center;}
+.attachment-container .attachments .btn-add-image{
+    background-repeat: no-repeat;
+    background-image: url("../images/icon/icon-addnew.png");
+    background-size: 32px;
+}
+.attachment-container .btn-attachment-add input[type="file"]{
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+}
+
+.attachment-container .attachment-icon{
+    background-repeat: no-repeat;
+    background-size: 32px;
+    width:32px;
+    height:32px;
+    background-position: center;
+}
+
+.attachment-container .attachment-icon-word{
+    background-image: url("../images/icon/icon-word.png");
+}
+
+.attachment-container .attachment-icon-excel{
+    background-image: url("../images/icon/icon-excel.png");
+}
+
+.attachment-container .attachment-icon-txt{
+    background-image: url("../images/icon/icon-txt.png");
+}
+
+.attachment-container .attachment-icon-unknown{
+    background-image: url("../images/icon/icon-unknown.png");
+}
+
+.attachment-container .attachments li .img-wrap .btn-item-remove{
+    width:12px; height: 12px;position: absolute; top:0; right:0;
+    background-repeat: no-repeat;
+    background-image: url("../images/icon/icon-remove.png");
+    background-size: 12px;
+}
+.attachment-container .records .record{
+    border: 1px #ccc solid;
+    width:96%;
+    margin: 10px auto;
+    border-radius: 5px;
+    box-shadow: 0 0 6px 0 rgba(152,181,229,0.37);
+    -webkit-box-shadow: 0 0 6px 0 rgba(152,181,229,0.37);
+    -moz-box-shadow: 0 0 6px 0 rgba(152,181,229,0.37);
+    -ms-box-shadow: 0 0 6px 0 rgba(152,181,229,0.37);
+    -o-box-shadow: 0 0 6px 0 rgba(152,181,229,0.37);
+}
+.attachment-container .records .time{
+    padding: 5px 5px 0;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-image: url("../images/icon/icon-trash.png");
+    background-size: 16px;
+    background-position: 98% center;
+    cursor: pointer;
+}
+.attachment-container .records .item-contents{
+    padding: 5px;
+    width:96%;
+    min-height: 48px;
+    margin: 0px auto;
+    border-bottom: 1px #ccc solid;
+}
+[v-cloak]{
+    display:none;
+}

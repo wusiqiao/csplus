@@ -1,0 +1,129 @@
+/* .step_slider{
+    overflow: hidden;
+    position: relative;
+} */
+/* .step_slider ul{
+    margin-top: 0px;
+    animation-duration: 2s;
+    animation-timing-function: ease;
+    animation-fill-mode: both;
+    background: url(../images/line04.gif) repeat-y 187px 0;
+}
+.step_slider ul{
+    
+}
+.step_slider ul li{
+    margin-top: 10px;
+    animation-duration: 2s;
+    animation-timing-function: ease;
+    animation-fill-mode: both;
+    background: url(../images/icon07.gif) no-repeat 180px 0;
+    padding-bottom: 30px;
+    zoom: 1;
+}
+.step_slider ul li h3{
+    float: left;
+    width: 168px;
+    text-align: right;
+    padding-right: 19px;
+    margin: 0;
+}
+.step_slider ul li dl{
+    float: left;
+    padding-left: 41px;
+    margin: 0;
+} */
+.step{
+	position: relative;
+}
+.step-button{
+	background-color: #3594CB;
+    color: #fff;
+	border-radius: 3px;
+	border: 0;
+	line-height: 28px;
+}
+.step-add-icon:before{
+	content: "\f0c7";
+}
+.step_slider{
+	margin-top: 15%;
+	margin-left: 3%;
+}
+.step_slider:before {
+	content: '';
+	position: absolute;
+	top:-15px;
+	height: 105%;
+	bottom: 0;
+	width: 10px;
+	background: #afdcf8;
+	left: 13%;
+	margin-left: -10px;
+}
+.step_slider li {
+	position: relative;
+}
+.step_slider  li .step_tmlabel{
+    margin: 0 0 15px 15%;
+    background: #3594cb;
+    color: #fff;
+    /* padding: 2em; */
+    font-size: 1.2em;
+    font-weight: 300;
+    line-height: 1.4;
+    position: relative;
+	border-radius: 5px;
+	width: 35%;
+	padding: 1.5em;
+	top: 2%;
+}
+.step_slider li .step_del{
+	display: block;
+    height: 30%;
+	width: 32px;
+	top: 5%;
+    /*padding-right: 100px;*/
+	position: absolute;
+	background: url(../images/icon/icon-del.png) no-repeat;
+	cursor: pointer;
+}
+.step_slider li .step_tmlabel h2{
+    margin-top: 0px;
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+}
+.step_slider li .step_tmlabel:after {
+	right: 100%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-right-color: #3594cb;
+	border-width: 10px;
+	top: 10px;
+}
+.step_slider  li .cbp_tmicon {
+	width: 10px;
+	height: 10px;
+	font-family: 'ecoico';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	font-size: 1.4em;
+	line-height: 40px;
+	-webkit-font-smoothing: antialiased;
+	position: absolute;
+	color: #fff;
+	background: #46a4da;
+	border-radius: 50%;
+	box-shadow: 0 0 0 8px #afdcf8;
+	text-align: center;
+	left: 12.7%;
+	top: -23%;
+	margin: 0 0 0 -25px;
+}

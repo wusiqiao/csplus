@@ -1,0 +1,180 @@
+::-webkit-scrollbar {
+	display: none;
+}
+.logo-part {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	height: 80px;
+	font-size: 18px;
+	color: #999999;
+}
+.logo-part .logo {
+	margin-right: 40px;
+}
+.login-wrap {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	min-width: 1000px;
+	min-height: 800px;
+	background: url(../images/bg/bg-login.png) no-repeat;
+	background-size: 100% 100%;
+}
+.login-wrap .top-bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 80px;
+	background-color: #ffffff;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 40px;
+}
+.login-wrap .login-main {
+    position: absolute;
+    top: 20%;
+    right: 15%;
+    width: 320px;
+    height: 420px;
+    padding: 30px 20px;
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+.login-main .form-group {
+	padding: 30px 20px;
+}
+.login-main .welcome {
+	color: #0077f4;
+	font-size: 20px;
+}
+.login-main i.account {
+	width: 17px;
+	height: 19px;
+	background: url(../images/icon/icon-account.png) no-repeat;
+}
+.login-main i.password {
+	width: 16px;
+	height: 21px;
+	background: url(../images/icon/icon-password.png) no-repeat;
+}
+.login-main .input-row {
+	display: flex;
+	align-items: center;
+	border-bottom: 1px solid #eeeeee;
+	margin-top: 25px;
+}
+.login-main .input-row input  {
+	border: none;
+	outline: none;
+	width: 80%;
+	height: 35px;
+	padding: 5px 10px 5px 15px;
+}
+.login-main .input-row input::-webkit-input-placeholder  {
+	font-size: 14px;
+}
+.login-main .login-btn {
+	width: 90%;
+	height: 48px;
+	text-align: center;
+	line-height: 48px;
+	margin: 80px auto 0;
+	color: #f8fafb;
+	border-radius: 5px;
+	background-color: #368bfe;
+}
+.login-main .check {
+	display: flex;
+	align-items: center;
+	padding: 10px 0;
+	color: #999999;
+	font-size: 12px;
+	margin-top: 20px;
+}
+.login-main .check label {
+	margin-left: 10px;
+}
+.login-main .check input[type=checkbox] {
+	content: '';
+    width: 18px;
+    height: 18px;
+    background-image: url(../images/icon/icon-uncheck.png);
+    background-repeat: no-repeat;
+    background-size: 18px 18px;
+    background-position: center;
+    outline: none;
+    background-color: transparent;
+    -webkit-appearance: none;
+}
+.login-main .check input[type=checkbox]:checked {
+	content: '';
+    width: 18px;
+    height: 18px;
+    background-image: url(../images/icon/icon-select.png);
+    background-repeat: no-repeat;
+    background-size: 18px 18px;
+    background-position: center;
+    outline: none;
+    background-color: transparent;
+    -webkit-appearance: none;
+}
+.login-wrap .heart{
+	position: absolute;
+	top: 20%;
+	left: 15%;
+	height: 600px;
+	animation: heart 1.3s ease-in-out infinite alternate;
+}
+.login-wrap .heart img {
+	height: 100%;
+}
+
+@keyframes heart {
+	from{transform:translate(0,0)}
+	to{transform:translate(0,6px)}
+}
+@media only screen and (max-width: 1650px) {
+	.login-wrap .login-main {
+	    right: 10%;
+	}
+	.login-wrap .heart {
+	    left: 10%;
+	}
+}
+@media only screen and (max-width: 1350px) {
+	.login-wrap .login-main {
+	    right: 5%;
+	}
+	.login-wrap .heart {
+	    left: 5%;
+	}
+}
+@media only screen and (max-width: 1150px) {
+	.login-wrap .login-main {
+	    right: 2%;
+	}
+	.login-wrap .heart {
+	    left: 2%;
+	}
+}
+@media only screen and (max-width: 1075px) {
+	.login-wrap .login-main {
+	    right: 2%;
+	}
+	.login-wrap .heart {
+	    left: 1%;
+	    height: 525px;
+	}
+}
+@media only screen and (max-height: 800px) {
+	.login-wrap .heart {
+	    height: 500px;
+
+	}
+}

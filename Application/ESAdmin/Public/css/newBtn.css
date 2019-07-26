@@ -1,0 +1,159 @@
+.c-header {
+    margin: 2px 18px;
+    border-bottom: 1px solid #ebecec;
+    height: 32px;
+}
+.tab-span {
+    float: left;
+    width: 98px;
+    height: 31px;
+    line-height: 31px;
+    text-align: center;
+    font-size: 14px;
+    color: #676767;
+    margin-right: 4px;
+    border: 1px solid #ebecec;
+    background-color: #f6f9fe;
+    cursor: pointer;
+}
+.tab-span:hover{
+    height: 29px;
+    line-height: 29px;
+    border-top: 3px solid #529bfd;
+    border-bottom: 1px solid #fff;
+}
+.tab-span-on {
+    height: 29px;
+    line-height: 29px;
+    background-color: #fff;
+    border-top: 3px solid #368bfe;
+    border-bottom: 1px solid #fff;
+}
+
+/* 2.筛选标签按钮 */
+.btn-label {
+    display: inline-block;
+    width: 84px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: #222222;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid #d3d3d3;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    padding: 0px 12px;
+    margin: 11px 6px;
+}
+
+.btn-label:hover {
+    color: #529bfd;
+    border: 1px solid #529bfd;
+}
+
+.btn-label-on {
+    color: #368bfe;
+    border: 1px solid #368bfe;
+}
+
+/* 3.状态筛选按钮 */
+.btn-screening {
+    display: inline-block;
+    width: 84px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    font-size: 14px;
+    color: #368bfe;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    margin: 11px 8px;
+}
+
+.btn-screening:hover {
+    color: #ffffff;
+    background-color: #529bfd;
+}
+.btn-screening-on{
+    color: #ffffff;
+    background-color: #368bfe;
+}
+.btn-screening-disable{
+    color: #ffffff;
+    background-color: #bfbfbf;
+}
+.btn-screening-disable:hover{
+    cursor: no-drop;
+    color: #ffffff;
+    background-color: #bfbfbf;
+}
+/* 4.确认/取消按钮 */
+.btn-confirm{
+    display: inline-block;
+    width: 84px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #368bfe;
+    margin: 0px 8px;
+    cursor: pointer;
+}
+.btn-confirm:hover{
+    background-color: #529bfd;
+}
+.btn-cancel{
+    display: inline-block;
+    width: 84px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    font-size: 14px;
+    color: #368bfe;
+    background-color: #f6f9fe;
+    border: 1px solid #368bfe;
+    box-sizing: border-box;
+    margin: 0px 8px;
+    cursor: pointer;
+}
+.btn-cancel:hover{
+    background-color: #ffffff;
+    border: 1px solid #529bfd;
+}
+/* 5.不定宽功能按钮 */
+.btn-speed{
+    display: inline-block;
+    width: auto;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #368bfe;
+    margin: 11px 8px;
+    padding: 0 20px;
+    cursor: pointer;
+}
+.btn-speed:hover{
+    background-color: #529bfd;
+}
+.btn-speed-disable{
+    display: inline-block;
+    width: auto;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #bfbfbf;
+    margin: 11px 8px;
+    padding: 0 20px;
+    cursor: not-allowed;
+}

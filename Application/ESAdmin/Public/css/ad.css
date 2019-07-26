@@ -1,0 +1,79 @@
+/*html,body{
+	font-size: calc(266.67% + 57.3333 * (100vw - 320px) / 430);
+}*/
+.activity-wrap {
+	position: relative;
+	width: 100%;
+	min-width: 990px;
+	padding-bottom: 1px;
+	background: linear-gradient(to right, #f9505d 0%,#f89232 100%);;
+	background-size: 100% 100%;
+}
+.activity-wrap .top-Theme {
+	margin-bottom: -30%;
+}
+.activity-wrap img {
+	width: 100%;
+}
+.activity-wrap .step {
+	position: relative;
+	margin-bottom: 160px;
+}
+.to-try ,.to-buy {
+	position: absolute;
+	left: 40%;
+	bottom: 15%;
+	width: 20%;
+}
+.to-try img,.to-buy img {
+	width: 25%;
+}
+.to-link {
+	position: absolute;
+	right: 20%;
+	bottom: 10%;
+	color: #4591fe;
+	font-size: 12px;
+}
+.activity-wrap .step img {
+	display: block;
+	margin: 0 auto;
+	width: 65%;
+}
+.code-img {
+	position: absolute;
+    right: 21%;
+    bottom: 18%;
+    width: 8%;
+    font-size: 12px;
+    text-align: center;
+}
+.activity-wrap .step .code-img img {
+	width: 100%;
+	height: 100%;
+}
+@keyframes heart {
+    0% {
+        top: 20%;
+    }
+
+    50% {
+        top: 22%;
+    }
+
+    100% {
+        top: 20%;
+    }
+}
+.icon-float {
+	display: none;
+    position: fixed;
+    right: 1%;
+    top: 20%;
+    z-index: 1002;
+    background-size: cover;
+}
+.icon-float.heart {
+	display: block;
+	animation: heart 2.4s infinite;
+}

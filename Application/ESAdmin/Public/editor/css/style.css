@@ -1,0 +1,140 @@
+/*.folder-content{
+    position: relative;
+    height: 100%;
+}*/
+.folder-content .folder-address-nav{
+    position: absolute;
+    left:0px;
+    bottom: 0px;
+    z-index: 99;
+    background: #F5F5F5;
+    width: 100%;
+    -moz-box-shadow: 2px 2px 10px #000;
+    -webkit-box-shadow: 2px 2px 10px #000;
+    box-shadow:2px 2px 10px #000;
+}
+.folder-content .folder-address-nav .folder-action{
+    padding-left: 5px;
+}
+
+.folder-content .folder-address-nav .folder-action a{
+    width:32px;
+    height:32px;
+    display: inline-table;
+    color: #ccc;
+}
+
+.folder-content .folder-address-nav .folder-action a:hover{
+    width:32px;
+    height:32px;
+    display: inline-table;
+    color: #00b7ee;
+}
+.folder-content .ul-folder{
+
+}
+.folder-content .ul-folder li{
+    width: 96px;
+    height: 120px;
+    display: block;
+    float: left;
+    margin: 5px;
+    position: relative;
+    border: 1px solid #fff;
+}
+
+.folder-content .ul-folder li:hover{
+    border-color: #ccc;
+    background-color: #EEE;
+}
+
+.folder-content .ul-folder li .folder{
+    width: 100%;
+    height: 96px;
+    background:url("../images/folder.png") center center;
+    cursor: pointer;
+}
+
+.folder-content .ul-folder li .folder-name{
+    width: 100%;
+    height: 24px;
+}
+
+.folder-content .ul-folder input{
+    border: 1px #fff solid;
+    text-align: center;
+    width: 98%;
+    display: block;
+}
+.folder-content .ul-folder input:hover{
+    border-color: #ccc;
+}
+
+.folder-content .ul-folder .folder-remove{
+    width:24px;
+    height:24px;
+    position: absolute;
+    right:0;
+    top:0;
+}
+.folder-content .ul-folder .folder-remove:hover{
+    right:1px;
+    top:1px;
+}
+.folder-content .ul-folder .folder-remove:hover{
+    right:1px;
+    top:1px;
+}
+
+.tab-attachment .file-list{
+    /*    width:100%;*/
+    display: none;
+    /*    overflow: hidden;*/
+}
+
+#kind-value-list li {
+    float: left;
+    display: inline-table;
+    width: 24%;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 6px 0px 6px 0px;
+    font-size: 14px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin: 0px 3px 3px 0px;
+    cursor: pointer;
+    text-align: center;
+}
+#kind-value-list li[class='selected'] {
+    background: #5f5f5f;
+    color: #fff;
+    border-color: #00aaee;
+    box-shadow: 0 0 5px #00aaee;
+}
+.property-content{border: 1px #ccc solid;margin: 5px auto 20px auto;padding: 10px 20px; width:80%;}
+.input-contents input[type=text]{width:98%}
+.input-contents li{float: left; width:100%}
+.input-contents li .title{padding: 5px 0px}
+.input-contents .half-width{width: 49%;padding-right: 1%}
+.input-contents .half-width .input{width:98%;}
+.input-contents .third-width{width: 33%;padding-right: 0.3%}
+.input-contents .third-two-width{width: 66%;padding-right: 0.3%}
+.input-contents .third-width .input{width:98%;}
+.input-contents textArea{width:100%;border-radius: 5px}
+.input-contents .quarter-width{width: 24%;padding-right: 0.2%}
+.input-contents .quarter-width .input{width:96%;}
+
+.top-content{width: 95%;        text-align: center;margin: 10px auto;}
+table.gridtable {font-family: verdana,arial,sans-serif;font-size:11px;color:#333333;border-width: 1px;border-color: #666666;border-collapse: collapse;width: 100%;}
+table.gridtable th {border-width: 1px;padding: 8px;border-style: solid;border-color: #666666;background-color: #dedede;}
+table.gridtable td {border-width: 1px;padding: 8px;border-style: solid;border-color: #666666;background-color: #ffffff;}
+table.gridtable td.footer{text-align: left;border: 0px}
+.bottom-content{width: 95%; text-align: center;margin: 10px auto;}
+.attachment-view{cursor: move; position:absolute; top: 0px; left: 0px; background-color: #FFF; border: 1px solid #CCCCCC;  -webkit-box-shadow: 10px 10px 25px #ccc;-moz-box-shadow: 10px 10px 25px #ccc;box-shadow: 10px 10px 25px #ccc;}
+.bottom-content-header{border-width: 1px;padding: 8px;border-style: solid;border-color: #666666;background-color: #dedede;border-bottom-width: 0px;}
+.attachment-view-close{position: absolute; right:5px; top:5px; color: red; font-size: 22px}
+.top-content .water{width:200px;height:85px;position: absolute;right: 20px;top:0px}
+.subject-item{position: relative}
+.subject-item a{position: absolute; right: 3px; top:10px; color: #ccc}
+

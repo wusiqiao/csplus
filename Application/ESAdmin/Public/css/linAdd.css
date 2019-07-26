@@ -1,0 +1,322 @@
+.fl{
+	float:left;
+}
+.fr{
+	float:right;
+}
+.clearFix::after{
+	display: block;
+	content: '';
+	clear: both;
+}
+.content-wrap{
+	padding-left: 20px;
+}
+.spanBtn{
+	margin:0 4px;
+    padding:6px 16px;height:34px;border:2px solid #ccc;
+    border-radius:5px;cursor:pointer;user-select: none;
+}
+.btnOn{
+	background-color:#e5e5e5;
+}
+.c-header{
+	margin: 2px 15px;
+	border-bottom: 1px solid #ebecec;
+	height: 32px;
+	text-align: center;
+	line-height: 32px;
+	color: #398bfe;
+	cursor: pointer;
+	display: flex;
+}
+.c-header span{
+	width: 80px;
+	height: 31px;
+	border: 1px solid #ebecec;
+	color: #9b9ea0;
+	margin-right: 4px;
+	background-color: #f6f9fe;
+	flex: initial;
+}
+.c-header span:first-child {
+	border-radius: 0;
+}
+.c-header span:last-child{
+	border-radius: 0;
+}
+/*.c-header span:first-child{
+	border-radius:5px 0 0 5px;
+}
+.c-header span:last-child{
+	border-radius:0 5px 5px 0;
+}*/
+/*.c-header span + span{*/
+	/*border-left:none;*/
+/*}*/
+.c-header span.on{
+	height: 29px;
+	background: #fff;
+	color: #626262;
+	border-top: 3px solid #368bfe;
+	border-bottom:1px solid #fff;
+}
+.c-select p .addSpan{
+	display: inline-block;
+	padding: 0 15px;
+	height:40px;
+	line-height: 40px;
+	cursor: pointer;
+	color: #fff;
+	background:#398bfe;
+	border-radius: 5px;
+}
+.c-table{
+	width:100%;
+	border-collapse:collapse;
+	text-align: center;
+	line-height: 50px;
+}
+.c-table thead tr{
+	background: #fbfbfb;
+}
+.c-table tbody tr:nth-child(even){
+	background: #fbfbfb;
+}
+.c-select .chooseSpan{
+	display: inline-block;
+	width: 56px;
+	height:30px;
+	margin:0 5px;
+	border-radius: 5px;
+	line-height: 30px;
+	color:#398bfe;
+	background: transparent;
+	cursor: pointer;
+	text-align: center;
+}
+.c-select .chooseSpan.on{
+	background:#398bfe;
+	color:#fff;
+}
+.search-table .width100{
+	width:100px;
+	text-align: right;
+}
+.search-table .padding70{
+	padding-left:90px;
+}
+.details-content .important{
+	color:red;
+}
+.details-section{
+	background:#f5f5f5;
+	text-indent: 10px;
+}
+.details-section .line{
+	height:45px;
+	line-height: 45px;
+	border-bottom: 1px solid #ccc;
+}
+.search-table .width120{
+	width:160px;
+	text-align:right;
+}
+.search-table .width124{
+	width:110px;
+	text-align:right;
+}
+.search-table .width125{
+	width:120px;
+	text-align:right;
+}
+.search-table .width130{
+	width:130px;
+	text-align:right;
+}
+.search-table .width140{
+	width:140px;
+	text-align:right;
+}
+.search-table .width145{
+	width:156px;
+	text-align:right;
+}
+.search-table .width122{
+	width:122px;
+	text-align:right;
+	padding: 0 1px;
+}
+.search-table tr{
+	height:45px;
+	text-indent:0;
+}
+.search-table .block{
+	width: 100px;
+}
+.search-table .validatebox-text{
+	width:270px;
+}
+.details-section .black{
+	height:45px;
+	line-height: 45px;
+	background: #eee;
+}
+.details-section textarea{
+	width:500%;
+	height:50px;
+	resize: none;
+	background: transparent;
+}
+.details-section .upload{
+	width:90px;
+	height:30px;
+	background:#398bfe;
+	border: none;
+	border-radius: 5px;
+	outline:none;
+	cursor: pointer;
+	color:#fff;
+	line-height: 30px;
+	text-align: center;
+}
+.details-section .tab-div p.title{
+	margin: 0;
+	height:40px;
+	line-height: 40px;
+	text-align: center;
+}
+.details-section .tab-div p.title span{
+	background-color:#CCE8EB;
+}
+.details-section .tab-div p.title span.icon-addbtn{
+	background-color:transparent;
+}
+.tab-div .chosen-container-single .chosen-single span{
+	width: 100%;
+	background-color: #fff;
+}
+.sList{
+	padding:10px 0;
+}
+.details-section .tab-div p{
+	margin: 0;
+	text-indent: 0;
+}
+.details-section .tab-div p::after{
+	display: block;
+	content: '';
+	clear: both;
+}
+.details-section .tab-div p span{
+	float: left;
+}
+.details-section .tab-div p:nth-child(odd) .sList{
+	float: left;
+	height:34px;
+	text-align: center;
+	background-color: #CCE8EB;
+}
+.tab-div p:nth-child(even) .sList{
+	float: left;
+	height:34px;
+	text-align: center;
+	background-color: #fff;
+}
+.tab-div p span.icon-addbtn,.details-section .tab-div p span.icon-delbtn{
+	width: 26px;
+	background-color:transparent !important;
+	background-repeat: no-repeat;
+	position: relative;
+	top:7px;
+	left:5px;
+	margin-left: 0;
+	cursor: pointer;
+}
+.details-section .tab-div p span.icon-delbtn{
+	top:14px;
+}
+.tip .datagrid-cell-check label{
+	position: relative;
+	top:-5px;
+}
+.tip input,.tip select{
+	width:80px;
+}
+.tab-list{
+	margin:15px 0;
+}
+.tab-list table{
+	float:left;
+	width:auto;
+	text-indent: 0;
+}
+.tab-list .icon-delbtn{
+	margin:0;
+}
+.tab-list .margin60{
+	margin-left:60px;
+}
+.tab-list table th,.tab-list table td{
+	padding:0 10px;
+}
+.tab-list tbody tr:nth-child(odd){
+	background:#fff;
+}
+.tab-list tbody tr:nth-child(even){
+	background:#f7f7f9;
+}
+.details-wrap .inp-grey .chosen-container-single .chosen-single{
+	background:#f7f5f6;
+}
+.details-wrap .inp-grey .search-table .validatebox-text{
+	background:#f7f5f6;
+}
+input[type=checkbox].css-checkbox + label.css-label{
+    position: relative;
+    top:-2px;
+    left:-5px;
+}
+.table-addInfo .c-table{
+	width:680px !important;
+}
+.table-addInfo .addDel .addRow,.table-addInfo .addDel .DelRow{
+	display: block;
+	text-indent:0;
+	height:51px;
+	margin-left: 10px;
+	cursor: pointer;
+}
+.table-addInfo .addDel .addRow span,.table-addInfo .addDel .DelRow span{
+	margin-top: 13px;
+}
+.table-addInfo .icon-addbtn,.table-addInfo .icon-delbtn{
+	background-repeat: no-repeat;
+	margin-left: 10px;
+}
+.offsetBox input[type=checkbox].css-checkbox + label.css-label{
+	top:4px;
+}
+.offsetBox1 input[type=checkbox].css-checkbox + label.css-label{
+	top:0;
+}
+
+.details-section .newTab .textbox{
+	width:120px !important;
+	height:32px !important;
+}
+.express-box input[type=checkbox].css-checkbox + label.css-label{
+	left:7px;
+}
+
+
+
+
+
+
+
+
+
+
+
+

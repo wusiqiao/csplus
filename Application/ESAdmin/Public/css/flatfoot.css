@@ -1,0 +1,139 @@
+.whole-div{
+    display: flex;
+    margin: 25px 0;
+    padding: 10px 15px;
+}
+.whole-small-div{
+    height: 40px;
+    padding: 10px 15px;
+    margin: 25px 0;
+}
+.whole-substance{
+    flex:0.5;
+}
+.whole-message{
+    flex:1;
+}
+.whole-button{
+    padding: 7px 12px;
+    background-color: #368bfe;
+    border-radius: 2px;
+    color: #fff;
+    margin: 0 25px;
+}
+.whole-title{
+    height: 20px;
+    position: relative;
+}
+.whole-title .title-message{
+    display: -webkit-inline-box;
+    height: 23px;
+    line-height: 23px;
+    position: absolute;
+    margin: 0 20px;
+    font-family: MicrosoftYaHei-Bold;
+    font-size: 14px;
+    font-weight: 800;
+    font-stretch: normal;
+    color: #666666;;
+}
+.whole-title .title-tip{
+    height: 23px;
+    width: 6px;
+    display: -webkit-inline-box;
+    border-radius: 3px;
+}
+.whole-substance .whole-lattice{
+    padding: 0 10%;
+}
+.whole-substance .whole-lattice .lattice-block{
+    float: left;
+    width: 33%;
+    text-align: center;
+}
+.whole-substance .whole-lattice .lattice-block .lattice-title{
+    font-family: MicrosoftYaHei;
+    font-size: 26px;
+    font-weight: normal;
+    font-stretch: normal;
+    line-height: 24px;
+    letter-spacing: 0px;
+    color: #666666;
+    margin-top: 55px;
+}
+.whole-substance .whole-lattice .lattice-block .lattice-message{
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    line-height: 24px;
+    letter-spacing: 0px;
+    color: #959595;
+    margin-top: 10px;
+}
+.whole-message .whole-queue{
+    padding: 40px;
+}
+.whole-message .whole-queue ul{
+    color:#666;
+}
+.whole-message .whole-queue ul li{
+    list-style-type: disc;
+    display: list-item;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    line-height: 40px;
+    letter-spacing: 0px;
+}
+.bgb{
+    background-color: #368bfe;
+}
+.bgr{
+    background-color: #ff3725;
+}
+/*new*/
+.extra-black{
+    display: flex;
+    margin: 30px 15px;
+}
+.extra-black .extra-black-title{
+    flex: .8;
+    text-align: right;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    line-height: 30px;
+    letter-spacing: 0px;
+    color: #666666;
+}
+.extra-black .extra-black-input{
+    flex: 1;
+    text-align: right;
+}
+.whole-viewshow{
+    padding: 25px 125px;
+    font-family: MicrosoftYaHei;
+    font-size: 16px;
+    font-weight: normal;
+    font-stretch: normal;
+    line-height: 30px;
+    letter-spacing: 0px;
+    color: #666666;
+}
+.whole-viewshow div{
+    margin: 10px 0;
+    width: 450px;
+}
+.whole-list{
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+}
+.whole-list div{
+    float: left;
+    width: 200px;
+    margin: 9px 0 0 40px;
+}

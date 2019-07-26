@@ -1,0 +1,422 @@
+ul li{list-style-type:none;}
+ul{padding: 0;}
+/* 主体容器 */
+.attachment-container{
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+/* 左侧 */
+#attach-left-list{
+    width:250px;
+    height: 615px;
+    overflow:auto;
+    position: relative;
+    background-color: #e5e5e6;
+}
+#attach-left-list::-webkit-scrollbar {
+    width: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+}
+#attach-left-list::-webkit-scrollbar-thumb {
+    background: #b8b4b4;
+    border-radius: 4px;
+}
+/* 聊天对象分组 */
+.attach-user-group{
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 1px 1px 3px #d3d3d3;
+}
+/* 分组标题 */
+.attach-usergroup-title{
+    position: relative;
+    width: 230px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    background-color: #deeefd;
+    cursor: pointer;
+}
+.attach-usergroup-title img{
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+.attach-usergroup-title span{
+    flex: 1;
+    color: #333;
+}
+.icon-groupdown{
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    background-size: 100% 100%;
+    background-image: url("../images/icon/c10.png");
+    margin: 0 10px;
+}
+.attach-groupcontent{
+    height: 0;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+/* 聊天用户搜索 */
+.attachment-userlist-search{
+    padding:0 10px;
+}
+.attachment-userlist-search input{
+    width:100%;
+    height: 28px;
+    line-height: 28px;
+    border: 1px solid #d3d3d3;
+    outline: none;
+    text-indent: 8px;
+    box-sizing: border-box;
+    margin: 5px 0;
+}
+/* 聊天对象列表 */
+.attach-user-list{
+    overflow: hidden;
+}
+.attach-userlist-item{
+    padding: 10px;
+    border-top: 1px solid #d3d3d3;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    cursor: pointer;
+}
+.attach-userlist-item.active{
+    background-color: #c5c5c6;
+}
+/* 新增组群 */
+.attach-add-group{
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+}
+/* 消息未读提示红点 */
+.red-dot{
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    color: #fff;
+    background-color: red;
+}
+/* 信息 */
+.attach-userinfo-txt{
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 5px 0;
+}
+/* 右侧 */
+#attach-right-box{
+    width: 650px;
+    height: 615px;
+    overflow: hidden;
+    position: relative;
+}
+/* tab分栏 */
+.attach-right-header{
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+/* 消息记录 */
+#history{
+    width: 100%;
+    height: 430px;
+    overflow: hidden;
+    position: relative;
+    background-color: #f5f5f5;
+}
+.attachment-container .records{
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 0px;
+}
+.attachment-container ul.records li{
+    /* border-top:1px solid #d3d3d3; */
+    padding: 10px 0;
+    margin: 0 5px;
+    text-align: center;
+}
+ul.records::-webkit-scrollbar {
+    width: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+}
+ul.records::-webkit-scrollbar-thumb {
+    background: #b8b4b4;
+    border-radius: 4px;
+}
+.item-contents{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.item-contents>img{
+    width: 50px;
+    height: 50px;
+    border-radius: 3px;
+    margin: 0 10px;
+}
+.contents-name{
+    margin: 0;
+    padding: 0;
+    color: #666;
+}
+.contents-direction{
+    max-width: 460px;
+    padding: 8px 16px;
+    background-color: #fff;
+    text-align: left;
+    border: 1px solid #d3d3d3;
+    word-break: break-all;
+}
+/* 无消息记录提示 */
+.attachment-container .empty-proxy{
+    background-repeat: no-repeat;
+    background-image: url("../images/icon/icon-empty.png");
+    background-size: 200px;
+    background-position: center 80px;
+}
+.attachment-container .empty-proxy span{
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    font-size: 20px;
+    text-align: center;
+    color: #ccc;
+}
+/* 附件 */
+#attachment,#attachmanner{
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    width: 0;
+    height: 100%;
+    background-color: #f5f5f5;
+    box-shadow: 1px 1px 3px #d3d3d3; 
+    transition: all 0.2s;
+}
+.attachment-header,.attachmanner-header{
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #333;
+    background-color: #eee;
+    border: 1px solid #d3d3d3;
+}
+.attachment-databox,.attachmanner-databox{
+    position: relative;
+    height: calc(100% - 34px);
+    padding: 0 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.attachmanner-databox{
+    height: calc(100% - 73px);
+}
+.attachment-databox::-webkit-scrollbar,.attachmanner-databox::-webkit-scrollbar{
+    width: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+}
+.attachment-databox::-webkit-scrollbar-thumb,.attachmanner-databox::-webkit-scrollbar-thumb {
+    background: #b8b4b4;
+    border-radius: 4px;
+}
+.attachmanner-member{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+}
+.attachmanner-member-item{
+    padding: 5px 5px;
+    overflow: hidden;
+    position: relative;
+    /* width: 40px; */
+}
+/* 工具栏图标 */
+.attachment-container .btn-attachment-add{
+    float: left;
+    width:20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-right: 10px;
+    cursor: pointer;
+    position: relative;
+}
+.attachment-container .btn-attachment-add input[type="file"]{
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+.attachment-container .icon-updata-img{
+    background-image: url("../images/icon/icon-attachment1.png");
+}
+.attachment-container .icon-updata-img:hover{
+    background-image: url("../images/icon/icon-attachment1-hover.png");
+}
+.attachment-container .icon-updata-file{
+    background-image: url("../images/icon/icon-attachment.png");
+}
+.attachment-container .icon-updata-file:hover{
+    background-image: url("../images/icon/icon-attachment-hover.png");
+}
+/* 输入框 */
+#txt-content {
+    height: 80px;
+    padding: 0px 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    outline: none;
+    word-break: break-all;
+}
+#txt-content::-webkit-scrollbar {
+    width: 4px;
+    background-color: #eee;
+    border-radius: 2px;
+}
+#txt-content::-webkit-scrollbar-thumb {
+    background: #b8b4b4;
+    border-radius: 2px;
+}
+/* 图片预览 */
+.previewBox {
+    width: 80vw;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.previewBox img {
+    width: 100%;
+}
+.previewBox::-webkit-scrollbar {
+    width: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+}
+.previewBox::-webkit-scrollbar-thumb {
+    background: #b8b4b4;
+    border-radius: 4px;
+}
+
+.attachment-container .actions{ 
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 30px;
+    position: relative;
+    z-index: 8;
+}
+
+.attachment-container .attachments{overflow-x: auto;}
+.attachment-container .attachments li{float:left; margin: 5px;}
+.attachment-container .attachments li .img-wrap{border: 1px solid #ccc; padding: 5px;position: relative}
+.attachment-container .attachments img{height:32px; width:32px;text-align: center;}
+.attachment-container .attachments .btn-add-image{
+    background-repeat: no-repeat;
+    background-image: url("../images/icon/icon-addnew.png");
+    background-size: 32px;
+}
+
+.attachment-container .attachment-icon{
+    background-repeat: no-repeat;
+    background-size: 32px;
+    width:32px;
+    height:32px;
+    background-position: center;
+    background-image: url("../images/icon/icon-unknown.png");
+}
+
+.attachment-container .attachment-icon-word{
+    background-image: url("../images/icon/icon-word.png");
+}
+.attachment-container .attachment-icon-doc{
+    background-image: url("../images/icon/icon-word.png");
+}
+.attachment-container .attachment-icon-docx{
+    background-image: url("../images/icon/icon-word.png");
+}
+
+.attachment-container .attachment-icon-excel{
+    background-image: url("../images/icon/icon-excel.png");
+}
+.attachment-container .attachment-icon-xls{
+    background-image: url("../images/icon/icon-excel.png");
+}
+.attachment-container .attachment-icon-xlsx{
+    background-image: url("../images/icon/icon-excel.png");
+}
+
+.attachment-container .attachment-icon-txt{
+    background-image: url("../images/icon/icon-txt.png");
+}
+
+.attachment-container .attachment-icon-unknown{
+    background-image: url("../images/icon/icon-unknown.png");
+}
+
+.attachmanner-member-item .btn-item-remove{
+    width:12px; height: 12px;position: absolute; top:0; right:0;
+    background-repeat: no-repeat;
+    background-image: url("../images/icon/icon-remove.png");
+    background-size: 12px;
+    cursor: pointer;
+}
+
+.attachment-container .attachments li .img-wrap .btn-item-remove{
+    width:12px; height: 12px;position: absolute; top:0; right:0;
+    background-repeat: no-repeat;
+    background-image: url("../images/icon/icon-remove.png");
+    background-size: 12px;
+    cursor: pointer;
+}
+.attachment-container .records .record{
+    border: 1px #ccc solid;
+    width:96%;
+    margin: 10px auto;
+    border-radius: 5px;
+    box-shadow: 0 0 6px 0 rgba(152,181,229,0.37);
+    -webkit-box-shadow: 0 0 6px 0 rgba(152,181,229,0.37);
+    -moz-box-shadow: 0 0 6px 0 rgba(152,181,229,0.37);
+    -ms-box-shadow: 0 0 6px 0 rgba(152,181,229,0.37);
+    -o-box-shadow: 0 0 6px 0 rgba(152,181,229,0.37);
+}
+.attachment-container .records .time {
+    text-align: center;
+    display: inline-block;
+    margin: 5px auto;
+    padding: 5px 10px;
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, .2);
+    color: #fff;
+}
+[v-cloak]{
+    display:none;
+}

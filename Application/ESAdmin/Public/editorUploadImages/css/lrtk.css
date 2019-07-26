@@ -1,0 +1,25 @@
+﻿/*********************************************************************************************************
+This CS_ONLINE plugin was designed by jason.leung. Please feel free to contact me if any problems. Thanks.
+You could link to shlzh1984.gicp.net to leave a message. Thank you for your support.
+Email: 147430218@qq.com
+SinaWeibo: @切片面包
+*********************************************************************************************************/
+/* Style of plugin is as follows */
+#cs_online {width:450px; height:250px; border:1px solid #ccc; position:fixed; right:-452px; bottom:20px; border-radius:5px 0 0 5px; -webkit-box-shadow:0 0 3px #ccc; box-shadow:0 0 3px #ccc; z-index:10000; background:url('../images/q_bg.png');}
+.cs_title {width:30px; height:150px; position:absolute; left:-32px; top:50px; border:1px solid #ccc; border-right:none; border-radius:5px 0 0 5px; font-size:18px; font-family:'Arial'; text-align:center; line-height: 25px; cursor: pointer; -webkit-box-shadow:0 0 3px #ccc; box-shadow:0 0 3px #ccc; background:#fff;}
+.cs_options {width:430px; height:20px; background:#447a75; margin:10px; padding:0px; border-radius:3px; list-style: none;}
+.cs_options li {width:430px; height:20px; float:left; font-size:12px; font-family:'Arial'; line-height: 20px; text-align: center; color:#fff; cursor: pointer;}
+.cs_context {width:430px; height:200px; background:#447a75; border-radius:3px; display:none; margin:10px; margin-top:5px; position:relative; overflow:hidden;}
+#cs_qlist {list-style: none; padding:0px; margin:0px; position:absolute; left:0px; top:0px; width:430px; height:200px;  background-size:contain;}
+#cs_qlist li {height:22px; float:left; margin:5px; cursor:default;}
+#cs_qlist span {font-size:12px; color:#fff; font-family:'Arial'; height:22px; line-height:22px; display:block; float:left;}
+#cs_product {width:430px; height:200px; list-style: none;}
+#cs_product ul {list-style:none; padding:0px; position:absolute; left:0px; top:0px; margin:0px;}
+#cs_product li {width:430px; height:200px; padding:0px; margin:0px; float:left;}
+#cs_product_num ul {position:absolute; left:10px; bottom:10px; list-style: none; padding:0px; margin:0px;}
+#cs_product_num li {width:14px; height:14px; float:left; font-size:12px; color:#fff; border:1px solid #fff; text-align: center; line-height:14px; cursor:pointer; margin:2px;}
+#cs_product img {width:430px;}
+#cs_cooperation {width:430px; height:200px; background:url('../images/bg2.png') no-repeat; background-size:contain;}
+#cs_contact {width:430px; height:200px; margin:10px;}
+#cs_contact ul li a{color:#fff; margin:15px}
+.cs_contact_span {color:#fff; font-size:12px; font-family:'Arial'; cursor:default;}

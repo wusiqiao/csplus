@@ -1,0 +1,132 @@
+/*setWidth*/
+.set-imgwidth {
+	display: none;
+    position: absolute;
+    /*bottom: 150px;
+    left: -400px;
+    right: -256px;*/
+    width: 250px;
+    background-color: rgba(76,99,123,0.95);
+    border-radius: 4px;
+    padding: 0px 10px;
+    -moz-box-shadow: 0 0 0 1px rgba(255,255,255,0.4),2px 3px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.4), 2px 3px 6px rgba(0,0,0,0.3);
+    z-index: 9999;
+}
+
+.set-imgwidth li {
+	position: relative;
+    list-style: none;
+    height: 40px;
+    line-height: 40px;
+}
+
+.set-imgwidth li .prop-name {
+    float: left;
+    display: inline-block;
+    padding: 0 5px;
+    width: 60px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.set-imgwidth li .fill-item {
+    float: left;
+    position: relative;
+    width: 150px;
+}
+
+.set-imgwidth li .fill-item input {
+    display: none;
+}
+
+.bubble-slider-wrap {
+    display: block;
+    width: 150px;
+    height: 40px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.bubble-slider-wrap:after, .bubble-slider-wrap:before {
+    content: '';
+    display: table;
+}
+
+.bubble-slider-wrap:after {
+    clear: both;
+}
+
+ .set-imgwidth li input {
+    padding-left: 5px;
+    background: transparent;
+    border: 1px #ccc solid;
+    float: right;
+    border-radius: 4px;
+    outline: none;
+    color: #fff;
+}
+
+.bubble-slider-track {
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    margin-top: 18px;
+    width: 140px;
+    height: 2px;
+    border-radius: 2px;
+    background: #e5e5e5;
+}
+
+.bubble-slider-thumb {
+    position: absolute;
+    top: -8px;
+    width: 20px;
+    height: 20px;
+    background: #595959;
+    border-radius: 50%;
+    cursor: ew-resize;
+}
+
+.bubble-slider-bubble {
+    display: none;
+    position: absolute;
+    top: -30px;
+    left: 10px;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.bubble-slider-bubble-arrow {
+    background: #343a3a;
+    position: absolute;
+    left: 50%;
+    bottom: -3px;
+    margin-left: -5px;
+    width: 10px;
+    height: 10px;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.bubble-slider-bubble span {
+    padding: 5px 15px;
+    display: inline-block;
+    font-size: 25px;
+    color: #bdc3c3;
+    background: #343a3a;
+    border-radius: 5px;
+}
+
+ .input-val-small {
+    width: 60px;
+    height: 30px;
+    margin: 5px 5px 0 0;
+}
+
+.demo {
+	position: absolute;
+	top: 19px;
+}
