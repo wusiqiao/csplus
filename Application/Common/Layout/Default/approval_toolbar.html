@@ -1,0 +1,17 @@
+<div class="form-actions" id='{$Think.const.CONTROLLER_NAME}-form-actions'>
+    <div class='actions-sysdefault'>
+      <if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+      <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-save fa-lg"  onclick="action_update('[controller]')">保存</a>
+      </if>
+        <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button" plain="true" icon="fa-edit fa-lg"  onclick="action_approval('[controller]')">保存并提交审核</a>
+      <a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button bg_red" plain="true" icon="fa-remove fa-lg" onclick="closeDialog('[controller]')">关闭</a>
+     </div>
+ </div>
+<script type="text/javascript">
+    $(function() {
+    	var $custom_actions = $('#{$Think.const.CONTROLLER_NAME}-actions-custom');
+    	if ($custom_actions.length > 0){
+    		$custom_actions.appendTo($('#{$Think.const.CONTROLLER_NAME}-form-actions')).show();
+    	}
+    });
+</script>

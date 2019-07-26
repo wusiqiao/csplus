@@ -1,0 +1,16 @@
+<div class="form-actions" id='[controller]-form-actions'>
+    <div class='actions-sysdefault'>
+    	<if condition="($permissions.update eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">
+    	<a href="javascript:void(0)" class="modal-save-btn btn-update" plain="true" onclick="action_update('[controller]')">保存</a>
+    	</if>
+		<a href="javascript:void(0)" class="modal-close-btn" plain="true" onclick="closeDialog()">关闭</a>
+     </div>
+ </div>
+<script type="text/javascript">
+    $(function() {
+    	var $custom_actions = $('#[controller]-actions-custom');
+    	if ($custom_actions.length > 0){
+    		$custom_actions.appendTo($('#[controller]-form-actions')).show();
+    	}
+    });
+</script>

@@ -1,0 +1,13 @@
+<script type="text/plain" name="comments" id="comments_{$model.id}">
+    
+</script>
+<script type="text/javascript">
+    $(function () {
+        UM.clearCache('comments_{$model.id}');
+        UM.getEditor('comments_{$model.id}', {
+            initialFrameHeight: 400,
+            initialFrameWidth: "96%"
+        });
+    });
+</script>
+

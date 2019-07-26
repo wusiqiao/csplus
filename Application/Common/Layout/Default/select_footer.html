@@ -1,0 +1,19 @@
+</thead>
+</table>
+<div id="[controller]-select-toolbar">
+    <div class="action-panel">
+        <div class="actions">
+            <a href="javascript:void(0)" class="easyui-linkbutton" style="width:auto;padding-left:25px" icon="fa-square-o fa-lg" plain ="true" onclick="select_all(this, '[controller]')">全选</a>       
+        </div>
+    </div>
+    <div class="search-panel">
+        <div class="search-action-panel">               
+            <a href="javascript:void(0)" class="easyui-linkbutton btn-select-query" style="width:auto" icon="fa-search fa-lg" plain ="true" onclick="doSelectQuery('[controller]-select')">查询</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        initial_easyui_grid("[controller]-select", "{$title}");       
+    });
+</script>

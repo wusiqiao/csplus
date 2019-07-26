@@ -1,0 +1,13 @@
+
+
+<table fitColumns="true" class="datagrid" id="[controller]-datagrid"
+           data-options="
+           url:'__MODULE__/[controller]/list',
+           pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+           pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+           toolbar:'#[controller]-toolbar',
+           pageNumber:1,
+           checkOnSelect:true,
+           singleSelect:false,
+           border:true">
+        <thead>

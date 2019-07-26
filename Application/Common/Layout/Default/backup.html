@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <title>数据备份</title>
+        <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+        <link href="__PUBLIC__/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css">
+        <link href="__PUBLIC__/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="__PUBLIC__/css/components.css" rel="stylesheet" type="text/css">
+        <script src="__PUBLIC__/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>        
+    </head>
+    <body style="background:#ecf0f1;margin: 0">
+        <div id="wrapper" style="padding: 0px 10px">
+            <div id="content-main">
+                <div class="content">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h4 class="pull-left page-title">数据管理  > 数据备份</h4>
+                        </div>
+                    </div>
+
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <table class="table table-striped table-bordered tables">
+                                <thead>
+                                    <tr>
+                                        <th>文件名</th>
+                                        <th>路径名</th>
+                                        <th>备份日期</th>
+                                        <th>文件大小</th>
+                                        <th>下载</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <volist name="files" id="vo">
+                                    <tr>
+                                        <td>{$vo.file_name}</td>
+                                        <td>{$vo.file_dir}</td>
+                                        <td>{$vo.file_time}</td>
+                                        <td>{$vo.file_size}</td>
+                                        <td><a href = "{$vo.file_url}">{$vo.file_name}</a></td>
+                                    </tr>
+                                </volist>   
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="panel-body">
+                            <div class="scott">{$page}</div>
+                        </div> 
+                    </div>
+                                        <form class="panel panel-default" action="__ACTION__" method="post" id="report-form">
+                        <div class="panel-body">
+                           <div class="col-md-6" style="text-align: right">
+                           <div class="btn-group">
+                                        <button class="btn btn-warning" type="submit">&nbsp;开始备份&nbsp;</button>
+                                    </div>
+                           </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>  
+</html>

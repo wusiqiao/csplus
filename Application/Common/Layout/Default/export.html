@@ -1,0 +1,19 @@
+<div class="detailcontainer" id="{$Think.const.CONTROLLER_NAME}-detailcontainer">
+    <form  action="{$Think.const.CONTROLLER_NAME}/export"  name="export-form" method="post" >
+        <fieldset class="export-panel">
+            <legend align=left>字段选择</legend>            
+        </fieldset>
+        <fieldset class="export-range-panel" style="clear:both">
+            <legend align=left>导出范围</legend>
+            <input name="range" type="radio" value="0" checked />全部
+            <input name="range" type="radio" value="1" />当前页
+            <input name="range" type="radio" value="2" />选择行
+        </fieldset>
+    </form>
+<hr />
+<div class="form-actions">     
+    <a href="javascript:void(0)" class="easyui-linkbutton left" plain="true" icon="fa-ok-circle fa-lg" onclick="selectExportAll('{$Think.const.CONTROLLER_NAME}-export')">全选</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" icon="fa-save  fa-lg"  onclick="exportResult('{$Think.const.CONTROLLER_NAME}')">导出</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" icon="fa-undo  fa-lg" onclick="closeDialog('{$Think.const.CONTROLLER_NAME}-export')">取消</a>
+</div>
+</div>

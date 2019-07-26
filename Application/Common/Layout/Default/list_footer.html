@@ -1,0 +1,54 @@
+</thead>
+</table>
+<div id="[controller]-toolbar">
+    <div class="action-panel">
+        <div class="actions">
+            <if condition="($permissions.add eq 1) ">
+            <a href="javascript:void(0)" class="btn-speed detail-add" plain="true" onclick="action_add('[controller]','{$title}')">新增{$title}</a>
+            </if>
+            <if condition="($permissions.detail eq 1) ">
+            <a href="javascript:void(0)" class="btn-speed detail-edit" plain="true" onclick="action_detail('[controller]','{$title}')">修改</a>
+            </if>
+            <if condition="($permissions.copy eq 1) ">
+            <a href="javascript:void(0)" class="btn-speed detail-copy" plain="true" onclick="action_copy('[controller]','{$title}')">复制</a>
+            </if>
+            <if condition="($permissions.delete eq 1) ">
+            <a href="javascript:void(0)" class="btn-speed detail-delete" plain="true" onclick="action_delete('[controller]')">删除</a>
+            </if>
+            <!--<div class="btn-separator btn-search-separator"></div><a href="javascript:void(0)" class="easyui-linkbutton fontawesome-icon-button action-search" style="width:auto" icon="fa-caret-right fa-lg" plain ="true" onclick="action_search(this, '[controller]')">查询</a>-->
+        </div>
+   </div>
+    <div class="search-panel">
+        <div class="search-action-panel">               
+            <a href="javascript:void(0)" class="common-blue-btn" plain ="true" onclick="doSearchQuery('[controller]')">查询</a>
+        </div>
+    </div>
+</div>
+<!--&lt;!&ndash;右键菜单&ndash;&gt;-->
+<!--<div id="box_[controller]" class="easyui-menu" style="width:120px;">-->
+    <!--<if condition="($permissions.add eq 1) OR ($permissions._IS_ADMIN_ eq 1)">-->
+        <!--<div onclick="action_add('[controller]','{$title}')" >新增</div>-->
+        <!--<div class="menu-sep"></div>-->
+    <!--</if>-->
+
+    <!--<if condition="($permissions.detail eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">-->
+        <!--<div onclick="action_detail('[controller]','{$title}')" >修改</div>-->
+        <!--<div class="menu-sep"></div>-->
+    <!--</if>-->
+
+    <!--<if condition="($permissions.copy eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">-->
+        <!--<div onclick="action_copy('[controller]','{$title}')">复制</div>-->
+        <!--<div class="menu-sep"></div>-->
+    <!--</if>-->
+
+    <!--<if condition="($permissions.delete eq 1) OR ($permissions._IS_ADMIN_ eq 1) ">-->
+        <!--<div onclick="action_delete('[controller]')" >删除</div>-->
+    <!--</if>-->
+<!--</div>-->
+
+<script type="text/javascript">
+    $(function () {
+        initial_easyui_grid("[controller]", "{$title}");
+    });
+
+</script>

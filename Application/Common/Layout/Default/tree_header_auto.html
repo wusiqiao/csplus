@@ -1,0 +1,22 @@
+<table fitColumns="true" class="treegrid" id="[controller]-datagrid"
+       data-options="
+       singleSelect:true,
+       collapsible:true,
+       animate:true,
+       url:'__MODULE__/[controller]/list',
+       method:'post',
+       pagination:<empty name='pagination'>true<else/>{$pagination}</empty>,
+       pageSize:<empty name='pagesize'>20<else/>{$pagesize}</empty>,
+       pageNumber:1,
+       loadMsg:'正在加载，请稍等...',
+       toolbar:'#[controller]-toolbar',
+       border:true,
+       striped:true,
+       fit:true, 
+       ctrlSelect:true,
+       singleSelect: false,
+       idField:'id',
+       treeField:'name',
+       rownumbers:true"
+       >
+    <thead>
