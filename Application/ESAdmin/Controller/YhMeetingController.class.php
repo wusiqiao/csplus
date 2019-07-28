@@ -264,6 +264,7 @@ class YhMeetingController extends DataController {
 		$this->assignPermissions();
 		$record = $this->_getDetailData($id);
 		$this->assign("model", $record);
+		pr($record);
 		$this->display();
 	}
 
@@ -827,6 +828,35 @@ class YhMeetingController extends DataController {
 		$meeting_id = I('id');
 
 		$meeting = M('YhMeeting')->find($meeting_id);
+
+		$status = I('status','');
+		$keyword = I('keyword','');
+
+//		$where['meeting_id'] = array('eq',$meeting_id);
+
+		$where = 'meeting_id = '.$meeting_id;
+
+		switch ($status){
+            case 1:
+//                $where['is_passed'] = array('eq',0);
+                $where .= ' AND is_passed = 0';
+                break;
+            case 2:
+//                $where['is_passed'] = array('eq',1);
+                $where .= ' AND is_passed = 1';
+                break;
+            case 3:
+//                $where['is_passed'] = array('eq',2);
+                $where .= ' AND is_passed = 2';
+                break;
+        }
+
+        if ($keyword){
+//            $where['parameter'] = array('like','%'.$keyword.'%');
+//            $where .= ' AND ()';
+        }
+
+//        pr($where);
 
 		$userList = M('YhMeetingList')->where(array('meeting_id'=>array('eq',$meeting_id)))->select();
 
