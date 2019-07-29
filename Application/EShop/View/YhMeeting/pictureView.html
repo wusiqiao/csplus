@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+  <title>{$title}</title>
+  <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+  <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+  <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+  <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+</head>
+<style>
+  .pic-list {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .pic-item {
+    width: calc((100% - 0.6rem) / 3);
+    padding: 0.1rem;
+    margin: 0.2rem 0.1rem;
+    background-color: #fff;
+  }
+
+  .layui-layer-content {
+    height: auto !important;
+  }
+</style>
+
+<body>
+  <include file="Index:header" />
+  <section class="custom-info-wrap common-wrap bg-none mt85">
+    <div style="width: 100%;overflow: hidden;">
+      <!-- 照片 -->
+      <div class="pic-list">
+        <div class="pic-item" onclick="prewImage(this)">
+          <div style="height: 1.8rem;overflow: hidden;">
+            <img style="width: 100%;" src="/Application/EShop/Public/images/work/bg-wxCode.jpg" alt="">
+          </div>
+        </div>
+        <div class="pic-item" onclick="prewImage(this)">
+          <div style="height: 1.8rem;overflow: hidden;">
+            <img style="width: 100%;" src="/Application/EShop/Public/images/work/bg-wxCode.jpg" alt="">
+          </div>
+        </div>
+        <div class="pic-item" onclick="prewImage(this)">
+          <div style="height: 1.8rem;overflow: hidden;">
+            <img style="width: 100%;" src="/Application/EShop/Public/images/work/bg-wxCode.jpg" alt="">
+          </div>
+        </div>
+        <div class="pic-item" onclick="prewImage(this)">
+          <div style="height: 1.8rem;overflow: hidden;">
+            <img style="width: 100%;" src="/Application/EShop/Public/images/work/bg-wxCode.jpg" alt="">
+          </div>
+        </div>
+        <div class="pic-item" onclick="prewImage(this)">
+          <div style="height: 1.8rem;overflow: hidden;">
+            <img style="width: 100%;" src="/Application/EShop/Public/images/work/bg-wxCode.jpg" alt="">
+          </div>
+        </div>
+        <div class="pic-item" onclick="prewImage(this)">
+          <div style="height: 1.8rem;overflow: hidden;">
+            <img style="width: 100%;" src="/Application/EShop/Public/images/work/permission-denied.png" alt="">
+          </div>
+        </div>
+        <div class="pic-item" onclick="prewImage(this)">
+          <div style="height: 1.8rem;overflow: hidden;">
+            <img style="width: 100%;" src="/Application/EShop/Public/images/img/star-on.png" alt="">
+          </div>
+        </div>
+        <div class="pic-item" onclick="prewImage(this)">
+          <div style="height: 1.8rem;overflow: hidden;">
+            <img style="width: 100%;" src="/Application/EShop/Public/images/icon/logo-attach-system.png" alt="">
+          </div>
+        </div>
+        <div class="pic-item" onclick="prewImage(this)">
+          <div style="height: 1.8rem;overflow: hidden;">
+            <img style="width: 100%;" src="/Application/EShop/Public/images/work/bg-wxCode.jpg" alt="">
+          </div>
+        </div>
+        <div class="pic-item" onclick="prewImage(this)">
+          <div style="height: 1.8rem;overflow: hidden;">
+            <img style="width: 100%;" src="/Application/EShop/Public/images/work/bg-wxCode.jpg" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+  <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+  <script type="text/javascript">
+    function prewImage(ele) {
+      var url = $(ele).find("img").attr("src");
+      layer.open({
+        type: 1,
+        title: '查看图片',
+        shade: 0.8,
+        closeBtn: 1,
+        area: ["100%", "100%"],
+        content: `<div style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
+              <img style="width: 100%;" src="${url}" alt="">
+          </div>`
+      });
+    }
+  </script>
+</body>
+
+</html>

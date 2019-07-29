@@ -1,10 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>{$title}</title>
-</head>
-<body>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+  <title>{$title}</title>
+  <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+  <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+  <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+  <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+</head>
+<style>
+  .hy-title {
+    padding: 0.2rem 0.2rem;
+    font-size: 0.36rem;
+    color: #333;
+  }
+
+  .hy-info-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.3rem;
+    margin: 0.1rem 0;
+  }
+  .hy-btn-box{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 88;
+    width: 100%;
+    border-top: 1px solid #d3d3d3;
+    background-color: #fff;
+  }
+  .hy-btn-item{
+    flex: 1;
+    padding: 0.12rem 0;
+    margin: 0.2rem 0.2rem;
+    border-radius: 3px;
+    font-size: 0.3rem;
+    text-align: center;
+    color: #fff !important;
+  }
+</style>
+
+<body>
+  <include file="Index:header" />
+  <section class="custom-info-wrap common-wrap bg-none mt85">
+    <div style="width: 100%;overflow: hidden;">
+      <!-- 封面 -->
+      <div style="width: 100%;max-height: 30vh;margin-bottom: 0.2rem;overflow: hidden;background-color: #fff;">
+        <img style="width: 100%;" src="" alt="">
+      </div>
+      <!-- 信息 -->
+      <div style="width: 100%;background-color: #fff;padding-bottom: 0.2rem;margin-bottom: 0.2rem;">
+        <div class="hy-title">走进副会长单位的活动</div>
+        <div class="hy-info-line">
+          <div style="width: 0.46rem;height: 0.46rem;margin-right: 0.3rem;">
+            <img style="width: 100%;height: 100%;" src="" alt="">
+          </div>
+          <div style="flex: 1;padding: 0 0.1rem;">2019-07-09 14:00 至 2019-07-10 15:00</div>
+        </div>
+        <div class="hy-info-line">
+          <div style="width: 0.46rem;height: 0.46rem;margin-right: 0.3rem;">
+            <img style="width: 100%;height: 100%;" src="" alt="">
+          </div>
+          <div style="flex: 1;padding: 0 0.1rem;">厦门软件园二期望海路33好</div>
+        </div>
+        <div class="hy-info-line">
+          <div style="width: 0.46rem;height: 0.46rem;margin-right: 0.3rem;">
+            <img style="width: 100%;height: 100%;" src="" alt="">
+          </div>
+          <div style="flex: 1;padding: 0 0.1rem;">已报名33人</div>
+        </div>
+      </div>
+      <!-- 活动简介 -->
+      <div style="width: 100%;background-color: #fff;padding-bottom: 0.2rem;margin-bottom: 1.2rem;">
+        <div style="padding:0.2rem 0.3rem;font-size: 0.32rem;">活动简介</div>
+        <div style="padding: 0.2rem 0.8rem;">
+          <div style="width: 100%;border: 1px solid #d3d3d3;box-sizing: border-box;">
+            <div style="padding: 0.1rem;">
+              央视网消息（新闻联播）：中央和国家机关党的建设工作会议7月9日在北京召开。中共中央总书记、国家主席、中央军委主席习近平出席会议并发表重要讲话。他强调，新形势下，中央和国家机关要以党的政治建设为统领，着力深化理论武装，着力夯实基层基础，着力推进正风肃纪，
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hy-btn-box" style="display: flex;align-items: center;justify-content: space-between;">
+      <a class="bg-368bfe hy-btn-item" href="/YhMeeting/liveView.html">活动直播</a>
+      <a class="bg-368bfe hy-btn-item" href="/YhMeeting/pictureView.html">现场活动</a>
+      <a class="bg-368bfe hy-btn-item" href="/YhMeeting/applyView.html">我要报名</a>
+      <a class="bg-368bfe hy-btn-item" href="/YhMeeting/applyInfo.html">报名信息</a>
+    </div>
+  </section>
+  <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+  <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+  <script type="text/javascript">
+
+
+
+
+  </script>
 </body>
+
 </html>

@@ -235,7 +235,7 @@
                         var data = {
                             attach_group:"{$model.attach_group}",
 							callback: function(result){
-                                vue.communication_logs.unshift(result);
+                                vue.communication_logs.push(result);
 							}
                         };
                         var options = {id: "attachment_dialog",title: "沟通记录", content:result, autoSize: true,data: data,lock: true,max: false,min: false};

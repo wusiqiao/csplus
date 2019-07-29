@@ -47,6 +47,9 @@ class IndexController extends Controller{
         if(!$user->isAdmin){
             $this->hideMaterialCenter($user_menus);
         }
+        if( $user->currBranchId != 33){
+            $this->hideVoucherMenu($user_menus);
+        }
 
         $this->assign("user_menus", $user_menus);
         $this->user_session = get_object_vars(session(USER_SESSION_KEY));
@@ -167,6 +170,17 @@ class IndexController extends Controller{
                         unset($user_menus[$key]['children'][$i]);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * 隐藏智能凭证
+     * */
+    public function hideVoucherMenu(&$user_menus){
+        foreach($user_menus as $key => $user_menu){
+            if($user_menu['name'] == '智能凭证'){
+                unset($user_menus[$key]);
             }
         }
     }

@@ -98,7 +98,8 @@ class  ComCapitalDetailsController extends DataController {
         }
         $finance_model = M("ComFinance");
         $where = [];
-        $where['fina_type'] = array("in",[FIN_PROMPT_BALANCE_PAY,FIN_RECEIVABLES_CONFIRMED]);
+        //$where['fina_type'] = array("in",[FIN_PROMPT_BALANCE_PAY,FIN_RECEIVABLES_CONFIRMED]);
+        $where['fina_type'] = array("in",[FIN_PROMPT_BALANCE_PAY]);
         $where['branch_id'] = getBrowseBranchId();
         $branch_total_pay = 0;
         $total_pay_list = $finance_model->where($where)->group("order_sn")->field("fina_cash")->select();
@@ -201,7 +202,8 @@ class  ComCapitalDetailsController extends DataController {
             //公司充值
             $where3 = "fina.branch_id = ".$branch_id ."  and "." fina.money_type in (".FIN_CIZ_RECHARGE.")"." and fina.company_id = ".$id;
             //缴费余额付款
-            $where4 = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_PROMPT_BALANCE_PAY.",".FIN_RECEIVABLES_CONFIRMED.") and fina.company_id = ".$id;
+            //$where4 = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_PROMPT_BALANCE_PAY.",".FIN_RECEIVABLES_CONFIRMED.") and fina.company_id = ".$id;
+            $where4 = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_PROMPT_BALANCE_PAY.") and fina.company_id = ".$id;
             //退款
             $where5 = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_USER_REFUND.") and fina.company_id = ".$id;
             $sql = $this->getComAccountListSql($where1,$where2,$where3,$where4,$where5);

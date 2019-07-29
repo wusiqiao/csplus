@@ -254,6 +254,7 @@
                     <div style="padding: 8px 5px;display: flex;align-items: center;justify-content: flex-end;">
                         <a class="tool-icon tool-icon-remove" :href="'javascript:void(0)'" @click="toDelete(item.id,index)" title="删除"></a>
                         <a class="tool-icon tool-icon-file" :href="'javascript:void(0)'" @click="toDisArchiving(item.id,index)" title="反归档"></a>
+                        <a class="tool-icon tool-icon-details" :href="'javascript:void(0)'" @click="toDetail(item.id, item.title)" title="详情"></a>
                     </div>
                     <div class="txt-checked-flag txt-checked-flag-notstart">
                         <p style="position: absolute;width: 100%;text-align: center;bottom: 0;margin: 3px 0;color: #fff;">已归档</p>

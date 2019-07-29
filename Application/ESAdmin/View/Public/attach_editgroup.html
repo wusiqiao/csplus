@@ -1,20 +1,69 @@
-<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/attachment.css" rel="stylesheet"/>
+<link href="__ROOT__/{$Think.MODULE_PATH}/Public/css/attachment.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css"
-      href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css"/>
+    href="__ROOT__/{$Think.APP_PATH}/Public/jquery/autocompleter/jquery.autocomplete.css" />
+
 <style>
-    input[type=checkbox].css-checkbox + label.css-label {
-        top: 0;
-        left: 0;
+    #addMembers-box {
+        width: 100%;
+        height: 580px;
+        text-align: left;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    #addMembers-box li{
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        padding: 0px 20px;
+    }
+
+    #addMembers-box::-webkit-scrollbar {
+        width: 8px;
+        background-color: #eee;
+        border-radius: 4px;
+    }
+
+    #addMembers-box::-webkit-scrollbar-thumb {
+        background: #b8b4b4;
+        border-radius: 4px;
     }
 </style>
+
 <body>
-<ul style="width: 250px; text-align: left;padding-left: 20px" id="addMembers" hidden>
-    <li style="display: flex;align-items: center;" v-for="item in list">
-        <span><input type="checkbox"></span>
-        <img :src="item.head_pic" style="width: 36px;height: 36px;border-radius: 3px;margin: 0 20px;">
-        <span> {{item.name}}</span>
-    </li>
-</ul>
+    <div style="width: 400px;"  id="addMembers" hidden>
+        <div style="margin: 0 auto;width: 300px;" class="search_ipt" onmouseover="queryIcon_bule()"
+            onmouseout="queryIcon_gray()">
+            <input type="text" placeholder="客户昵称/备注" style="width:270px;" class="filter-field" alt=""
+                v-model="where.name"><img src="__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png">
+        </div>
+        <ul id="addMembers-box">
+            <li v-for="(item,index) in list">
+                <div style="position: relative;width: 22px;height: 22px;margin-left: 10px;">
+                    <input class="css-checkbox" type="checkbox" :id="'member-' + index" :data-id="item.id">
+                    <label class="css-label" :for="'member-' + index" :vaule="item.id"></label>
+                </div>
+                <img :src="item.head_pic" style="width: 36px;height: 36px;border-radius: 3px;margin: 0 20px;">
+                <template v-if="item.user_type == 2">
+                    <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;" 
+                    :title="item.staff_name ? item.staff_name + '（' + item.name + '）' : item.name">
+                        {{item.staff_name ? item.staff_name + '（' + item.name + '）' : item.name}}
+                    </span>
+                </template>
+                <template v-else>
+                    <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"
+                    :title="item.comments ? item.comments + '（' + item.name + '）' : item.name">
+                        {{item.comments ? item.comments + '（' + item.name + '）' : item.name}}
+                    </span>
+                </template>
+            </li>
+            <li style="text-align: center;padding: 5px 0;">
+                <div v-if="hasMoreData" @click="loadMembers" style="width: 100%;color: #368bfe;text-align: center;cursor: pointer;">点击加载更多</div>
+            </li>
+        </ul>
+        <div style="text-align: center;padding: 10px 0;border-top: 1px solid #d3d3d3;">
+            <div @click="saveData()" class="btn-speed">确认添加</div>
+        </div>
+    </div>
 </body>
 <script src="/{$Think.MODULE_PATH}Public/vue/vue.min.js"></script>
 <script>
@@ -26,27 +75,100 @@
                 groupId: '{$group_id}',
                 where: {
                     name: null,
-                    page: 1
-                }
+                    page: 0
+                },
+                totalPage : 1,
+                timeoutId : null,
+                ids : [],
+                hasMoreData:true
             },
             created: function () {
-                var that = this;
                 this.getMembers();
+                $("#addMembers").show();
             },
-
+            watch: {
+                'where.name' : function(val){
+                    if(this.timeoutId != null){
+                        clearTimeout(this.timeoutId)
+                    };
+                    this.where.page = 0;
+                    this.timeoutId = setTimeout(this.getMembers, 500);
+                }
+            },
             methods: {
-                getMembers: function (callback, where) {
-                    where = where ? where : this.where;
+                getMembers: function (callback) {
+                    var where =  this.where;
                     var that = this;
-                    $.post('/MsgGroupMember/searchMember?groupId={$group_id}', where, function (res) {
-                        if (typeof callback == 'function') {
-                            return callback(res,rows, res.total);
-                        }
+                    if(that.totalPage < where.page){
+                        return ;
+                    }
 
+                    where.page += 1;
+                    $.post('/MsgGroupMember/searchMember?groupId={$group_id}', where, function (res) {
+                        that.timeoutId = null;
+                        that.where = where;
+                        that.setTotal(res.total);
+                        if (typeof callback == 'function') {
+                            return callback(res.rows);
+                        }
                         that.list = res.rows;
                     }, 'json');
+                },
+                loadMembers : function(){
+                    var that = this;
+                    that.getMembers(function(data){
+                        if(data.length == 0){
+                            $.dialog.tips("无更多数据");
+                            that.hasMoreData = false;
+                            return;
+                        }else{
+                            that.hasMoreData = true;
+                        }
+                        for (var index in data){
+                            that.list.push(data[index]);
+                        }
+                    })
+                },
+
+                setTotal : function(total){
+                    this.totalPage = Math.ceil(total / 50);
+                },
+
+                addMembsers : function(){
+                    var input = {};
+                },
+                saveData(){
+                    showMaskLayer();
+                    var that = this;
+                    $("input[type=checkbox].css-checkbox:checked").each(function(idx,ele){
+                        that.ids.push($(ele).attr("data-id"))
+                    })
+                    var aryStr = that.ids.join(",")
+                    var dataObj = {
+                        groupId : '{$group_id}',
+                        userIds : aryStr
+                    }
+                    // console.log(that.ids)
+                    $.post("/MsgGroupMember/addMember",dataObj,function(res){
+                        // console.log(res)
+                        if(res.code == 0){
+                            $.dialog.tips("添加成功");
+                            attachmentVue.getGroupMemberList();
+                            hideMaskLayer();
+                            closeDialog('attach_editgroup');
+                        }
+                        hideMaskLayer();
+                    })
                 }
-            }
+            },
         })
     })(window)
+
+    function queryIcon_bule(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search-hover.png")
+    }
+
+    function queryIcon_gray(){
+        $(".search_ipt img").attr("src","__ROOT__/{$Think.MODULE_PATH}/Public/images/icon/icon-search.png")
+    }
 </script>

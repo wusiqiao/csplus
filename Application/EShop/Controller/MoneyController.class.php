@@ -193,6 +193,9 @@ class MoneyController extends UserLoginController
                     $this->error('访问错误');
                     die;
                 }
+                $wx_config = getWxConfigData();
+                $this->wxpay_open = $wx_config['wxpay_open'];
+                $this->ofpay_open = getComStoreData('pay_status');
                 $this->assign('company_id',I('get.id'));
                 $this->display('middleware_recharge');
             } else {
@@ -217,6 +220,8 @@ class MoneyController extends UserLoginController
                 $account['money'] = $company['money'];
                 $this->assign('company_id',$middleware['company_id']);
                 $this->assign('account',$account);
+                $cskx_platform_message = get_cskx_platform_message();
+                $this->assign('cskx_platform_message', $cskx_platform_message);
                 $this->display('recharge');
             }
         } else {
@@ -263,6 +268,8 @@ class MoneyController extends UserLoginController
             $account['money'] = $user['user_money'];
             $account['account_name'] = '个人账户';
             $this->assign('account',$account);
+            $cskx_platform_message = get_cskx_platform_message();
+            $this->assign('cskx_platform_message', $cskx_platform_message);
             $this->display();
         } else {
             $money = I('post.money', '', 'strip_tags');
@@ -602,6 +609,12 @@ class MoneyController extends UserLoginController
     {
         if(IS_GET){
             $this->title ='充值';
+            $wx_config = getWxConfigData();
+            $this->wxpay_open = $wx_config['wxpay_open'];
+            $this->ofpay_open = getComStoreData('pay_status');
+            //NEW Jan 2 ,2018 Assign platform_message
+            $cskx_platform_message = get_cskx_platform_message();
+            $this->assign('cskx_platform_message', $cskx_platform_message);
             $this->display();
         } else {
             $_SESSION['RECHARGE_MIDDLEWARE'] = [];

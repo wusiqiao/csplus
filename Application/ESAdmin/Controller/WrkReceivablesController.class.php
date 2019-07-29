@@ -336,7 +336,7 @@ class  WrkReceivablesController extends ComplexDataController {
 
             if ($unconfirmed_amount > 0) {
                 if ($unconfirmed_amount > ($v['receivables_amount'] - $v['actual_amount'])) {
-                    $item[$k]['unconfirmed_amount'] = $v['receivables_amount'] - $v['actual_amount'];
+                    $item[$k]['unconfirmed_amount'] = sprintf("%.2f",$v['receivables_amount'] - $v['actual_amount']);
                     $unconfirmed_amount = $unconfirmed_amount - ($v['receivables_amount'] - $v['actual_amount']);
                 }else{
                     $item[$k]['unconfirmed_amount'] = sprintf("%.2f",$unconfirmed_amount);
@@ -1409,7 +1409,9 @@ $reduce_cost = 0,$receivables_id) {
 		}
 		M('wrkReceivablesItem')->addAll($item);
         D("WrkReceivables")->payByTimer($last_id,null);
+        $total_record_money = 0;//预付款总金额
         foreach ($record as $k => $v) {
+            $total_record_money += $v['pay_amount'];
             $record_data['receivables_id'] = $last_id;
             $record_data['account_id'] = $v['account_id'];
             $record_data['pay_date'] = $v['pay_date'];
@@ -1464,6 +1466,8 @@ $reduce_cost = 0,$receivables_id) {
             $finance_data_pay['title'] = '客户余额消费';
             M("ComFinance")->add($finance_data_pay);
         }
+        $branch_money = M("SysBranch")->where("id = ".$this->_user_session->currBranchId)->getField('money');
+        M("SysBranch")->where("id = ".$this->_user_session->currBranchId)->setField('money',$total_record_money+$branch_money);
         $this->ajaxReturn(array('code'=>0,'message'=>'新增收款计划成功'));
 	}
     //编辑收款任务

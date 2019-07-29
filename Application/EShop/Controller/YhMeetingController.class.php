@@ -221,4 +221,21 @@ class YhMeetingController extends BaseController{
 		    $this->ajaxReturn(buildErrorMessage($e->getMessage()));
 		}
 	}
+
+	public function myIndexAction()
+	{
+		$this->display();
+	}
+	public function liveViewAction()
+	{
+		$this->display();
+	}
+	public function pictureViewAction()
+	{
+		$this->display();
+	}
+	public function applyInfoAction()
+	{
+		$this->display();
+	}
 }

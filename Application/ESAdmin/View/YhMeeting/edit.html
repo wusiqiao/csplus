@@ -341,13 +341,20 @@
     updateChosen();
 
     function addInfo(is_drafts) {
+        layer.load(2, {shade: [0.1, '#fff']});
         $("input[name='is_drafts']").val(is_drafts);
         var url = 'YhMeeting/add';
         if ($("input[name='id']").val()) {
             url = 'YhMeeting/update';
         }
         $.post(url, $("#myform").serialize(), function (result) {
-            $.dialog.tips("保存成功");
+            layer.closeAll();
+            layer.msg("保存成功");
+            if (is_drafts == 1){
+                toggleType('{$Think.const.CONTROLLER_NAME}/drafts');
+            } else {
+                toggleType('{$Think.const.CONTROLLER_NAME}/index');
+            }
         }, 'json');
     }
 

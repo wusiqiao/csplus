@@ -406,11 +406,11 @@
                 <ul class="attachments" style="position: absolute;bottom: 0;left: 0;z-index: 9;">
                     <li v-for="(item,index) in attachments" :title="item.file_name">
                         <div v-if="item.type=='image'" class="img-wrap">
-                            <!-- <span class="btn-item-remove"></span> -->
+                            <span @click="removeAttachment(index)" class="btn-item-remove"></span>
                             <img :src="item.src" alt="" />
                         </div>
                         <div v-else :class="'img-wrap attachment-icon attachment-icon-'+ item.type">
-                            <!-- <span class="btn-item-remove"></span> -->
+                            <span @click="removeAttachment(index)" class="btn-item-remove"></span>
                         </div>
                     </li>
                 </ul>
@@ -821,6 +821,9 @@
             // 文件下载
             downloadFile(url, name) {
                 window.location.href = "__MODULE__/ComPotential/downloadFile?url=" + url + "&name=" + name;
+            },
+            removeAttachment:function(index){
+                this.attachments.splice(index,1);
             },
             // 附件上传请求
             fileAjaxFun(){

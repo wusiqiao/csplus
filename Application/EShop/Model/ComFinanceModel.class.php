@@ -355,7 +355,7 @@ class ComFinanceModel extends Model {
             $where2 = "fina.branch_id = ".$branch_id ."  and "." fina.withdrawal_type in (".FIN_CIZ_WITHDRAW.")"." and fina.company_id = ".$company_id;
             //$where3 = "fina.branch_id = ".$branch_id ."  and "." fina.money_type in (".FIN_CIZ_RECHARGE.")"." and fina.company_id = ".$company_id." and fina.pay_status <> 2 ";
             $where3 = "fina.branch_id = ".$branch_id ."  and "." fina.money_type in (".FIN_CIZ_RECHARGE.")"." and fina.company_id = ".$company_id;
-            $where4 = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_PROMPT_BALANCE_PAY.",".FIN_RECEIVABLES_CONFIRMED.") and fina.company_id = ".$company_id;
+            $where4 = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_PROMPT_BALANCE_PAY.") and fina.company_id = ".$company_id;
 
         if ($search == 1) {
                 $where2 = "fina.id = 0";

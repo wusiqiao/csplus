@@ -64,7 +64,7 @@ class SysRoleModel extends DataModel {
             }
             //$where = "(".implode(" or ", $menu_codes).") and is_valid = 1";
             //$where = "(".implode(" or ", $menu_codes).") and is_show = 1";
-            $where = "(".implode(" or ", $menu_codes).") and is_show = 1";
+            $where = "(".implode(" or ", $menu_codes).") and is_show = 1 and name != '智能凭证'";
             $parent_menuList = D("SysMenu")->where($where)->field("id,name as text, 'closed' as state, parent_id,code")->select();
             $menuList = array_merge($menuList, $parent_menuList);
             $role_operations = array_column($role_menu_operations, "operation_id");

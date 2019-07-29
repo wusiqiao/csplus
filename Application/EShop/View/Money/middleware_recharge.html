@@ -56,29 +56,32 @@
     <div style="height: .5rem"></div>
     <div class="basic-info" style="background-color: #FFFFFF;">
         <div class="title">付款方式</div>
-        <div class="info-line search-line" data-pay="0" style="padding: .3rem .2rem .2rem .2rem">
-            <div class="search-img">
-                <img src="{$Think.const.IMG_URL}/tool/wxpay.png" style="width: .5rem;height: 0.5rem;" alt="">
+        <neq name="ofpay_open" value="30">
+            <div class="info-line search-line" data-pay="0" style="padding: .3rem .2rem .2rem .2rem">
+                <div class="search-img">
+                    <img src="{$Think.const.IMG_URL}/tool/wxpay.png" style="width: .5rem;height: 0.5rem;" alt="">
+                </div>
+                <div class="search-text">
+                    微信付款
+                </div>
+                <div class="search-arrow">
+                    <span class="mui-icon mui-icon-arrowright"></span>
+                </div>
             </div>
-            <div class="search-text">
-                微信付款
+        </neq>
+        <neq name="wxpay_open" value="30">
+            <div class="info-line search-line" data-pay="1" style="padding: .3rem .2rem .2rem .2rem">
+                <div  class="search-img">
+                    <img src="{$Think.const.IMG_URL}/tool/payment.png" style="width: .5rem;height: 0.5rem;" alt="">
+                </div>
+                <div class="search-text">
+                    线下付款
+                </div>
+                <div  class="search-arrow">
+                    <span class="mui-icon mui-icon-arrowright"></span>
+                </div>
             </div>
-            <div class="search-arrow">
-                <span class="mui-icon mui-icon-arrowright"></span>
-            </div>
-        </div>
-        <div class="info-line search-line" data-pay="1" style="padding: .3rem .2rem .2rem .2rem">
-            <div  class="search-img">
-                <img src="{$Think.const.IMG_URL}/tool/payment.png" style="width: .5rem;height: 0.5rem;" alt="">
-            </div>
-            <div class="search-text">
-                线下付款
-            </div>
-            <div  class="search-arrow">
-                <span class="mui-icon mui-icon-arrowright"></span>
-            </div>
-        </div>
-
+        </neq>
     </div>
     <div style="height: 4rem"></div>
 </div>

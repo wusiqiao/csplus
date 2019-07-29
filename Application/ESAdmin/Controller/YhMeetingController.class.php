@@ -264,7 +264,7 @@ class YhMeetingController extends DataController {
 		$this->assignPermissions();
 		$record = $this->_getDetailData($id);
 		$this->assign("model", $record);
-		pr($record);
+//		pr($record);
 		$this->display();
 	}
 
@@ -945,32 +945,92 @@ class YhMeetingController extends DataController {
 	public function addLiveAction()
 	{
 		try{
-
 			$data['meeting_id'] = I('meeting_id');
 			$data['user_id'] = $this->userId;
 			$data['type'] = I('type',1);
 			$data['create_time'] = time();
+			$data['content'] = I('content');
+			$idarray = array();
+			if ($data['content']){
+				$id = M('YhMeetingContentList')->add($data);
+				$idarray[] = $id;
+			}
 			if ($_FILES){
+				$data['create_time'] = time();
+				unset($data['content']);
 				$config = C("Storage");
 				$upload = new \Think\Upload($config);
 
 				$lists = $upload->upload();
-				pr($lists);die;
 				if ($lists){
 					foreach($lists as $val){
-
+						$nameandtype = '';
+						$nameandtype = explode('-file-',$val['key']);
+						$data['file_name'] = $nameandtype[0];
+						$data['suffix'] = $nameandtype[1];
+						$data['image'] = $val['url'];
+						$id = M('YhMeetingContentList')->add($data);
+						$idarray[] = $id;
 					}
 				}
 			}
 
-			$data['content'] = I('content');
+			$result = self::getContentList($idarray);
 
+		    $this->ajaxReturn(buildMessage($result));
+		} catch (Exception $e) {
+		    $this->ajaxReturn(buildErrorMessage($e->getMessage()));
+		}
+	}
 
+	protected function getContentList($idarray)
+	{
+		$list = array();
+		if (!empty($idarray)){
+			$list = M('YhMeetingContentList')->alias('a')
+				->field('a.*,u.staff_name,u.head_pic as user_head_pic')
+				->join('inner join sys_user as u on u.id = a.user_id')
+				->where(array('a.id'=>array('in',$idarray)))
+				->select();
+			foreach ($list as $key=>$value){
+				$list[$key]['create_time'] = date('Y/m/d H:i:s',$value['create_time']);
+			}
 
+		}
+		return $list;
+	}
 
+	public function getAllContentListAction()
+	{
+		try{
+			$meeting_id = I('meeting_id');
+			$type = I('type',1);
+			$where['meeting_id'] = array('eq',$meeting_id);
+			$where['type'] = array('eq',$type);
+
+			$list = M('YhMeetingContentList')->alias('a')
+				->field('a.*,u.staff_name,u.head_pic as user_head_pic')
+				->join('inner join sys_user as u on u.id = a.user_id')
+				->where($where)
+				->select();
+			foreach ($list as $key=>$value){
+				$list[$key]['create_time'] = date('Y/m/d H:i:s',$value['create_time']);
+			}
+		    $this->ajaxReturn(buildMessage($list));
+		} catch (Exception $e) {
+		    $this->ajaxReturn(buildErrorMessage($e->getMessage()));
+		}
+	}
+
+	public function deteleContentAction()
+	{
+		try{
+			$id = I('id');
+			M('YhMeetingContentList')->where(array('id'=>array('eq',$id)))->delete();
 		    $this->ajaxReturn(buildMessage());
 		} catch (Exception $e) {
 		    $this->ajaxReturn(buildErrorMessage($e->getMessage()));
 		}
 	}
+
 }

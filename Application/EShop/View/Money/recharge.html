@@ -104,7 +104,31 @@
             </div>
 	    </div>
     </div>
-    <div style="height: .25rem"></div>
+    <div class="con-wrap mb15 offline" style="margin-top: 10px">
+        <div class="con-img-title">
+            <img class="bank-card mr20" src="{$Think.const.IMG_URL}revision/cards.png" alt="">
+            <span class="black-4">银行账户信息</span>
+        </div>
+        <div class="simple-data-wrap">
+            <div class="simple-line">
+                <div class="col-3 gray-9">收款人</div>
+                <div class='col-9 black-4' >{$cskx_platform_message['payee']['value']}</div>
+            </div>
+            <div class="simple-line">
+                <div class="col-3 gray-9">开户行</div>
+                <div class='col-9 black-4' >{$cskx_platform_message['bank_account']['value']}</div>
+            </div>
+            <div class="simple-line">
+                <div class="col-3 gray-9">卡号</div>
+                <div class='col-9 black-4' >{$cskx_platform_message['card_number']['value']}</div>
+            </div>
+            <div class="simple-line r-cash font24">
+                *请将服务款项全额汇至以上账户，并上传汇款凭证
+            </div>
+        </div>
+
+    </div>
+    <!--<div style="height: .25rem"></div>-->
     <div class="basic-info">
         <div class="title">提示</div>
         <div style="margin: .2rem 0">

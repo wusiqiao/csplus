@@ -78,8 +78,8 @@ class  ComBranchCapitalController extends DataController {
     public function getListSql(){
         $branch_id = getBrowseBranchId();
         //客户余额消费（收入）
-        $where[2] = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_PROMPT_BALANCE_PAY.",".FIN_RECEIVABLES_CONFIRMED.")";
-        //$where[2] = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_PROMPT_BALANCE_PAY.")";
+        //$where[2] = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_PROMPT_BALANCE_PAY.",".FIN_RECEIVABLES_CONFIRMED.")";
+        $where[2] = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_PROMPT_BALANCE_PAY.")";
         //支出 退款
         $where[4] = "fina.branch_id = ".$branch_id ."  and "." fina.fina_type in (".FIN_USER_REFUND.") and fina.company_id IS NOT NULL";
         $order = "order by created_time asc,id asc ";

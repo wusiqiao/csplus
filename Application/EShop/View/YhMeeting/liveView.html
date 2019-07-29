@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style” content=black" />
+  <title>{$title}</title>
+  <link href="{$Think.const.CSS_URL}mui/mui.css" rel="stylesheet" />
+  <link href="{$Think.const.CSS_URL}reset.css" rel="stylesheet" />
+  <link href="{$Think.const.CSS_URL}common.css" rel="stylesheet" />
+  <link href="{$Think.const.CSS_URL}style.css?v=4" rel="stylesheet" />
+</head>
+<style>
+  .live-list {
+    width: 100%;
+    min-height: calc(100vh - 0.85rem);
+    text-align: center;
+    /* background-color: #f5f5f5; */
+  }
+
+  .live-list-item {
+    padding: 0.1rem 0.2rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+  }
+
+  .live-list .time {
+    text-align: center;
+    display: inline-block;
+    margin: 0.2rem auto;
+    padding: 0.1rem 0.2rem;
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, .2);
+    color: #fff;
+  }
+
+  .live-content {
+    text-align: left;
+    color: #353535;
+    border-radius: 3px;
+    background-color: #fff;
+    margin-right: 0.2rem;
+    margin-bottom: 0.3rem;
+    padding: 0.12rem;
+    position: relative;
+    word-break: break-all;
+  }
+
+  .live-list-item>img {
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    margin-left: 0.2rem;
+    background-color: #fff;
+  }
+
+  .right-arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 0px 8px 12px;
+    border-color: transparent transparent transparent #fff;
+    position: absolute;
+    right: -0.2rem;
+    top: 0.2rem;
+  }
+
+  .attachment-icon {
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 1.2rem;
+    height: 1.2rem;
+    background-position: center;
+    background-image: url("/Application/EShop/Public/images/icon/icon-unknown.png");
+  }
+
+  .attachment-icon-word {
+    background-image: url("/Application/EShop/Public/images/icon/icon-word.png");
+  }
+
+  .attachment-icon-doc {
+    background-image: url("/Application/EShop/Public/images/icon/icon-word.png");
+  }
+
+  .attachment-icon-docx {
+    background-image: url("/Application/EShop/Public/images/icon/icon-word.png");
+  }
+
+  .attachment-icon-excel {
+    background-image: url("/Application/EShop/Public/images/icon/icon-excel.png");
+  }
+
+  .attachment-icon-xls {
+    background-image: url("/Application/EShop/Public/images/icon/icon-excel.png");
+  }
+
+  .attachment-icon-xlsx {
+    background-image: url("/Application/EShop/Public/images/icon/icon-excel.png");
+  }
+
+  .attachment-icon-txt {
+    background-image: url("/Application/EShop/Public/images/icon/icon-txt.png");
+  }
+
+  .attachment-icon-unknown {
+    background-image: url("/Application/EShop/Public/images/icon/icon-unknown.png");
+  }
+
+  .layui-layer-content {
+    height: auto !important;
+  }
+</style>
+
+<body>
+  <include file="Index:header" />
+  <section class="custom-info-wrap common-wrap bg-none mt85">
+    <div style="width: 100%;overflow: hidden;">
+      <!-- 直播记录 -->
+      <ul class="live-list">
+        <!-- 文本 -->
+        <li>
+          <div class="time">2019-07-09 14:00</div>
+          <div class="live-list-item">
+            <div style="flex: 1;display: flex;justify-content: flex-end;">
+              <div class="live-content">
+                <span>央视网消息（新闻联播）：中央和国家机关党的建设工作会议7月9日在北京召开。中共中央总书记、国家主席、中央军委主席习近平出席会议并发表重要讲话。他强调，新形势下，中央和国家机关要以党的政治建设为统领，着力深化理论武装，着力夯实基层基础，着力推进正风肃纪，</span>
+                <span class="right-arrow"></span>
+              </div>
+            </div>
+            <img src="/Application/EShop/Public/images/img/star-on.png" alt="">
+          </div>
+        </li>
+        <!-- 照片 -->
+        <li>
+          <div class="time">2019-07-09 14:00</div>
+          <div class="live-list-item">
+            <div style="flex: 1;display: flex;justify-content: flex-end;">
+              <div class="live-content">
+                <div style="padding: 0.1rem;">
+                  <img onclick="prewImage(this)" style="width: 100%;"
+                    src="/Application/EShop/Public/images/work/bg-wxCode.jpg" alt="">
+                </div>
+                <span class="right-arrow"></span>
+              </div>
+            </div>
+            <img src="/Application/EShop/Public/images/img/star-on.png" alt="">
+          </div>
+        </li>
+        <!-- 文件 -->
+        <li>
+          <div class="time">2019-07-09 14:00</div>
+          <div class="live-list-item">
+            <div style="flex: 1;display: flex;justify-content: flex-end;">
+              <div class="live-content">
+                <div class="attachment-icon attachment-icon-word"></div>
+                <div onclick="downloadFile()" style="text-align: center;color: #368bfe">下载</div>
+                <span class="right-arrow"></span>
+              </div>
+            </div>
+            <img src="/Application/EShop/Public/images/img/star-on.png" alt="">
+          </div>
+        </li>
+
+        <li>
+          <div class="time">2019-07-09 14:00</div>
+          <div class="live-list-item">
+            <div style="flex: 1;display: flex;justify-content: flex-end;">
+              <div class="live-content">
+                <div class="attachment-icon attachment-icon-excel"></div>
+                <div onclick="downloadFile()" style="text-align: center;color: #368bfe">下载</div>
+                <span class="right-arrow"></span>
+              </div>
+            </div>
+            <img src="/Application/EShop/Public/images/img/star-on.png" alt="">
+          </div>
+        </li>
+
+        <li>
+          <div class="time">2019-07-09 14:00</div>
+          <div class="live-list-item">
+            <div style="flex: 1;display: flex;justify-content: flex-end;">
+              <div class="live-content">
+                <div class="attachment-icon"></div>
+                <div onclick="downloadFile()" style="text-align: center;color: #368bfe">下载</div>
+                <span class="right-arrow"></span>
+              </div>
+            </div>
+            <img src="/Application/EShop/Public/images/img/star-on.png" alt="">
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <script src="/{$Think.const.MODULE_PATH}/Public/vue/vue.min.js"></script>
+  <script src="{$Think.const.JS_URL}layer/layer.js"></script>
+
+  <script type="text/javascript">
+    function prewImage(ele) {
+      var url = $(ele).attr("src");
+      layer.open({
+        type: 1,
+        title: '查看图片',
+        shade: 0.8,
+        closeBtn: 1,
+        area: ["100%", "100%"],
+        content: `<div style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
+              <img style="width: 100%;" src="${url}" alt="">
+          </div>`
+      });
+    }
+    function downloadFile(url, name) {
+      // window.location.href = '/Talks/downloadFile?url=' + url + '&name=' + name;
+    }
+  </script>
+</body>
+
+</html>
